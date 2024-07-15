@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
 import './Screens/payment.dart';
 import 'Screens/chats.dart';
+import 'Screens/videos.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Chats(),
+      home: Videos(),
     );
   }
 }

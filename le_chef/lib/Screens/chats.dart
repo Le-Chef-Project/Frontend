@@ -80,7 +80,7 @@ Widget PersonalChat(BuildContext context) {
                       SizedBox(height: 8),
                       Text(
                         'Hi!!',
-                        style: Theme.of(context).textTheme.bodyText2,
+                        // style: Theme.of(context).textTheme.bodyText2,
                       )
                     ]))
               ],
@@ -120,7 +120,7 @@ Widget groupChat(BuildContext context) {
                       SizedBox(height: 8),
                       Text(
                         'Hi!!',
-                        style: Theme.of(context).textTheme.bodyText2,
+                        // style: Theme.of(context).textTheme.bodyText2,
                       )
                     ]))
               ],

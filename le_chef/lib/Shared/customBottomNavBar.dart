@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:le_chef/Screens/chats.dart';
+
+import '../Screens/Home.dart';
+import '../Screens/notification.dart';
 
 class custumBottomNavBar extends StatelessWidget {
   const custumBottomNavBar({super.key});
@@ -28,6 +32,28 @@ class custumBottomNavBar extends StatelessWidget {
       selectedItemColor: Color(0xFF164863),
       unselectedItemColor: Color(0xFF164863),
       backgroundColor: Colors.white,
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+            break;
+          case 1:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Notifications()),
+            );
+            break;
+          case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Chats()),
+            );
+            break;
+        }
+      },
     );
   }
 }
