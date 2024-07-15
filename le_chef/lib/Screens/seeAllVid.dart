@@ -59,7 +59,7 @@ class AllVid extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.center,
                         child: IconButton(
-                          icon: Icon(Icons.play_arrow, size: 58, color: Colors.white),
+                          icon: Icon(Icons.pla_arrow, size: 58, color: Colors.white),
                           onPressed: () {
                             // Define your play button functionality here
                           },
