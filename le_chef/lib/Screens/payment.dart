@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:le_chef/Shared/custom_elevated_button.dart';
+import 'package:le_chef/Shared/custom_outlined_button.dart';
+import 'package:le_chef/theme/custom_button_style.dart';
 import '../Shared/custom_app_bar.dart';
+import '../theme/custom_text_style.dart';
 
 class PaymentScreen extends StatefulWidget {
   PaymentScreen({Key? key}) : super(key: key);
@@ -23,7 +27,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         appBar: CustomAppBar(title: "Payment"),
         body: SingleChildScrollView(
           padding: EdgeInsets.only(
@@ -40,7 +44,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 showBackView: isCvvFocused,
                 obscureCardCvv: true,
                 obscureCardNumber: true,
-                cardBgColor: Colors.red,
                 onCreditCardWidgetChange: (CreditCardBrand) {},
               ),
               Padding(
@@ -112,23 +115,30 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomElevatedButton(
+                          height: 41,
+                          width: 161,
+                          text: "Validate",
+                          buttonStyle: CustomButtonStyles.fillPrimaryTL5,
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              print('Valid');
+                            } else {
+                              print('Invalid');
+                            }
+                          },
                         ),
-                      ),
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          print('Valid');
-                        } else {
-                          print('Invalid');
-                        }
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(8.0),
-                        child: Text('Validate'),
-                      ),
+                        CustomOutlinedButton(
+                          buttonTextStyle: CustomTextStyles.bodyLargeff0e7490,
+                          text: "Cancel",
+                          width: 161,
+                          margin: EdgeInsets.only(left: 8),
+                          buttonStyle: CustomButtonStyles.outlinePrimaryTL51,
+                        )
+                      ],
                     ),
                   ],
                 ),

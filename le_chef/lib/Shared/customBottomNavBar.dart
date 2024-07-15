@@ -17,7 +17,11 @@ class custumBottomNavBar extends StatelessWidget {
           label: 'Notifications',
         ),
         BottomNavigationBarItem(
-          icon: Image.network('https://i.pinimg.com/originals/13/87/be/1387be74b2c4d1c58982a7b056f8e54e.jpg', width: 30, height: 25, fit: BoxFit.cover),
+          icon: Image.network(
+              'https://i.pinimg.com/originals/13/87/be/1387be74b2c4d1c58982a7b056f8e54e.jpg',
+              width: 30,
+              height: 25,
+              fit: BoxFit.cover),
           label: 'Messages',
         ),
       ],
