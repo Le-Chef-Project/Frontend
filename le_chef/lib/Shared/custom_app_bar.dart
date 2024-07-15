@@ -12,12 +12,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),
-      ],
+      backgroundColor: Colors.white,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios_rounded),
+        onPressed: () {
+          // Define your back button functionality here
+        },
+      ),
     );
   }
 

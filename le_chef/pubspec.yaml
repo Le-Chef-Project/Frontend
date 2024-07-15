@@ -13,11 +13,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cached_network_image: ^3.3.0
-  flutter_svg: ^2.0.9
+  flutter_svg: ^1.1.6
   dotted_border: ^2.1.0
   connectivity_plus: ^5.0.2
   flutter_credit_card: ^4.0.1
   cupertino_icons: ^1.0.2
+  majesticons_flutter:  ^0.0.1
 
 dev_dependencies:
   flutter_test:
