@@ -5,6 +5,9 @@ import '../Shared/customBottomNavBar.dart';
 import '../Shared/customCard.dart';
 import '../Shared/custom_app_bar.dart';
 import '../Widgets/Card.dart';
+import 'Home.dart';
+import 'chats.dart';
+import 'notification.dart';
 
 class Videos extends StatelessWidget {
   const Videos({super.key});
@@ -80,7 +83,31 @@ class Videos extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Chats()),
+              );
+              break;
+          // case 2: No need for navigation as we are already on Chats screen
+          }
+        }, context: context,
+      ),
     );
   }
 }

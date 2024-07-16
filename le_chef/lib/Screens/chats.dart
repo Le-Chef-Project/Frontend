@@ -4,8 +4,13 @@ import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_text_style.dart';
 import '../theme/theme_helper.dart';
+import 'Home.dart';
+import 'notification.dart';
 
 class Chats extends StatelessWidget {
+
+  int _selectedIndex = 2; // Initial index for Chats screen
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,7 +51,24 @@ class Chats extends StatelessWidget {
               ],
             ),
           ),
-          bottomNavigationBar: CustomBottomNavBar()
+        bottomNavigationBar: CustomBottomNavBar(
+          onItemTapped: (index) {
+            switch (index) {
+              case 0:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Notifications()),
+                );
+                break;
+            }
+          }, context: context, selectedIndex: _selectedIndex,
+        ),
       ),
     );
   }

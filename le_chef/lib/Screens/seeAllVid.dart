@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
-import 'package:majesticons_flutter/majesticons_flutter.dart'; // Correct import
+import 'package:majesticons_flutter/majesticons_flutter.dart';
+
+import 'Home.dart';
+import 'notification.dart'; // Correct import
 
 class AllVid extends StatelessWidget {
   const AllVid({Key? key});
@@ -73,7 +77,31 @@ class AllVid extends StatelessWidget {
           }),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Chats()),
+              );
+              break;
+          // case 2: No need for navigation as we are already on Chats screen
+          }
+        }, context: context,
+      ),
     );
   }
 }
