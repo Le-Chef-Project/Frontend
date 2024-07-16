@@ -80,7 +80,7 @@ class Videos extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: custumBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 }

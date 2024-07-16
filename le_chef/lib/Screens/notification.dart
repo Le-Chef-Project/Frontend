@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 
 class Notifications extends StatelessWidget {
@@ -8,8 +9,8 @@ class Notifications extends StatelessWidget {
     return Scaffold(
         body: Container(
       child: Text('Notifications'),
-    )
-    
+    ),
+        bottomNavigationBar: CustomBottomNavBar()
     );
   }
 }

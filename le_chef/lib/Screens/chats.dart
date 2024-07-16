@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Shared/customBottomNavBar.dart';
 
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_text_style.dart';
@@ -44,7 +45,9 @@ class Chats extends StatelessWidget {
                 PersonalChat(context),
               ],
             ),
-          )),
+          ),
+          bottomNavigationBar: CustomBottomNavBar()
+      ),
     );
   }
 }

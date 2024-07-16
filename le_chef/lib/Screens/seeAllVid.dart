@@ -73,7 +73,7 @@ class AllVid extends StatelessWidget {
           }),
         ),
       ),
-      bottomNavigationBar: custumBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 }

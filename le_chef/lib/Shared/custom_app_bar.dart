@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios_rounded),
         onPressed: () {
-          // Define your back button functionality here
+          Navigator.pop(context);
         },
       ),
     );
