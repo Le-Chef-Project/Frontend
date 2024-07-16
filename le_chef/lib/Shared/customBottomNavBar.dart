@@ -21,6 +21,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   // Define default colors and backgrounds
   static const Color defaultIconColor = Color(0xFF164863);
   static const Color defaultBackgroundColor = Colors.white;
+  static const IconData conversation_bubble = IconData(0xf3fb, fontFamily: "CupertinoIcons", fontPackage: 'cupertino_icons');
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +56,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              'assets/4865037-200-removebg-preview.png',
-              width: 30,
-              height: 25,
-              fit: BoxFit.cover,
+            child: Icon(conversation_bubble, color: widget.selectedIndex == 2 ? defaultBackgroundColor : defaultIconColor),
             ),
-          ),
           label: 'Messages',
-        ),
+          ),
       ],
       currentIndex: widget.selectedIndex?? 0,
       selectedItemColor: Colors.white,

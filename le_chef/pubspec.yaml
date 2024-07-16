@@ -21,6 +21,7 @@ dependencies:
   majesticons_flutter:  ^0.0.1
   iconsax: ^0.0.8
   get: ^4.6.6
+  solar_icons: ^0.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
