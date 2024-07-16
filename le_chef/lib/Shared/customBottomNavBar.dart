@@ -21,7 +21,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   // Define default colors and backgrounds
   static const Color defaultIconColor = Color(0xFF164863);
   static const Color defaultBackgroundColor = Colors.white;
-  static const IconData conversation_bubble = IconData(0xf3fb, fontFamily: "CupertinoIcons", fontPackage: 'cupertino_icons');
+  static const IconData conversation_bubble = IconData(0xf3fb,
+      fontFamily: "CupertinoIcons", fontPackage: 'cupertino_icons');
 
   @override
   Widget build(BuildContext context) {
@@ -30,39 +31,54 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         BottomNavigationBarItem(
           icon: Container(
             decoration: BoxDecoration(
-              color: widget.selectedIndex == 0 ? defaultIconColor : defaultBackgroundColor,
+              color: widget.selectedIndex == 0
+                  ? defaultIconColor
+                  : defaultBackgroundColor,
               shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.home_outlined, color: widget.selectedIndex == 0 ? defaultBackgroundColor: defaultIconColor),
+            child: Icon(Icons.home_outlined,
+                color: widget.selectedIndex == 0
+                    ? defaultBackgroundColor
+                    : defaultIconColor),
           ),
           label: 'Home',
         ),
         BottomNavigationBarItem(
           icon: Container(
             decoration: BoxDecoration(
-              color: widget.selectedIndex == 1 ? defaultIconColor : defaultBackgroundColor,
+              color: widget.selectedIndex == 1
+                  ? defaultIconColor
+                  : defaultBackgroundColor,
               shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.notifications_none_outlined, color: widget.selectedIndex == 1 ? defaultBackgroundColor: defaultIconColor),
+            child: Icon(Icons.notifications_none_outlined,
+                color: widget.selectedIndex == 1
+                    ? defaultBackgroundColor
+                    : defaultIconColor),
           ),
           label: 'Notifications',
         ),
         BottomNavigationBarItem(
           icon: Container(
             decoration: BoxDecoration(
-              color: widget.selectedIndex == 2 ? defaultIconColor : defaultBackgroundColor,
+              color: widget.selectedIndex == 2
+                  ? defaultIconColor
+                  : defaultBackgroundColor,
               shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(8.0),
-            child: Icon(conversation_bubble, color: widget.selectedIndex == 2 ? defaultBackgroundColor : defaultIconColor),
-            ),
-          label: 'Messages',
+            child: Icon(conversation_bubble,
+                color: widget.selectedIndex == 2
+                    ? defaultBackgroundColor
+                    : defaultIconColor),
           ),
+          label: 'Messages',
+        ),
       ],
-      currentIndex: widget.selectedIndex?? 0,
-      selectedItemColor: Colors.white,
+      currentIndex: widget.selectedIndex ?? 0,
+      selectedItemColor: defaultIconColor,
       unselectedItemColor: defaultIconColor,
       backgroundColor: defaultBackgroundColor,
       onTap: widget.onItemTapped,

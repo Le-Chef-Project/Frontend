@@ -42,6 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 cardHolderName: nameController.text,
                 cvvCode: cvvController.text,
                 showBackView: isCvvFocused,
+                cardBgColor: Color.fromRGBO(66, 125, 157, 1),
                 obscureCardCvv: true,
                 obscureCardNumber: true,
                 onCreditCardWidgetChange: (CreditCardBrand) {},
@@ -98,19 +99,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                         cardNumberTextStyle: TextStyle(
                           fontSize: 15,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         cardHolderTextStyle: TextStyle(
                           fontSize: 15,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         expiryDateTextStyle: TextStyle(
                           fontSize: 15,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         cvvCodeTextStyle: TextStyle(
                           fontSize: 15,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                     ),

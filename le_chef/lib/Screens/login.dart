@@ -18,98 +18,102 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image.asset('assets/logo.png', width: 300, height: 300),
-            ),
-            Text(
-              'Welcome',
-              style: TextStyle(
-                color: Color(0xFF164863),
-                fontSize: 18,
-                fontFamily: 'IBM Plex Mono',
-                fontWeight: FontWeight.w600,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Image.asset('assets/logo.png', width: 300, height: 300),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Please sign in to access your account',
-              style: TextStyle(
-                color: Color(0xFF888888),
-                fontSize: 16,
-                fontFamily: 'IBM Plex Mono',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 20),
-            TextFormField(
-              controller: _emailController,
-              decoration: textInputDecoration.copyWith(hintText: 'Email'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Enter an email';
-                } else if (!value.contains('@') || !value.endsWith('.com')) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: _isObscure,
-              decoration: textInputDecoration.copyWith(
-                hintText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isObscure ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isObscure = !_isObscure;
-                    });
-                  },
+              Text(
+                'Welcome',
+                style: TextStyle(
+                  color: Color(0xFF164863),
+                  fontSize: 18,
+                  fontFamily: 'IBM Plex Mono',
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              validator: (val) => val!.length < 6 ? 'Password too short' : null,
-            ),
-            SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
+              SizedBox(height: 8),
+              Text(
+                'Please sign in to access your account',
+                style: TextStyle(
+                  color: Color(0xFF888888),
+                  fontSize: 16,
+                  fontFamily: 'IBM Plex Mono',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _emailController,
+                decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter an email';
+                  } else if (!value.contains('@') || !value.endsWith('.com')) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
                 },
-                child: Text(
-                  'Log in',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'IBM Plex Mono',
-                    fontWeight: FontWeight.w600,
-                    height: 0,
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: _isObscure,
+                decoration: textInputDecoration.copyWith(
+                  hintText: 'Password',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF427D9D),
-                  padding: EdgeInsets.symmetric(vertical: 14.5, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                validator: (val) =>
+                    val!.length < 6 ? 'Password too short' : null,
+              ),
+              SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home()),
+                    );
+                  },
+                  child: Text(
+                    'Log in',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'IBM Plex Mono',
+                      fontWeight: FontWeight.w600,
+                      height: 0,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF427D9D),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 14.5, horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

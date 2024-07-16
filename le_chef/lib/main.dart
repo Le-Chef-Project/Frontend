@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Screens/Home.dart';
+import 'package:le_chef/Screens/Notes.dart';
 import 'package:le_chef/Screens/login.dart';
 import 'package:le_chef/Screens/notification.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Login(),
+      home: AllVid(),
     );
   }
 }

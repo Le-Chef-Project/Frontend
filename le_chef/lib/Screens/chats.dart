@@ -8,13 +8,13 @@ import 'Home.dart';
 import 'notification.dart';
 
 class Chats extends StatelessWidget {
-
   int _selectedIndex = 2; // Initial index for Chats screen
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: SafeArea(
+        child: Scaffold(
           appBar: CustomAppBar(title: 'Messages'),
           body: SingleChildScrollView(
             child: Column(
@@ -51,23 +51,26 @@ class Chats extends StatelessWidget {
               ],
             ),
           ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
-                );
-                break;
-            }
-          }, context: context, selectedIndex: _selectedIndex,
+          bottomNavigationBar: CustomBottomNavBar(
+            onItemTapped: (index) {
+              switch (index) {
+                case 0:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                  break;
+                case 1:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notifications()),
+                  );
+                  break;
+              }
+            },
+            context: context,
+            selectedIndex: _selectedIndex,
+          ),
         ),
       ),
     );
@@ -82,7 +85,7 @@ Widget PersonalChat(BuildContext context) {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           separatorBuilder: (context, index) => SizedBox(height: 12),
-          itemCount: 5,
+          itemCount: 2,
           itemBuilder: (context, index) {
             return Row(
               children: [
@@ -125,7 +128,7 @@ Widget groupChat(BuildContext context) {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           separatorBuilder: (context, index) => SizedBox(height: 12),
-          itemCount: 4,
+          itemCount: 3,
           itemBuilder: (context, index) {
             return Row(
               children: [
@@ -133,7 +136,11 @@ Widget groupChat(BuildContext context) {
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     radius: 25,
-                    child: Text('G${index + 1}'),
+                    child: Text(
+                      'G${index + 1}',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Color.fromRGBO(14, 116, 144, 1),
                   ),
                 ),
                 Expanded(

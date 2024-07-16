@@ -212,7 +212,7 @@ class CustomTextStyles {
         color: Color(0XFF0E7490),
       );
   static get titleSmallff0e7491 => theme.textTheme.titleSmall!.copyWith(
-        color: Color(0XFF0E7490),
+        color: Colors.black,
         fontSize: 20,
       );
   static get bodyMediumOnPrimary => theme.textTheme.bodyMedium!.copyWith(
