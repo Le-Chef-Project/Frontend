@@ -15,6 +15,7 @@ class AllVid extends StatelessWidget {
     bool isLocked = true; // Variable to control the visibility of the looked icon
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: "All Videos"),
       body: Container(
         width: double.infinity,

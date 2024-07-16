@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="Screen 4">
+    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="Screen 2 (Not finished)">
+      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/login.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/notification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/notification.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/videos.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/videos.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Shared/textInputDecoration.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Shared/textInputDecoration.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +149,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721128316009</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Screen 2 (Not finished)">
+      <option name="closed" value="true" />
+      <created>1721131656695</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721131656696</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -178,6 +190,7 @@
     <MESSAGE value="navBar with static background" />
     <MESSAGE value="navBar finished&#10;(msg icon need to be changed)" />
     <MESSAGE value="Screen 4" />
-    <option name="LAST_COMMIT_MESSAGE" value="Screen 4" />
+    <MESSAGE value="Screen 2 (Not finished)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Screen 2 (Not finished)" />
   </component>
 </project>

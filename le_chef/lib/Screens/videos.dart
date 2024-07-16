@@ -18,6 +18,7 @@ class Videos extends StatelessWidget {
     String title = "Lesson Title", subTitle = "Unit 3 - Lesson 2", duration = "23 min";
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: "Video title"),
       body: Container(
         width: double.infinity,

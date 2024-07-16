@@ -19,6 +19,7 @@ class Notifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: "Notifications"),
       body: Padding(
         padding: EdgeInsets.all(16.0),

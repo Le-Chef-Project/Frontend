@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-final textInputDecoration =
-InputDecoration(
+
+final textInputDecoration = InputDecoration(
   hintText: '12%fTks,l',
   fillColor: Color(0xFFFBFAFA),
   filled: true,
@@ -13,6 +13,21 @@ InputDecoration(
     height: 0,
   ),
   border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(15),
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(
+      color: Colors.transparent,
+    ),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(
+      color: Colors.transparent,
+    ),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(
+      color: Colors.transparent,
+    ),
   ),
 );
