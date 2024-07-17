@@ -15,6 +15,7 @@ class Chats extends StatelessWidget {
     return SafeArea(
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: CustomAppBar(title: 'Messages'),
           body: SingleChildScrollView(
             child: Column(
