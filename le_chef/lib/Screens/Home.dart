@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/seeAllVid.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -108,14 +110,22 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     const SizedBox(width: 106),
-                    Text(
-                      'See all',
-                      style: TextStyle(
-                        color: Color(0xFF427D9D),
-                        fontSize: 12,
-                        fontFamily: 'IBM Plex Mono',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AllVid()),
+                        );
+                      },
+                      child: Text(
+                        'See all',
+                        style: TextStyle(
+                          color: Color(0xFF427D9D),
+                          fontSize: 12,
+                          fontFamily: 'IBM Plex Mono',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
                       ),
                     ),
                   ],
@@ -125,16 +135,19 @@ class _HomeState extends State<Home> {
                 height: 250, // Specify a fixed height for the ListView
                 child: new_video(context),
               ),
-              SizedBox(
-                width: 350,
-                child: Text(
-                  'More',
-                  style: TextStyle(
-                    color: Color(0xFF164863),
-                    fontSize: 16,
-                    fontFamily: 'IBM Plex Mono',
-                    fontWeight: FontWeight.w600,
-                    height: 0,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
+                child: SizedBox(
+                  width: 380,
+                  child: Text(
+                    'More',
+                    style: TextStyle(
+                      color: Color(0xFF164863),
+                      fontSize: 16,
+                      fontFamily: 'IBM Plex Mono',
+                      fontWeight: FontWeight.w600,
+                      height: 0,
+                    ),
                   ),
                 ),
               ),

@@ -144,78 +144,94 @@ class _ExamsState extends State<Exams> {
                                       ),
                                     ),
                                     actions: [
-                                      Row(
-                                        // mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: 140.50,
-                                            height: 48,
-                                            child: ElevatedButton(
-                                                onPressed: () {},
-                                                child: Text(
-                                                  'Pay Fees',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16,
-                                                    fontFamily: 'IBM Plex Mono',
-                                                    fontWeight: FontWeight.w600,
-                                                    height: 0,
-                                                  ),
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      Color(0xFF427D9D),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                )),
-                                          ),
-                                          Container(
-                                              width: 140.50,
-                                              height: 48,
-                                              child: OutlinedButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    'Cancel',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: Color(0xFF427D9D),
-                                                      fontSize: 16,
-                                                      fontFamily:
-                                                          'IBM Plex Mono',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      height: 0,
+                                      Expanded(
+                                        child: Row(
+                                          // mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                width: 140.50,
+                                                height: 48,
+                                                child: ElevatedButton(
+                                                    onPressed: () {},
+                                                    child: Text(
+                                                      'Pay Fees',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontFamily:
+                                                            'IBM Plex Mono',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        height: 0,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  style:
-                                                      OutlinedButton.styleFrom(
-                                                    side: BorderSide(
-                                                        color:
-                                                            Color(0xFF427D9D)),
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      side: BorderSide(
-                                                          width: 1,
-                                                          color: Color(
-                                                              0xFF427D9D)),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                    ),
-                                                  )))
-                                        ],
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Color(0xFF427D9D),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                      ),
+                                                    )),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                  width: 140.50,
+                                                  height: 48,
+                                                  child: OutlinedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(
+                                                        'Cancel',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFF427D9D),
+                                                          fontSize: 16,
+                                                          fontFamily:
+                                                              'IBM Plex Mono',
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          height: 0,
+                                                        ),
+                                                      ),
+                                                      style: OutlinedButton
+                                                          .styleFrom(
+                                                        side: BorderSide(
+                                                            color: Color(
+                                                                0xFF427D9D)),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          side: BorderSide(
+                                                              width: 1,
+                                                              color: Color(
+                                                                  0xFF427D9D)),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                      ))),
+                                            )
+                                          ],
+                                        ),
                                       )
                                     ],
                                   );
