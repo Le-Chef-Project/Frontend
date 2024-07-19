@@ -4,10 +4,18 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="Screen 2">
+    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="Screen 13, 19">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/chats.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/chats.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Shared/custom_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Shared/custom_app_bar.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721141965389</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Screen 13, 19">
+      <option name="closed" value="true" />
+      <created>1721225864209</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1721225864209</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -196,6 +212,7 @@
     <MESSAGE value="Screen 4" />
     <MESSAGE value="Screen 2 (Not finished)" />
     <MESSAGE value="Screen 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Screen 2" />
+    <MESSAGE value="Screen 13, 19" />
+    <option name="LAST_COMMIT_MESSAGE" value="Screen 13, 19" />
   </component>
 </project>

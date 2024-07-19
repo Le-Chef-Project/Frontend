@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Screens/Notes.dart';
 import 'package:le_chef/Screens/exams.dart';
@@ -6,10 +7,12 @@ import 'package:le_chef/Screens/login.dart';
 import 'package:le_chef/Screens/notification.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
 import './Screens/payment.dart';
+import 'Screens/chatPage.dart';
 import 'Screens/chats.dart';
 import 'Screens/videos.dart';
 
 void main() {
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: SystemUiOverlay.values);
   runApp(const MyApp());
 }
 
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Exams(),
+      home: ChatPage(),
     );
   }
 }
