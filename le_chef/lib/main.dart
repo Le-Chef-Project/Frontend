@@ -12,23 +12,30 @@ import 'Screens/chats.dart';
 import 'Screens/videos.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: SystemUiOverlay.values);
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // Define the color you want for the status bar
+    Color statusBarColor = Colors.white;
+
+    // Apply the status bar color globally
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: statusBarColor,
+      statusBarIconBrightness: Brightness.dark, // You can adjust based on your color
+    ));
+
     return MaterialApp(
       title: 'Le Chef',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ChatPage(),
+      home: Videos(),
     );
   }
 }

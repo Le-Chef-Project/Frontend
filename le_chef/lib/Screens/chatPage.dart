@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -18,7 +16,6 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
-import 'package:audio_service/audio_service.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -40,11 +37,11 @@ class _ChatPageState extends State<ChatPage> {
 
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
+  final ValueNotifier<bool> _isRecording = ValueNotifier(false);
 
-  bool person = true;
   FlutterSoundRecorder? _recorder;
-  bool _isRecording = false;
   String? _recordedFilePath;
+  bool person = true;
 
   @override
   void initState() {
@@ -59,6 +56,7 @@ class _ChatPageState extends State<ChatPage> {
     _textController.removeListener(_onTextChanged);
     _textController.dispose();
     _isTyping.dispose();
+    _isRecording.dispose();
     _recorder?.closeRecorder();
     super.dispose();
   }
@@ -71,20 +69,6 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _messages.insert(0, message);
     });
-  }
-
-  void _addCustomVoiceMessage(String filePath, Duration duration) {
-    final message = types.CustomMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: const Uuid().v4(),
-      metadata: {
-        'filePath': filePath,
-        'duration': duration.inMilliseconds,
-      },
-    );
-
-    _addMessage(message);
   }
 
   void _handleAttachmentPressed() {
@@ -273,48 +257,29 @@ class _ChatPageState extends State<ChatPage> {
       codec: Codec.aacADTS,
     );
 
-    setState(() {
-      _isRecording = true;
-      _recordedFilePath = path;
-    });
+    _isRecording.value = true;
+    _recordedFilePath = path;
   }
 
   void _stopRecording() async {
     await _recorder!.stopRecorder();
-    setState(() {
-      _isRecording = false;
-    });
+    _isRecording.value = false;
 
     if (_recordedFilePath != null) {
-      final duration = await getAudioDuration(_recordedFilePath!);
-      _addCustomVoiceMessage(_recordedFilePath!, duration);
+      final message = types.FileMessage(
+        author: _user,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: const Uuid().v4(),
+        mimeType: 'audio/aac',
+        name: 'Voice Message',
+        size: File(_recordedFilePath!).lengthSync(),
+        uri: _recordedFilePath!,
+      );
+
+      _addMessage(message);
     }
   }
 
-  Future<Duration> getAudioDuration(String filePath) async {
-    final audioPlayer = FlutterSoundPlayer();
-    await audioPlayer.openPlayer();
-
-    Duration? duration;
-
-    // Start playing the audio to get the duration
-    await audioPlayer.startPlayer(
-      fromURI: filePath,
-      whenFinished: () {
-        // Not used, but required for playback completion
-      },
-    );
-
-    // Wait for the duration to be set
-    while (duration == null) {
-      await Future.delayed(Duration(milliseconds: 100));
-    }
-
-    await audioPlayer.stopPlayer();
-    await audioPlayer.closePlayer();
-
-    return duration!;
-  }
   @override
   Widget build(BuildContext context) {
     final groupChatTheme = DefaultChatTheme(
@@ -339,33 +304,52 @@ class _ChatPageState extends State<ChatPage> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: person? CustomAppBar(
-          title: "Thaowpsta",avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-        ): CustomAppBar(
+        appBar: person ? CustomAppBar(
+          title: "Thaowpsta",
+          avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+        ) : CustomAppBar(
           title: "Group",
           avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
         ),
-        body: Stack(
-          children: [
-            Chat(
-              messages: _messages,
-              onAttachmentPressed: _handleAttachmentPressed,
-              onMessageTap: _handleMessageTap,
-              onPreviewDataFetched: _handlePreviewDataFetched,
-              onSendPressed: _handleSendPressed,
-              showUserAvatars: person,
-              showUserNames: true,
-              user: _user,
-              theme: person ? personalChatTheme : groupChatTheme,
-              customBottomWidget: _isRecording
-                  ? Center(child: _SoundWaveAnimation()) // Sound wave animation widget
+        body: Chat(
+          messages: _messages,
+          onAttachmentPressed: _handleAttachmentPressed,
+          onMessageTap: _handleMessageTap,
+          onPreviewDataFetched: _handlePreviewDataFetched,
+          onSendPressed: _handleSendPressed,
+          showUserAvatars: person,
+          showUserNames: true,
+          user: _user,
+          theme: person ? personalChatTheme : groupChatTheme,
+          customBottomWidget: ValueListenableBuilder<bool>(
+            valueListenable: _isRecording,
+            builder: (context, isRecording, child) {
+              return isRecording
+                  ? Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0E7490),
+                    borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Recording...',
+                      style: TextStyle(color: Colors.white, fontSize: 16), // Adjust color to ensure contrast
+                    ),
+                  ),
+                ),
+              )
+
+
                   : Padding(
                 padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFBFAFA), // Blue background color
-                    borderRadius: BorderRadius.circular(16.0), // Rounded corners
+                    color: const Color(0xFFFBFAFA),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Row(
                     children: [
@@ -375,9 +359,9 @@ class _ChatPageState extends State<ChatPage> {
                           decoration: const InputDecoration(
                             hintText: 'Type a message...',
                             border: InputBorder.none,
-                            hintStyle: TextStyle(color: Colors.black), // Hint text color
+                            hintStyle: TextStyle(color: Colors.black),
                           ),
-                          style: const TextStyle(color: Colors.black), // Input text color
+                          style: const TextStyle(color: Colors.black),
                           onSubmitted: (value) {
                             if (value.isNotEmpty) {
                               _handleSendPressed(types.PartialText(text: value));
@@ -386,15 +370,15 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.attach_file, color: Colors.black), // White attachment icon
+                        icon: const Icon(Icons.attach_file, color: Colors.black),
                         onPressed: _handleAttachmentPressed,
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
         floatingActionButton: ValueListenableBuilder<bool>(
           valueListenable: _isTyping,
@@ -447,114 +431,6 @@ class _ChatPageState extends State<ChatPage> {
             }
           },
           context: context,
-        ),
-      ),
-    );
-  }
-}
-
-class _SoundWaveAnimation extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
-      child: Container(
-        width: double.infinity,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Color(0xFF0E7490),
-          borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
-        ),
-        child: Center(
-          child: Text(
-            'Recording...',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomVoiceMessage extends StatefulWidget {
-  final String filePath;
-  final Duration duration;
-
-  const CustomVoiceMessage({
-    Key? key,
-    required this.filePath,
-    required this.duration,
-  }) : super(key: key);
-
-  @override
-  _CustomVoiceMessageState createState() => _CustomVoiceMessageState();
-}
-
-class _CustomVoiceMessageState extends State<CustomVoiceMessage> {
-  FlutterSoundPlayer? _player;
-  bool _isPlaying = false;
-  Duration _currentPosition = Duration.zero;
-  late StreamSubscription _playerSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _player = FlutterSoundPlayer();
-    _initPlayer();
-  }
-
-  Future<void> _initPlayer() async {
-    await _player!.openPlayer();
-    _playerSubscription = _player!.onProgress?.listen((e) {
-      setState(() {
-        _currentPosition = e.position;
-      });
-    }) as StreamSubscription;
-  }
-
-  Future<void> _playPause() async {
-    if (_isPlaying) {
-      await _player!.pausePlayer();
-    } else {
-      await _player!.startPlayer(
-        fromURI: widget.filePath,
-        whenFinished: () {
-          setState(() {
-            _isPlaying = false;
-          });
-        },
-      );
-    }
-
-    setState(() {
-      _isPlaying = !_isPlaying;
-    });
-  }
-
-  @override
-  void dispose() {
-    _player?.closePlayer();
-    _playerSubscription.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Voice Message')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Duration: ${widget.duration.inSeconds}s'),
-            SizedBox(height: 20),
-            Text('Current Position: ${_currentPosition.inSeconds}s'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _playPause,
-              child: Text(_isPlaying ? 'Pause' : 'Play'),
-            ),
-          ],
         ),
       ),
     );
