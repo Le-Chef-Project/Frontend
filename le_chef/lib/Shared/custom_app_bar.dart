@@ -13,6 +13,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
       title: Row(
         children: [
           if (avatarUrl != null)
@@ -20,15 +22,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               radius: 20,
               backgroundImage: NetworkImage(avatarUrl!),
             ),
-          if (avatarUrl != null)
-            SizedBox(width: 10),
+          if (avatarUrl != null) SizedBox(width: 10),
           Text(
             title,
             style: TextStyle(color: Colors.black),
           ),
         ],
       ),
-      backgroundColor: Colors.white,
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios_rounded),
         onPressed: () {

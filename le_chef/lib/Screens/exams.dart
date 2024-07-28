@@ -116,7 +116,8 @@ class _ExamsState extends State<Exams> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.arrow_forward_ios, color: Color(0xFF164863)),
+                            Icon(Icons.arrow_forward_ios,
+                                color: Color(0xFF164863)),
                             SizedBox(width: 8),
                             Icon(Icons.lock_outline, color: Color(0xFF164863)),
                           ],
@@ -146,8 +147,10 @@ class _ExamsState extends State<Exams> {
                                   actions: [
                                     Expanded(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Expanded(
                                             child: Container(
@@ -155,7 +158,11 @@ class _ExamsState extends State<Exams> {
                                               height: 48,
                                               child: ElevatedButton(
                                                 onPressed: () {
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen()));
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              PaymentScreen()));
                                                 },
                                                 child: Text(
                                                   'Pay Fees',
@@ -169,9 +176,12 @@ class _ExamsState extends State<Exams> {
                                                   ),
                                                 ),
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Color(0xFF427D9D),
+                                                  backgroundColor:
+                                                      Color(0xFF427D9D),
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
                                                   ),
                                                 ),
                                               ),
@@ -198,11 +208,17 @@ class _ExamsState extends State<Exams> {
                                                   ),
                                                 ),
                                                 style: OutlinedButton.styleFrom(
-                                                  side: BorderSide(color: Color(0xFF427D9D)),
+                                                  side: BorderSide(
+                                                      color: Color(0xFF427D9D)),
                                                   backgroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
-                                                    side: BorderSide(width: 1, color: Color(0xFF427D9D)),
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    side: BorderSide(
+                                                        width: 1,
+                                                        color:
+                                                            Color(0xFF427D9D)),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
                                                   ),
                                                 ),
                                               ),
@@ -218,7 +234,8 @@ class _ExamsState extends State<Exams> {
                           } else {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ExamInfo()),
+                              MaterialPageRoute(
+                                  builder: (context) => ExamInfo()),
                             );
                           }
                         },

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:le_chef/Screens/ExamForm.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Screens/Notes.dart';
+import 'package:le_chef/Screens/SplashOne.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/login.dart';
 import 'package:le_chef/Screens/notification.dart';
@@ -26,16 +29,21 @@ class MyApp extends StatelessWidget {
     // Apply the status bar color globally
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: statusBarColor,
-      statusBarIconBrightness: Brightness.dark, // You can adjust based on your color
+      statusBarIconBrightness:
+          Brightness.dark, // You can adjust based on your color
     ));
 
-    return MaterialApp(
-      title: 'Le Chef',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Le Chef',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: SplashOne(),
       ),
-      home: Videos(),
     );
   }
 }

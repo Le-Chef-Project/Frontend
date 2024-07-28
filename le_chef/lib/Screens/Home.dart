@@ -23,8 +23,10 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          leading: Image.network(
-              "https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp"),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          leading:
+              Image.asset('assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp'),
           actions: [
             Container(
                 margin: EdgeInsets.symmetric(horizontal: 23),
@@ -51,7 +53,7 @@ class _HomeState extends State<Home> {
                       Container(
                         color: Color(0x00565656),
                         child: Text(
-                          'Christine Osama',
+                          'Christine Gabrail',
                           style: TextStyle(
                             color: Color(0xFF164863),
                             fontSize: 22,
@@ -88,7 +90,7 @@ class _HomeState extends State<Home> {
                       controller: searchController,
                       hintText: "Search Text")),
               Container(
-                width: 380,
+                width: 400,
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(

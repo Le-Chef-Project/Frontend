@@ -15,6 +15,7 @@ class ExamInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: CustomAppBar(title: 'Exam Info'),
         body: SingleChildScrollView(
           child: Container(
@@ -57,17 +58,44 @@ class ExamInfo extends StatelessWidget {
                   height: 50,
                 ),
                 SizedBox(
-                  width: 244,
-                  child: Text(
-                    'Your Quiz is 20 Questions \n\n Pay attention that you \n can enter to the quiz \nonly one time.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF164863),
-                      fontSize: 18,
-                      fontFamily: 'IBM Plex Mono',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
+                  width: 323,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                              'Your Quiz is 20 Questions in 50 minutes..\n\nPay attention that you can enter to the quiz ',
+                          style: TextStyle(
+                            color: Color(0xFF164863),
+                            fontSize: 16,
+                            fontFamily: 'IBM Plex Mono',
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'ONLY ONE TIME',
+                          style: TextStyle(
+                            color: Color(0xFF427D9D),
+                            fontSize: 16,
+                            fontFamily: 'IBM Plex Mono',
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '.',
+                          style: TextStyle(
+                            color: Color(0xFF164863),
+                            fontSize: 16,
+                            fontFamily: 'IBM Plex Mono',
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                      ],
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 SizedBox(

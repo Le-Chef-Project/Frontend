@@ -36,6 +36,7 @@ dependencies:
   just_waveform: ^0.0.5
   audioplayers: ^6.0.0
   audio_service: ^0.18.15
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:

@@ -14,6 +14,7 @@ class Notes extends StatelessWidget {
     return SafeArea(
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: CustomAppBar(title: 'Notes'),
           body: SingleChildScrollView(
             child: Column(

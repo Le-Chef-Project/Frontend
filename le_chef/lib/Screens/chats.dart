@@ -94,8 +94,8 @@ Widget PersonalChat(BuildContext context) {
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     radius: 25,
-                    backgroundImage: Image.network(
-                      'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+                    backgroundImage: Image.asset(
+                      'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
                       height: 50,
                       width: 49,
                     ).image,
