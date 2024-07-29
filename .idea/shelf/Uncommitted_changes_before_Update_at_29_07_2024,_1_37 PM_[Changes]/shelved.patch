@@ -1,0 +1,326 @@
+Index: le_chef/lib/Screens/chatPage.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'dart:convert';\nimport 'dart:io';\n\nimport 'package:file_picker/file_picker.dart';\nimport 'package:flutter/material.dart';\nimport 'package:flutter/services.dart' show rootBundle;\nimport 'package:flutter_chat_types/flutter_chat_types.dart' as types;\nimport 'package:flutter_chat_ui/flutter_chat_ui.dart';\nimport 'package:flutter_sound/flutter_sound.dart';\nimport 'package:http/http.dart' as http;\nimport 'package:image_picker/image_picker.dart';\nimport 'package:intl/date_symbol_data_local.dart';\nimport 'package:le_chef/Screens/chats.dart';\nimport 'package:mime/mime.dart';\nimport 'package:open_filex/open_filex.dart';\nimport 'package:path_provider/path_provider.dart';\nimport 'package:permission_handler/permission_handler.dart';\nimport 'package:uuid/uuid.dart';\n\nimport '../Shared/customBottomNavBar.dart';\nimport '../Shared/custom_app_bar.dart';\nimport 'Home.dart';\nimport 'notification.dart';\n\nclass ChatPage extends StatefulWidget {\n  const ChatPage({Key? key}) : super(key: key);\n\n  @override\n  State<ChatPage> createState() => _ChatPageState();\n}\n\nclass _ChatPageState extends State<ChatPage> {\n  List<types.Message> _messages = [];\n  final _user = const types.User(\n    id: '82091008-a484-4a89-ae75-a22bf8d6f3ac',\n  );\n\n  final TextEditingController _textController = TextEditingController();\n  final ValueNotifier<bool> _isTyping = ValueNotifier(false);\n  final ValueNotifier<bool> _isRecording = ValueNotifier(false);\n\n  FlutterSoundRecorder? _recorder;\n  String? _recordedFilePath;\n  bool person = true;\n\n  @override\n  void initState() {\n    super.initState();\n    _textController.addListener(_onTextChanged);\n    _loadMessages();\n    _initRecorder();\n  }\n\n  @override\n  void dispose() {\n    _textController.removeListener(_onTextChanged);\n    _textController.dispose();\n    _isTyping.dispose();\n    _isRecording.dispose();\n    _recorder?.closeRecorder();\n    super.dispose();\n  }\n\n  void _onTextChanged() {\n    _isTyping.value = _textController.text.isNotEmpty;\n  }\n\n  void _addMessage(types.Message message) {\n    setState(() {\n      _messages.insert(0, message);\n    });\n  }\n\n  void _handleAttachmentPressed() {\n    showModalBottomSheet<void>(\n      context: context,\n      builder: (BuildContext context) => SafeArea(\n        child: SizedBox(\n          height: 144,\n          child: Column(\n            crossAxisAlignment: CrossAxisAlignment.stretch,\n            children: <Widget>[\n              TextButton(\n                onPressed: () {\n                  Navigator.pop(context);\n                  _handleImageSelection();\n                },\n                child: const Align(\n                  alignment: AlignmentDirectional.centerStart,\n                  child: Text('Photo'),\n                ),\n              ),\n              TextButton(\n                onPressed: () {\n                  Navigator.pop(context);\n                  _handleFileSelection();\n                },\n                child: const Align(\n                  alignment: AlignmentDirectional.centerStart,\n                  child: Text('File'),\n                ),\n              ),\n              TextButton(\n                onPressed: () => Navigator.pop(context),\n                child: const Align(\n                  alignment: AlignmentDirectional.centerStart,\n                  child: Text('Cancel'),\n                ),\n              ),\n            ],\n          ),\n        ),\n      ),\n    );\n  }\n\n  void _handleFileSelection() async {\n    final result = await FilePicker.platform.pickFiles(\n      type: FileType.any,\n    );\n\n    if (result != null && result.files.single.path != null) {\n      final message = types.FileMessage(\n        author: _user,\n        createdAt: DateTime.now().millisecondsSinceEpoch,\n        id: const Uuid().v4(),\n        mimeType: lookupMimeType(result.files.single.path!),\n        name: result.files.single.name,\n        size: result.files.single.size,\n        uri: result.files.single.path!,\n      );\n\n      _addMessage(message);\n    }\n  }\n\n  void _handleImageSelection() async {\n    final result = await ImagePicker().pickImage(\n      imageQuality: 70,\n      maxWidth: 1440,\n      source: ImageSource.gallery,\n    );\n\n    if (result != null) {\n      final bytes = await result.readAsBytes();\n      final image = await decodeImageFromList(bytes);\n\n      final message = types.ImageMessage(\n        author: _user,\n        createdAt: DateTime.now().millisecondsSinceEpoch,\n        height: image.height.toDouble(),\n        id: const Uuid().v4(),\n        name: result.name ?? '',\n        size: bytes.length,\n        uri: result.path,\n        width: image.width.toDouble(),\n      );\n\n      _addMessage(message);\n    }\n  }\n\n  void _handleMessageTap(BuildContext _, types.Message message) async {\n    if (message is types.FileMessage) {\n      var localPath = message.uri;\n\n      if (message.uri.startsWith('http')) {\n        try {\n          final index = _messages.indexWhere((element) => element.id == message.id);\n          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(\n            isLoading: true,\n          );\n\n          setState(() {\n            _messages[index] = updatedMessage;\n          });\n\n          final client = http.Client();\n          final request = await client.get(Uri.parse(message.uri));\n          final bytes = request.bodyBytes;\n          final documentsDir = (await getApplicationDocumentsDirectory()).path;\n          localPath = '$documentsDir/${message.name}';\n\n          if (!File(localPath).existsSync()) {\n            final file = File(localPath);\n            await file.writeAsBytes(bytes);\n          }\n        } finally {\n          final index = _messages.indexWhere((element) => element.id == message.id);\n          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(\n            isLoading: null,\n          );\n\n          setState(() {\n            _messages[index] = updatedMessage;\n          });\n        }\n      }\n\n      await OpenFilex.open(localPath);\n    }\n  }\n\n  void _handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {\n    final index = _messages.indexWhere((element) => element.id == message.id);\n    final updatedMessage = (_messages[index] as types.TextMessage).copyWith(\n      previewData: previewData,\n    );\n\n    setState(() {\n      _messages[index] = updatedMessage;\n    });\n  }\n\n  void _handleSendPressed(types.PartialText message) {\n    final textMessage = types.TextMessage(\n      author: _user,\n      createdAt: DateTime.now().millisecondsSinceEpoch,\n      id: const Uuid().v4(),\n      text: message.text,\n    );\n\n    _addMessage(textMessage);\n\n    // Clear the text input field\n    _textController.clear();\n  }\n\n  void _loadMessages() async {\n    final response = await rootBundle.loadString('assets/messages.json');\n    final messages = (jsonDecode(response) as List)\n        .map((e) => types.Message.fromJson(e as Map<String, dynamic>))\n        .toList();\n\n    setState(() {\n      _messages = messages;\n    });\n  }\n\n  Future<void> _initRecorder() async {\n    _recorder = FlutterSoundRecorder();\n\n    await _recorder!.openRecorder();\n    if (await Permission.microphone.request().isGranted) {\n      await _recorder!.setSubscriptionDuration(const Duration(milliseconds: 10));\n    } else {\n      // Handle permission denied\n    }\n  }\n\n  void _startRecording() async {\n    final directory = await getApplicationDocumentsDirectory();\n    final path = '${directory.path}/temp.aac';\n\n    await _recorder!.startRecorder(\n      toFile: path,\n      codec: Codec.aacADTS,\n    );\n\n    _isRecording.value = true;\n    _recordedFilePath = path;\n  }\n\n  void _stopRecording() async {\n    await _recorder!.stopRecorder();\n    _isRecording.value = false;\n\n    if (_recordedFilePath != null) {\n      final message = types.FileMessage(\n        author: _user,\n        createdAt: DateTime.now().millisecondsSinceEpoch,\n        id: const Uuid().v4(),\n        mimeType: 'audio/aac',\n        name: 'Voice Message',\n        size: File(_recordedFilePath!).lengthSync(),\n        uri: _recordedFilePath!,\n      );\n\n      _addMessage(message);\n    }\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    final groupChatTheme = DefaultChatTheme(\n      primaryColor: const Color(0xFF0E7490),\n      secondaryColor: const Color(0xFFFBFAFA),\n      backgroundColor: Colors.white,\n      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),\n      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),\n      inputBackgroundColor: Colors.white, // Message input background color\n      attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon\n    );\n\n    final personalChatTheme = DefaultChatTheme(\n      primaryColor: const Color(0xFF0E7490),\n      secondaryColor: const Color(0xFFFBFAFA),\n      backgroundColor: Colors.white,\n      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),\n      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),\n      inputBackgroundColor: Colors.white, // Message input background color\n      attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon\n    );\n\n    return SafeArea(\n      child: Scaffold(\n        appBar: person ? CustomAppBar(\n          title: \"Thaowpsta\",\n          avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',\n        ) : CustomAppBar(\n          title: \"Group\",\n          avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',\n        ),\n        body: Chat(\n          messages: _messages,\n          onAttachmentPressed: _handleAttachmentPressed,\n          onMessageTap: _handleMessageTap,\n          onPreviewDataFetched: _handlePreviewDataFetched,\n          onSendPressed: _handleSendPressed,\n          showUserAvatars: person,\n          showUserNames: true,\n          user: _user,\n          theme: person ? personalChatTheme : groupChatTheme,\n          customBottomWidget: ValueListenableBuilder<bool>(\n            valueListenable: _isRecording,\n            builder: (context, isRecording, child) {\n              return isRecording\n                  ? Padding(\n                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),\n                child: Container(\n                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),\n                  decoration: BoxDecoration(\n                    color: const Color(0xFF0E7490),\n                    borderRadius: BorderRadius.circular(20), // Adjust the radius as needed\n                  ),\n                  child: const Center(\n                    child: Text(\n                      'Recording...',\n                      style: TextStyle(color: Colors.white, fontSize: 16), // Adjust color to ensure contrast\n                    ),\n                  ),\n                ),\n              )\n\n\n                  : Padding(\n                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),\n                child: Container(\n                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),\n                  decoration: BoxDecoration(\n                    color: const Color(0xFFFBFAFA),\n                    borderRadius: BorderRadius.circular(16.0),\n                  ),\n                  child: Row(\n                    children: [\n                      Expanded(\n                        child: TextField(\n                          controller: _textController,\n                          decoration: const InputDecoration(\n                            hintText: 'Type a message...',\n                            border: InputBorder.none,\n                            hintStyle: TextStyle(color: Colors.black),\n                          ),\n                          style: const TextStyle(color: Colors.black),\n                          onSubmitted: (value) {\n                            if (value.isNotEmpty) {\n                              _handleSendPressed(types.PartialText(text: value));\n                            }\n                          },\n                        ),\n                      ),\n                      IconButton(\n                        icon: const Icon(Icons.attach_file, color: Colors.black),\n                        onPressed: _handleAttachmentPressed,\n                      ),\n                    ],\n                  ),\n                ),\n              );\n            },\n          ),\n        ),\n        floatingActionButton: ValueListenableBuilder<bool>(\n          valueListenable: _isTyping,\n          builder: (context, isTyping, child) {\n            return isTyping\n                ? FloatingActionButton(\n              backgroundColor: const Color(0xFF0E7490),\n              onPressed: () {\n                final text = _textController.text.trim();\n                if (text.isNotEmpty) {\n                  _handleSendPressed(types.PartialText(text: text));\n                }\n              },\n              child: const Icon(Icons.send, color: Colors.white),\n            )\n                : GestureDetector(\n              onLongPress: _startRecording,\n              onLongPressUp: _stopRecording,\n              child: FloatingActionButton(\n                backgroundColor: const Color(0xFF0E7490),\n                onPressed: () {\n                  // Handle other functionalities\n                },\n                child: const Icon(Icons.mic, color: Colors.white),\n              ),\n            );\n          },\n        ),\n        bottomNavigationBar: CustomBottomNavBar(\n          onItemTapped: (index) {\n            switch (index) {\n              case 0:\n                Navigator.push(\n                  context,\n                  MaterialPageRoute(builder: (context) => Home()),\n                );\n                break;\n              case 1:\n                Navigator.push(\n                  context,\n                  MaterialPageRoute(builder: (context) => Notifications()),\n                );\n                break;\n              case 2:\n                Navigator.push(\n                  context,\n                  MaterialPageRoute(builder: (context) => Chats()),\n                );\n                break;\n            }\n          },\n          context: context,\n        ),\n      ),\n    );\n  }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/le_chef/lib/Screens/chatPage.dart b/le_chef/lib/Screens/chatPage.dart
+--- a/le_chef/lib/Screens/chatPage.dart	(revision d5c9175a25f384a3b8f48829957387f823c65e9d)
++++ b/le_chef/lib/Screens/chatPage.dart	(date 1722173638768)
+@@ -9,6 +9,7 @@
+ import 'package:flutter_sound/flutter_sound.dart';
+ import 'package:http/http.dart' as http;
+ import 'package:image_picker/image_picker.dart';
++import 'package:intl/intl.dart';
+ import 'package:intl/date_symbol_data_local.dart';
+ import 'package:le_chef/Screens/chats.dart';
+ import 'package:mime/mime.dart';
+@@ -49,6 +50,7 @@
+     _textController.addListener(_onTextChanged);
+     _loadMessages();
+     _initRecorder();
++    initializeDateFormatting();
+   }
+ 
+   @override
+@@ -71,6 +73,12 @@
+     });
+   }
+ 
++  String _formatMessageTime(int timestamp) {
++    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
++    final format = DateFormat('hh:mm a');
++    return format.format(date);
++  }
++
+   void _handleAttachmentPressed() {
+     showModalBottomSheet<void>(
+       context: context,
+@@ -203,7 +211,7 @@
+ 
+   void _handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
+     final index = _messages.indexWhere((element) => element.id == message.id);
+-    final updatedMessage = (_messages[index] as types.TextMessage).copyWith(
++    final updatedMessage = (message).copyWith(
+       previewData: previewData,
+     );
+ 
+@@ -222,7 +230,6 @@
+ 
+     _addMessage(textMessage);
+ 
+-    // Clear the text input field
+     _textController.clear();
+   }
+ 
+@@ -288,8 +295,8 @@
+       backgroundColor: Colors.white,
+       receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
+       sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+-      inputBackgroundColor: Colors.white, // Message input background color
+-      attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
++      inputBackgroundColor: Colors.white,
++      attachmentButtonIcon: Icon(Icons.attach_file),
+     );
+ 
+     final personalChatTheme = DefaultChatTheme(
+@@ -298,16 +305,20 @@
+       backgroundColor: Colors.white,
+       receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
+       sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+-      inputBackgroundColor: Colors.white, // Message input background color
+-      attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
++      inputBackgroundColor: Colors.white,
++      attachmentButtonIcon: Icon(Icons.attach_file),
++      receivedMessageCaptionTextStyle: TextStyle(color: Colors.black),
++      sentMessageCaptionTextStyle: TextStyle(color: Colors.white),
+     );
+ 
+     return SafeArea(
+       child: Scaffold(
+-        appBar: person ? CustomAppBar(
++        appBar: person
++            ? CustomAppBar(
+           title: "Thaowpsta",
+           avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+-        ) : CustomAppBar(
++        )
++            : CustomAppBar(
+           title: "Group",
+           avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
+         ),
+@@ -321,6 +332,7 @@
+           showUserNames: true,
+           user: _user,
+           theme: person ? personalChatTheme : groupChatTheme,
++          bubbleBuilder: _customBubbleBuilder,
+           customBottomWidget: ValueListenableBuilder<bool>(
+             valueListenable: _isRecording,
+             builder: (context, isRecording, child) {
+@@ -331,18 +343,16 @@
+                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+                   decoration: BoxDecoration(
+                     color: const Color(0xFF0E7490),
+-                    borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
++                    borderRadius: BorderRadius.circular(20),
+                   ),
+                   child: const Center(
+                     child: Text(
+                       'Recording...',
+-                      style: TextStyle(color: Colors.white, fontSize: 16), // Adjust color to ensure contrast
++                      style: TextStyle(color: Colors.white, fontSize: 16),
+                     ),
+                   ),
+                 ),
+               )
+-
+-
+                   : Padding(
+                 padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
+                 child: Container(
+@@ -361,7 +371,13 @@
+                             border: InputBorder.none,
+                             hintStyle: TextStyle(color: Colors.black),
+                           ),
+-                          style: const TextStyle(color: Colors.black),
++                          style: TextStyle(
++                            color: Color(0xFF888888),
++                            fontSize: 12,
++                            fontFamily: 'IBM Plex Mono',
++                            fontWeight: FontWeight.w400,
++                            height: 0,
++                          ),
+                           onSubmitted: (value) {
+                             if (value.isNotEmpty) {
+                               _handleSendPressed(types.PartialText(text: value));
+@@ -435,4 +451,28 @@
+       ),
+     );
+   }
++
++  Widget _customBubbleBuilder(Widget child, {required types.Message message, required bool nextMessageInGroup}) {
++    final formattedTime = _formatMessageTime(message.createdAt ?? 0);
++    return Column(
++      crossAxisAlignment: CrossAxisAlignment.end,
++      children: [
++        child,
++        const SizedBox(height: 2),
++        Text(
++          formattedTime,
++          style: const TextStyle(fontSize: 10, color: Colors.grey),
++        ),
++      ],
++    );
++  }
++
++  Widget _buildAvatar(types.User user) {
++    return CircleAvatar(
++      radius: 16.0,
++      backgroundImage: NetworkImage(person
++          ? 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp'
++          : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s'),
++    );
++  }
+ }
+Index: le_chef/lib/main.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\nimport 'package:flutter/services.dart';\nimport 'package:le_chef/Screens/Home.dart';\nimport 'package:le_chef/Screens/Notes.dart';\nimport 'package:le_chef/Screens/exams.dart';\nimport 'package:le_chef/Screens/login.dart';\nimport 'package:le_chef/Screens/notification.dart';\nimport 'package:le_chef/Screens/seeAllVid.dart';\nimport './Screens/payment.dart';\nimport 'Screens/chatPage.dart';\nimport 'Screens/chats.dart';\nimport 'Screens/videos.dart';\n\nvoid main() {\n  runApp(const MyApp());\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    // Define the color you want for the status bar\n    Color statusBarColor = Colors.white;\n\n    // Apply the status bar color globally\n    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(\n      statusBarColor: statusBarColor,\n      statusBarIconBrightness: Brightness.dark, // You can adjust based on your color\n    ));\n\n    return MaterialApp(\n      title: 'Le Chef',\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),\n        useMaterial3: true,\n      ),\n      home: Videos(),\n    );\n  }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/le_chef/lib/main.dart b/le_chef/lib/main.dart
+--- a/le_chef/lib/main.dart	(revision d5c9175a25f384a3b8f48829957387f823c65e9d)
++++ b/le_chef/lib/main.dart	(date 1721642818962)
+@@ -35,7 +35,7 @@
+         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+         useMaterial3: true,
+       ),
+-      home: Videos(),
++      home: ChatPage(),
+     );
+   }
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"NONE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"03543131-59e0-4320-9fa7-6bee3883164f\" name=\"Changes\" comment=\"chat simple UI\">\n      <change afterPath=\"$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-hdpi/launcher_icon.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-mdpi/launcher_icon.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xhdpi/launcher_icon.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxhdpi/launcher_icon.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxxhdpi/launcher_icon.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@1x.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@2x.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@1x.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@2x.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@1x.png\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/android/app/src/main/AndroidManifest.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/android/app/src/main/AndroidManifest.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Screens/Home.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Screens/Home.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Screens/exams.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Screens/exams.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Screens/videos.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Screens/videos.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Shared/customCard.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Shared/customCard.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/Widgets/Card.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/Widgets/Card.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/lib/main.dart\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/lib/main.dart\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/pubspec.lock\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/pubspec.lock\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/le_chef/pubspec.yaml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/le_chef/pubspec.yaml\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"ClangdSettings\">\n    <option name=\"formatViaClangd\" value=\"false\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Dart File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPEN&quot;,\n    &quot;assignee&quot;: &quot;Thaowpsta&quot;\n  }\n}</component>\n  <component name=\"GithubDefaultAccount\">\n    <option name=\"defaultAccountId\" value=\"50dae9b2-e21e-4d97-b2fc-99021246c06c\" />\n  </component>\n  <component name=\"GithubPullRequestsUISettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;url&quot;: &quot;https://github.com/Le-Chef-Project/Frontend.git&quot;,\n    &quot;accountId&quot;: &quot;50dae9b2-e21e-4d97-b2fc-99021246c06c&quot;\n  }\n}</component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 6\n}</component>\n  <component name=\"ProjectId\" id=\"2j9neb8EJFqXpM4RotXEmgDD1Rq\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\n    \"Flutter.main.dart.executor\": \"Run\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.cidr.known.project.marker\": \"true\",\n    \"RunOnceActivity.readMode.enableVisualFormatting\": \"true\",\n    \"cf.first.check.clang-format\": \"false\",\n    \"cidr.known.project.marker\": \"true\",\n    \"dart.analysis.tool.window.visible\": \"false\",\n    \"git-widget-placeholder\": \"main\",\n    \"io.flutter.reload.alreadyRun\": \"true\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"last_opened_file_path\": \"/Users/thaowpstasaiid/Documents/Frontend\",\n    \"project.structure.last.edited\": \"Project\",\n    \"project.structure.proportion\": \"0.0\",\n    \"project.structure.side.proportion\": \"0.0\",\n    \"settings.editor.selected.configurable\": \"preferences.pluginManager\",\n    \"show.migrate.to.gradle.popup\": \"false\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/le_chef/assets\" />\n      <recent name=\"$PROJECT_DIR$/../\" />\n    </key>\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"main.dart\" type=\"FlutterRunConfigurationType\" factoryName=\"Flutter\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"filePath\" value=\"$PROJECT_DIR$/le_chef/lib/main.dart\" />\n      <method v=\"2\" />\n    </configuration>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Flutter.main.dart\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"03543131-59e0-4320-9fa7-6bee3883164f\" name=\"Changes\" comment=\"\" />\n      <created>1720808257748</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1720808257748</updated>\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"Screen 7\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721003855932</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721003855932</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"Screen 7\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721004263424</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721004263424</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"Screen 5\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721076612512</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721076612513</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"navBar with static background\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721089663025</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721089663025</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"navBar finished&#10;(msg icon need to be changed)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721093540285</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721093540285</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"Screen 4\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721128316008</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721128316009</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"Screen 2 (Not finished)\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721131656695</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721131656696</updated>\n    </task>\n    <task id=\"LOCAL-00008\" summary=\"Screen 2\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721141965389</created>\n      <option name=\"number\" value=\"00008\" />\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721141965389</updated>\n    </task>\n    <task id=\"LOCAL-00009\" summary=\"Screen 13, 19\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721225864209</created>\n      <option name=\"number\" value=\"00009\" />\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721225864209</updated>\n    </task>\n    <task id=\"LOCAL-00010\" summary=\"chat simple UI\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1721420129156</created>\n      <option name=\"number\" value=\"00010\" />\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1721420129158</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"11\" />\n    <servers />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State>\n              <option name=\"FILTERS\">\n                <map>\n                  <entry key=\"branch\">\n                    <value>\n                      <list>\n                        <option value=\"main\" />\n                      </list>\n                    </value>\n                  </entry>\n                </map>\n              </option>\n            </State>\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\n    <MESSAGE value=\"payment page Done\" />\n    <MESSAGE value=\"Screen 7\" />\n    <MESSAGE value=\"Screen 5\" />\n    <MESSAGE value=\"navBar with static background\" />\n    <MESSAGE value=\"navBar finished&#10;(msg icon need to be changed)\" />\n    <MESSAGE value=\"Screen 4\" />\n    <MESSAGE value=\"Screen 2 (Not finished)\" />\n    <MESSAGE value=\"Screen 2\" />\n    <MESSAGE value=\"Screen 13, 19\" />\n    <MESSAGE value=\"chat simple UI\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"chat simple UI\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision d5c9175a25f384a3b8f48829957387f823c65e9d)
++++ b/.idea/workspace.xml	(date 1722249423503)
+@@ -4,45 +4,10 @@
+     <option name="autoReloadType" value="NONE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="chat simple UI">
+-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-hdpi/launcher_icon.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-mdpi/launcher_icon.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xhdpi/launcher_icon.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxhdpi/launcher_icon.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxxhdpi/launcher_icon.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@1x.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@2x.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@1x.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@2x.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@1x.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@2x.png" afterDir="false" />
++    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="Chat UI (Not finished)&#10;payment alert&#10;ic_launcher">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/exams.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/exams.dart" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/videos.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/videos.dart" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Shared/customCard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Shared/customCard.dart" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Widgets/Card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Widgets/Card.dart" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.lock" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.yaml" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -75,7 +40,7 @@
+   <component name="GithubPullRequestsUISettings">{
+   &quot;selectedUrlAndAccountId&quot;: {
+     &quot;url&quot;: &quot;https://github.com/Le-Chef-Project/Frontend.git&quot;,
+-    &quot;accountId&quot;: &quot;50dae9b2-e21e-4d97-b2fc-99021246c06c&quot;
++    &quot;accountId&quot;: &quot;434cfc8b-669e-416d-a0a3-05c6735d38d9&quot;
+   }
+ }</component>
+   <component name="ProjectColorInfo">{
+@@ -89,27 +54,27 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ASKED_ADD_EXTERNAL_FILES": "true",
+-    "Flutter.main.dart.executor": "Run",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "RunOnceActivity.cidr.known.project.marker": "true",
+-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+-    "cf.first.check.clang-format": "false",
+-    "cidr.known.project.marker": "true",
+-    "dart.analysis.tool.window.visible": "false",
+-    "git-widget-placeholder": "main",
+-    "io.flutter.reload.alreadyRun": "true",
+-    "kotlin-language-version-configured": "true",
+-    "last_opened_file_path": "/Users/thaowpstasaiid/Documents/Frontend",
+-    "project.structure.last.edited": "Project",
+-    "project.structure.proportion": "0.0",
+-    "project.structure.side.proportion": "0.0",
+-    "settings.editor.selected.configurable": "preferences.pluginManager",
+-    "show.migrate.to.gradle.popup": "false"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
++    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
++    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
++    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
++    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
++    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
++    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
++    &quot;last_opened_file_path&quot;: &quot;/Users/thaowpstasaiid/Documents/Frontend&quot;,
++    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
++    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
++    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
++    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/le_chef/assets" />
+@@ -216,7 +181,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1721420129158</updated>
+     </task>
+-    <option name="localTasksCounter" value="11" />
++    <task id="LOCAL-00011" summary="Chat UI (Not finished)&#10;payment alert&#10;ic_launcher">
++      <option name="closed" value="true" />
++      <created>1721435155634</created>
++      <option name="number" value="00011" />
++      <option name="presentableId" value="LOCAL-00011" />
++      <option name="project" value="LOCAL" />
++      <updated>1721435155635</updated>
++    </task>
++    <option name="localTasksCounter" value="12" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -254,6 +227,8 @@
+     <MESSAGE value="Screen 2" />
+     <MESSAGE value="Screen 13, 19" />
+     <MESSAGE value="chat simple UI" />
+-    <option name="LAST_COMMIT_MESSAGE" value="chat simple UI" />
++    <MESSAGE value="Chat UI (Not finished)&#10;payment alert" />
++    <MESSAGE value="Chat UI (Not finished)&#10;payment alert&#10;ic_launcher" />
++    <option name="LAST_COMMIT_MESSAGE" value="Chat UI (Not finished)&#10;payment alert&#10;ic_launcher" />
+   </component>
+ </project>
+\ No newline at end of file

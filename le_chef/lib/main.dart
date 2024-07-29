@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: statusBarColor,
       statusBarIconBrightness:
-          Brightness.dark, // You can adjust based on your color
+      Brightness.dark, // You can adjust based on your color
     ));
 
     return ScreenUtilInit(
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: SplashOne(),
+        home: ChatPage(),
       ),
     );
   }
