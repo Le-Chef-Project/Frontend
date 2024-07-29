@@ -5,9 +5,11 @@ import 'package:le_chef/Screens/ExamForm.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Screens/Notes.dart';
 import 'package:le_chef/Screens/SplashOne.dart';
+import 'package:le_chef/Screens/THome.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/login.dart';
 import 'package:le_chef/Screens/notification.dart';
+import 'package:le_chef/Screens/AAA.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
 import './Screens/payment.dart';
 import 'Screens/chatPage.dart';
@@ -25,7 +27,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define the color you want for the status bar
     Color statusBarColor = Colors.white;
-
     // Apply the status bar color globally
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: statusBarColor,

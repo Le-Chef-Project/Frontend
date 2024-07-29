@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:le_chef/Screens/Notes.dart';
+import 'package:le_chef/Screens/OnlineSessions.dart';
 import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
 
 import '../Shared/customBottomNavBar.dart';
@@ -159,10 +162,16 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(context,
-                          Title: "Exams",
-                          Number: "15",
-                          ImagePath: 'assets/Wonder Learners Graduating.png'),
+                      child: _buildCardRec(
+                        context,
+                        Title: "Exams",
+                        Number: "15",
+                        ImagePath: 'assets/Wonder Learners Graduating.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Exams()),
+                        ),
+                      ),
                     ),
                     SizedBox(width: 12),
                     Expanded(
@@ -179,37 +188,67 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(context,
-                          Title: "Notes",
-                          Number: "10",
-                          ImagePath: 'assets/Wonder Learners Book.png'),
+                      child: _buildCardRec(
+                        context,
+                        Title: "Notes",
+                        Number: "10",
+                        ImagePath: 'assets/Wonder Learners Book.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Notes()),
+                        ),
+                      ),
                     ),
                     SizedBox(width: 12),
                     Expanded(
                       child: GestureDetector(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 16),
-                              child: Text(
-                                'Online Seesions',
-                                style: TextStyle(
-                                  color: Color(0xFF164863),
-                                  fontSize: 16,
-                                  fontFamily: 'IBM Plex Mono',
-                                  fontWeight: FontWeight.w600,
-                                  height: 0,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OnlineSessions()),
+                        ),
+                        child: Container(
+                          width: 158,
+                          height: 289,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: ShapeDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment(0.00, -1.00),
+                              end: Alignment(0, 1),
+                              colors: [
+                                Color(0x33DDF2FD),
+                                Color(0x89C8C8C8),
+                                Colors.white.withOpacity(0)
+                              ],
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 16),
+                                child: Text(
+                                  'Online Seesions',
+                                  style: TextStyle(
+                                    color: Color(0xFF164863),
+                                    fontSize: 16,
+                                    fontFamily: 'IBM Plex Mono',
+                                    fontWeight: FontWeight.w600,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            Image.asset(
-                              'assets/Shopaholics Sitting On The Floor.png',
-                              height: 228,
-                              width: double.maxFinite,
-                            )
-                          ],
+                              SizedBox(height: 8),
+                              Image.asset(
+                                'assets/Shopaholics Sitting On The Floor.png',
+                                height: 228,
+                                width: double.maxFinite,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -307,42 +346,61 @@ Widget _buildCardRec(
     onTap: () {
       onTapCardRec?.call();
     },
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 16),
-          child: Text(
-            Title,
-            style: TextStyle(
-              color: Color(0xFF164863),
-              fontSize: 16,
-              fontFamily: 'IBM Plex Mono',
-              fontWeight: FontWeight.w600,
-              height: 0,
+    child: Container(
+      width: 158,
+      height: 289,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: ShapeDecoration(
+        gradient: LinearGradient(
+          begin: Alignment(0.00, -1.00),
+          end: Alignment(0, 1),
+          colors: [
+            Color(0x33DDF2FD),
+            Color(0x89C8C8C8),
+            Colors.white.withOpacity(0)
+          ],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text(
+              Title,
+              style: TextStyle(
+                color: Color(0xFF164863),
+                fontSize: 16,
+                fontFamily: 'IBM Plex Mono',
+                fontWeight: FontWeight.w600,
+                height: 0,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 16),
-          child: Text(
-            Number,
-            style: TextStyle(
-              color: Color(0xFF0E7490),
-              fontSize: 12,
-              fontFamily: 'IBM Plex Mono',
-              fontWeight: FontWeight.w400,
-              height: 0,
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text(
+              Number,
+              style: TextStyle(
+                color: Color(0xFF0E7490),
+                fontSize: 12,
+                fontFamily: 'IBM Plex Mono',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 8),
-        Image.asset(
-          ImagePath,
-          height: 228,
-          width: double.maxFinite,
-        )
-      ],
+          SizedBox(height: 8),
+          Image.asset(
+            ImagePath,
+            height: 228,
+            width: double.maxFinite,
+          )
+        ],
+      ),
     ),
   );
 }
