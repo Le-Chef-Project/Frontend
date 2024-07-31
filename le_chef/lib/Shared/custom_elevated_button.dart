@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
 import '../theme/custom_text_style.dart';
 import 'base_button.dart';
 
 class CustomElevatedButton extends BaseButton {
-  CustomElevatedButton({
-    Key? key,
+  const CustomElevatedButton({super.key, 
     this.decoration,
     this.leftIcon,
     this.rightIcon,
@@ -47,8 +45,8 @@ class CustomElevatedButton extends BaseButton {
   }
 
   Widget get buildElevatedButtonWidget => Container(
-        height: this.height ?? 45,
-        width: this.width ?? double.maxFinite,
+        height: height ?? 45,
+        width: width ?? double.maxFinite,
         margin: margin,
         decoration: decoration,
         child: ElevatedButton(

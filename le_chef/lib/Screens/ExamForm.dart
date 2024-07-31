@@ -11,6 +11,8 @@ import 'Home.dart';
 import 'notification.dart';
 
 class ExamForm extends StatefulWidget {
+  const ExamForm({super.key});
+
   @override
   State<ExamForm> createState() => _ExamFormState();
 }
@@ -79,11 +81,11 @@ class _ExamFormState extends State<ExamForm> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('Exam Form'),
+          title: const Text('Exam Form'),
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_rounded),
+            icon: const Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
               showDialog(
                   barrierDismissible: false,
@@ -95,7 +97,7 @@ class _ExamFormState extends State<ExamForm> {
                         width: 117,
                         height: 117,
                       ),
-                      content: Container(
+                      content: const SizedBox(
                         width: 150,
                         height: 80,
                         child: Column(
@@ -136,14 +138,21 @@ class _ExamFormState extends State<ExamForm> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   width: 140.50,
                                   height: 48,
                                   child: ElevatedButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: Text(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF427D9D),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: const Text(
                                         'Complete quiz',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -153,26 +162,31 @@ class _ExamFormState extends State<ExamForm> {
                                           fontWeight: FontWeight.w600,
                                           height: 0,
                                         ),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFF427D9D),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
                                       )),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                     width: 140.50,
                                     height: 48,
                                     child: OutlinedButton(
                                         onPressed: () {},
-                                        child: Text(
+                                        style: OutlinedButton.styleFrom(
+                                          side: const BorderSide(
+                                              color: Color(0xFF427D9D)),
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            side: const BorderSide(
+                                                width: 1,
+                                                color: Color(0xFF427D9D)),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                        child: const Text(
                                           'Leave',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
@@ -181,18 +195,6 @@ class _ExamFormState extends State<ExamForm> {
                                             fontFamily: 'IBM Plex Mono',
                                             fontWeight: FontWeight.w600,
                                             height: 0,
-                                          ),
-                                        ),
-                                        style: OutlinedButton.styleFrom(
-                                          side: BorderSide(
-                                              color: Color(0xFF427D9D)),
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                width: 1,
-                                                color: Color(0xFF427D9D)),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
                                           ),
                                         ))),
                               )
@@ -206,7 +208,7 @@ class _ExamFormState extends State<ExamForm> {
           ),
         ),
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -225,13 +227,13 @@ class _ExamFormState extends State<ExamForm> {
                         child: CircularProgressIndicator(
                           value: _progress,
                           strokeWidth: 4,
-                          color: Color.fromRGBO(66, 125, 157, 1),
+                          color: const Color.fromRGBO(66, 125, 157, 1),
                         ),
                       ),
                       Container(
                         width: 135,
                         height: 135,
-                        decoration: ShapeDecoration(
+                        decoration: const ShapeDecoration(
                           gradient: RadialGradient(
                             center: Alignment(0, 1),
                             radius: 0,
@@ -242,7 +244,7 @@ class _ExamFormState extends State<ExamForm> {
                         child: Center(
                           child: Text(
                             '$minutes:${seconds.toString().padLeft(2, '0')}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 30,
                               fontFamily: 'IBM Plex Mono',
@@ -259,7 +261,7 @@ class _ExamFormState extends State<ExamForm> {
                 //qize questions
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: quizQuestions.length,
                   itemBuilder: (context, index) {
                     final question = quizQuestions[index];
@@ -269,23 +271,23 @@ class _ExamFormState extends State<ExamForm> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       decoration: ShapeDecoration(
-                        color: Color.fromRGBO(216, 233, 238, 1),
+                        color: const Color.fromRGBO(216, 233, 238, 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      margin: EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               question.questionText,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(height: 8.0),
+                            const SizedBox(height: 8.0),
                             ...question.answers.asMap().entries.map((entry) {
                               int answerIndex = entry.key;
                               String answerText = entry.value;
@@ -302,7 +304,7 @@ class _ExamFormState extends State<ExamForm> {
                                 ),
                               );
                             }).toList(),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                           ],
                         ),
                       ),
@@ -330,7 +332,7 @@ class _ExamFormState extends State<ExamForm> {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:
@@ -342,7 +344,7 @@ class _ExamFormState extends State<ExamForm> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
             }

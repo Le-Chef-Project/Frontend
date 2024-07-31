@@ -5,20 +5,20 @@ import 'package:le_chef/Shared/custom_elevated_button.dart';
 
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_button_style.dart';
-import '../theme/custom_text_style.dart';
-import '../theme/theme_helper.dart';
 import 'Home.dart';
 import 'notification.dart';
 
 class ExamInfo extends StatelessWidget {
+  const ExamInfo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: 'Exam Info'),
+        appBar: const CustomAppBar(title: 'Exam Info'),
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             child: Column(
               mainAxisSize:
@@ -26,9 +26,21 @@ class ExamInfo extends StatelessWidget {
 
               children: [
                 Container(
-                  margin: EdgeInsets.only(
-                      top: 20.0), // Optional: Add some top margin for spacing
-                  child: Center(
+                  margin: const EdgeInsets.only(
+                      top: 20.0),
+                  width: 187,
+                  height: 187,
+                  decoration: const ShapeDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment(0, 1),
+                      radius: 0,
+                      colors: [Color(0xFF9FBEC7), Color(0xFF0E7190)],
+                    ),
+                    shape: OvalBorder(
+                      side: BorderSide(width: 5, color: Color(0xFF9BBEC8)),
+                    ),
+                  ), // Optional: Add some top margin for spacing
+                  child: const Center(
                     // Center the text inside the container
                     child: Text(
                       '20',
@@ -41,23 +53,11 @@ class ExamInfo extends StatelessWidget {
                       ),
                     ),
                   ),
-                  width: 187,
-                  height: 187,
-                  decoration: ShapeDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment(0, 1),
-                      radius: 0,
-                      colors: [Color(0xFF9FBEC7), Color(0xFF0E7190)],
-                    ),
-                    shape: OvalBorder(
-                      side: BorderSide(width: 5, color: Color(0xFF9BBEC8)),
-                    ),
-                  ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 323,
                   child: Text.rich(
                     TextSpan(
@@ -98,10 +98,10 @@ class ExamInfo extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
-                Text(
+                const Text(
                   'Are You Ready ?',
                   style: TextStyle(
                     color: Color(0xFF427D9D),
@@ -111,7 +111,7 @@ class ExamInfo extends StatelessWidget {
                     height: 0,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 CustomElevatedButton(
@@ -130,7 +130,7 @@ class ExamInfo extends StatelessWidget {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:
@@ -142,7 +142,7 @@ class ExamInfo extends StatelessWidget {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
             }

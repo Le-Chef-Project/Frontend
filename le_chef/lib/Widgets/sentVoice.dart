@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -73,7 +72,7 @@ class _CustomVoiceMessageState extends State<CustomVoiceMessage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Voice Message'),
+        title: const Text('Voice Message'),
         backgroundColor: widget.chatTheme.primaryColor,
       ),
       body: Center(
@@ -84,20 +83,20 @@ class _CustomVoiceMessageState extends State<CustomVoiceMessage> {
               'Duration: ${widget.duration.inSeconds}s',
               style: TextStyle(color: widget.chatTheme.receivedMessageBodyTextStyle.color),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               'Current Position: ${_currentPosition.inSeconds}s',
               style: TextStyle(color: widget.chatTheme.receivedMessageBodyTextStyle.color),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _playPause,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.chatTheme.secondaryColor, // Background color
+              ),
               child: Text(
                 _isPlaying ? 'Pause' : 'Play',
                 style: TextStyle(color: widget.chatTheme.primaryColor),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.chatTheme.secondaryColor, // Background color
               ),
             ),
           ],

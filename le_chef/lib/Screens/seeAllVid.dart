@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
-import 'package:majesticons_flutter/majesticons_flutter.dart';
 
 import 'Home.dart';
 import 'notification.dart'; // Correct import
@@ -18,10 +17,10 @@ class AllVid extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: "All Videos"),
+        appBar: const CustomAppBar(title: "All Videos"),
         body: Container(
           width: double.infinity,
-          decoration: BoxDecoration(color: Colors.white),
+          decoration: const BoxDecoration(color: Colors.white),
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: List.generate(4, (index) {
@@ -35,12 +34,12 @@ class AllVid extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Icon(
+                            title: const Icon(
                               Icons.lock_outline,
                               color: Color(0xFF164863),
                               size: 100,
                             ),
-                            content: Text(
+                            content: const Text(
                               'This quiz is locked. You should pay quiz fees',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -57,7 +56,7 @@ class AllVid extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
-                                      child: Container(
+                                      child: SizedBox(
                                         width: 140.50,
                                         height: 48,
                                         child: ElevatedButton(
@@ -69,7 +68,13 @@ class AllVid extends StatelessWidget {
                                               ),
                                             );
                                           },
-                                          child: Text(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xFF427D9D),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
                                             'Pay Fees',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
@@ -80,25 +85,27 @@ class AllVid extends StatelessWidget {
                                               height: 0,
                                             ),
                                           ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color(0xFF427D9D),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                          ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     Expanded(
-                                      child: Container(
+                                      child: SizedBox(
                                         width: 140.50,
                                         height: 48,
                                         child: OutlinedButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text(
+                                          style: OutlinedButton.styleFrom(
+                                            side: const BorderSide(color: Color(0xFF427D9D)),
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              side: const BorderSide(width: 1, color: Color(0xFF427D9D)),
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
                                             'Cancel',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
@@ -107,14 +114,6 @@ class AllVid extends StatelessWidget {
                                               fontFamily: 'IBM Plex Mono',
                                               fontWeight: FontWeight.w600,
                                               height: 0,
-                                            ),
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            side: BorderSide(color: Color(0xFF427D9D)),
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(width: 1, color: Color(0xFF427D9D)),
-                                              borderRadius: BorderRadius.circular(12),
                                             ),
                                           ),
                                         ),
@@ -132,7 +131,7 @@ class AllVid extends StatelessWidget {
                     }
                   },
                   child: Card(
-                    color: Color(0xCC888888),
+                    color: const Color(0xCC888888),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -149,7 +148,7 @@ class AllVid extends StatelessWidget {
                           ),
                         ),
                         if (isLocked) ...[
-                          Positioned(
+                          const Positioned(
                             bottom: 8,
                             right: 8,
                             child: Icon(
@@ -171,7 +170,7 @@ class AllVid extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.center,
                             child: IconButton(
-                              icon: Icon(Icons.play_arrow, size: 58, color: Colors.white),
+                              icon: const Icon(Icons.play_arrow, size: 58, color: Colors.white),
                               onPressed: () {
               if (isLocked) {
               showDialog(
@@ -179,12 +178,12 @@ class AllVid extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
               return AlertDialog(
-              title: Icon(
+              title: const Icon(
               Icons.lock_outline,
               color: Color(0xFF164863),
               size: 100,
               ),
-              content: Text(
+              content: const Text(
               'This quiz is locked. You should pay quiz fees',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -201,7 +200,7 @@ class AllVid extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
               Expanded(
-              child: Container(
+              child: SizedBox(
               width: 140.50,
               height: 48,
               child: ElevatedButton(
@@ -213,7 +212,13 @@ class AllVid extends StatelessWidget {
               ),
               );
               },
-              child: Text(
+              style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF427D9D),
+              shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              ),
+              ),
+              child: const Text(
               'Pay Fees',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -224,25 +229,27 @@ class AllVid extends StatelessWidget {
               height: 0,
               ),
               ),
-              style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF427D9D),
-              shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
               ),
               ),
               ),
-              ),
-              ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Expanded(
-              child: Container(
+              child: SizedBox(
               width: 140.50,
               height: 48,
               child: OutlinedButton(
               onPressed: () {
               Navigator.pop(context);
               },
-              child: Text(
+              style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Color(0xFF427D9D)),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+              side: const BorderSide(width: 1, color: Color(0xFF427D9D)),
+              borderRadius: BorderRadius.circular(12),
+              ),
+              ),
+              child: const Text(
               'Cancel',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -251,14 +258,6 @@ class AllVid extends StatelessWidget {
               fontFamily: 'IBM Plex Mono',
               fontWeight: FontWeight.w600,
               height: 0,
-              ),
-              ),
-              style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Color(0xFF427D9D)),
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Color(0xFF427D9D)),
-              borderRadius: BorderRadius.circular(12),
               ),
               ),
               ),
@@ -292,7 +291,7 @@ class AllVid extends StatelessWidget {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:
@@ -304,7 +303,7 @@ class AllVid extends StatelessWidget {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
             }

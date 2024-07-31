@@ -9,13 +9,13 @@ import 'notification.dart';
 class GroupMembers extends StatelessWidget {
   final List<Map<String, String>> students;
 
-  GroupMembers({Key? key, required this.students}) : super(key: key);
+  const GroupMembers({Key? key, required this.students}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: "Group1"),
+      appBar: const CustomAppBar(title: "Group1"),
       body: ListView.builder(
         itemCount: students.length,
         itemBuilder: (context, index) {
@@ -34,7 +34,7 @@ class GroupMembers extends StatelessWidget {
             case 0:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Home()),
+                MaterialPageRoute(builder: (context) => const Home()),
               );
               break;
             case 1:
@@ -46,7 +46,7 @@ class GroupMembers extends StatelessWidget {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Chats()),
+                MaterialPageRoute(builder: (context) => const Chats()),
               );
               break;
           }

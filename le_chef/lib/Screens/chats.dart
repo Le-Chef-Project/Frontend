@@ -8,7 +8,9 @@ import 'Home.dart';
 import 'notification.dart';
 
 class Chats extends StatelessWidget {
-  int _selectedIndex = 2; // Initial index for Chats screen
+  final int _selectedIndex = 2;
+
+  const Chats({super.key}); // Initial index for Chats screen
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +18,12 @@ class Chats extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          appBar: CustomAppBar(title: 'Messages'),
+          appBar: const CustomAppBar(title: 'Messages'),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -30,13 +32,13 @@ class Chats extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 groupChat(context),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Padding(
-                  padding: EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -45,7 +47,7 @@ class Chats extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 PersonalChat(context),
@@ -58,7 +60,7 @@ class Chats extends StatelessWidget {
                 case 0:
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                    MaterialPageRoute(builder: (context) => const Home()),
                   );
                   break;
                 case 1:
@@ -83,9 +85,9 @@ Widget PersonalChat(BuildContext context) {
     child: Column(
       children: [
         ListView.separated(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          separatorBuilder: (context, index) => SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: 2,
           itemBuilder: (context, index) {
             return Row(
@@ -106,8 +108,8 @@ Widget PersonalChat(BuildContext context) {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                       _buildHeader(context, name: "Kokii", Time: "10:30PM"),
-                      SizedBox(height: 8),
-                      Text(
+                      const SizedBox(height: 8),
+                      const Text(
                         'Hi!!',
                         // style: Theme.of(context).textTheme.bodyText2,
                       )
@@ -126,9 +128,9 @@ Widget groupChat(BuildContext context) {
     child: Column(
       children: [
         ListView.separated(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          separatorBuilder: (context, index) => SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: 3,
           itemBuilder: (context, index) {
             return Row(
@@ -137,11 +139,11 @@ Widget groupChat(BuildContext context) {
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     radius: 25,
+                    backgroundColor: const Color.fromRGBO(14, 116, 144, 1),
                     child: Text(
                       'G${index + 1}',
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    backgroundColor: Color.fromRGBO(14, 116, 144, 1),
                   ),
                 ),
                 Expanded(
@@ -150,8 +152,8 @@ Widget groupChat(BuildContext context) {
                         children: [
                       _buildHeader(context,
                           name: "Group${index + 1}", Time: "10:30PM"),
-                      SizedBox(height: 8),
-                      Text(
+                      const SizedBox(height: 8),
+                      const Text(
                         'Hi!!',
                         // style: Theme.of(context).textTheme.bodyText2,
                       )
@@ -175,7 +177,7 @@ Widget _buildHeader(
         style: CustomTextStyles.titleSmallTeal900
             .copyWith(color: appTheme.teal900)),
     Padding(
-        padding: EdgeInsets.only(top: 3),
+        padding: const EdgeInsets.only(top: 3),
         child: Text(Time,
             style: CustomTextStyles.bodySmallTeal900
                 .copyWith(color: appTheme.teal900)))

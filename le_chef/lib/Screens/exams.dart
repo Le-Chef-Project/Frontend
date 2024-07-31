@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:le_chef/Screens/ExamInfo.dart';
 import 'package:le_chef/Screens/payment.dart';
@@ -25,7 +24,7 @@ class _ExamsState extends State<Exams> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(title: 'Exams'),
+        appBar: const CustomAppBar(title: 'Exams'),
         backgroundColor: Colors.white,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,11 +53,11 @@ class _ExamsState extends State<Exams> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF427D9D),
+                                backgroundColor: const Color(0xFF427D9D),
                               ),
                               child: Text(
                                 'Unit ${index + 1}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontFamily: 'IBM Plex Mono',
@@ -73,12 +72,12 @@ class _ExamsState extends State<Exams> {
                                 });
                               },
                               style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Color(0xFF427D9D)),
+                                side: const BorderSide(color: Color(0xFF427D9D)),
                                 backgroundColor: Colors.white,
                               ),
                               child: Text(
                                 'Unit ${index + 1}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF164863),
                                   fontSize: 18,
                                   fontFamily: 'IBM Plex Mono',
@@ -93,27 +92,27 @@ class _ExamsState extends State<Exams> {
             ),
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 itemCount: itemCount,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Color(0xFFF0F4F8),
+                        color: const Color(0xFFF0F4F8),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ListTile(
                         title: Text(
                           'Unit $selectedUnit - lesson ${index + 1}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF164863),
                             fontSize: 18,
                             fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        trailing: Row(
+                        trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.arrow_forward_ios,
@@ -129,12 +128,12 @@ class _ExamsState extends State<Exams> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Icon(
+                                  title: const Icon(
                                     Icons.lock_outline,
                                     color: Color(0xFF164863),
                                     size: 100,
                                   ),
-                                  content: Text(
+                                  content: const Text(
                                     'This quiz is locked.. You should pay quiz fees',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -153,7 +152,7 @@ class _ExamsState extends State<Exams> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Expanded(
-                                            child: Container(
+                                            child: SizedBox(
                                               width: 140.50,
                                               height: 48,
                                               child: ElevatedButton(
@@ -162,9 +161,18 @@ class _ExamsState extends State<Exams> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              PaymentScreen()));
+                                                              const PaymentScreen()));
                                                 },
-                                                child: Text(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xFF427D9D),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                  ),
+                                                ),
+                                                child: const Text(
                                                   'Pay Fees',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
@@ -175,28 +183,33 @@ class _ExamsState extends State<Exams> {
                                                     height: 0,
                                                   ),
                                                 ),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      Color(0xFF427D9D),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                ),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(width: 20),
+                                          const SizedBox(width: 20),
                                           Expanded(
-                                            child: Container(
+                                            child: SizedBox(
                                               width: 140.50,
                                               height: 48,
                                               child: OutlinedButton(
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text(
+                                                style: OutlinedButton.styleFrom(
+                                                  side: const BorderSide(
+                                                      color: Color(0xFF427D9D)),
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    side: const BorderSide(
+                                                        width: 1,
+                                                        color:
+                                                            Color(0xFF427D9D)),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                  ),
+                                                ),
+                                                child: const Text(
                                                   'Cancel',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
@@ -205,20 +218,6 @@ class _ExamsState extends State<Exams> {
                                                     fontFamily: 'IBM Plex Mono',
                                                     fontWeight: FontWeight.w600,
                                                     height: 0,
-                                                  ),
-                                                ),
-                                                style: OutlinedButton.styleFrom(
-                                                  side: BorderSide(
-                                                      color: Color(0xFF427D9D)),
-                                                  backgroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(
-                                                        width: 1,
-                                                        color:
-                                                            Color(0xFF427D9D)),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
                                                   ),
                                                 ),
                                               ),
@@ -235,7 +234,7 @@ class _ExamsState extends State<Exams> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ExamInfo()),
+                                  builder: (context) => const ExamInfo()),
                             );
                           }
                         },
@@ -253,7 +252,7 @@ class _ExamsState extends State<Exams> {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:
@@ -265,7 +264,7 @@ class _ExamsState extends State<Exams> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
               // case 2: No need for navigation as we are already on Chats screen

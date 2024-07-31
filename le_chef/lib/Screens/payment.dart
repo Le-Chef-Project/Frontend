@@ -7,7 +7,7 @@ import '../Shared/custom_app_bar.dart';
 import '../theme/custom_text_style.dart';
 
 class PaymentScreen extends StatefulWidget {
-  PaymentScreen({Key? key}) : super(key: key);
+  const PaymentScreen({Key? key}) : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -28,7 +28,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: "Payment"),
+        appBar: const CustomAppBar(title: "Payment"),
         body: SingleChildScrollView(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -42,7 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 cardHolderName: nameController.text,
                 cvvCode: cvvController.text,
                 showBackView: isCvvFocused,
-                cardBgColor: Color.fromRGBO(66, 125, 157, 1),
+                cardBgColor: const Color.fromRGBO(66, 125, 157, 1),
                 obscureCardCvv: true,
                 obscureCardNumber: true,
                 onCreditCardWidgetChange: (CreditCardBrand) {},
@@ -68,10 +68,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       cvvValidationMessage: 'Please input a valid CVV',
                       dateValidationMessage: 'Please input a valid date',
                       numberValidationMessage: 'Please input a valid number',
-                      cardNumberValidator: (String? cardNumber) {},
-                      expiryDateValidator: (String? expiryDate) {},
-                      cvvValidator: (String? cvv) {},
-                      cardHolderValidator: (String? cardHolderName) {},
+                      cardNumberValidator: (String? cardNumber) {
+                        return null;
+                      },
+                      expiryDateValidator: (String? expiryDate) {
+                        return null;
+                      },
+                      cvvValidator: (String? cvv) {
+                        return null;
+                      },
+                      cardHolderValidator: (String? cardHolderName) {
+                        return null;
+                      },
                       onFormComplete: () {
                         // callback to execute at the end of filling card data
                       },
@@ -115,7 +123,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -136,7 +144,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           buttonTextStyle: CustomTextStyles.bodyLargeff0e7490,
                           text: "Cancel",
                           width: 161,
-                          margin: EdgeInsets.only(left: 8),
+                          margin: const EdgeInsets.only(left: 8),
                           buttonStyle: CustomButtonStyles.outlinePrimaryTL51,
                         )
                       ],

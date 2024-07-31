@@ -6,7 +6,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? avatarUrl;
   final bool? isPerson;
 
-  CustomAppBar({
+  const CustomAppBar({
     Key? key,
     required this.title,
     this.avatarUrl,
@@ -17,7 +17,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => GroupMembers(
+        builder: (context) => const GroupMembers(
           students: [
             {'name': 'Student 1', 'avatarUrl': 'https://example.com/avatar1.png'},
             {'name': 'Student 2', 'avatarUrl': 'https://example.com/avatar2.png'},
@@ -47,16 +47,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 radius: 20,
                 backgroundImage: NetworkImage(avatarUrl!),
               ),
-            if (avatarUrl != null) SizedBox(width: 10),
+            if (avatarUrl != null) const SizedBox(width: 10),
             Text(
               title,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
           ],
         ),
       ),
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_rounded),
+        icon: const Icon(Icons.arrow_back_ios_rounded),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -66,5 +66,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

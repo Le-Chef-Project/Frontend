@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
 
 import '../Shared/customBottomNavBar.dart';
-import '../Shared/custom_app_bar.dart';
 import '../Shared/custom_search_view.dart';
 import 'notification.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
-  int _selectedIndex = 0; // Initial index for Chats screen
+  final int _selectedIndex = 0; // Initial index for Chats screen
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
               Image.asset('assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp'),
           actions: [
             Container(
-                margin: EdgeInsets.symmetric(horizontal: 23),
+                margin: const EdgeInsets.symmetric(horizontal: 23),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.asset(
@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 8, 0, 0),
@@ -51,8 +51,8 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        color: Color(0x00565656),
-                        child: Text(
+                        color: const Color(0x00565656),
+                        child: const Text(
                           'Christine Gabrail',
                           style: TextStyle(
                             color: Color(0xFF164863),
@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Container(
-                        child: Text(
+                        child: const Text(
                           'Level 2',
                           style: TextStyle(
                             color: Color(0xFF427D9D),
@@ -79,11 +79,11 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: CustomSearchView(
                       onChanged: ((p0) {}),
                       clear: () {},
@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: SizedBox(
                         child: Text(
                           'Newest Videos',
@@ -117,10 +117,10 @@ class _HomeState extends State<Home> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AllVid()),
+                          MaterialPageRoute(builder: (context) => const AllVid()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'See all',
                         style: TextStyle(
                           color: Color(0xFF427D9D),
@@ -134,12 +134,12 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              Container(
+              SizedBox(
                 height: 250, // Specify a fixed height for the ListView
                 child: new_video(context),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
                 child: SizedBox(
                   width: 380,
                   child: Text(
@@ -164,7 +164,7 @@ class _HomeState extends State<Home> {
                           Number: "15",
                           ImagePath: 'assets/Wonder Learners Graduating.png'),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "PDFs",
@@ -184,13 +184,13 @@ class _HomeState extends State<Home> {
                           Number: "10",
                           ImagePath: 'assets/Wonder Learners Book.png'),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: GestureDetector(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.only(left: 16),
                               child: Text(
                                 'Online Seesions',
@@ -203,7 +203,7 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Image.asset(
                               'assets/Shopaholics Sitting On The Floor.png',
                               height: 228,
@@ -231,7 +231,7 @@ class _HomeState extends State<Home> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
             }
@@ -251,7 +251,7 @@ Widget new_video(BuildContext context) {
     itemBuilder: (context, index) {
       return Container(
         width: 273, // Fixed width for each item in the horizontal ListView
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Stack(
           children: [
             ClipRRect(
@@ -261,8 +261,8 @@ Widget new_video(BuildContext context) {
                 fit: BoxFit.cover,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -311,10 +311,10 @@ Widget _buildCardRec(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16),
           child: Text(
             Title,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF164863),
               fontSize: 16,
               fontFamily: 'IBM Plex Mono',
@@ -324,10 +324,10 @@ Widget _buildCardRec(
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16),
           child: Text(
             Number,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF0E7490),
               fontSize: 12,
               fontFamily: 'IBM Plex Mono',
@@ -336,7 +336,7 @@ Widget _buildCardRec(
             ),
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Image.asset(
           ImagePath,
           height: 228,

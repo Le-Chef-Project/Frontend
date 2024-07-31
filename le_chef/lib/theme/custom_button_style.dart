@@ -24,7 +24,7 @@ class CustomButtonStyles {
       );
   static ButtonStyle get fillGray => ElevatedButton.styleFrom(
         backgroundColor: appTheme.gray5002,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(
               16,
@@ -116,7 +116,7 @@ class CustomButtonStyles {
       );
   // text button style
   static ButtonStyle get none => ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-        elevation: MaterialStateProperty.all<double>(0),
+        backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
+        elevation: WidgetStateProperty.all<double>(0),
       );
 }

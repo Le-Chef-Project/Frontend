@@ -4,23 +4,24 @@ import 'package:le_chef/Shared/customBottomNavBar.dart';
 
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_text_style.dart';
-import '../theme/theme_helper.dart';
 import 'Home.dart';
 import 'notification.dart';
 
 class Notes extends StatelessWidget {
+  const Notes({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          appBar: CustomAppBar(title: 'Notes'),
+          appBar: const CustomAppBar(title: 'Notes'),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -29,13 +30,13 @@ class Notes extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Note(context),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Padding(
-                  padding: EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -44,7 +45,7 @@ class Notes extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Note(context),
@@ -57,7 +58,7 @@ class Notes extends StatelessWidget {
                 case 0:
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                    MaterialPageRoute(builder: (context) => const Home()),
                   );
                   break;
                 case 1:
@@ -69,7 +70,7 @@ class Notes extends StatelessWidget {
                 case 2:
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Chats()),
+                    MaterialPageRoute(builder: (context) => const Chats()),
                   );
                   break;
                 // case 2: No need for navigation as we are already on Chats screen
@@ -88,9 +89,9 @@ Widget Note(BuildContext context) {
     child: Column(
       children: [
         ListView.separated(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          separatorBuilder: (context, index) => SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: 2,
           itemBuilder: (context, index) {
             return Padding(
@@ -99,11 +100,11 @@ Widget Note(BuildContext context) {
                 width: 324,
                 height: 92,
                 decoration: ShapeDecoration(
-                  color: Color(0xFFFBFAFA),
+                  color: const Color(0xFFFBFAFA),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  shadows: [
+                  shadows: const [
                     BoxShadow(
                       color: Color(0x19000000),
                       blurRadius: 2,
@@ -144,7 +145,7 @@ Widget Note(BuildContext context) {
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         border: Border(
                           left: BorderSide(color: Color(0xFFF9F9F9)),
                           top: BorderSide(color: Color(0xFFF9F9F9)),
@@ -161,7 +162,7 @@ Widget Note(BuildContext context) {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(left: 12),
-                              child: Column(
+                              child: const Column(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +181,7 @@ Widget Note(BuildContext context) {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8),
                                   SizedBox(
                                     width: double.infinity,
                                     child: Text(

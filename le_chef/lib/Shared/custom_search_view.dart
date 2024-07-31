@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/theme_helper.dart';
 
 class CustomSearchView extends StatelessWidget {
-  CustomSearchView({
+  const CustomSearchView({
     Key? key,
     this.alignment,
     this.width,
@@ -108,18 +108,18 @@ class CustomSearchView extends StatelessWidget {
         hintStyle: hintStyle ?? theme.textTheme.bodySmall,
         prefixIcon: prefix ??
             Container(
-              margin: EdgeInsets.fromLTRB(16, 15, 8, 15),
-              child: Icon(
+              margin: const EdgeInsets.fromLTRB(16, 15, 8, 15),
+              child: const Icon(
                 Icons.search,
               ),
             ),
         prefixIconConstraints: prefixConstraints ??
-            BoxConstraints(
+            const BoxConstraints(
               maxHeight: 48,
             ),
         suffixIcon: suffix ??
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 right: 15,
               ),
               child: IconButton(
@@ -134,12 +134,12 @@ class CustomSearchView extends StatelessWidget {
               ),
             ),
         suffixIconConstraints: suffixConstraints ??
-            BoxConstraints(
+            const BoxConstraints(
               maxHeight: 48,
             ),
         isDense: true,
         contentPadding: contentPadding ??
-            EdgeInsets.only(
+            const EdgeInsets.only(
               top: 15,
               right: 15,
               bottom: 15,

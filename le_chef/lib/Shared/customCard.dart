@@ -17,12 +17,12 @@ class CustomCard extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Icon(
+                title: const Icon(
                   Icons.lock_outline,
                   color: Color(0xFF164863),
                   size: 100,
                 ),
-                content: Text(
+                content: const Text(
                   'This quiz is locked. You should pay quiz fees',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -39,7 +39,7 @@ class CustomCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             width: 140.50,
                             height: 48,
                             child: ElevatedButton(
@@ -51,7 +51,13 @@ class CustomCard extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: Text(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF427D9D),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
                                 'Pay Fees',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -61,25 +67,27 @@ class CustomCard extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF427D9D),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 20),
+                        const SizedBox(width: 20),
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             width: 140.50,
                             height: 48,
                             child: OutlinedButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text(
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Color(0xFF427D9D)),
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(width: 1, color: Color(0xFF427D9D)),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
                                 'Cancel',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -87,14 +95,6 @@ class CustomCard extends StatelessWidget {
                                   fontSize: 16,
                                   fontFamily: 'IBM Plex Mono',
                                   fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Color(0xFF427D9D)),
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(width: 1, color: Color(0xFF427D9D)),
-                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                             ),
@@ -112,7 +112,7 @@ class CustomCard extends StatelessWidget {
         }
       },
       child: Card(
-        color: Color(0xCC888888),
+        color: const Color(0xCC888888),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -130,7 +130,7 @@ class CustomCard extends StatelessWidget {
             ),
             if (isLocked)
               ...[
-                Positioned(
+                const Positioned(
                   bottom: 8,
                   right: 8,
                   child: Icon(
@@ -152,7 +152,7 @@ class CustomCard extends StatelessWidget {
               child: Align(
                 alignment: Alignment.center,
                 child: IconButton(
-                  icon: Icon(Icons.play_arrow, size: 58, color: Colors.white),
+                  icon: const Icon(Icons.play_arrow, size: 58, color: Colors.white),
                   onPressed: () {
                     if (isLocked) {
                       showDialog(
@@ -160,12 +160,12 @@ class CustomCard extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Icon(
+                            title: const Icon(
                               Icons.lock_outline,
                               color: Color(0xFF164863),
                               size: 100,
                             ),
-                            content: Text(
+                            content: const Text(
                               'This quiz is locked. You should pay quiz fees',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -182,7 +182,7 @@ class CustomCard extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
-                                      child: Container(
+                                      child: SizedBox(
                                         width: 140.50,
                                         height: 48,
                                         child: ElevatedButton(
@@ -194,7 +194,13 @@ class CustomCard extends StatelessWidget {
                                               ),
                                             );
                                           },
-                                          child: Text(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xFF427D9D),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
                                             'Pay Fees',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
@@ -205,25 +211,27 @@ class CustomCard extends StatelessWidget {
                                               height: 0,
                                             ),
                                           ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color(0xFF427D9D),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                          ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     Expanded(
-                                      child: Container(
+                                      child: SizedBox(
                                         width: 140.50,
                                         height: 48,
                                         child: OutlinedButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text(
+                                          style: OutlinedButton.styleFrom(
+                                            side: const BorderSide(color: Color(0xFF427D9D)),
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              side: const BorderSide(width: 1, color: Color(0xFF427D9D)),
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
                                             'Cancel',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
@@ -232,14 +240,6 @@ class CustomCard extends StatelessWidget {
                                               fontFamily: 'IBM Plex Mono',
                                               fontWeight: FontWeight.w600,
                                               height: 0,
-                                            ),
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            side: BorderSide(color: Color(0xFF427D9D)),
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(width: 1, color: Color(0xFF427D9D)),
-                                              borderRadius: BorderRadius.circular(12),
                                             ),
                                           ),
                                         ),

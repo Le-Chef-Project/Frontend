@@ -8,7 +8,6 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Screens/chats.dart';
@@ -16,6 +15,7 @@ import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -40,6 +40,8 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
+  final Map<String, AudioPlayer?> _audioPlayers = {};
+  final Map<String, bool> _isPlayingMap = {};
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
@@ -210,7 +212,7 @@ class _ChatPageState extends State<ChatPage> {
     final index = _messages.indexWhere((element) => element.message.id == message.id);
 
     if (index != -1 && message is types.TextMessage) {
-      final wrappedMessage = _messages[index] as WrappedMessage;
+      final wrappedMessage = _messages[index];
 
       // Cast the message to TextMessage and update preview data
       final updatedMessage = types.TextMessage(
@@ -274,41 +276,6 @@ class _ChatPageState extends State<ChatPage> {
     _recordedFilePath = path;
   }
 
-  void _playAudio(String? uri) async {
-    if (uri != null) {
-      AudioPlayer? player = AudioPlayer();
-      player = AudioPlayer();
-      try {
-        await player!.play(UrlSource(uri));
-        setState(() {
-          isPlaying = true;
-        });
-        player!.onPlayerComplete.listen((event) {
-          setState(() {
-            isPlaying = false;
-          });
-          player!.dispose();
-          player = null;
-        });
-      } catch (e) {
-        // Handle error if playback fails
-        print("Error playing audio: $e");
-      }
-    }
-  }
-
-  void _stopAudio() {
-    AudioPlayer? player = AudioPlayer();
-    if (player != null) {
-      player!.stop();
-      setState(() {
-        isPlaying = false;
-      });
-      player!.dispose();
-      player = null;
-    }
-  }
-
   void _stopRecording() async {
     await _recorder!.stopRecorder();
     _isRecording.value = false;
@@ -327,9 +294,59 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  void _playAudio(String? uri, String messageId) async {
+    if (uri != null) {
+      if (_audioPlayers[messageId] == null) {
+        _audioPlayers[messageId] = AudioPlayer();
+      }
+      final player = _audioPlayers[messageId]!;
+
+      try {
+        await player.play(UrlSource(uri));
+        setState(() {
+          _isPlayingMap[messageId] = true;
+        });
+        await _savePlaybackState(messageId, true); // Save state
+        player.onPlayerComplete.listen((event) async {
+          setState(() {
+            _isPlayingMap[messageId] = false;
+          });
+          await _savePlaybackState(messageId, false); // Save state
+          player.dispose();
+          _audioPlayers[messageId] = null;
+        });
+      } catch (e) {
+        print("Error playing audio: $e");
+      }
+    }
+  }
+
+  void _stopAudio(String messageId) async {
+    if (_audioPlayers[messageId] != null) {
+      _audioPlayers[messageId]!.stop();
+      setState(() {
+        _isPlayingMap[messageId] = false;
+      });
+      await _savePlaybackState(messageId, false); // Save state
+      _audioPlayers[messageId]!.dispose();
+      _audioPlayers[messageId] = null;
+    }
+  }
+
+  Future<void> _savePlaybackState(String messageId, bool isPlaying) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(messageId, isPlaying);
+  }
+
+// Load playback state
+  Future<bool> _loadPlaybackState(String messageId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(messageId) ?? false;
+  }
+
   Widget _buildCustomMessage(types.Message message, {required int messageWidth}) {
     final messageTime = DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
-    final messageColor = message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300];
+    final messageColor = message.author.id == _user.id ? const Color(0xFF0E7490) : Colors.grey[300];
     final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
 
     Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
@@ -337,9 +354,9 @@ class _ChatPageState extends State<ChatPage> {
     if (message is WrappedMessage) {
       final wrappedMessage = message as WrappedMessage;
       if (wrappedMessage.seen) {
-        seenIndicator = Row(
+        seenIndicator = const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.check, color: Colors.blue, size: 16.0),
             SizedBox(width: 2.0),
             Icon(Icons.check, color: Colors.blue, size: 16.0),
@@ -461,22 +478,22 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final groupChatTheme = DefaultChatTheme(
-      primaryColor: const Color(0xFF0E7490),
-      secondaryColor: const Color(0xFFFBFAFA),
+    const groupChatTheme = DefaultChatTheme(
+      primaryColor: Color(0xFF0E7490),
+      secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
-      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
-      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+      receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
+      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
       inputBackgroundColor: Colors.white, // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
 
-    final personalChatTheme = DefaultChatTheme(
-      primaryColor: const Color(0xFF0E7490),
-      secondaryColor: const Color(0xFFFBFAFA),
+    const personalChatTheme = DefaultChatTheme(
+      primaryColor: Color(0xFF0E7490),
+      secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
-      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
-      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+      receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
+      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
       inputBackgroundColor: Colors.white, // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
@@ -484,12 +501,12 @@ class _ChatPageState extends State<ChatPage> {
     return SafeArea(
       child: Scaffold(
         appBar: person
-            ? CustomAppBar(
+            ? const CustomAppBar(
           title: "Thaowpsta",
           avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
           isPerson: true,
         )
-            : CustomAppBar(
+            : const CustomAppBar(
           title: "Group",
           avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
           isPerson: false,
@@ -573,8 +590,8 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
             fileMessageBuilder: (message, {required int messageWidth}) {
-              if (message is types.FileMessage && message.mimeType?.startsWith('audio/') == true) {
-                final messageColor = message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300];
+              if (message.mimeType?.startsWith('audio/') == true) {
+                final messageColor = message.author.id == _user.id ? const Color(0xFF0E7490) : Colors.grey[300];
                 final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
 
                 return Container(
@@ -590,14 +607,14 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           IconButton(
                             icon: Icon(
-                              isPlaying ? Icons.stop : Icons.play_arrow,
-                              color: textColor, // Set color to match text color
+                              _isPlayingMap[message.id] == true ? Icons.stop : Icons.play_arrow,
+                              color: textColor,
                             ),
                             onPressed: () {
-                              if (isPlaying) {
-                                _stopAudio();
+                              if (_isPlayingMap[message.id] == true) {
+                                _stopAudio(message.id);
                               } else {
-                                _playAudio(message.uri);
+                                _playAudio(message.uri, message.id);
                               }
                             },
                           ),
@@ -605,7 +622,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: Text(
                               'Voice Message',
                               style: TextStyle(
-                                color: textColor, // Set color to match text color
+                                color: textColor,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -618,7 +635,7 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           Text(
                             DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
-                            style: TextStyle(color: textColor, fontSize: 10.0), // Match text color here as well
+                            style: TextStyle(color: textColor, fontSize: 10.0),
                           ),
                         ],
                       ),
@@ -664,7 +681,7 @@ class _ChatPageState extends State<ChatPage> {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:
@@ -676,7 +693,7 @@ class _ChatPageState extends State<ChatPage> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
             }
