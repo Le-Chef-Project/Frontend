@@ -16,6 +16,7 @@ import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -40,6 +41,8 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
+  Map<String, AudioPlayer?> _audioPlayers = {};
+  Map<String, bool> _isPlayingMap = {};
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
@@ -274,41 +277,6 @@ class _ChatPageState extends State<ChatPage> {
     _recordedFilePath = path;
   }
 
-  void _playAudio(String? uri) async {
-    if (uri != null) {
-      AudioPlayer? player = AudioPlayer();
-      player = AudioPlayer();
-      try {
-        await player!.play(UrlSource(uri));
-        setState(() {
-          isPlaying = true;
-        });
-        player!.onPlayerComplete.listen((event) {
-          setState(() {
-            isPlaying = false;
-          });
-          player!.dispose();
-          player = null;
-        });
-      } catch (e) {
-        // Handle error if playback fails
-        print("Error playing audio: $e");
-      }
-    }
-  }
-
-  void _stopAudio() {
-    AudioPlayer? player = AudioPlayer();
-    if (player != null) {
-      player!.stop();
-      setState(() {
-        isPlaying = false;
-      });
-      player!.dispose();
-      player = null;
-    }
-  }
-
   void _stopRecording() async {
     await _recorder!.stopRecorder();
     _isRecording.value = false;
@@ -325,6 +293,56 @@ class _ChatPageState extends State<ChatPage> {
       );
       _addMessage(message);
     }
+  }
+
+  void _playAudio(String? uri, String messageId) async {
+    if (uri != null) {
+      if (_audioPlayers[messageId] == null) {
+        _audioPlayers[messageId] = AudioPlayer();
+      }
+      final player = _audioPlayers[messageId]!;
+
+      try {
+        await player.play(UrlSource(uri));
+        setState(() {
+          _isPlayingMap[messageId] = true;
+        });
+        await _savePlaybackState(messageId, true); // Save state
+        player.onPlayerComplete.listen((event) async {
+          setState(() {
+            _isPlayingMap[messageId] = false;
+          });
+          await _savePlaybackState(messageId, false); // Save state
+          player.dispose();
+          _audioPlayers[messageId] = null;
+        });
+      } catch (e) {
+        print("Error playing audio: $e");
+      }
+    }
+  }
+
+  void _stopAudio(String messageId) async {
+    if (_audioPlayers[messageId] != null) {
+      _audioPlayers[messageId]!.stop();
+      setState(() {
+        _isPlayingMap[messageId] = false;
+      });
+      await _savePlaybackState(messageId, false); // Save state
+      _audioPlayers[messageId]!.dispose();
+      _audioPlayers[messageId] = null;
+    }
+  }
+
+  Future<void> _savePlaybackState(String messageId, bool isPlaying) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(messageId, isPlaying);
+  }
+
+// Load playback state
+  Future<bool> _loadPlaybackState(String messageId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(messageId) ?? false;
   }
 
   Widget _buildCustomMessage(types.Message message, {required int messageWidth}) {
@@ -590,14 +608,14 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           IconButton(
                             icon: Icon(
-                              isPlaying ? Icons.stop : Icons.play_arrow,
-                              color: textColor, // Set color to match text color
+                              _isPlayingMap[message.id] == true ? Icons.stop : Icons.play_arrow,
+                              color: textColor,
                             ),
                             onPressed: () {
-                              if (isPlaying) {
-                                _stopAudio();
+                              if (_isPlayingMap[message.id] == true) {
+                                _stopAudio(message.id);
                               } else {
-                                _playAudio(message.uri);
+                                _playAudio(message.uri, message.id);
                               }
                             },
                           ),
@@ -605,7 +623,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: Text(
                               'Voice Message',
                               style: TextStyle(
-                                color: textColor, // Set color to match text color
+                                color: textColor,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -618,7 +636,7 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           Text(
                             DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
-                            style: TextStyle(color: textColor, fontSize: 10.0), // Match text color here as well
+                            style: TextStyle(color: textColor, fontSize: 10.0),
                           ),
                         ],
                       ),
