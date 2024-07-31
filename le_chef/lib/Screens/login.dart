@@ -12,7 +12,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isObscure = true;
 
@@ -27,6 +27,8 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
+                //TODO
+                //change logo
                 child: Image.asset('assets/logo.png', width: 300, height: 300),
               ),
               Text(
@@ -50,14 +52,13 @@ class _LoginState extends State<Login> {
               ),
               SizedBox(height: 20),
               TextFormField(
-                controller: _emailController,
-                decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                controller: _userNameController,
+                decoration: textInputDecoration.copyWith(hintText: 'userName'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Enter an email';
-                  } else if (!value.contains('@') || !value.endsWith('.com')) {
-                    return 'Please enter a valid email address';
-                  }
+                    return 'Enter an userName';
+                  } //TODO
+                  //check isFound or not
                   return null;
                 },
               ),

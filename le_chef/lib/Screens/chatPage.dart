@@ -43,8 +43,9 @@ class _ChatPageState extends State<ChatPage> {
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
-  bool person = true;
+  bool person = false;
   bool _showFloatingButton = true;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -219,7 +220,6 @@ class _ChatPageState extends State<ChatPage> {
         text: (wrappedMessage.message as types.TextMessage).text, // Cast to TextMessage to access text
         previewData: previewData, // Update preview data
       );
-
       setState(() {
         _messages[index] = WrappedMessage(
           message: updatedMessage,
@@ -236,10 +236,7 @@ class _ChatPageState extends State<ChatPage> {
       id: const Uuid().v4(),
       text: message.text,
     );
-
     _addMessage(textMessage);
-
-    // Clear the text input field
     _textController.clear();
   }
 
@@ -257,7 +254,6 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _initRecorder() async {
     _recorder = FlutterSoundRecorder();
-
     await _recorder!.openRecorder();
     if (await Permission.microphone.request().isGranted) {
       await _recorder!.setSubscriptionDuration(const Duration(milliseconds: 10));
@@ -274,20 +270,42 @@ class _ChatPageState extends State<ChatPage> {
       toFile: path,
       codec: Codec.aacADTS,
     );
-
     _isRecording.value = true;
     _recordedFilePath = path;
   }
 
   void _playAudio(String? uri) async {
     if (uri != null) {
-      final player = AudioPlayer();
+      AudioPlayer? player = AudioPlayer();
+      player = AudioPlayer();
       try {
-        await player.play(UrlSource(uri));
+        await player!.play(UrlSource(uri));
+        setState(() {
+          isPlaying = true;
+        });
+        player!.onPlayerComplete.listen((event) {
+          setState(() {
+            isPlaying = false;
+          });
+          player!.dispose();
+          player = null;
+        });
       } catch (e) {
         // Handle error if playback fails
         print("Error playing audio: $e");
       }
+    }
+  }
+
+  void _stopAudio() {
+    AudioPlayer? player = AudioPlayer();
+    if (player != null) {
+      player!.stop();
+      setState(() {
+        isPlaying = false;
+      });
+      player!.dispose();
+      player = null;
     }
   }
 
@@ -305,16 +323,13 @@ class _ChatPageState extends State<ChatPage> {
         size: File(_recordedFilePath!).lengthSync(),
         uri: _recordedFilePath!,
       );
-
       _addMessage(message);
     }
   }
 
   Widget _buildCustomMessage(types.Message message, {required int messageWidth}) {
     final messageTime = DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
-
-    // Define the colors based on whether the message is sent or received
-    final messageColor = message.author.id == _user.id ? Colors.blue : Colors.grey[300];
+    final messageColor = message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300];
     final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
 
     Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
@@ -441,7 +456,6 @@ class _ChatPageState extends State<ChatPage> {
         ),
       );
     }
-
     return const SizedBox.shrink();
   }
 
@@ -472,97 +486,101 @@ class _ChatPageState extends State<ChatPage> {
         appBar: person
             ? CustomAppBar(
           title: "Thaowpsta",
-          avatarUrl:
-          'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+          avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+          isPerson: true,
         )
             : CustomAppBar(
           title: "Group",
-          avatarUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
+          avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
+          isPerson: false,
         ),
+
         body: Chat(
-          messages: _messages.map((wm) => wm.message).toList(),
-          onAttachmentPressed: _handleAttachmentPressed,
-          onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          showUserAvatars: person,
-          showUserNames: true,
-          user: _user,
-          theme: person ? personalChatTheme : groupChatTheme,
-          customBottomWidget: ValueListenableBuilder<bool>(
-            valueListenable: _isRecording,
-            builder: (context, isRecording, child) {
-              return isRecording
-                  ? Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 15, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0E7490),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Recording...',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 16),
+            messages: _messages.map((wm) => wm.message).toList(),
+            onAttachmentPressed: _handleAttachmentPressed,
+            onMessageTap: _handleMessageTap,
+            onPreviewDataFetched: _handlePreviewDataFetched,
+            onSendPressed: _handleSendPressed,
+            showUserAvatars: person,
+            showUserNames: true,
+            user: _user,
+            theme: person ? personalChatTheme : groupChatTheme,
+            customBottomWidget: ValueListenableBuilder<bool>(
+              valueListenable: _isRecording,
+              builder: (context, isRecording, child) {
+                return isRecording
+                    ? Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0E7490),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Recording...',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
-                ),
-              )
-                  : Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 4.0, horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFBFAFA),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _textController,
-                          decoration: const InputDecoration(
-                            hintText: 'Type a message...',
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(
-                              color: Color(0xFF888888),
-                              fontSize: 12,
-                              fontFamily: 'IBM Plex Mono',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
+                )
+                    : Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFBFAFA),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _textController,
+                            decoration: const InputDecoration(
+                              hintText: 'Type a message...',
+                              border: InputBorder.none,
+                              hintStyle: TextStyle(
+                                color: Color(0xFF888888),
+                                fontSize: 12,
+                                fontFamily: 'IBM Plex Mono',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
                             ),
+                            style: const TextStyle(color: Colors.black),
+                            onSubmitted: (value) {
+                              if (value.isNotEmpty) {
+                                _handleSendPressed(
+                                    types.PartialText(text: value));
+                              }
+                            },
                           ),
-                          style: const TextStyle(color: Colors.black),
-                          onSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              _handleSendPressed(
-                                  types.PartialText(text: value));
-                            }
-                          },
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.attach_file,
-                            color: Colors.black),
-                        onPressed: _handleAttachmentPressed,
-                      ),
-                    ],
+                        IconButton(
+                          icon: const Icon(Icons.attach_file,
+                              color: Colors.black),
+                          onPressed: _handleAttachmentPressed,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
             fileMessageBuilder: (message, {required int messageWidth}) {
               if (message is types.FileMessage && message.mimeType?.startsWith('audio/') == true) {
+                final messageColor = message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300];
+                final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
+
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
+                    color: messageColor,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Column(
@@ -570,22 +588,27 @@ class _ChatPageState extends State<ChatPage> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.audiotrack, color: message.author.id == _user.id ? Colors.white : Colors.black),
-                          const SizedBox(width: 8.0),
+                          IconButton(
+                            icon: Icon(
+                              isPlaying ? Icons.stop : Icons.play_arrow,
+                              color: textColor, // Set color to match text color
+                            ),
+                            onPressed: () {
+                              if (isPlaying) {
+                                _stopAudio();
+                              } else {
+                                _playAudio(message.uri);
+                              }
+                            },
+                          ),
                           Expanded(
                             child: Text(
                               'Voice Message',
                               style: TextStyle(
-                                color: message.author.id == _user.id ? Colors.white : Colors.black,
+                                color: textColor, // Set color to match text color
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.play_arrow, color: message.author.id == _user.id ? Colors.white : Colors.black),
-                            onPressed: () {
-                              _playAudio(message.uri);
-                            },
                           ),
                         ],
                       ),
@@ -595,7 +618,7 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           Text(
                             DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
-                            style: const TextStyle(color: Colors.white, fontSize: 10.0),
+                            style: TextStyle(color: textColor, fontSize: 10.0), // Match text color here as well
                           ),
                         ],
                       ),
@@ -603,8 +626,6 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 );
               }
-
-              // For other file messages
               return _buildCustomMessage(message, messageWidth: messageWidth);
             }
         ),
@@ -673,34 +694,3 @@ class WrappedMessage {
 
   WrappedMessage({required this.message, required this.seen});
 }
-
-// class CustomTextMessage extends types.TextMessage {
-//   final types.PreviewData? previewData;
-//
-//   CustomTextMessage({
-//     required String id,
-//     required types.User author,
-//     required int createdAt,
-//     required String text,
-//     this.previewData,
-//   }) : super(id: id, author: author, createdAt: createdAt, text: text);
-//
-//   @override
-//   CustomTextMessage copyWith({
-//     String? id,
-//     types.User? author,
-//     int createdAt,
-//     String? text,
-//     types.PreviewData? previewData,
-//   }) {
-//     return CustomTextMessage(
-//       id: id ?? this.id,
-//       author: author ?? this.author,
-//       createdAt: createdAt ?? this.createdAt,
-//       text: text ?? this.text,
-//       previewData: previewData ?? this.previewData,
-//     );
-//   }
-// }
-
-
