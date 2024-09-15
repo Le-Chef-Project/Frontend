@@ -8,6 +8,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Screens/chats.dart';
@@ -40,8 +41,8 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
-  final Map<String, AudioPlayer?> _audioPlayers = {};
-  final Map<String, bool> _isPlayingMap = {};
+  Map<String, AudioPlayer?> _audioPlayers = {};
+  Map<String, bool> _isPlayingMap = {};
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
@@ -356,7 +357,7 @@ class _ChatPageState extends State<ChatPage> {
       if (wrappedMessage.seen) {
         seenIndicator = const Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: const [
             Icon(Icons.check, color: Colors.blue, size: 16.0),
             SizedBox(width: 2.0),
             Icon(Icons.check, color: Colors.blue, size: 16.0),
@@ -482,8 +483,8 @@ class _ChatPageState extends State<ChatPage> {
       primaryColor: Color(0xFF0E7490),
       secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
-      receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
-      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
+      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
+      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
       inputBackgroundColor: Colors.white, // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
@@ -492,8 +493,8 @@ class _ChatPageState extends State<ChatPage> {
       primaryColor: Color(0xFF0E7490),
       secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
-      receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
-      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
+      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
+      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
       inputBackgroundColor: Colors.white, // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
