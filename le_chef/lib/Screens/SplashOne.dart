@@ -19,7 +19,7 @@ class _SplashOneState extends State<SplashOne> {
     Timer(
         const Duration(seconds: 5),
         () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (BuildContext context) => const Home())));
+            MaterialPageRoute(builder: (BuildContext context) => Home())));
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Screens/chatPage.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 
 import '../Shared/custom_app_bar.dart';
@@ -60,7 +61,7 @@ class Chats extends StatelessWidget {
                 case 0:
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Home()),
+                    MaterialPageRoute(builder: (context) => Home()),
                   );
                   break;
                 case 1:
@@ -107,7 +108,7 @@ Widget PersonalChat(BuildContext context) {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      _buildHeader(context, name: "Kokii", Time: "10:30PM"),
+                      _buildHeader(context, name: "Kokii", time: "10:30PM"),
                       const SizedBox(height: 8),
                       const Text(
                         'Hi!!',
@@ -133,32 +134,42 @@ Widget groupChat(BuildContext context) {
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: 3,
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundColor: const Color.fromRGBO(14, 116, 144, 1),
-                    child: Text(
-                      'G${index + 1}',
-                      style: const TextStyle(color: Colors.white),
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
+              },
+              child: Container(
+                color: Colors.transparent,
+                padding: const EdgeInsets.all(8.0),
+                width: double.infinity,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: const Color.fromRGBO(14, 116, 144, 1),
+                      child: Text(
+                        'G${index + 1}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
-                  ),
-                ),
-                Expanded(
-                    child: Column(
+                    const SizedBox(width: 8), // Space between avatar and text
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      _buildHeader(context,
-                          name: "Group${index + 1}", Time: "10:30PM"),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Hi!!',
-                        // style: Theme.of(context).textTheme.bodyText2,
-                      )
-                    ]))
-              ],
+                          _buildHeader(context,
+                              name: "Group${index + 1}", time: "10:30PM"),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Hi!!',
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             );
           },
         )
@@ -170,7 +181,7 @@ Widget groupChat(BuildContext context) {
 Widget _buildHeader(
   BuildContext context, {
   required String name,
-  required String Time,
+  required String time,
 }) {
   return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
     Text(name,
@@ -178,7 +189,7 @@ Widget _buildHeader(
             .copyWith(color: appTheme.teal900)),
     Padding(
         padding: const EdgeInsets.only(top: 3),
-        child: Text(Time,
+        child: Text(time,
             style: CustomTextStyles.bodySmallTeal900
                 .copyWith(color: appTheme.teal900)))
   ]);

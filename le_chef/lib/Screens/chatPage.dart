@@ -16,9 +16,7 @@ import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import 'Home.dart';
@@ -42,14 +40,11 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
-  Map<String, AudioPlayer?> _audioPlayers = {};
-  Map<String, bool> _isPlayingMap = {};
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
-  bool person = false;
+  bool person = true;
   bool _showFloatingButton = true;
-  bool isPlaying = false;
 
   @override
   void initState() {
@@ -169,15 +164,20 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleMessageTap(BuildContext _, types.Message message) async {
-    if (message is types.FileMessage) {
-      var localPath = message.uri;
-
-      if (message.uri.startsWith('http')) {
-        try {
-          final index = _messages.indexWhere((element) => element.id == message.id);
-          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(
-            isLoading: true,
-          );
+    final index = _messages.indexWhere((element) => element.message.id == message.id);
+    if (index != -1) {
+      final wrappedMessage = _messages[index];
+      if (wrappedMessage.message is CustomMessage) {
+        final updatedMessage = wrappedMessage.message as CustomMessage;
+        if (!wrappedMessage.seen) {
+          setState(() {
+            _messages[index] = WrappedMessage(
+              message: updatedMessage,
+              seen: true,
+            );
+          });
+        }
+      }
 
       // Handle file opening logic
       if (wrappedMessage.message is types.FileMessage) {
@@ -204,15 +204,29 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
-    final index = _messages.indexWhere((element) => element.id == message.id);
-    final updatedMessage = (_messages[index] as types.TextMessage).copyWith(
-      previewData: previewData,
-    );
+  void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
+    // Find the index of the message in _messages list
+    final index = _messages.indexWhere((element) => element.message.id == message.id);
 
-    setState(() {
-      _messages[index] = updatedMessage;
-    });
+    if (index != -1 && message is types.TextMessage) {
+      final wrappedMessage = _messages[index] as WrappedMessage;
+
+      // Cast the message to TextMessage and update preview data
+      final updatedMessage = types.TextMessage(
+        id: wrappedMessage.message.id,
+        author: wrappedMessage.message.author,
+        createdAt: wrappedMessage.message.createdAt,
+        text: (wrappedMessage.message as types.TextMessage).text, // Cast to TextMessage to access text
+        previewData: previewData, // Update preview data
+      );
+
+      setState(() {
+        _messages[index] = WrappedMessage(
+          message: updatedMessage,
+          seen: wrappedMessage.seen,
+        );
+      });
+    }
   }
 
   void _handleSendPressed(types.PartialText message) {
@@ -222,7 +236,10 @@ class _ChatPageState extends State<ChatPage> {
       id: const Uuid().v4(),
       text: message.text,
     );
+
     _addMessage(textMessage);
+
+    // Clear the text input field
     _textController.clear();
   }
 
@@ -240,6 +257,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _initRecorder() async {
     _recorder = FlutterSoundRecorder();
+
     await _recorder!.openRecorder();
     if (await Permission.microphone.request().isGranted) {
       await _recorder!.setSubscriptionDuration(const Duration(milliseconds: 10));
@@ -256,8 +274,21 @@ class _ChatPageState extends State<ChatPage> {
       toFile: path,
       codec: Codec.aacADTS,
     );
+
     _isRecording.value = true;
     _recordedFilePath = path;
+  }
+
+  void _playAudio(String? uri) async {
+    if (uri != null) {
+      final player = AudioPlayer();
+      try {
+        await player.play(UrlSource(uri));
+      } catch (e) {
+        // Handle error if playback fails
+        print("Error playing audio: $e");
+      }
+    }
   }
 
   void _stopRecording() async {
@@ -274,15 +305,151 @@ class _ChatPageState extends State<ChatPage> {
         size: File(_recordedFilePath!).lengthSync(),
         uri: _recordedFilePath!,
       );
+
       _addMessage(message);
     }
   }
 
+  Widget _buildCustomMessage(types.Message message, {required int messageWidth}) {
+    final messageTime = DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
+
+    // Define the colors based on whether the message is sent or received
+    final messageColor = message.author.id == _user.id ? Colors.blue : Colors.grey[300];
+    final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
+
+    Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
+
+    if (message is WrappedMessage) {
+      final wrappedMessage = message as WrappedMessage;
+      if (wrappedMessage.seen) {
+        seenIndicator = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.check, color: Colors.blue, size: 16.0),
+            SizedBox(width: 2.0),
+            Icon(Icons.check, color: Colors.blue, size: 16.0),
+          ],
+        );
+      }
+    }
+
+    if (message is types.TextMessage) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: messageColor, // Use the same color for text message background
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              message.text,
+              style: TextStyle(color: textColor), // Use the same color for text
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+              children: [
+                seenIndicator, // Add the seen indicator here
+                const SizedBox(width: 4.0),
+                Text(
+                  messageTime,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else if (message is types.ImageMessage) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: messageColor, // Use the same color for image message background
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Image.file(File(message.uri), width: message.width, height: message.height),
+            const SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+              children: [
+                seenIndicator, // Add the seen indicator here
+                const SizedBox(width: 4.0),
+                Text(
+                  messageTime,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else if (message is types.FileMessage) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: messageColor, // Use the same color for file message background
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.attach_file,
+                  color: textColor, // Use the same color for file icon
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    message.name,
+                    style: TextStyle(
+                      color: textColor, // Use the same color for file name
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+              children: [
+                seenIndicator, // Add the seen indicator here
+                const SizedBox(width: 4.0),
+                Text(
+                  messageTime,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
-    const groupChatTheme = DefaultChatTheme(
-      primaryColor: Color(0xFF0E7490),
-      secondaryColor: Color(0xFFFBFAFA),
+    final groupChatTheme = DefaultChatTheme(
+      primaryColor: const Color(0xFF0E7490),
+      secondaryColor: const Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
       receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
       sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
@@ -290,9 +457,9 @@ class _ChatPageState extends State<ChatPage> {
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
 
-    const personalChatTheme = DefaultChatTheme(
-      primaryColor: Color(0xFF0E7490),
-      secondaryColor: Color(0xFFFBFAFA),
+    final personalChatTheme = DefaultChatTheme(
+      primaryColor: const Color(0xFF0E7490),
+      secondaryColor: const Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
       receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
       sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
@@ -302,84 +469,147 @@ class _ChatPageState extends State<ChatPage> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: person ? CustomAppBar(
+        appBar: person
+            ? CustomAppBar(
           title: "Thaowpsta",
-          avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-        ) : CustomAppBar(
+          avatarUrl:
+          'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+        )
+            : CustomAppBar(
           title: "Group",
-          avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
+          avatarUrl:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
         ),
-
         body: Chat(
-          messages: _messages,
-          onAttachmentPressed: _handleAttachmentPressed,
-          onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          showUserAvatars: person,
-          showUserNames: true,
-          user: _user,
-          theme: person ? personalChatTheme : groupChatTheme,
-          customBottomWidget: ValueListenableBuilder<bool>(
-            valueListenable: _isRecording,
-            builder: (context, isRecording, child) {
-              return isRecording
-                  ? Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0E7490),
-                    borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Recording...',
-                      style: TextStyle(color: Colors.white, fontSize: 16), // Adjust color to ensure contrast
+            messages: _messages.map((wm) => wm.message).toList(),
+            onAttachmentPressed: _handleAttachmentPressed,
+            onMessageTap: _handleMessageTap,
+            onPreviewDataFetched: _handlePreviewDataFetched,
+            onSendPressed: _handleSendPressed,
+            showUserAvatars: person,
+            showUserNames: true,
+            user: _user,
+            theme: person ? personalChatTheme : groupChatTheme,
+            customBottomWidget: ValueListenableBuilder<bool>(
+              valueListenable: _isRecording,
+              builder: (context, isRecording, child) {
+                return isRecording
+                    ? Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0E7490),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Recording...',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
-                ),
-              )
-
-
-                  : Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFBFAFA),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _textController,
-                          decoration: const InputDecoration(
-                            hintText: 'Type a message...',
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(color: Colors.black),
+                )
+                    : Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFBFAFA),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _textController,
+                            decoration: const InputDecoration(
+                              hintText: 'Type a message...',
+                              border: InputBorder.none,
+                              hintStyle: TextStyle(
+                                color: Color(0xFF888888),
+                                fontSize: 12,
+                                fontFamily: 'IBM Plex Mono',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                            style: const TextStyle(color: Colors.black),
+                            onSubmitted: (value) {
+                              if (value.isNotEmpty) {
+                                _handleSendPressed(
+                                    types.PartialText(text: value));
+                              }
+                            },
                           ),
-                          style: const TextStyle(color: Colors.black),
-                          onSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              _handleSendPressed(types.PartialText(text: value));
-                            }
-                          },
                         ),
+                        IconButton(
+                          icon: const Icon(Icons.attach_file,
+                              color: Colors.black),
+                          onPressed: _handleAttachmentPressed,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            fileMessageBuilder: (message, {required int messageWidth}) {
+              if (message is types.FileMessage && message.mimeType?.startsWith('audio/') == true) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.audiotrack, color: message.author.id == _user.id ? Colors.white : Colors.black),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              'Voice Message',
+                              style: TextStyle(
+                                color: message.author.id == _user.id ? Colors.white : Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.play_arrow, color: message.author.id == _user.id ? Colors.white : Colors.black),
+                            onPressed: () {
+                              _playAudio(message.uri);
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.attach_file, color: Colors.black),
-                        onPressed: _handleAttachmentPressed,
+                      const SizedBox(height: 4.0),
+                      Row(
+                        mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
+                            style: const TextStyle(color: Colors.white, fontSize: 10.0),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              }
+
+              // For other file messages
+              return _buildCustomMessage(message, messageWidth: messageWidth);
+            }
         ),
-        floatingActionButton: ValueListenableBuilder<bool>(
+        floatingActionButton: _showFloatingButton
+            ? ValueListenableBuilder<bool>(
           valueListenable: _isTyping,
           builder: (context, isTyping, child) {
             return isTyping
@@ -413,7 +643,7 @@ class _ChatPageState extends State<ChatPage> {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Home()),
+                  MaterialPageRoute(builder: (context) => Home()),
                 );
                 break;
               case 1:
@@ -425,7 +655,7 @@ class _ChatPageState extends State<ChatPage> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
+                  MaterialPageRoute(builder: (context) => Chats()),
                 );
                 break;
             }
@@ -436,3 +666,40 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
+
+class WrappedMessage {
+  final types.Message message;
+  final bool seen;
+
+  WrappedMessage({required this.message, required this.seen});
+}
+
+// class CustomTextMessage extends types.TextMessage {
+//   final types.PreviewData? previewData;
+//
+//   CustomTextMessage({
+//     required String id,
+//     required types.User author,
+//     required int createdAt,
+//     required String text,
+//     this.previewData,
+//   }) : super(id: id, author: author, createdAt: createdAt, text: text);
+//
+//   @override
+//   CustomTextMessage copyWith({
+//     String? id,
+//     types.User? author,
+//     int createdAt,
+//     String? text,
+//     types.PreviewData? previewData,
+//   }) {
+//     return CustomTextMessage(
+//       id: id ?? this.id,
+//       author: author ?? this.author,
+//       createdAt: createdAt ?? this.createdAt,
+//       text: text ?? this.text,
+//       previewData: previewData ?? this.previewData,
+//     );
+//   }
+// }
+
