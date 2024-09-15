@@ -7,6 +7,7 @@ import 'package:le_chef/Screens/seeAllVid.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import '../Shared/custom_search_view.dart';
+import 'Notes.dart';
 import 'notification.dart';
 
 class Home extends StatefulWidget {

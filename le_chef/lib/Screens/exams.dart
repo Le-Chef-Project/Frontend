@@ -252,7 +252,7 @@ class _ExamsState extends State<Exams> {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Home()),
+                  MaterialPageRoute(builder: (context) => Home()),
                 );
                 break;
               case 1:
