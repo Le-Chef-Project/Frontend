@@ -61,7 +61,7 @@ class Chats extends StatelessWidget {
                 case 0:
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                    MaterialPageRoute(builder: (context) => const Home()),
                   );
                   break;
                 case 1:
@@ -136,7 +136,7 @@ Widget groupChat(BuildContext context) {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
               },
               child: Container(
                 color: Colors.transparent,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
-import 'package:le_chef/Shared/textInputDecoration.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -27,7 +26,7 @@ class _OnlineSessionsState extends State<OnlineSessions> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: CustomAppBar(title: 'Online Sessions'),
+      appBar: const CustomAppBar(title: 'Online Sessions'),
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
@@ -35,10 +34,10 @@ class _OnlineSessionsState extends State<OnlineSessions> {
               ? Column(
                   children: [
                     Image.asset('assets/Humaaans 3 Characters.png'),
-                    SizedBox(
+                    const SizedBox(
                       height: 70,
                     ),
-                    Text(
+                    const Text(
                       'Tab to join meeting',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -49,7 +48,7 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                         height: 0,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     Row(
@@ -62,8 +61,8 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                                     camera = false;
                                   });
                                 },
-                                icon: Icon(Icons.videocam_outlined),
-                                color: Color.fromRGBO(66, 125, 157, 1),
+                                icon: const Icon(Icons.videocam_outlined),
+                                color: const Color.fromRGBO(66, 125, 157, 1),
                               )
                             : IconButton(
                                 onPressed: () {
@@ -71,8 +70,8 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                                     camera = true;
                                   });
                                 },
-                                icon: Icon(Icons.videocam_off_outlined),
-                                color: Color.fromRGBO(66, 125, 157, 1),
+                                icon: const Icon(Icons.videocam_off_outlined),
+                                color: const Color.fromRGBO(66, 125, 157, 1),
                               ),
                         mic
                             ? IconButton(
@@ -81,8 +80,8 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                                     mic = false;
                                   });
                                 },
-                                icon: Icon(Icons.mic_sharp),
-                                color: Color.fromRGBO(66, 125, 157, 1),
+                                icon: const Icon(Icons.mic_sharp),
+                                color: const Color.fromRGBO(66, 125, 157, 1),
                               )
                             : IconButton(
                                 onPressed: () {
@@ -90,12 +89,12 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                                     mic = true;
                                   });
                                 },
-                                icon: Icon(Icons.mic_off_sharp),
-                                color: Color.fromRGBO(66, 125, 157, 1),
+                                icon: const Icon(Icons.mic_off_sharp),
+                                color: const Color.fromRGBO(66, 125, 157, 1),
                               )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     Row(
@@ -113,9 +112,9 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                           width: 161,
                           onPressed: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Home()),
+                            MaterialPageRoute(builder: (context) => const Home()),
                           ),
-                          margin: EdgeInsets.only(left: 8),
+                          margin: const EdgeInsets.only(left: 8),
                           buttonStyle: CustomButtonStyles.outlinePrimaryTL51,
                         )
                       ],
@@ -125,10 +124,10 @@ class _OnlineSessionsState extends State<OnlineSessions> {
               : Column(
                   children: [
                     Image.asset('assets/error-16_svgrepo.com.jpg'),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
-                    Text(
+                    const Text(
                       'There are no sessions \n now, come back later...',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -139,13 +138,13 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                         height: 0,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 70,
                     ),
                     CustomElevatedButton(
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Home()),
+                        MaterialPageRoute(builder: (context) => const Home()),
                       ),
                       text: 'Home Page',
                       height: 41,
@@ -162,7 +161,7 @@ class _OnlineSessionsState extends State<OnlineSessions> {
             case 0:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Home()),
+                MaterialPageRoute(builder: (context) => const Home()),
               );
               break;
             case 1:
@@ -174,7 +173,7 @@ class _OnlineSessionsState extends State<OnlineSessions> {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Chats()),
+                MaterialPageRoute(builder: (context) => const Chats()),
               );
               break;
           }

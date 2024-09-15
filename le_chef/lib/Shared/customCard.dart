@@ -47,7 +47,7 @@ class CustomCard extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PaymentScreen(),
+                                    builder: (context) => const PaymentScreen(),
                                   ),
                                 );
                               },
@@ -190,7 +190,7 @@ class CustomCard extends StatelessWidget {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => PaymentScreen(),
+                                                builder: (context) => const PaymentScreen(),
                                               ),
                                             );
                                           },

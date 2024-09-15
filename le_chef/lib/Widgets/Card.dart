@@ -54,7 +54,7 @@ class CustomCardWithText extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PaymentScreen(),
+                                    builder: (context) => const PaymentScreen(),
                                   ),
                                 );
                               },

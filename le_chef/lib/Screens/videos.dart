@@ -115,7 +115,7 @@ class Videos extends StatelessWidget {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => PaymentScreen(),
+                                                    builder: (context) => const PaymentScreen(),
                                                   ),
                                                 );
                                               },
@@ -198,7 +198,7 @@ class Videos extends StatelessWidget {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:

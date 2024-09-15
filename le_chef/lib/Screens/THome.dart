@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:get/get.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
-import '../Shared/customBottomNavBar.dart';
-import 'chats.dart';
-import 'notification.dart';
 
 class THome extends StatefulWidget {
+  const THome({super.key});
+
   @override
   State<THome> createState() => _THomeState();
 }
 
 class _THomeState extends State<THome> {
-  int _selectedIndex = 0; // Initial index for Chats screen
+  final int _selectedIndex = 0; // Initial index for Chats screen
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Stack(
@@ -30,14 +26,14 @@ class _THomeState extends State<THome> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 1.6,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 3,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Color.fromRGBO(66, 125, 157, 1),
                           borderRadius: BorderRadius.only(
                               bottomRight: Radius.circular(800))),
@@ -49,7 +45,7 @@ class _THomeState extends State<THome> {
                             Container(
                               width: 69,
                               height: 69,
-                              decoration: ShapeDecoration(
+                              decoration: const ShapeDecoration(
                                 gradient: RadialGradient(
                                   center: Alignment(0, 1),
                                   radius: 0,
@@ -75,10 +71,10 @@ class _THomeState extends State<THome> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height / 1.6,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     child: Column(
                       children: [
-                        Container(
+                        SizedBox(
                           width: double.infinity,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,7 +104,7 @@ class _THomeState extends State<THome> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: SizedBox(
                                   child: Text(
                                     'Newest Videos',
@@ -128,10 +124,10 @@ class _THomeState extends State<THome> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AllVid()),
+                                        builder: (context) => const AllVid()),
                                   );
                                 },
-                                child: Text(
+                                child: const Text(
                                   'See all',
                                   style: TextStyle(
                                     color: Color(0xFF427D9D),
@@ -145,7 +141,7 @@ class _THomeState extends State<THome> {
                             ],
                           ),
                         ),
-                        Container(
+                        SizedBox(
                           height:
                               250, // Specify a fixed height for the ListView
                           child: new_video(context),
@@ -164,13 +160,13 @@ class _THomeState extends State<THome> {
 
           child: FloatingActionButton(
             onPressed: () {},
-            backgroundColor: Color.fromRGBO(66, 125, 157, 1),
-            child: Icon(
+            backgroundColor: const Color.fromRGBO(66, 125, 157, 1),
+            shape: const CircleBorder(),
+            child: const Icon(
               Icons.add,
               color: Colors.white,
               size: 48,
             ),
-            shape: CircleBorder(),
           ),
         ),
       ),
@@ -179,7 +175,7 @@ class _THomeState extends State<THome> {
 }
 
 Widget profile() {
-  return Container(
+  return SizedBox(
     width: 241,
     height: 76,
     child: Row(
@@ -191,7 +187,7 @@ Widget profile() {
           width: 76,
           height: 76,
           decoration: ShapeDecoration(
-            image: DecorationImage(
+            image: const DecorationImage(
               image: AssetImage('assets/Rectangle 5.png'),
               fit: BoxFit.fill,
             ),
@@ -203,7 +199,7 @@ Widget profile() {
         const SizedBox(width: 16),
         Expanded(
           child: Container(
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +246,7 @@ Widget _buildCard(String title) {
         width: 141,
         height: 61,
         decoration: ShapeDecoration(
-          color: Color(0xFFD9D9D9),
+          color: const Color(0xFFD9D9D9),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: Center(child: Text(title)),
@@ -264,7 +260,7 @@ Widget new_video(BuildContext context) {
     itemBuilder: (context, index) {
       return Container(
         width: 273, // Fixed width for each item in the horizontal ListView
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Stack(
           children: [
             ClipRRect(
@@ -274,8 +270,8 @@ Widget new_video(BuildContext context) {
                 fit: BoxFit.cover,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -8,7 +8,6 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Screens/chats.dart';
@@ -209,7 +208,7 @@ class _ChatPageState extends State<ChatPage> {
     final index = _messages.indexWhere((element) => element.message.id == message.id);
 
     if (index != -1 && message is types.TextMessage) {
-      final wrappedMessage = _messages[index] as WrappedMessage;
+      final wrappedMessage = _messages[index];
 
       // Cast the message to TextMessage and update preview data
       final updatedMessage = types.TextMessage(
@@ -322,9 +321,9 @@ class _ChatPageState extends State<ChatPage> {
     if (message is WrappedMessage) {
       final wrappedMessage = message as WrappedMessage;
       if (wrappedMessage.seen) {
-        seenIndicator = Row(
+        seenIndicator = const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.check, color: Colors.blue, size: 16.0),
             SizedBox(width: 2.0),
             Icon(Icons.check, color: Colors.blue, size: 16.0),
@@ -447,22 +446,22 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final groupChatTheme = DefaultChatTheme(
-      primaryColor: const Color(0xFF0E7490),
-      secondaryColor: const Color(0xFFFBFAFA),
+    const groupChatTheme = DefaultChatTheme(
+      primaryColor: Color(0xFF0E7490),
+      secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
-      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
-      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+      receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
+      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
       inputBackgroundColor: Colors.white, // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
 
-    final personalChatTheme = DefaultChatTheme(
-      primaryColor: const Color(0xFF0E7490),
-      secondaryColor: const Color(0xFFFBFAFA),
+    const personalChatTheme = DefaultChatTheme(
+      primaryColor: Color(0xFF0E7490),
+      secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
-      receivedMessageBodyTextStyle: const TextStyle(color: Color(0xFF083344)),
-      sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+      receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
+      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
       inputBackgroundColor: Colors.white, // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
@@ -470,12 +469,12 @@ class _ChatPageState extends State<ChatPage> {
     return SafeArea(
       child: Scaffold(
         appBar: person
-            ? CustomAppBar(
+            ? const CustomAppBar(
           title: "Thaowpsta",
           avatarUrl:
           'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
         )
-            : CustomAppBar(
+            : const CustomAppBar(
           title: "Group",
           avatarUrl:
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
@@ -558,7 +557,7 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
             fileMessageBuilder: (message, {required int messageWidth}) {
-              if (message is types.FileMessage && message.mimeType?.startsWith('audio/') == true) {
+              if (message.mimeType?.startsWith('audio/') == true) {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   decoration: BoxDecoration(
@@ -643,7 +642,7 @@ class _ChatPageState extends State<ChatPage> {
               case 0:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
               case 1:
@@ -655,7 +654,7 @@ class _ChatPageState extends State<ChatPage> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chats()),
+                  MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
             }
