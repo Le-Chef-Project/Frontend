@@ -18,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import 'Home.dart';
@@ -168,20 +169,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleMessageTap(BuildContext _, types.Message message) async {
-    final index = _messages.indexWhere((element) => element.message.id == message.id);
-    if (index != -1) {
-      final wrappedMessage = _messages[index];
-      if (wrappedMessage.message is CustomMessage) {
-        final updatedMessage = wrappedMessage.message as CustomMessage;
-        if (!wrappedMessage.seen) {
-          setState(() {
-            _messages[index] = WrappedMessage(
-              message: updatedMessage,
-              seen: true,
-            );
-          });
-        }
-      }
+    if (message is types.FileMessage) {
+      var localPath = message.uri;
+
+      if (message.uri.startsWith('http')) {
+        try {
+          final index = _messages.indexWhere((element) => element.id == message.id);
+          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(
+            isLoading: true,
+          );
 
       // Handle file opening logic
       if (wrappedMessage.message is types.FileMessage) {
@@ -208,28 +204,15 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
-    // Find the index of the message in _messages list
-    final index = _messages.indexWhere((element) => element.message.id == message.id);
+  void _handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData) {
+    final index = _messages.indexWhere((element) => element.id == message.id);
+    final updatedMessage = (_messages[index] as types.TextMessage).copyWith(
+      previewData: previewData,
+    );
 
-    if (index != -1 && message is types.TextMessage) {
-      final wrappedMessage = _messages[index];
-
-      // Cast the message to TextMessage and update preview data
-      final updatedMessage = types.TextMessage(
-        id: wrappedMessage.message.id,
-        author: wrappedMessage.message.author,
-        createdAt: wrappedMessage.message.createdAt,
-        text: (wrappedMessage.message as types.TextMessage).text, // Cast to TextMessage to access text
-        previewData: previewData, // Update preview data
-      );
-      setState(() {
-        _messages[index] = WrappedMessage(
-          message: updatedMessage,
-          seen: wrappedMessage.seen,
-        );
-      });
-    }
+    setState(() {
+      _messages[index] = updatedMessage;
+    });
   }
 
   void _handleSendPressed(types.PartialText message) {
@@ -295,188 +278,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _playAudio(String? uri, String messageId) async {
-    if (uri != null) {
-      if (_audioPlayers[messageId] == null) {
-        _audioPlayers[messageId] = AudioPlayer();
-      }
-      final player = _audioPlayers[messageId]!;
-
-      try {
-        await player.play(UrlSource(uri));
-        setState(() {
-          _isPlayingMap[messageId] = true;
-        });
-        await _savePlaybackState(messageId, true); // Save state
-        player.onPlayerComplete.listen((event) async {
-          setState(() {
-            _isPlayingMap[messageId] = false;
-          });
-          await _savePlaybackState(messageId, false); // Save state
-          player.dispose();
-          _audioPlayers[messageId] = null;
-        });
-      } catch (e) {
-        print("Error playing audio: $e");
-      }
-    }
-  }
-
-  void _stopAudio(String messageId) async {
-    if (_audioPlayers[messageId] != null) {
-      _audioPlayers[messageId]!.stop();
-      setState(() {
-        _isPlayingMap[messageId] = false;
-      });
-      await _savePlaybackState(messageId, false); // Save state
-      _audioPlayers[messageId]!.dispose();
-      _audioPlayers[messageId] = null;
-    }
-  }
-
-  Future<void> _savePlaybackState(String messageId, bool isPlaying) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(messageId, isPlaying);
-  }
-
-// Load playback state
-  Future<bool> _loadPlaybackState(String messageId) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(messageId) ?? false;
-  }
-
-  Widget _buildCustomMessage(types.Message message, {required int messageWidth}) {
-    final messageTime = DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
-    final messageColor = message.author.id == _user.id ? const Color(0xFF0E7490) : Colors.grey[300];
-    final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
-
-    Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
-
-    if (message is WrappedMessage) {
-      final wrappedMessage = message as WrappedMessage;
-      if (wrappedMessage.seen) {
-        seenIndicator = const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.check, color: Colors.blue, size: 16.0),
-            SizedBox(width: 2.0),
-            Icon(Icons.check, color: Colors.blue, size: 16.0),
-          ],
-        );
-      }
-    }
-
-    if (message is types.TextMessage) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          color: messageColor, // Use the same color for text message background
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Text(
-              message.text,
-              style: TextStyle(color: textColor), // Use the same color for text
-            ),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [
-                seenIndicator, // Add the seen indicator here
-                const SizedBox(width: 4.0),
-                Text(
-                  messageTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else if (message is types.ImageMessage) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          color: messageColor, // Use the same color for image message background
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Image.file(File(message.uri), width: message.width, height: message.height),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [
-                seenIndicator, // Add the seen indicator here
-                const SizedBox(width: 4.0),
-                Text(
-                  messageTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else if (message is types.FileMessage) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          color: messageColor, // Use the same color for file message background
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.attach_file,
-                  color: textColor, // Use the same color for file icon
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    message.name,
-                    style: TextStyle(
-                      color: textColor, // Use the same color for file name
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [
-                seenIndicator, // Add the seen indicator here
-                const SizedBox(width: 4.0),
-                Text(
-                  messageTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
-
   @override
   Widget build(BuildContext context) {
     const groupChatTheme = DefaultChatTheme(
@@ -501,154 +302,84 @@ class _ChatPageState extends State<ChatPage> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: person
-            ? const CustomAppBar(
+        appBar: person ? CustomAppBar(
           title: "Thaowpsta",
           avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-          isPerson: true,
-        )
-            : const CustomAppBar(
+        ) : CustomAppBar(
           title: "Group",
           avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
-          isPerson: false,
         ),
 
         body: Chat(
-            messages: _messages.map((wm) => wm.message).toList(),
-            onAttachmentPressed: _handleAttachmentPressed,
-            onMessageTap: _handleMessageTap,
-            onPreviewDataFetched: _handlePreviewDataFetched,
-            onSendPressed: _handleSendPressed,
-            showUserAvatars: person,
-            showUserNames: true,
-            user: _user,
-            theme: person ? personalChatTheme : groupChatTheme,
-            customBottomWidget: ValueListenableBuilder<bool>(
-              valueListenable: _isRecording,
-              builder: (context, isRecording, child) {
-                return isRecording
-                    ? Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0E7490),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Recording...',
-                        style: TextStyle(
-                            color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  ),
-                )
-                    : Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 4.0, horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFBFAFA),
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _textController,
-                            decoration: const InputDecoration(
-                              hintText: 'Type a message...',
-                              border: InputBorder.none,
-                              hintStyle: TextStyle(
-                                color: Color(0xFF888888),
-                                fontSize: 12,
-                                fontFamily: 'IBM Plex Mono',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
-                            ),
-                            style: const TextStyle(color: Colors.black),
-                            onSubmitted: (value) {
-                              if (value.isNotEmpty) {
-                                _handleSendPressed(
-                                    types.PartialText(text: value));
-                              }
-                            },
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.attach_file,
-                              color: Colors.black),
-                          onPressed: _handleAttachmentPressed,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            fileMessageBuilder: (message, {required int messageWidth}) {
-              if (message.mimeType?.startsWith('audio/') == true) {
-                final messageColor = message.author.id == _user.id ? const Color(0xFF0E7490) : Colors.grey[300];
-                final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
-
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          messages: _messages,
+          onAttachmentPressed: _handleAttachmentPressed,
+          onMessageTap: _handleMessageTap,
+          onPreviewDataFetched: _handlePreviewDataFetched,
+          onSendPressed: _handleSendPressed,
+          showUserAvatars: person,
+          showUserNames: true,
+          user: _user,
+          theme: person ? personalChatTheme : groupChatTheme,
+          customBottomWidget: ValueListenableBuilder<bool>(
+            valueListenable: _isRecording,
+            builder: (context, isRecording, child) {
+              return isRecording
+                  ? Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
                   decoration: BoxDecoration(
-                    color: messageColor,
-                    borderRadius: BorderRadius.circular(8.0),
+                    color: const Color(0xFF0E7490),
+                    borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
                   ),
-                  child: Column(
-                    crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  child: const Center(
+                    child: Text(
+                      'Recording...',
+                      style: TextStyle(color: Colors.white, fontSize: 16), // Adjust color to ensure contrast
+                    ),
+                  ),
+                ),
+              )
+
+
+                  : Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 85, 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFBFAFA),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              _isPlayingMap[message.id] == true ? Icons.stop : Icons.play_arrow,
-                              color: textColor,
-                            ),
-                            onPressed: () {
-                              if (_isPlayingMap[message.id] == true) {
-                                _stopAudio(message.id);
-                              } else {
-                                _playAudio(message.uri, message.id);
-                              }
-                            },
+                      Expanded(
+                        child: TextField(
+                          controller: _textController,
+                          decoration: const InputDecoration(
+                            hintText: 'Type a message...',
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(color: Colors.black),
                           ),
-                          Expanded(
-                            child: Text(
-                              'Voice Message',
-                              style: TextStyle(
-                                color: textColor,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                          style: const TextStyle(color: Colors.black),
+                          onSubmitted: (value) {
+                            if (value.isNotEmpty) {
+                              _handleSendPressed(types.PartialText(text: value));
+                            }
+                          },
+                        ),
                       ),
-                      const SizedBox(height: 4.0),
-                      Row(
-                        mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
-                            style: TextStyle(color: textColor, fontSize: 10.0),
-                          ),
-                        ],
+                      IconButton(
+                        icon: const Icon(Icons.attach_file, color: Colors.black),
+                        onPressed: _handleAttachmentPressed,
                       ),
                     ],
                   ),
-                );
-              }
-              return _buildCustomMessage(message, messageWidth: messageWidth);
-            }
+                ),
+              );
+            },
+          ),
         ),
-        floatingActionButton: _showFloatingButton
-            ? ValueListenableBuilder<bool>(
+        floatingActionButton: ValueListenableBuilder<bool>(
           valueListenable: _isTyping,
           builder: (context, isTyping, child) {
             return isTyping
@@ -704,11 +435,4 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-}
-
-class WrappedMessage {
-  final types.Message message;
-  final bool seen;
-
-  WrappedMessage({required this.message, required this.seen});
 }

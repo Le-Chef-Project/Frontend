@@ -4,9 +4,18 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="chat UI">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_07_2024,_1_37 PM_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_07_2024__1_37PM__Changes_.xml" afterDir="false" />
+    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="chat simple UI">
+      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-hdpi/launcher_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-mdpi/launcher_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xhdpi/launcher_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxhdpi/launcher_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxxhdpi/launcher_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@1x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@1x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@1x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@2x.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
@@ -183,23 +192,7 @@
       <option name="project" value="LOCAL" />
       <updated>1721420129158</updated>
     </task>
-    <task id="LOCAL-00011" summary="Chat UI (Not finished)&#10;payment alert&#10;ic_launcher">
-      <option name="closed" value="true" />
-      <created>1721435155634</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1721435155635</updated>
-    </task>
-    <task id="LOCAL-00012" summary="chat UI">
-      <option name="closed" value="true" />
-      <created>1722264955905</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1722264955905</updated>
-    </task>
-    <option name="localTasksCounter" value="13" />
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -237,9 +230,6 @@
     <MESSAGE value="Screen 2" />
     <MESSAGE value="Screen 13, 19" />
     <MESSAGE value="chat simple UI" />
-    <MESSAGE value="Chat UI (Not finished)&#10;payment alert" />
-    <MESSAGE value="Chat UI (Not finished)&#10;payment alert&#10;ic_launcher" />
-    <MESSAGE value="chat UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="chat UI" />
+    <option name="LAST_COMMIT_MESSAGE" value="chat simple UI" />
   </component>
 </project>

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
 
 import '../Shared/customBottomNavBar.dart';
+import '../Shared/custom_app_bar.dart';
 import '../Shared/custom_search_view.dart';
 import 'notification.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
-
   @override
   State<Home> createState() => _HomeState();
 }
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
+              Container(
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 8, 0, 0),
@@ -134,7 +135,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              SizedBox(
+              Container(
                 height: 250, // Specify a fixed height for the ListView
                 child: new_video(context),
               ),
@@ -159,12 +160,18 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(context,
-                          Title: "Exams",
-                          Number: "15",
-                          ImagePath: 'assets/Wonder Learners Graduating.png'),
+                      child: _buildCardRec(
+                        context,
+                        Title: "Exams",
+                        Number: "15",
+                        ImagePath: 'assets/Wonder Learners Graduating.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Exams()),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "PDFs",
@@ -179,18 +186,24 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(context,
-                          Title: "Notes",
-                          Number: "10",
-                          ImagePath: 'assets/Wonder Learners Book.png'),
+                      child: _buildCardRec(
+                        context,
+                        Title: "Notes",
+                        Number: "10",
+                        ImagePath: 'assets/Wonder Learners Book.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Notes()),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Expanded(
                       child: GestureDetector(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.only(left: 16),
                               child: Text(
                                 'Online Seesions',
@@ -203,7 +216,7 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             Image.asset(
                               'assets/Shopaholics Sitting On The Floor.png',
                               height: 228,
@@ -231,7 +244,7 @@ class _HomeState extends State<Home> {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
+                  MaterialPageRoute(builder: (context) => Chats()),
                 );
                 break;
             }
@@ -251,7 +264,7 @@ Widget new_video(BuildContext context) {
     itemBuilder: (context, index) {
       return Container(
         width: 273, // Fixed width for each item in the horizontal ListView
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        margin: EdgeInsets.symmetric(horizontal: 8.0),
         child: Stack(
           children: [
             ClipRRect(
@@ -261,8 +274,8 @@ Widget new_video(BuildContext context) {
                 fit: BoxFit.cover,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -311,10 +324,10 @@ Widget _buildCardRec(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16),
+          padding: EdgeInsets.only(left: 16),
           child: Text(
             Title,
-            style: const TextStyle(
+            style: TextStyle(
               color: Color(0xFF164863),
               fontSize: 16,
               fontFamily: 'IBM Plex Mono',
@@ -324,10 +337,10 @@ Widget _buildCardRec(
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 16),
+          padding: EdgeInsets.only(left: 16),
           child: Text(
             Number,
-            style: const TextStyle(
+            style: TextStyle(
               color: Color(0xFF0E7490),
               fontSize: 12,
               fontFamily: 'IBM Plex Mono',
@@ -336,7 +349,7 @@ Widget _buildCardRec(
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Image.asset(
           ImagePath,
           height: 228,

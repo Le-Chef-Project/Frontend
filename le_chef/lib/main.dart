@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:le_chef/Screens/ExamForm.dart';
+import 'package:le_chef/Screens/Home.dart';
+import 'package:le_chef/Screens/Notes.dart';
+import 'package:le_chef/Screens/SplashOne.dart';
+import 'package:le_chef/Screens/exams.dart';
+import 'package:le_chef/Screens/login.dart';
+import 'package:le_chef/Screens/notification.dart';
+import 'package:le_chef/Screens/seeAllVid.dart';
+import './Screens/payment.dart';
 import 'Screens/chatPage.dart';
+import 'Screens/chats.dart';
+import 'Screens/videos.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +30,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: statusBarColor,
       statusBarIconBrightness:
-      Brightness.dark, // You can adjust based on your color
+          Brightness.dark, // You can adjust based on your color
     ));
 
     return ScreenUtilInit(
@@ -31,7 +42,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const ChatPage(),
+        home: SplashOne(),
       ),
     );
   }
