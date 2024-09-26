@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/meeting/meeting_screen.dart';
-
 import '../../Shared/customBottomNavBar.dart';
 import '../Home.dart';
 import '../chats.dart';
@@ -10,7 +9,7 @@ import '../notification.dart';
 class OnlineSessionScreen extends StatelessWidget {
   OnlineSessionScreen({super.key});
 
-  bool _isStartedMeeting = false;
+  final bool _isStartedMeeting = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,69 +33,159 @@ class OnlineSessionScreen extends StatelessWidget {
         ),
       ),
       body: _isStartedMeeting
-          ? const Column()
-          :  Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline_rounded,
-              color: Color(0xFF164863),
-              size: 150,
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
-              child: Text(
-                'There are no sessions \n now, come back later....',
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+          ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/Humaaans 3 Characters.png'),
+                SizedBox(
+                  height: 81,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(
-              height: 134.5,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF427D9D),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 14.5, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(
-                    'Home Page',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ibmPlexMono(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                Text(
+                  'Tap to Join meeting',
+                  style: GoogleFonts.ibmPlexMono(
+                    color: Color(0xFF3D3D3D),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                SizedBox(height: 26),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/video_svgrepo.com.png'),
+                    SizedBox(width: 35),
+                    Icon(Icons.mic, color: Color(0xFF164863), size: 40),
+                  ],
+                ),
+                SizedBox(height: 42),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MeetingPage()));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF427D9D),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Join Meeting',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14.5),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: const BorderSide(
+                                color: Color(0xFF427D9D),
+                                width: 2,
+                              )),
+                        ),
+                        child: Text(
+                          'Home Page',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF427D9D),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    color: Color(0xFF164863),
+                    size: 150,
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Text(
+                      'There are no sessions \n now, come back later....',
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 134.5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF427D9D),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 14.5, horizontal: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Home Page',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),
       bottomNavigationBar: CustomBottomNavBar(
         onItemTapped: (index) {
           switch (index) {

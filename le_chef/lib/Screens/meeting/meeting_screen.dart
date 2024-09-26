@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Screens/meeting/end_meeting.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MeetingPage extends StatefulWidget {
@@ -170,7 +171,7 @@ class _MeetingPageState extends State<MeetingPage> {
                           padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 7, vertical: 12))
                         ),
                         onPressed: () {
-                          dispose();
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EndMeeting()));
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,

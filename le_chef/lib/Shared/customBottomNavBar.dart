@@ -26,6 +26,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: defaultBackgroundColor,
         borderRadius: const BorderRadius.only(

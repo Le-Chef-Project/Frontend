@@ -27,7 +27,7 @@ class _SplashTwoState extends State<SplashTwo> {
                   shape: BoxShape.circle,
                 ),
                 child: Image.asset(
-                  'assets/logo.jpeg',
+                  'assets/logo.png',
                   width: 150,
                   height: 150,
                   fit: BoxFit.contain,
@@ -61,14 +61,14 @@ class _SplashTwoState extends State<SplashTwo> {
                           child: Text('French Can be more interesting', style: TextStyle(color: Color(0xFF164863), fontSize: 24))),
                       Positioned(
                         bottom: 0,
-                          left: 140,
+                          left: 155,
                           child: GestureDetector(
                             onTap: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
                             },
                             child: const CircleAvatar(
-                              backgroundColor: Color(0xFFF1FAFF),
-                            radius: 60,
+                              backgroundColor: Colors.white,
+                            radius: 50,
                             child: Icon(Icons.arrow_forward, color: Color(0xFF164863),size: 50,),),
                           ))
                     ],
