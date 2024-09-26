@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:le_chef/Screens/splash_two.dart';
+import 'package:le_chef/Screens/OnlineSessions.dart';
+import 'package:le_chef/Screens/meeting/meeting_screen.dart';
+import 'package:le_chef/Screens/meeting/online_session_screen.dart';
+import 'package:le_chef/Screens/splash_one.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const SplashTwo(),
+        home: OnlineSessionScreen(),
       ),
     );
   }

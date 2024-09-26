@@ -71,7 +71,7 @@ class _SplashOneState extends State<SplashOne> with SingleTickerProviderStateMix
 
     // Initialize the animation controller
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 20),
+      duration: const Duration(seconds: 1),
       vsync: this,
     );
 
@@ -123,6 +123,7 @@ class _SplashOneState extends State<SplashOne> with SingleTickerProviderStateMix
                   left: MediaQuery.of(context).size.width / 2 - 94.5 + _animation.value.dx * (MediaQuery.of(context).size.width / 2 - 94.5),
                   top: MediaQuery.of(context).size.height / 2 - 94.5 + _animation.value.dy * (MediaQuery.of(context).size.height / 2 - 94.5),
                   child: CircleAvatar(
+                    radius: 80,
                       backgroundColor: const Color(0xFFF1FAFF),
                     child: Center(
                       child: Image.asset('assets/logo.png'), // Ensure this image path is correct

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Shared/textInputDecoration.dart';
 
@@ -100,16 +101,14 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Log in',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.ibmPlexMono(textStyle: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
-                      fontFamily: 'IBM Plex Mono',
                       fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
+                    ),)
                   ),
                 ),
               ),

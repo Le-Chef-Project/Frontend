@@ -15,7 +15,7 @@ class _SplashTwoState extends State<SplashTwo> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF1FAFF),
         body: Stack(
           children: [
             Positioned(
