@@ -4,21 +4,22 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="chat simple UI">
-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-hdpi/launcher_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-mdpi/launcher_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xhdpi/launcher_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxhdpi/launcher_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/android/app/src/main/res/mipmap-xxxhdpi/launcher_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@1x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-50x50@2x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@1x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-57x57@2x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@1x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-72x72@2x.png" afterDir="false" />
+    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="updates">
+      <change afterPath="$PROJECT_DIR$/.idea/Frontend.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/assets/Rectangle 4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_07_2024__1_37PM__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/chatPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/THome.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/THome.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,20 +46,21 @@
     &quot;assignee&quot;: &quot;Thaowpsta&quot;
   }
 }</component>
-  <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="434cfc8b-669e-416d-a0a3-05c6735d38d9" />
-  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Le-Chef-Project/Frontend.git&quot;,
     &quot;accountId&quot;: &quot;434cfc8b-669e-416d-a0a3-05c6735d38d9&quot;
   }
 }</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2j9neb8EJFqXpM4RotXEmgDD1Rq" />
   <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -72,17 +74,18 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/thaowpstasaiid/Documents/Frontend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/FlutterFile/flutter/bin/cache/dart-sdk&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;dart.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>

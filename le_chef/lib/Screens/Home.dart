@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 8, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +175,7 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _buildCardRec(context,
-                          Title: "PDFs",
+                          Title: "Library",
                           Number: "20",
                           ImagePath: 'assets/Charco Education.png'),
                     ),
@@ -200,30 +200,47 @@ class _HomeState extends State<Home> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: GestureDetector(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 16),
-                              child: Text(
-                                'Online Seesions',
-                                style: TextStyle(
-                                  color: Color(0xFF164863),
-                                  fontSize: 16,
-                                  fontFamily: 'IBM Plex Mono',
-                                  fontWeight: FontWeight.w600,
-                                  height: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment(0.00, -1.00),
+                            end: Alignment(0, 1),
+                            colors: [
+                              Color(0x33DDF2FD),
+                              Color(0x89C8C8C8),
+                              Colors.white.withOpacity(0)
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 16),
+                                child: Text(
+                                  'Online Seesions',
+                                  style: TextStyle(
+                                    color: Color(0xFF164863),
+                                    fontSize: 16,
+                                    fontFamily: 'IBM Plex Mono',
+                                    fontWeight: FontWeight.w600,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Image.asset(
-                              'assets/Shopaholics Sitting On The Floor.png',
-                              height: 228,
-                              width: double.maxFinite,
-                            )
-                          ],
+                              const SizedBox(height: 8),
+                              Image.asset(
+                                'assets/Shopaholics Sitting On The Floor.png',
+                                height: 228,
+                                width: double.maxFinite,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -317,46 +334,63 @@ Widget _buildCardRec(
   required String ImagePath,
   Function? onTapCardRec,
 }) {
-  return GestureDetector(
-    onTap: () {
-      onTapCardRec?.call();
-    },
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text(
-            Title,
-            style: const TextStyle(
-              color: Color(0xFF164863),
-              fontSize: 16,
-              fontFamily: 'IBM Plex Mono',
-              fontWeight: FontWeight.w600,
-              height: 0,
+  return Container(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    decoration: ShapeDecoration(
+      gradient: LinearGradient(
+        begin: Alignment(0.00, -1.00),
+        end: Alignment(0, 1),
+        colors: [
+          Color(0x33DDF2FD),
+          Color(0x89C8C8C8),
+          Colors.white.withOpacity(0)
+        ],
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+    ),
+    child: GestureDetector(
+      onTap: () {
+        onTapCardRec?.call();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              Title,
+              style: const TextStyle(
+                color: Color(0xFF164863),
+                fontSize: 16,
+                fontFamily: 'IBM Plex Mono',
+                fontWeight: FontWeight.w600,
+                height: 0,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text(
-            Number,
-            style: const TextStyle(
-              color: Color(0xFF0E7490),
-              fontSize: 12,
-              fontFamily: 'IBM Plex Mono',
-              fontWeight: FontWeight.w400,
-              height: 0,
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              Number,
+              style: const TextStyle(
+                color: Color(0xFF0E7490),
+                fontSize: 12,
+                fontFamily: 'IBM Plex Mono',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Image.asset(
-          ImagePath,
-          height: 228,
-          width: double.maxFinite,
-        )
-      ],
+          const SizedBox(height: 8),
+          Image.asset(
+            ImagePath,
+            height: 228,
+            width: double.maxFinite,
+          )
+        ],
+      ),
     ),
   );
 }
