@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/login.dart';
 
 class SplashTwo extends StatefulWidget {
@@ -8,7 +9,27 @@ class SplashTwo extends StatefulWidget {
   State<SplashTwo> createState() => _SplashTwoState();
 }
 
-class _SplashTwoState extends State<SplashTwo> {
+class _SplashTwoState extends State<SplashTwo> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 100, end: 150).animate(_controller);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -19,19 +40,23 @@ class _SplashTwoState extends State<SplashTwo> {
         body: Stack(
           children: [
             Positioned(
-              right: 16.0,
-              top: 16.0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF1FAFF),
-                  shape: BoxShape.circle,
-                ),
-                child: Image.asset(
-                  'assets/logo.png',
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.contain,
-                ),
+              right: 10.0,
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF1FAFF),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.asset(
+                      'assets/logo.png',
+                      width: _animation.value,
+                      height: _animation.value,
+                      fit: BoxFit.contain,
+                    ),
+                  );
+                },
               ),
             ),
             Positioned(
@@ -47,7 +72,7 @@ class _SplashTwoState extends State<SplashTwo> {
                         height: screenSize.height,
                       ),
                       Positioned(
-                       top: 110,
+                        top: 110,
                         child: Image.asset(
                           'assets/Wonder Learners Story Time.png',
                           fit: BoxFit.contain,
@@ -55,25 +80,35 @@ class _SplashTwoState extends State<SplashTwo> {
                           height: screenSize.height,
                         ),
                       ),
-                      const Positioned(
+                      Positioned(
                         bottom: 150,
-                          left: 35,
-                          child: Text('French Can be more interesting', style: TextStyle(color: Color(0xFF164863), fontSize: 24))),
+                        left: 80,
+                        child: Text(
+                          'French Can be more \n interesting',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Color(0xFF164863),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                       Positioned(
                         bottom: 0,
-                          left: 155,
-                          child: GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
-                            },
-                            child: const CircleAvatar(
-                              backgroundColor: Colors.white,
+                        left: 155,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
+                          },
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.white,
                             radius: 50,
-                            child: Icon(Icons.arrow_forward, color: Color(0xFF164863),size: 50,),),
-                          ))
+                            child: Icon(Icons.arrow_forward, color: Color(0xFF164863), size: 50),
+                          ),
+                        ),
+                      )
                     ],
                   ),
-
                 ],
               ),
             ),

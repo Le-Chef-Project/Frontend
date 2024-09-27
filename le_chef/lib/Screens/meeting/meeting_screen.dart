@@ -129,49 +129,79 @@ class _MeetingPageState extends State<MeetingPage> {
                       : GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 15,
-                                  crossAxisSpacing: 15),
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 15,
+                          ),
                           itemCount: 8,
                           itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Color(0xFFD9D9D9).withOpacity(0.1),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 60,
-                                    backgroundImage: Image.asset(
-                                      'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-                                    ).image,
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Color(0xFFD9D9D9).withOpacity(0.1),
+                                ),
+                                child: Stack(children: [
+                                  Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 60,
+                                          backgroundImage: Image.asset(
+                                            'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+                                          ).image,
+                                        ),
+                                        SizedBox(height: 21,),
+                                        Text(
+                                          'Thaowpsta Saiid',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF083344),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  Text('Thaowpsta Saiid')
-                                ],
+                                  Positioned(
+                                      right: 8,
+                                      top: 10,
+                                      child: _isMicOn
+                                          ? Icon(Icons.mic,
+                                              color: Color(0xFF164863))
+                                          : Icon(Icons.mic_off,
+                                              color: Color(0xFF164863)))
+                                ]),
                               ),
                             );
                           },
                         ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 10),
                   child: Row(
                     children: [
                       ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStateProperty.all(Color(0xFFEA5B5B)),
-                          shape: WidgetStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
+                            backgroundColor:
+                                WidgetStateProperty.all(Color(0xFFEA5B5B)),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
                             ),
-                          ),
-                          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 7, vertical: 12))
-                        ),
+                            padding: WidgetStateProperty.all(
+                                EdgeInsets.symmetric(
+                                    horizontal: 7, vertical: 12))),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => EndMeeting()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EndMeeting()));
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -181,11 +211,13 @@ class _MeetingPageState extends State<MeetingPage> {
                               color: Colors.white,
                             ),
                             SizedBox(width: 5),
-                            Text(
-                              'Leave Call',
-                              style: GoogleFonts.ibmPlexMono(textStyle: TextStyle(color: Colors.white, fontSize: 14,),)
-
-                            ),
+                            Text('Leave Call',
+                                style: GoogleFonts.ibmPlexMono(
+                                  textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                )),
                           ],
                         ),
                       ),
@@ -203,7 +235,9 @@ class _MeetingPageState extends State<MeetingPage> {
                           await _toggleCamera();
                         },
                         child: Icon(
-                          _isCameraOn ? Icons.videocam : Icons.videocam_off_outlined,
+                          _isCameraOn
+                              ? Icons.videocam
+                              : Icons.videocam_off_outlined,
                           size: 30,
                           color: Color(0xFF164863),
                         ),
@@ -219,7 +253,7 @@ class _MeetingPageState extends State<MeetingPage> {
                         ),
                         onPressed: _toggleMic,
                         child: Icon(
-                          _isMicOn ? Icons.mic : Icons.mic_off_outlined,
+                          _isMicOn ? Icons.mic : Icons.mic_off,
                           size: 30,
                           color: Color(0xFF164863),
                         ),
