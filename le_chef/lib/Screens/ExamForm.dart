@@ -326,31 +326,6 @@ class _ExamFormState extends State<ExamForm> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-            }
-          },
-          context: context,
-        ),
       ),
     );
   }

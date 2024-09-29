@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -289,22 +290,16 @@ class AllVid extends StatelessWidget {
           onItemTapped: (index) {
             switch (index) {
               case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
+                Get.to(()=>Home(),transition: Transition.fade, duration: Duration(seconds: 1));
+
                 break;
               case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
-                );
+                Get.to(()=>Notifications(),transition: Transition.fade, duration: Duration(seconds: 1));
+
                 break;
               case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
+                Get.to(()=>Chats(),transition: Transition.fade, duration: Duration(seconds: 1));
+
                 break;
             }
           },

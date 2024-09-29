@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:le_chef/Screens/ExamForm.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
@@ -119,35 +121,15 @@ class ExamInfo extends StatelessWidget {
                   height: 50,
                   text: 'Start Quiz',
                   buttonStyle: CustomButtonStyles.fillPrimaryTL5,
+
+                  onPressed: (){
+                    Get.to(()=>ExamForm(),transition: Transition.fade, duration: Duration(seconds: 1));
+
+                  },
                 )
               ],
             ),
           ),
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-            }
-          },
-          context: context,
         ),
       ),
     );

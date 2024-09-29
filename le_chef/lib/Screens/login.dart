@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Shared/textInputDecoration.dart';
@@ -88,10 +89,7 @@ class _LoginState extends State<Login> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Home()),
-                    );
+                    Get.to(()=>Home(),transition: Transition.fade, duration: Duration(seconds: 1));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF427D9D),

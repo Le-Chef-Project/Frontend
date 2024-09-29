@@ -5,21 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="updates">
-      <change afterPath="$PROJECT_DIR$/.idea/Frontend.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/le_chef/assets/Rectangle 4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_07_2024__1_37PM__Changes_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/le_chef/lib/Screens/Library.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/ExamForm.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/ExamForm.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/ExamInfo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/ExamInfo.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/THome.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/THome.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/addStudent.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/login.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/seeAllVid.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/linux/flutter/generated_plugins.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

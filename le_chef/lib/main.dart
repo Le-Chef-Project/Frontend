@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:le_chef/Screens/ExamInfo.dart';
 import 'package:le_chef/Screens/OnlineSessions.dart';
-import 'package:le_chef/Screens/THome.dart';
+import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/meeting/meeting_screen.dart';
 import 'package:le_chef/Screens/meeting/online_session_screen.dart';
 import 'package:le_chef/Screens/splash_one.dart';
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
 
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Le Chef',
         theme: ThemeData(

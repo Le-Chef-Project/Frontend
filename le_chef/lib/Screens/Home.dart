@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:le_chef/Screens/Library.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
@@ -117,10 +119,8 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 106),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const AllVid()),
-                        );
+                        Get.to(()=>AllVid(),transition: Transition.fade, duration: Duration(seconds: 1));
+
                       },
                       child: const Text(
                         'See all',
@@ -166,18 +166,21 @@ class _HomeState extends State<Home> {
                         Title: "Exams",
                         Number: "15",
                         ImagePath: 'assets/Wonder Learners Graduating.png',
-                        onTapCardRec: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Exams()),
-                        ),
+                        onTapCardRec: () =>
+                            Get.to(()=>Exams(),transition: Transition.fade, duration: Duration(seconds: 1))
+
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildCardRec(context,
+                      child: _buildCardRec(
+                          context,
                           Title: "Library",
                           Number: "20",
-                          ImagePath: 'assets/Charco Education.png'),
+                          ImagePath: 'assets/Charco Education.png',
+                          onTapCardRec: () =>
+                            Get.to(()=>Library(),transition: Transition.fade, duration: Duration(seconds: 1))
+    ),
                     ),
                   ],
                 ),
@@ -192,10 +195,9 @@ class _HomeState extends State<Home> {
                         Title: "Notes",
                         Number: "10",
                         ImagePath: 'assets/Wonder Learners Book.png',
-                        onTapCardRec: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Notes()),
-                        ),
+                        onTapCardRec: () =>
+                            Get.to(()=>Notes(),transition: Transition.fade, duration: Duration(seconds: 1))
+
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -254,16 +256,12 @@ class _HomeState extends State<Home> {
           onItemTapped: (index) {
             switch (index) {
               case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
-                );
+                Get.to(()=>Notifications(),transition: Transition.fade, duration: Duration(seconds: 1));
+
                 break;
               case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
+                Get.to(()=>Chats(),transition: Transition.fade, duration: Duration(seconds: 1));
+
                 break;
             }
           },
