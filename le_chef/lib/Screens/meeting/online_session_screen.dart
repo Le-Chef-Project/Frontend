@@ -7,7 +7,7 @@ import '../chats.dart';
 import '../notification.dart';
 
 class OnlineSessionScreen extends StatelessWidget {
-  OnlineSessionScreen({super.key});
+  const OnlineSessionScreen({super.key});
 
   final bool _isStartedMeeting = true;
 
@@ -39,27 +39,27 @@ class OnlineSessionScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset('assets/Humaaans 3 Characters.png'),
-                SizedBox(
+                const SizedBox(
                   height: 81,
                 ),
                 Text(
                   'Tap to Join meeting',
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF3D3D3D),
+                    color: const Color(0xFF3D3D3D),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 26),
+                const SizedBox(height: 26),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset('assets/video_svgrepo.com.png'),
-                    SizedBox(width: 35),
-                    Icon(Icons.mic, color: Color(0xFF164863), size: 40),
+                    const SizedBox(width: 35),
+                    const Icon(Icons.mic, color: Color(0xFF164863), size: 40),
                   ],
                 ),
-                SizedBox(height: 42),
+                const SizedBox(height: 42),
                 Row(
                   children: [
                     Expanded(
@@ -68,7 +68,7 @@ class OnlineSessionScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MeetingPage()));
+                                  builder: (context) => const MeetingPage()));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF427D9D),
@@ -89,13 +89,13 @@ class OnlineSessionScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Home()),
+                            MaterialPageRoute(builder: (context) => const Home()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -160,7 +160,7 @@ class OnlineSessionScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Home()),
+                            MaterialPageRoute(builder: (context) => const Home()),
                           );
                         },
                         style: ElevatedButton.styleFrom(

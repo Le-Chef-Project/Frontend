@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 
@@ -162,7 +163,7 @@ Widget Note(BuildContext context) {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(left: 12),
-                              child: const Column(
+                              child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,10 +173,9 @@ Widget Note(BuildContext context) {
                                     child: Text(
                                       'Just now',
                                       textAlign: TextAlign.justify,
-                                      style: TextStyle(
+                                      style: GoogleFonts.ibmPlexMono(
                                         color: Color(0xFF888888),
                                         fontSize: 12,
-                                        fontFamily: 'IBM Plex Mono',
                                         fontWeight: FontWeight.w400,
                                         height: 0,
                                       ),
@@ -186,10 +186,9 @@ Widget Note(BuildContext context) {
                                     width: double.infinity,
                                     child: Text(
                                       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                                      style: TextStyle(
+                                      style: GoogleFonts.ibmPlexMono(
                                         color: Color(0xFF164863),
                                         fontSize: 14,
-                                        fontFamily: 'IBM Plex Mono',
                                         fontWeight: FontWeight.w500,
                                         height: 0,
                                       ),

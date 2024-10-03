@@ -1,34 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/login.dart';
 
-class SplashTwo extends StatefulWidget {
+class SplashTwo extends StatelessWidget {
   const SplashTwo({super.key});
-
-  @override
-  State<SplashTwo> createState() => _SplashTwoState();
-}
-
-class _SplashTwoState extends State<SplashTwo> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 100, end: 150).animate(_controller);
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +17,20 @@ class _SplashTwoState extends State<SplashTwo> with SingleTickerProviderStateMix
           children: [
             Positioned(
               right: 10.0,
-              child: AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF1FAFF),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image.asset(
-                      'assets/logo.png',
-                      width: _animation.value,
-                      height: _animation.value,
-                      fit: BoxFit.contain,
-                    ),
-                  );
-                },
+              child: Hero(
+                tag: 'logoAnimation',
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF1FAFF),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.asset(
+                    'assets/logo.png',
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
             Positioned(
@@ -86,7 +60,7 @@ class _SplashTwoState extends State<SplashTwo> with SingleTickerProviderStateMix
                         child: Text(
                           'French Can be more \n interesting',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
                           ),
@@ -98,7 +72,7 @@ class _SplashTwoState extends State<SplashTwo> with SingleTickerProviderStateMix
                         left: 155,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
+                            Get.to(() => Login(), transition: Transition.rightToLeftWithFade, duration: Duration(seconds: 2));
                           },
                           child: const CircleAvatar(
                             backgroundColor: Colors.white,

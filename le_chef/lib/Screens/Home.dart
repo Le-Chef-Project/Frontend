@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Library.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
@@ -56,24 +57,22 @@ class _HomeState extends State<Home> {
                     children: [
                       Container(
                         color: const Color(0x00565656),
-                        child: const Text(
+                        child: Text(
                           'Christine Gabrail',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF164863),
                             fontSize: 22,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
                         ),
                       ),
                       Container(
-                        child: const Text(
+                        child: Text(
                           'Level 2',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF427D9D),
                             fontSize: 16,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
@@ -102,14 +101,13 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: SizedBox(
                         child: Text(
                           'Newest Videos',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF164863),
                             fontSize: 16,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
@@ -119,15 +117,14 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 106),
                     TextButton(
                       onPressed: () {
-                        Get.to(()=>AllVid(),transition: Transition.fade, duration: Duration(seconds: 1));
+                        Get.to(()=>const AllVid(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                       },
-                      child: const Text(
+                      child: Text(
                         'See all',
-                        style: TextStyle(
+                        style: GoogleFonts.ibmPlexMono(
                           color: Color(0xFF427D9D),
                           fontSize: 12,
-                          fontFamily: 'IBM Plex Mono',
                           fontWeight: FontWeight.w500,
                           height: 0,
                         ),
@@ -140,16 +137,15 @@ class _HomeState extends State<Home> {
                 height: 250, // Specify a fixed height for the ListView
                 child: new_video(context),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
                 child: SizedBox(
                   width: 380,
                   child: Text(
                     'More',
-                    style: TextStyle(
+                    style: GoogleFonts.ibmPlexMono(
                       color: Color(0xFF164863),
                       fontSize: 16,
-                      fontFamily: 'IBM Plex Mono',
                       fontWeight: FontWeight.w600,
                       height: 0,
                     ),
@@ -167,7 +163,7 @@ class _HomeState extends State<Home> {
                         Number: "15",
                         ImagePath: 'assets/Wonder Learners Graduating.png',
                         onTapCardRec: () =>
-                            Get.to(()=>Exams(),transition: Transition.fade, duration: Duration(seconds: 1))
+                            Get.to(()=>const Exams(),transition: Transition.fade, duration: const Duration(seconds: 1))
 
                       ),
                     ),
@@ -179,7 +175,7 @@ class _HomeState extends State<Home> {
                           Number: "20",
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () =>
-                            Get.to(()=>Library(),transition: Transition.fade, duration: Duration(seconds: 1))
+                            Get.to(()=>const Library(),transition: Transition.fade, duration: const Duration(seconds: 1))
     ),
                     ),
                   ],
@@ -196,7 +192,7 @@ class _HomeState extends State<Home> {
                         Number: "10",
                         ImagePath: 'assets/Wonder Learners Book.png',
                         onTapCardRec: () =>
-                            Get.to(()=>Notes(),transition: Transition.fade, duration: Duration(seconds: 1))
+                            Get.to(()=>const Notes(),transition: Transition.fade, duration: const Duration(seconds: 1))
 
                       ),
                     ),
@@ -206,11 +202,11 @@ class _HomeState extends State<Home> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: ShapeDecoration(
                           gradient: LinearGradient(
-                            begin: Alignment(0.00, -1.00),
-                            end: Alignment(0, 1),
+                            begin: const Alignment(0.00, -1.00),
+                            end: const Alignment(0, 1),
                             colors: [
-                              Color(0x33DDF2FD),
-                              Color(0x89C8C8C8),
+                              const Color(0x33DDF2FD),
+                              const Color(0x89C8C8C8),
                               Colors.white.withOpacity(0)
                             ],
                           ),
@@ -222,14 +218,13 @@ class _HomeState extends State<Home> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 16),
                                 child: Text(
                                   'Online Seesions',
-                                  style: TextStyle(
+                                  style: GoogleFonts.ibmPlexMono(
                                     color: Color(0xFF164863),
                                     fontSize: 16,
-                                    fontFamily: 'IBM Plex Mono',
                                     fontWeight: FontWeight.w600,
                                     height: 0,
                                   ),
@@ -256,11 +251,11 @@ class _HomeState extends State<Home> {
           onItemTapped: (index) {
             switch (index) {
               case 1:
-                Get.to(()=>Notifications(),transition: Transition.fade, duration: Duration(seconds: 1));
+                Get.to(()=>Notifications(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                 break;
               case 2:
-                Get.to(()=>Chats(),transition: Transition.fade, duration: Duration(seconds: 1));
+                Get.to(()=>const Chats(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                 break;
             }
@@ -290,27 +285,25 @@ Widget new_video(BuildContext context) {
                 fit: BoxFit.cover,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Lesson Title',
-                    style: TextStyle(
+                    style: GoogleFonts.ibmPlexMono(
                       color: Color(0xFFFBFAFA),
                       fontSize: 18,
-                      fontFamily: 'IBM Plex Mono',
                       fontWeight: FontWeight.w600,
                       height: 1.2,
                     ),
                   ),
                   Text(
                     'Unit 3 - Lesson 1',
-                    style: TextStyle(
+                    style: GoogleFonts.ibmPlexMono(
                       color: Color(0xFFFBFAFA),
                       fontSize: 16,
-                      fontFamily: 'IBM Plex Mono',
                       fontWeight: FontWeight.w600,
                       height: 1.2,
                     ),
@@ -336,11 +329,11 @@ Widget _buildCardRec(
     padding: const EdgeInsets.symmetric(vertical: 8),
     decoration: ShapeDecoration(
       gradient: LinearGradient(
-        begin: Alignment(0.00, -1.00),
-        end: Alignment(0, 1),
+        begin: const Alignment(0.00, -1.00),
+        end: const Alignment(0, 1),
         colors: [
-          Color(0x33DDF2FD),
-          Color(0x89C8C8C8),
+          const Color(0x33DDF2FD),
+          const Color(0x89C8C8C8),
           Colors.white.withOpacity(0)
         ],
       ),
@@ -359,10 +352,9 @@ Widget _buildCardRec(
             padding: const EdgeInsets.only(left: 16),
             child: Text(
               Title,
-              style: const TextStyle(
+              style: GoogleFonts.ibmPlexMono(
                 color: Color(0xFF164863),
                 fontSize: 16,
-                fontFamily: 'IBM Plex Mono',
                 fontWeight: FontWeight.w600,
                 height: 0,
               ),
@@ -372,10 +364,9 @@ Widget _buildCardRec(
             padding: const EdgeInsets.only(left: 16),
             child: Text(
               Number,
-              style: const TextStyle(
+              style: GoogleFonts.ibmPlexMono(
                 color: Color(0xFF0E7490),
                 fontSize: 12,
-                fontFamily: 'IBM Plex Mono',
                 fontWeight: FontWeight.w400,
                 height: 0,
               ),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
-import 'package:le_chef/Screens/seeAllVid.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 
 import '../Shared/customBottomNavBar.dart';
-import '../Shared/custom_search_view.dart';
 import '../Shared/textInputDecoration.dart';
 import '../theme/custom_button_style.dart';
 import 'Notes.dart';
@@ -60,24 +59,22 @@ class _THomeState extends State<THome> {
                     children: [
                       Container(
                         color: const Color(0x00565656),
-                        child: const Text(
+                        child: Text(
                           'Hany Azmy',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF164863),
                             fontSize: 22,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
                         ),
                       ),
                       Container(
-                        child: const Text(
+                        child: Text(
                           'French Teacher',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF427D9D),
                             fontSize: 16,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
@@ -144,11 +141,11 @@ class _THomeState extends State<THome> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: ShapeDecoration(
                           gradient: LinearGradient(
-                            begin: Alignment(0.00, -1.00),
-                            end: Alignment(0, 1),
+                            begin: const Alignment(0.00, -1.00),
+                            end: const Alignment(0, 1),
                             colors: [
-                              Color(0x33DDF2FD),
-                              Color(0x89C8C8C8),
+                              const Color(0x33DDF2FD),
+                              const Color(0x89C8C8C8),
                               Colors.white.withOpacity(0)
                             ],
                           ),
@@ -160,14 +157,13 @@ class _THomeState extends State<THome> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 16),
                                 child: Text(
                                   'Online Seesions',
-                                  style: TextStyle(
+                                  style: GoogleFonts.ibmPlexMono(
                                     color: Color(0xFF164863),
                                     fontSize: 16,
-                                    fontFamily: 'IBM Plex Mono',
                                     fontWeight: FontWeight.w600,
                                     height: 0,
                                   ),
@@ -225,11 +221,11 @@ class _THomeState extends State<THome> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: ShapeDecoration(
         gradient: LinearGradient(
-          begin: Alignment(0.00, -1.00),
-          end: Alignment(0, 1),
+          begin: const Alignment(0.00, -1.00),
+          end: const Alignment(0, 1),
           colors: [
-            Color(0x33DDF2FD),
-            Color(0x89C8C8C8),
+            const Color(0x33DDF2FD),
+            const Color(0x89C8C8C8),
             Colors.white.withOpacity(0)
           ],
         ),
@@ -248,10 +244,9 @@ class _THomeState extends State<THome> {
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 Title,
-                style: const TextStyle(
+                style: GoogleFonts.ibmPlexMono(
                   color: Color(0xFF164863),
                   fontSize: 16,
-                  fontFamily: 'IBM Plex Mono',
                   fontWeight: FontWeight.w600,
                   height: 0,
                 ),
@@ -261,10 +256,9 @@ class _THomeState extends State<THome> {
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 Number,
-                style: const TextStyle(
+                style: GoogleFonts.ibmPlexMono(
                   color: Color(0xFF0E7490),
                   fontSize: 12,
-                  fontFamily: 'IBM Plex Mono',
                   fontWeight: FontWeight.w400,
                   height: 0,
                 ),
@@ -292,7 +286,7 @@ class _THomeState extends State<THome> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          shadows: [
+          shadows: const [
             BoxShadow(
               color: Color(0x4C427D9D),
               blurRadius: 32.50,
@@ -317,10 +311,9 @@ class _THomeState extends State<THome> {
                     Expanded(
                       child: Text(
                         'Total Students',
-                        style: TextStyle(
+                        style: GoogleFonts.ibmPlexMono(
                           color: Color(0xFF164863),
                           fontSize: 14,
-                          fontFamily: 'IBM Plex Mono',
                           fontWeight: FontWeight.w600,
                           height: 0,
                         ),
@@ -328,10 +321,9 @@ class _THomeState extends State<THome> {
                     ),
                     Text(
                       'See all',
-                      style: TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Color(0xFF427D9D),
                         fontSize: 12,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w500,
                         decoration: TextDecoration.underline,
                       ),
@@ -352,7 +344,7 @@ class _THomeState extends State<THome> {
                         child: Container(
                           height: 41,
                           decoration: ShapeDecoration(
-                            color: Color(0xFFDDF2FD),
+                            color: const Color(0xFFDDF2FD),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -361,10 +353,9 @@ class _THomeState extends State<THome> {
                             child: Text(
                               '16.5K',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: GoogleFonts.ibmPlexMono(
                                 color: Color(0xFF164863),
                                 fontSize: 24,
-                                fontFamily: 'IBM Plex Mono',
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -395,10 +386,9 @@ class _THomeState extends State<THome> {
                                     width: 275,
                                     child: Text(
                                       'Add username',
-                                      style: TextStyle(
+                                      style: GoogleFonts.ibmPlexMono(
                                         color: Color(0xFF164863),
                                         fontSize: 14,
-                                        fontFamily: 'IBM Plex Mono',
                                         fontWeight: FontWeight.w500,
                                         height: 0,
                                       ),
@@ -421,10 +411,9 @@ class _THomeState extends State<THome> {
                                     width: 275,
                                     child: Text(
                                       'Add Password',
-                                      style: TextStyle(
+                                      style: GoogleFonts.ibmPlexMono(
                                         color: Color(0xFF164863),
                                         fontSize: 14,
-                                        fontFamily: 'IBM Plex Mono',
                                         fontWeight: FontWeight.w500,
                                         height: 0,
                                       ),
@@ -474,7 +463,7 @@ class _THomeState extends State<THome> {
                                                         width: 117,
                                                         height: 117,
                                                       ),
-                                                      content: const SizedBox(
+                                                      content: SizedBox(
                                                         width: 150,
                                                         height: 80,
                                                         child: Column(
@@ -482,10 +471,9 @@ class _THomeState extends State<THome> {
                                                             Text(
                                                               'Success!',
                                                               textAlign: TextAlign.center,
-                                                              style: TextStyle(
+                                                              style: GoogleFonts.ibmPlexMono(
                                                                 color: Color(0xFF164863),
                                                                 fontSize: 16,
-                                                                fontFamily: 'IBM Plex Mono',
                                                                 fontWeight: FontWeight.w600,
                                                                 height: 0,
                                                               ),
@@ -496,10 +484,9 @@ class _THomeState extends State<THome> {
                                                             Text(
                                                               'Student Added Successfully',
                                                               textAlign: TextAlign.center,
-                                                              style: TextStyle(
+                                                              style: GoogleFonts.ibmPlexMono(
                                                                 color: Color(0xFF888888),
                                                                 fontSize: 16,
-                                                                fontFamily: 'IBM Plex Mono',
                                                                 fontWeight: FontWeight.w600,
                                                                 height: 0,
                                                               ),
@@ -531,13 +518,12 @@ class _THomeState extends State<THome> {
                                                                           BorderRadius.circular(12),
                                                                         ),
                                                                       ),
-                                                                      child: const Text(
+                                                                      child: Text(
                                                                         'Ok',
                                                                         textAlign: TextAlign.center,
-                                                                        style: TextStyle(
+                                                                        style: GoogleFonts.ibmPlexMono(
                                                                           color: Colors.white,
                                                                           fontSize: 16,
-                                                                          fontFamily: 'IBM Plex Mono',
                                                                           fontWeight: FontWeight.w600,
                                                                           height: 0,
                                                                         ),
@@ -558,13 +544,12 @@ class _THomeState extends State<THome> {
                                                 borderRadius: BorderRadius.circular(12),
                                               ),
                                             ),
-                                            child: const Text(
+                                            child: Text(
                                               'Add Student',
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
+                                              style: GoogleFonts.ibmPlexMono(
                                                 color: Colors.white,
                                                 fontSize: 16,
-                                                fontFamily: 'IBM Plex Mono',
                                                 fontWeight: FontWeight.w600,
                                                 height: 0,
                                               ),
@@ -589,13 +574,12 @@ class _THomeState extends State<THome> {
                                                 borderRadius: BorderRadius.circular(12),
                                               ),
                                             ),
-                                            child: const Text(
+                                            child: Text(
                                               'Cancel',
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
+                                              style: GoogleFonts.ibmPlexMono(
                                                 color: Color(0xFF427D9D),
                                                 fontSize: 16,
-                                                fontFamily: 'IBM Plex Mono',
                                                 fontWeight: FontWeight.w600,
                                                 height: 0,
                                               ),

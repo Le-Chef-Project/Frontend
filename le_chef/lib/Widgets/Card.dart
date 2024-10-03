@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../Screens/Payment.dart'; // Import your PaymentScreen
 
 class CustomCardWithText extends StatelessWidget {
@@ -29,13 +30,12 @@ class CustomCardWithText extends StatelessWidget {
                   color: Color(0xFF164863),
                   size: 100,
                 ),
-                content: const Text(
+                content: Text(
                   'This video is locked. You should pay video fees',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: GoogleFonts.ibmPlexMono(
                     color: Color(0xFF083344),
                     fontSize: 16,
-                    fontFamily: 'IBM Plex Mono',
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -64,13 +64,12 @@ class CustomCardWithText extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Pay Fees',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: GoogleFonts.ibmPlexMono(
                                   color: Colors.white,
                                   fontSize: 16,
-                                  fontFamily: 'IBM Plex Mono',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -94,13 +93,12 @@ class CustomCardWithText extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Cancel',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: GoogleFonts.ibmPlexMono(
                                   color: Color(0xFF427D9D),
                                   fontSize: 16,
-                                  fontFamily: 'IBM Plex Mono',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -150,20 +148,18 @@ class CustomCardWithText extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: GoogleFonts.ibmPlexMono(
                       color: Color(0xFF164863),
                       fontSize: 16,
-                      fontFamily: 'IBM Plex Mono',
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: GoogleFonts.ibmPlexMono(
                       color: Color(0xFF427D9D),
                       fontSize: 14,
-                      fontFamily: 'IBM Plex Mono',
                       fontWeight: FontWeight.w500,
                     ),
                   ),

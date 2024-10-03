@@ -8,6 +8,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Screens/chats.dart';
@@ -525,16 +526,13 @@ class _ChatPageState extends State<ChatPage> {
                         Expanded(
                           child: TextField(
                             controller: _textController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'Type a message...',
                               border: InputBorder.none,
-                              hintStyle: TextStyle(
-                                color: Color(0xFF888888),
+                              hintStyle: GoogleFonts.ibmPlexMono(color: Color(0xFF888888),
                                 fontSize: 12,
-                                fontFamily: 'IBM Plex Mono',
                                 fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
+                                )
                             ),
                             style: const TextStyle(color: Colors.black),
                             onSubmitted: (value) {

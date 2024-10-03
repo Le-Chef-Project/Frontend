@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
@@ -97,7 +98,7 @@ class _ExamFormState extends State<ExamForm> {
                         width: 117,
                         height: 117,
                       ),
-                      content: const SizedBox(
+                      content: SizedBox(
                         width: 150,
                         height: 80,
                         child: Column(
@@ -105,10 +106,9 @@ class _ExamFormState extends State<ExamForm> {
                             Text(
                               'Warning!',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: GoogleFonts.ibmPlexMono(
                                 color: Color(0xFF164863),
                                 fontSize: 16,
-                                fontFamily: 'IBM Plex Mono',
                                 fontWeight: FontWeight.w600,
                                 height: 0,
                               ),
@@ -119,10 +119,9 @@ class _ExamFormState extends State<ExamForm> {
                             Text(
                               'If you leave the quiz you will not \n be able to take it again !',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: GoogleFonts.ibmPlexMono(
                                 color: Color(0xFF888888),
                                 fontSize: 16,
-                                fontFamily: 'IBM Plex Mono',
                                 fontWeight: FontWeight.w600,
                                 height: 0,
                               ),
@@ -149,16 +148,15 @@ class _ExamFormState extends State<ExamForm> {
                                         backgroundColor: const Color(0xFF427D9D),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(12),
+                                          BorderRadius.circular(12),
                                         ),
                                       ),
-                                      child: const Text(
+                                      child: Text(
                                         'Complete quiz',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: GoogleFonts.ibmPlexMono(
                                           color: Colors.white,
                                           fontSize: 16,
-                                          fontFamily: 'IBM Plex Mono',
                                           fontWeight: FontWeight.w600,
                                           height: 0,
                                         ),
@@ -183,16 +181,15 @@ class _ExamFormState extends State<ExamForm> {
                                                 width: 1,
                                                 color: Color(0xFF427D9D)),
                                             borderRadius:
-                                                BorderRadius.circular(12),
+                                            BorderRadius.circular(12),
                                           ),
                                         ),
-                                        child: const Text(
+                                        child: Text(
                                           'Leave',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                          style: GoogleFonts.ibmPlexMono(
                                             color: Color(0xFF427D9D),
                                             fontSize: 16,
-                                            fontFamily: 'IBM Plex Mono',
                                             fontWeight: FontWeight.w600,
                                             height: 0,
                                           ),
@@ -221,9 +218,9 @@ class _ExamFormState extends State<ExamForm> {
                     children: [
                       SizedBox(
                         width:
-                            150, // Set the width of the CircularProgressIndicator
+                        150, // Set the width of the CircularProgressIndicator
                         height:
-                            150, // Set the height of the CircularProgressIndicator
+                        150, // Set the height of the CircularProgressIndicator
                         child: CircularProgressIndicator(
                           value: _progress,
                           strokeWidth: 4,

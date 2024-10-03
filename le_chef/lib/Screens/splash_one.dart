@@ -28,7 +28,7 @@ class _SplashOneState extends State<SplashOne> with TickerProviderStateMixin {
 
     _logoAnimation = Tween<Offset>(
       begin: Offset.zero,
-      end: const Offset(1.0, -1.0),
+      end: const Offset(0.7, -0.85),
     ).animate(CurvedAnimation(
       parent: _logoController,
       curve: Curves.easeInOut,
@@ -40,14 +40,19 @@ class _SplashOneState extends State<SplashOne> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    // Delay the start of animations by 1 second
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         _logoController.forward();
         _avatarController.forward().then((_) {
           // Navigate to SplashTwo screen after animations complete
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const SplashTwo()),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => const SplashTwo(),
+              transitionDuration: const Duration(milliseconds: 300),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+            ),
           );
         });
       }
@@ -95,7 +100,6 @@ class _SplashOneState extends State<SplashOne> with TickerProviderStateMixin {
             AnimatedBuilder(
               animation: _avatarAnimation,
               builder: (context, child) {
-                // Ensure that maxRadius is valid
                 final validRadius = maxRadius.isNaN || maxRadius <= 0 ? 1.0 : maxRadius;
                 return Center(
                   child: ClipRRect(
@@ -114,13 +118,16 @@ class _SplashOneState extends State<SplashOne> with TickerProviderStateMixin {
               animation: _logoAnimation,
               builder: (context, child) {
                 return Positioned(
-                  left: size.width / 2 - 40 + _logoAnimation.value.dx * (size.width / 2 - 40),
-                  top: size.height / 2 - 40 + _logoAnimation.value.dy * (size.height / 2 - 40) - 20,
-                  child: SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Center(
-                      child: Image.asset('assets/logo.png'),
+                  left: size.width / 2 - 40 + _logoAnimation.value.dx * (size.width / 2 - 40) - 30,
+                  top: size.height / 2 - 40 + _logoAnimation.value.dy * (size.height / 2 - 40) - 60,
+                  child: Hero(
+                    tag: 'logoAnimation',
+                    child: SizedBox(
+                      width: 150,
+                      height: 150,
+                      child: Center(
+                        child: Image.asset('assets/logo.png'),
+                      ),
                     ),
                   ),
                 );

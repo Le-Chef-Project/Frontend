@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/ExamInfo.dart';
 import 'package:le_chef/Screens/payment.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
@@ -57,10 +58,9 @@ class _ExamsState extends State<Exams> {
                               ),
                               child: Text(
                                 'Unit ${index + 1}',
-                                style: const TextStyle(
+                                style: GoogleFonts.ibmPlexMono(
                                   color: Colors.white,
                                   fontSize: 18,
-                                  fontFamily: 'IBM Plex Mono',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -77,10 +77,9 @@ class _ExamsState extends State<Exams> {
                               ),
                               child: Text(
                                 'Unit ${index + 1}',
-                                style: const TextStyle(
+                                style: GoogleFonts.ibmPlexMono(
                                   color: Color(0xFF164863),
                                   fontSize: 18,
-                                  fontFamily: 'IBM Plex Mono',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -105,10 +104,9 @@ class _ExamsState extends State<Exams> {
                       child: ListTile(
                         title: Text(
                           'Unit $selectedUnit - lesson ${index + 1}',
-                          style: const TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF164863),
                             fontSize: 18,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -133,13 +131,12 @@ class _ExamsState extends State<Exams> {
                                     color: Color(0xFF164863),
                                     size: 100,
                                   ),
-                                  content: const Text(
+                                  content: Text(
                                     'This quiz is locked.. You should pay quiz fees',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.ibmPlexMono(
                                       color: Color(0xFF083344),
                                       fontSize: 16,
-                                      fontFamily: 'IBM Plex Mono',
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -172,13 +169,12 @@ class _ExamsState extends State<Exams> {
                                                             12),
                                                   ),
                                                 ),
-                                                child: const Text(
+                                                child: Text(
                                                   'Pay Fees',
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
+                                                  style: GoogleFonts.ibmPlexMono(
                                                     color: Colors.white,
                                                     fontSize: 16,
-                                                    fontFamily: 'IBM Plex Mono',
                                                     fontWeight: FontWeight.w600,
                                                     height: 0,
                                                   ),

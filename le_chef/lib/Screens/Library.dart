@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
@@ -25,7 +26,7 @@ class Library extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
 
                   children: [
-                    Container(
+                    SizedBox(
                       width: 158,
                       height: 228,
                       child: Image.asset('assets/Charco Education.png'),
@@ -38,13 +39,12 @@ class Library extends StatelessWidget {
                     Expanded(
                       child: SizedBox(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
+                          padding: EdgeInsets.only(left: 10.0),
                           child: Text(
                             'Today',
-                            style: TextStyle(
+                            style: GoogleFonts.ibmPlexMono(
                               color: Color(0xFF164863),
                               fontSize: 18,
-                              fontFamily: 'IBM Plex Mono',
                               fontWeight: FontWeight.w600,
                               height: 0,
                             ),
@@ -57,7 +57,7 @@ class Library extends StatelessWidget {
                       width: 182,
                       padding: const EdgeInsets.all(8),
                       decoration: ShapeDecoration(
-                        color: Color(0xFFFBFAFA),
+                        color: const Color(0xFFFBFAFA),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: Row(
@@ -67,16 +67,15 @@ class Library extends StatelessWidget {
                         children: [
                           Text(
                             'Filter by date range',
-                            style: TextStyle(
+                            style: GoogleFonts.ibmPlexMono(
                               color: Color(0xFF888888),
                               fontSize: 12,
-                              fontFamily: 'IBM Plex Mono',
                               fontWeight: FontWeight.w400,
                               height: 0,
                             ),
                           ),
-                          const SizedBox(width: 6),
-                          Container(
+                          SizedBox(width: 6),
+                          SizedBox(
                             width: 16,
                             height: 16,
                             child: FlutterLogo(),
@@ -98,15 +97,15 @@ class Library extends StatelessWidget {
             onItemTapped: (index) {
               switch (index) {
                 case 0:
-                  Get.to(()=>Home(),transition: Transition.fade, duration: Duration(seconds: 1));
+                  Get.to(()=>const Home(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                   break;
                 case 1:
-                  Get.to(()=>Notifications(),transition: Transition.fade, duration: Duration(seconds: 1));
+                  Get.to(()=>Notifications(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                   break;
                 case 2:
-                  Get.to(()=>Chats(),transition: Transition.fade, duration: Duration(seconds: 1));
+                  Get.to(()=>const Chats(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                   break;
               }
@@ -123,7 +122,7 @@ Widget new_video(BuildContext context) {
   return SizedBox(
     height: 480,
     child: GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemCount: 15,
       itemBuilder: (context, index) {
         return Container(
@@ -138,27 +137,25 @@ Widget new_video(BuildContext context) {
                   fit: BoxFit.cover,
                 ),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Lesson Title',
-                      style: TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Color(0xFFFBFAFA),
                         fontSize: 18,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w600,
                         height: 1.2,
                       ),
                     ),
                     Text(
                       'Unit 3 - Lesson 1',
-                      style: TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Color(0xFFFBFAFA),
                         fontSize: 16,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w600,
                         height: 1.2,
                       ),

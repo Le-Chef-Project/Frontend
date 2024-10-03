@@ -21,18 +21,18 @@ class EndMeeting extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/Humaaans 3 Characters.png'),
-              SizedBox(
+              const SizedBox(
                 height: 70,
               ),
               Text(
                 'Call Ended',
                 style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF3D3D3D),
+                  color: const Color(0xFF3D3D3D),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 92),
+              const SizedBox(height: 92),
               Row(
                 children: [
                   Expanded(
@@ -41,7 +41,7 @@ class EndMeeting extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => OnlineSessionScreen()));
+                                builder: (context) => const OnlineSessionScreen()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),
@@ -62,13 +62,13 @@ class EndMeeting extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Home()),
+                          MaterialPageRoute(builder: (context) => const Home()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
