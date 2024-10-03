@@ -290,15 +290,15 @@ class AllVid extends StatelessWidget {
           onItemTapped: (index) {
             switch (index) {
               case 0:
-                Get.to(()=>Home(),transition: Transition.fade, duration: Duration(seconds: 1));
+                Get.to(()=>const Home(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                 break;
               case 1:
-                Get.to(()=>Notifications(),transition: Transition.fade, duration: Duration(seconds: 1));
+                Get.to(()=>Notifications(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                 break;
               case 2:
-                Get.to(()=>Chats(),transition: Transition.fade, duration: Duration(seconds: 1));
+                Get.to(()=>const Chats(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                 break;
             }

@@ -86,7 +86,7 @@ class _SplashTwoState extends State<SplashTwo> with SingleTickerProviderStateMix
                         child: Text(
                           'French Can be more \n interesting',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
                           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/customCard.dart';
@@ -37,10 +38,9 @@ class Videos extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: GoogleFonts.ibmPlexMono(
                     color: Color(0xFF164863),
                     fontSize: 18,
-                    fontFamily: 'IBM Plex Mono',
                     fontWeight: FontWeight.w600,
                     height: 0,
                   ),
@@ -50,24 +50,22 @@ class Videos extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   subTitle,
-                  style: const TextStyle(
+                  style: GoogleFonts.ibmPlexMono(
                     color: Color(0xFF427D9D),
                     fontSize: 16,
-                    fontFamily: 'IBM Plex Mono',
                     fontWeight: FontWeight.w400,
                     height: 0,
                   ),
                 ),
               ),
               const SizedBox(height: 40),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   'More Videos',
-                  style: TextStyle(
+                  style: GoogleFonts.ibmPlexMono(
                     color: Color(0xFF164863),
                     fontSize: 18,
-                    fontFamily: 'IBM Plex Mono',
                     fontWeight: FontWeight.w600,
                     height: 0,
                   ),
@@ -90,13 +88,12 @@ class Videos extends StatelessWidget {
                                   color: Color(0xFF164863),
                                   size: 100,
                                 ),
-                                content: const Text(
+                                content: Text(
                                   'This video is locked. You should pay video fees',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: GoogleFonts.ibmPlexMono(
                                     color: Color(0xFF083344),
                                     fontSize: 16,
-                                    fontFamily: 'IBM Plex Mono',
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -125,13 +122,12 @@ class Videos extends StatelessWidget {
                                                   borderRadius: BorderRadius.circular(12),
                                                 ),
                                               ),
-                                              child: const Text(
+                                              child: Text(
                                                 'Pay Fees',
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
+                                                style: GoogleFonts.ibmPlexMono(
                                                   color: Colors.white,
                                                   fontSize: 16,
-                                                  fontFamily: 'IBM Plex Mono',
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),

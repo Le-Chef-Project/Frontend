@@ -5,6 +5,8 @@ import 'package:le_chef/Screens/meeting/end_meeting.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MeetingPage extends StatefulWidget {
+  const MeetingPage({super.key});
+
   @override
   _MeetingPageState createState() => _MeetingPageState();
 }
@@ -43,7 +45,7 @@ class _MeetingPageState extends State<MeetingPage> {
 
     if (!cameraGranted || !micGranted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
               'Camera and microphone permissions are required for video calling.'),
         ),
@@ -74,7 +76,7 @@ class _MeetingPageState extends State<MeetingPage> {
     } catch (e) {
       print('Error getting user media: ${e.toString()}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
               'Failed to access camera and microphone. Please check your device settings.'),
         ),
@@ -121,7 +123,7 @@ class _MeetingPageState extends State<MeetingPage> {
                 Expanded(
                   child: _isCameraOn && _localRenderer.srcObject != null
                       ? Container(
-                          margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                          margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
                           child: RTCVideoView(_localRenderer, mirror: true),
@@ -140,7 +142,7 @@ class _MeetingPageState extends State<MeetingPage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
-                                  color: Color(0xFFD9D9D9).withOpacity(0.1),
+                                  color: const Color(0xFFD9D9D9).withOpacity(0.1),
                                 ),
                                 child: Stack(children: [
                                   Center(
@@ -154,11 +156,11 @@ class _MeetingPageState extends State<MeetingPage> {
                                             'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
                                           ).image,
                                         ),
-                                        SizedBox(height: 21,),
+                                        const SizedBox(height: 21,),
                                         Text(
                                           'Thaowpsta Saiid',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF083344),
+                                            color: const Color(0xFF083344),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                           ),
@@ -170,9 +172,9 @@ class _MeetingPageState extends State<MeetingPage> {
                                       right: 8,
                                       top: 10,
                                       child: _isMicOn
-                                          ? Icon(Icons.mic,
+                                          ? const Icon(Icons.mic,
                                               color: Color(0xFF164863))
-                                          : Icon(Icons.mic_off,
+                                          : const Icon(Icons.mic_off,
                                               color: Color(0xFF164863)))
                                 ]),
                               ),
@@ -188,32 +190,32 @@ class _MeetingPageState extends State<MeetingPage> {
                       ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor:
-                                WidgetStateProperty.all(Color(0xFFEA5B5B)),
+                                WidgetStateProperty.all(const Color(0xFFEA5B5B)),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
                             ),
                             padding: WidgetStateProperty.all(
-                                EdgeInsets.symmetric(
+                                const EdgeInsets.symmetric(
                                     horizontal: 7, vertical: 12))),
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EndMeeting()));
+                                  builder: (context) => const EndMeeting()));
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.call_outlined,
                               color: Colors.white,
                             ),
-                            SizedBox(width: 5),
+                            const SizedBox(width: 5),
                             Text('Leave Call',
                                 style: GoogleFonts.ibmPlexMono(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
                                   ),
@@ -226,9 +228,9 @@ class _MeetingPageState extends State<MeetingPage> {
                         style: ButtonStyle(
                           elevation: WidgetStateProperty.all(0),
                           backgroundColor:
-                              WidgetStateProperty.all(Color(0xFFFBFAFA)),
+                              WidgetStateProperty.all(const Color(0xFFFBFAFA)),
                           shape: WidgetStateProperty.all(
-                            CircleBorder(),
+                            const CircleBorder(),
                           ),
                         ),
                         onPressed: () async {
@@ -239,23 +241,23 @@ class _MeetingPageState extends State<MeetingPage> {
                               ? Icons.videocam
                               : Icons.videocam_off_outlined,
                           size: 30,
-                          color: Color(0xFF164863),
+                          color: const Color(0xFF164863),
                         ),
                       ),
                       ElevatedButton(
                         style: ButtonStyle(
                           elevation: WidgetStateProperty.all(0),
                           backgroundColor:
-                              WidgetStateProperty.all(Color(0xFFFBFAFA)),
+                              WidgetStateProperty.all(const Color(0xFFFBFAFA)),
                           shape: WidgetStateProperty.all(
-                            CircleBorder(),
+                            const CircleBorder(),
                           ),
                         ),
                         onPressed: _toggleMic,
                         child: Icon(
                           _isMicOn ? Icons.mic : Icons.mic_off,
                           size: 30,
-                          color: Color(0xFF164863),
+                          color: const Color(0xFF164863),
                         ),
                       ),
                     ],
@@ -268,4 +270,5 @@ class _MeetingPageState extends State<MeetingPage> {
       ),
     );
   }
+
 }

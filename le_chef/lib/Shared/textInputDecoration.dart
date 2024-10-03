@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 final textInputDecoration = InputDecoration(
   hintText: '12%fTks,l',
   fillColor: const Color(0xFFFBFAFA),
   filled: true,
-  hintStyle: const TextStyle(
+  hintStyle: GoogleFonts.ibmPlexMono(
     color: Color(0xFF767B91),
     fontSize: 14,
-    fontFamily: 'IBM Plex Mono',
     fontWeight: FontWeight.w400,
     height: 0,
   ),

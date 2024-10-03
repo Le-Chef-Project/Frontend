@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/ExamForm.dart';
-import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Shared/customBottomNavBar.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_button_style.dart';
-import 'Home.dart';
-import 'notification.dart';
 
 class ExamInfo extends StatelessWidget {
   const ExamInfo({super.key});
@@ -42,14 +39,13 @@ class ExamInfo extends StatelessWidget {
                       side: BorderSide(width: 5, color: Color(0xFF9BBEC8)),
                     ),
                   ), // Optional: Add some top margin for spacing
-                  child: const Center(
+                  child: Center(
                     // Center the text inside the container
                     child: Text(
                       '20',
-                      style: TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Color(0xFFFBFAFA),
                         fontSize: 64,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w600,
                         height: 0,
                       ),
@@ -59,7 +55,7 @@ class ExamInfo extends StatelessWidget {
                 const SizedBox(
                   height: 50,
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 323,
                   child: Text.rich(
                     TextSpan(
@@ -67,30 +63,27 @@ class ExamInfo extends StatelessWidget {
                         TextSpan(
                           text:
                               'Your Quiz is 20 Questions in 50 minutes..\n\nPay attention that you can enter to the quiz ',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF164863),
                             fontSize: 16,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
                         ),
                         TextSpan(
                           text: 'ONLY ONE TIME',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF427D9D),
                             fontSize: 16,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
                         ),
                         TextSpan(
                           text: '.',
-                          style: TextStyle(
+                          style: GoogleFonts.ibmPlexMono(
                             color: Color(0xFF164863),
                             fontSize: 16,
-                            fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w600,
                             height: 0,
                           ),
@@ -103,12 +96,11 @@ class ExamInfo extends StatelessWidget {
                 const SizedBox(
                   height: 50,
                 ),
-                const Text(
+                Text(
                   'Are You Ready ?',
-                  style: TextStyle(
+                  style: GoogleFonts.ibmPlexMono(
                     color: Color(0xFF427D9D),
                     fontSize: 22,
-                    fontFamily: 'IBM Plex Mono',
                     fontWeight: FontWeight.w600,
                     height: 0,
                   ),
@@ -123,7 +115,7 @@ class ExamInfo extends StatelessWidget {
                   buttonStyle: CustomButtonStyles.fillPrimaryTL5,
 
                   onPressed: (){
-                    Get.to(()=>ExamForm(),transition: Transition.fade, duration: Duration(seconds: 1));
+                    Get.to(()=>const ExamForm(),transition: Transition.fade, duration: const Duration(seconds: 1));
 
                   },
                 )

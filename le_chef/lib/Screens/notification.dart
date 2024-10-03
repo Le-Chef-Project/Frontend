@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
@@ -35,10 +36,9 @@ class Notifications extends StatelessWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       day,
-                      style: const TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Color(0xFF083344),
                         fontSize: 20,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w600,
                         height: 0,
                       ),

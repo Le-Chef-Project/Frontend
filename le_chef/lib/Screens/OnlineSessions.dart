@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 
@@ -37,13 +38,12 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                     const SizedBox(
                       height: 70,
                     ),
-                    const Text(
+                    Text(
                       'Tab to join meeting',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Colors.black,
                         fontSize: 16,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w600,
                         height: 0,
                       ),
@@ -127,13 +127,12 @@ class _OnlineSessionsState extends State<OnlineSessions> {
                     const SizedBox(
                       height: 40,
                     ),
-                    const Text(
+                    Text(
                       'There are no sessions \n now, come back later...',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.ibmPlexMono(
                         color: Colors.black,
                         fontSize: 16,
-                        fontFamily: 'IBM Plex Mono',
                         fontWeight: FontWeight.w600,
                         height: 0,
                       ),

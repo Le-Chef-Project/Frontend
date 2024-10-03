@@ -33,22 +33,20 @@ class _LoginState extends State<Login> {
                 //change logo
                 child: Image.asset('assets/logo.png', width: 300, height: 300),
               ),
-              const Text(
+              Text(
                 'Welcome',
-                style: TextStyle(
+                style: GoogleFonts.ibmPlexMono(
                   color: Color(0xFF164863),
                   fontSize: 18,
-                  fontFamily: 'IBM Plex Mono',
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Please sign in to access your account',
-                style: TextStyle(
+              Text(
+                'Please sign in to access your\n account',
+                style: GoogleFonts.ibmPlexMono(
                   color: Color(0xFF888888),
                   fontSize: 16,
-                  fontFamily: 'IBM Plex Mono',
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -89,7 +87,7 @@ class _LoginState extends State<Login> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(()=>Home(),transition: Transition.fade, duration: Duration(seconds: 1));
+                    Get.to(()=>const Home(),transition: Transition.fade, duration: const Duration(seconds: 1));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF427D9D),
@@ -102,7 +100,7 @@ class _LoginState extends State<Login> {
                   child: Text(
                     'Log in',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.ibmPlexMono(textStyle: TextStyle(
+                    style: GoogleFonts.ibmPlexMono(textStyle: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
