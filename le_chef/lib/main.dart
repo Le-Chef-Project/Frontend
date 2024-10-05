@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:le_chef/Screens/ExamInfo.dart';
+import 'package:le_chef/Screens/ExamForm.dart';
 import 'package:le_chef/Screens/OnlineSessions.dart';
 import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/meeting/meeting_screen.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Home(),
+        home: QuizPage(),
       ),
     );
   }

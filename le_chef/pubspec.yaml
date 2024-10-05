@@ -41,6 +41,7 @@ dependencies:
   just_audio: ^0.9.39
   shared_preferences: ^2.3.0
   google_fonts: ^6.2.1
+  percent_indicator: ^4.2.3
 
 
   intl: any

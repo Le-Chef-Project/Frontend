@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Library.dart';
+import 'package:le_chef/Screens/OnlineSessions.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/seeAllVid.dart';
@@ -215,6 +216,10 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         child: GestureDetector(
+                          onTap: (){
+                            Get.to(()=>OnlineSessions(),transition: Transition.fade, duration: Duration(seconds: 1));
+
+                          },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

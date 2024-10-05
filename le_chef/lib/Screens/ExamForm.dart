@@ -2,23 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Shared/customBottomNavBar.dart';
-import 'package:le_chef/Shared/custom_elevated_button.dart';
 
 import '../Models/Quiz.dart';
+import '../Shared/custom_elevated_button.dart';
 import '../theme/custom_button_style.dart';
-import 'Home.dart';
-import 'notification.dart';
 
-class ExamForm extends StatefulWidget {
-  const ExamForm({super.key});
-
+class QuizPage extends StatefulWidget {
   @override
-  State<ExamForm> createState() => _ExamFormState();
+  _QuizPageState createState() => _QuizPageState();
 }
 
-class _ExamFormState extends State<ExamForm> {
+class _QuizPageState extends State<QuizPage> {
   final Map<int, int?> _selectedAnswers = {};
   Timer? _timer;
   int _start = 50 * 60; // Countdown start value in seconds (50 minutes)
@@ -74,13 +68,17 @@ class _ExamFormState extends State<ExamForm> {
     super.dispose();
   }
 
+  int selectedQuestion = 0;
+
   @override
   Widget build(BuildContext context) {
+    double boxSize = 30.0;
+    // Calculate the total height needed for the grid
+
     int minutes = (_start ~/ 60);
     int seconds = (_start % 60);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Exam Form'),
           backgroundColor: Colors.white,
@@ -145,10 +143,11 @@ class _ExamFormState extends State<ExamForm> {
                                         Navigator.pop(context);
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF427D9D),
+                                        backgroundColor:
+                                            const Color(0xFF427D9D),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(12),
+                                              BorderRadius.circular(12),
                                         ),
                                       ),
                                       child: Text(
@@ -181,7 +180,7 @@ class _ExamFormState extends State<ExamForm> {
                                                 width: 1,
                                                 color: Color(0xFF427D9D)),
                                             borderRadius:
-                                            BorderRadius.circular(12),
+                                                BorderRadius.circular(12),
                                           ),
                                         ),
                                         child: Text(
@@ -204,124 +203,287 @@ class _ExamFormState extends State<ExamForm> {
             },
           ),
         ),
-        body: SingleChildScrollView(
-          child: SizedBox(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width:
-                        150, // Set the width of the CircularProgressIndicator
-                        height:
-                        150, // Set the height of the CircularProgressIndicator
-                        child: CircularProgressIndicator(
-                          value: _progress,
-                          strokeWidth: 4,
-                          color: const Color.fromRGBO(66, 125, 157, 1),
-                        ),
-                      ),
-                      Container(
-                        width: 135,
-                        height: 135,
-                        decoration: const ShapeDecoration(
-                          gradient: RadialGradient(
-                            center: Alignment(0, 1),
-                            radius: 0,
-                            colors: [Color(0xFF427D9D), Color(0xFF6A96A3)],
-                          ),
-                          shape: OvalBorder(),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$minutes:${seconds.toString().padLeft(2, '0')}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontFamily: 'IBM Plex Mono',
-                              fontWeight: FontWeight.w600,
-                              height: 0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+        body: Column(
+          children: [
+            // Timer
+            Container(
+              width: 317,
+              height: 138,
+              padding: const EdgeInsets.all(16),
+              decoration: ShapeDecoration(
+                color: Color(0xFFFBFAFA),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-
-                //qize questions
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: quizQuestions.length,
-                  itemBuilder: (context, index) {
-                    final question = quizQuestions[index];
-                    return Container(
-                      width: 500,
-                      height: 460,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: ShapeDecoration(
-                        color: const Color.fromRGBO(216, 233, 238, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      margin: const EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              question.questionText,
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8.0),
-                            ...question.answers.asMap().entries.map((entry) {
-                              int answerIndex = entry.key;
-                              String answerText = entry.value;
-                              return ListTile(
-                                title: Text(answerText),
-                                leading: Radio<int?>(
-                                  value: answerIndex,
-                                  groupValue: _selectedAnswers[index],
-                                  onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedAnswers[index] = value;
-                                    });
-                                  },
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 106,
+                    height: 106,
+                    padding: const EdgeInsets.only(
+                      top: 5,
+                      left: 5,
+                      right: 4.44,
+                      bottom: 4,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 96.56,
+                          height: 97,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                height: 150,
+                                child: CircularProgressIndicator(
+                                  value: _progress,
+                                  strokeWidth: 4,
+                                  color: const Color.fromRGBO(66, 125, 157, 1),
                                 ),
-                              );
-                            }).toList(),
-                            const SizedBox(height: 16.0),
-                          ],
+                              ),
+                              Container(
+                                width: 85,
+                                height: 85,
+                                decoration: const ShapeDecoration(
+                                  gradient: RadialGradient(
+                                    center: Alignment(0, 1),
+                                    radius: 0,
+                                    colors: [
+                                      Color(0xFF427D9D),
+                                      Color(0xFF6A96A3)
+                                    ],
+                                  ),
+                                  shape: OvalBorder(),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '$minutes:${seconds.toString().padLeft(2, '0')}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: 'IBM Plex Mono',
+                                      fontWeight: FontWeight.w600,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: Container(
+                      height: 102,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Text(
+                                      'Submit answers',
+                                      style: TextStyle(
+                                        color: Color(0xFF888888),
+                                        fontSize: 14,
+                                        fontFamily: 'IBM Plex Mono',
+                                        fontWeight: FontWeight.w500,
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  CustomElevatedButton(
+                                    width: 139,
+                                    height: 50,
+                                    text: "Submit",
+                                    onPressed: _submitAnswers,
+                                    buttonStyle:
+                                        CustomButtonStyles.fillPrimaryTL5,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(
+              height: 39,
+            ),
+            // Question boxes
+            Container(
+              width: 360,
+              height: 160,
+              padding: const EdgeInsets.all(10.0),
+              child: GridView.builder(
+                physics: NeverScrollableScrollPhysics(), // Disable scrolling
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 10,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                ),
+                itemCount: quizQuestions.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedQuestion = index;
+                      });
+                    },
+                    child: Container(
+                      width: boxSize,
+                      height: boxSize,
+                      decoration: ShapeDecoration(
+                        color: selectedQuestion == index
+                            ? Color(0xFF427D9D)
+                            : Color(0xFF888888),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${index + 1}',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: 39,
+            ),
 
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 8.0),
-                  child: CustomElevatedButton(
-                    height: 50,
-                    width: 300,
-                    text: "Submit",
-                    onPressed: _submitAnswers,
-                    buttonStyle: CustomButtonStyles.fillPrimaryTL5,
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 48.28,
+                    height: 46,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFFF1F2F6),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        selectedQuestion != 0
+                            ? setState(() {
+                                selectedQuestion--;
+                              })
+                            : selectedQuestion = 0;
+                      },
+                      icon: Icon(Icons.arrow_left_outlined),
+                    ),
+                  ),
+                  Container(
+                    width: 48.28,
+                    height: 46,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFFF1F2F6),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        selectedQuestion != 39
+                            ? setState(() {
+                                selectedQuestion++;
+                              })
+                            : selectedQuestion = 39;
+                      },
+                      icon: Icon(Icons.arrow_right),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Question display
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Container(
+                    width: 500,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: ShapeDecoration(
+                      color: const Color.fromRGBO(216, 233, 238, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          quizQuestions[selectedQuestion].questionText,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0),
+                        ...quizQuestions[selectedQuestion]
+                            .answers
+                            .asMap()
+                            .entries
+                            .map((entry) {
+                          int answerIndex = entry.key;
+                          String answerText = entry.value;
+                          return ListTile(
+                            title: Text(answerText),
+                            leading: Radio<int?>(
+                              value: answerIndex,
+                              groupValue: _selectedAnswers[selectedQuestion],
+                              onChanged: (int? value) {
+                                setState(() {
+                                  _selectedAnswers[selectedQuestion] = value;
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

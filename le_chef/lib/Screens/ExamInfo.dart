@@ -25,8 +25,7 @@ class ExamInfo extends StatelessWidget {
 
               children: [
                 Container(
-                  margin: const EdgeInsets.only(
-                      top: 20.0),
+                  margin: const EdgeInsets.only(top: 20.0),
                   width: 187,
                   height: 187,
                   decoration: const ShapeDecoration(
@@ -113,10 +112,10 @@ class ExamInfo extends StatelessWidget {
                   height: 50,
                   text: 'Start Quiz',
                   buttonStyle: CustomButtonStyles.fillPrimaryTL5,
-
-                  onPressed: (){
-                    Get.to(()=>const ExamForm(),transition: Transition.fade, duration: const Duration(seconds: 1));
-
+                  onPressed: () {
+                    Get.to(() => QuizPage(),
+                        transition: Transition.fade,
+                        duration: const Duration(seconds: 1));
                   },
                 )
               ],
