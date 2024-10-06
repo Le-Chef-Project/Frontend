@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
@@ -17,13 +18,108 @@ class THome extends StatefulWidget {
   State<THome> createState() => _THomeState();
 }
 
-class _THomeState extends State<THome> {
+class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
   TextEditingController searchController = TextEditingController();
   final int _selectedIndex = 0;
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isObscure = true;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 // Initial index for Chats screen
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _showSuccessDialogWithFade() {
+    _animationController.forward();
+    Get.dialog(
+      FadeTransition(
+        opacity: _animation,
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/correct sign.png',
+                width: 117,
+                height: 117,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Success!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF164863),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Student Added Successfully',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF888888),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Fade out when pressing "Ok"
+                  _animationController.reverse().then((_) => Get.back());
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF427D9D),
+                  minimumSize: const Size(140.50, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Ok',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.ibmPlexMono(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+      transitionDuration: const Duration(milliseconds: 1000),
+    );
+  }
+
+  void _onAddStudentPressed() {
+    Get.back();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _showSuccessDialogWithFade();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -373,6 +469,7 @@ class _THomeState extends State<THome> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
+                              backgroundColor: Colors.white,
                               title: Image.asset(
                                 'assets/Student.png',
                                 width: 96.53,
@@ -451,93 +548,7 @@ class _THomeState extends State<THome> {
                                           width: 140.50,
                                           height: 48,
                                           child: ElevatedButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (BuildContext context) {
-                                                    return AlertDialog(
-
-                                                      title:Image.asset(
-                                                        'assets/correct sign.png',
-                                                        width: 117,
-                                                        height: 117,
-                                                      ),
-                                                      content: SizedBox(
-                                                        width: 150,
-                                                        height: 80,
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              'Success!',
-                                                              textAlign: TextAlign.center,
-                                                              style: GoogleFonts.ibmPlexMono(
-                                                                color: Color(0xFF164863),
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.w600,
-                                                                height: 0,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                              'Student Added Successfully',
-                                                              textAlign: TextAlign.center,
-                                                              style: GoogleFonts.ibmPlexMono(
-                                                                color: Color(0xFF888888),
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.w600,
-                                                                height: 0,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      actions: [
-                                                        Expanded(
-                                                          child: Row(
-                                                            // mainAxisSize: MainAxisSize.min,
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment.spaceBetween,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: [
-                                                              Expanded(
-                                                                child: SizedBox(
-                                                                  width: 140.50,
-                                                                  height: 48,
-                                                                  child: ElevatedButton(
-                                                                      onPressed: () {
-                                                                        Navigator.pop(context);
-                                                                      },
-                                                                      style: ElevatedButton.styleFrom(
-                                                                        backgroundColor:
-                                                                        const Color(0xFF427D9D),
-                                                                        shape: RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                          BorderRadius.circular(12),
-                                                                        ),
-                                                                      ),
-                                                                      child: Text(
-                                                                        'Ok',
-                                                                        textAlign: TextAlign.center,
-                                                                        style: GoogleFonts.ibmPlexMono(
-                                                                          color: Colors.white,
-                                                                          fontSize: 16,
-                                                                          fontWeight: FontWeight.w600,
-                                                                          height: 0,
-                                                                        ),
-                                                                      )),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    );
-                                                  });
-
-                                            },
+                                            onPressed: _onAddStudentPressed,
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: const Color(0xFF427D9D),
                                               shape: RoundedRectangleBorder(
@@ -601,8 +612,25 @@ class _THomeState extends State<THome> {
               )
             ]));
   }
-
-
-
 }
 
+class FadeInDialog extends StatelessWidget {
+  final Widget child;
+
+  const FadeInDialog({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      duration: Duration(milliseconds: 300),
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+}

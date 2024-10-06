@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:le_chef/Screens/ExamForm.dart';
 import 'package:le_chef/Screens/OnlineSessions.dart';
 import 'package:le_chef/Screens/Login.dart';
+import 'package:le_chef/Screens/THome.dart';
+import 'package:le_chef/Screens/meeting/end_meeting.dart';
 import 'package:le_chef/Screens/meeting/meeting_screen.dart';
 import 'package:le_chef/Screens/meeting/online_session_screen.dart';
 import 'package:le_chef/Screens/splash_one.dart';
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: QuizPage(),
+        home: EndMeeting(),
       ),
     );
   }

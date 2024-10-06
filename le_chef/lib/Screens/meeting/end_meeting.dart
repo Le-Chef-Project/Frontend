@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/meeting/online_session_screen.dart';
 
@@ -20,7 +21,10 @@ class EndMeeting extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/Humaaans 3 Characters.png'),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Image.asset('assets/Humaaans 3 Characters.png'),
+              ),
               const SizedBox(
                 height: 70,
               ),
@@ -38,10 +42,11 @@ class EndMeeting extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const OnlineSessionScreen()));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => const OnlineSessionScreen()));
+                        Get.to(() => OnlineSessionScreen(), transition: Transition.fadeIn, duration: Duration(milliseconds: 1000));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),
