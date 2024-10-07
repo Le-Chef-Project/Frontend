@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:le_chef/Screens/chatPage.dart';
+import 'package:le_chef/Screens/members_screen.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 
 import '../Shared/custom_app_bar.dart';
@@ -142,32 +143,35 @@ Widget groupChat(BuildContext context) {
                 color: Colors.transparent,
                 padding: const EdgeInsets.all(8.0),
                 width: double.infinity,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: const Color.fromRGBO(14, 116, 144, 1),
-                      child: Text(
-                        'G${index + 1}',
-                        style: const TextStyle(color: Colors.white),
+                child: GestureDetector(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MembersScreen())),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: const Color.fromRGBO(14, 116, 144, 1),
+                        child: Text(
+                          'G${index + 1}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8), // Space between avatar and text
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildHeader(context,
-                              name: "Group${index + 1}", time: "10:30PM"),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Hi!!',
-                          )
-                        ],
-                      ),
-                    )
-                  ],
+                      const SizedBox(width: 8), // Space between avatar and text
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildHeader(context,
+                                name: "Group${index + 1}", time: "10:30PM"),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Hi!!',
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
