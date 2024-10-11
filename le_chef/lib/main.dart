@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:le_chef/Screens/ExamForm.dart';
-import 'package:le_chef/Screens/OnlineSessions.dart';
+import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/THome.dart';
-import 'package:le_chef/Screens/all_students.dart';
-import 'package:le_chef/Screens/meeting/end_meeting.dart';
-import 'package:le_chef/Screens/meeting/meeting_screen.dart';
-import 'package:le_chef/Screens/meeting/online_session_screen.dart';
-import 'package:le_chef/Screens/members_screen.dart';
-import 'package:le_chef/Screens/splash_one.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Screens/Home.dart';
-
-void main() {
+late SharedPreferences sharedPreferences;
+String? token;
+String? role;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  sharedPreferences = await SharedPreferences.getInstance();
+  token = sharedPreferences.getString('token');
+  role = sharedPreferences.getString('role');
   runApp(const MyApp());
 }
 
@@ -43,7 +42,11 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: AllStudents(),
+        home: token == null || token == ""
+            ? Login()
+            : role == "admin"
+                ? THome()
+                : Home(),
       ),
     );
   }

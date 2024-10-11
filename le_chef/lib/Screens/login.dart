@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Screens/Home.dart';
 import 'package:le_chef/Shared/textInputDecoration.dart';
 
@@ -31,7 +32,8 @@ class _LoginState extends State<Login> {
               Hero(
                 tag: 'logoAnimation',
                 child: Center(
-                  child: Image.asset('assets/logo.png', width: 300, height: 300),
+                  child:
+                      Image.asset('assets/logo.png', width: 300, height: 300),
                 ),
               ),
               Text(
@@ -87,26 +89,27 @@ class _LoginState extends State<Login> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(()=>const Home(),transition: Transition.fade, duration: const Duration(seconds: 1));
+                  onPressed: () async {
+                    await ApisMethods.login(_userNameController.text.toString(),
+                        _passwordController.text.toString());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF427D9D),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 14.5, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14.5, horizontal: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(
-                    'Log in',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ibmPlexMono(textStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),)
-                  ),
+                  child: Text('Log in',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )),
                 ),
               ),
             ],

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Screens/all_students.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 
+import '../Models/Student.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/textInputDecoration.dart';
 import '../theme/custom_button_style.dart';
@@ -18,15 +21,21 @@ class THome extends StatefulWidget {
   State<THome> createState() => _THomeState();
 }
 
-class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
+class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   TextEditingController searchController = TextEditingController();
   final int _selectedIndex = 0;
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _lastnameController = TextEditingController();
+  final TextEditingController _firstnameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   bool _isObscure = true;
   late AnimationController _animationController;
   late Animation<double> _animation;
-// Initial index for Chats screen
+
+  bool _isLoading_Std = true;
+  List<Student>? _Std;
 
   @override
   void initState() {
@@ -39,12 +48,21 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
       parent: _animationController,
       curve: Curves.easeInOut,
     );
+    getStd();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  Future<void> getStd() async {
+    _Std = await ApisMethods.AllStudents();
+    print('apiii ${_Std} + ${_Std!.length}');
+    setState(() {
+      _isLoading_Std = false;
+    });
   }
 
   void _showSuccessDialogWithFade() {
@@ -114,11 +132,98 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
     );
   }
 
-  void _onAddStudentPressed() {
+  void _showfailedDialogWithFade(Mess) {
+    _animationController.forward();
+    Get.dialog(
+      FadeTransition(
+        opacity: _animation,
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/error-16_svgrepo.com.jpg',
+                width: 117,
+                height: 117,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Error!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF164863),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '${Mess}',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF888888),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Fade out when pressing "Ok"
+                  _animationController.reverse().then((_) => Get.back());
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF427D9D),
+                  minimumSize: const Size(140.50, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Try Again',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.ibmPlexMono(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+      transitionDuration: const Duration(milliseconds: 1000),
+    );
+  }
+
+  void _onAddStudentPressed() async {
     Get.back();
-    Future.delayed(const Duration(milliseconds: 300), () {
-      _showSuccessDialogWithFade();
-    });
+    String Mess;
+    Mess = await ApisMethods.AddStudent(
+        _emailController.text.toString(),
+        _passwordController.text.toString(),
+        _phoneController.text.toString(),
+        _userNameController.text.toString(),
+        _firstnameController.text.toString(),
+        _lastnameController.text.toString());
+    if (Mess == 'success') {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _showSuccessDialogWithFade();
+      });
+    } else {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _showfailedDialogWithFade(Mess);
+      });
+    }
+    _emailController.clear();
+    _passwordController.clear();
+    _phoneController.clear();
+    _userNameController.clear();
+    _firstnameController.clear();
+    _lastnameController.clear();
   }
 
   @override
@@ -132,14 +237,15 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
           leading: Image.asset('assets/Rectangle 4.png'),
           actions: [
             Container(
-                margin: const EdgeInsets.symmetric(horizontal: 23),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'assets/logo.png',
-                    height: 50,
-                  ),
-                )),
+              margin: const EdgeInsets.symmetric(horizontal: 23),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.asset(
+                  'assets/logo.png',
+                  height: 50,
+                ),
+              ),
+            ),
           ],
         ),
         body: SingleChildScrollView(
@@ -180,15 +286,15 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 68,
-              ),
-              total_student(context),
-              const SizedBox(
-                height: 68,
-              ),
+              const SizedBox(height: 68),
+              _isLoading_Std
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : total_student(context),
+              const SizedBox(height: 68),
               SizedBox(
-                width: double.maxFinite,
+                width: double.infinity,
                 child: Row(
                   children: [
                     Expanded(
@@ -206,16 +312,18 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildCardRec(context,
-                          Title: "Library",
-                          Number: "20",
-                          ImagePath: 'assets/Charco Education.png'),
+                      child: _buildCardRec(
+                        context,
+                        Title: "Library",
+                        Number: "20",
+                        ImagePath: 'assets/Charco Education.png',
+                      ),
                     ),
                   ],
                 ),
               ),
               SizedBox(
-                width: double.maxFinite,
+                width: double.infinity,
                 child: Row(
                   children: [
                     Expanded(
@@ -256,7 +364,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
                               Padding(
                                 padding: EdgeInsets.only(left: 16),
                                 child: Text(
-                                  'Online Seesions',
+                                  'Online Sessions',
                                   style: GoogleFonts.ibmPlexMono(
                                     color: Color(0xFF164863),
                                     fontSize: 16,
@@ -269,7 +377,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
                               Image.asset(
                                 'assets/Shopaholics Sitting On The Floor.png',
                                 height: 228,
-                                width: double.maxFinite,
+                                width: double.infinity,
                               )
                             ],
                           ),
@@ -307,12 +415,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
   }
 
   Widget _buildCardRec(
-      BuildContext context, {
-        required String Title,
-        required String Number,
-        required String ImagePath,
-        Function? onTapCardRec,
-      }) {
+    BuildContext context, {
+    required String Title,
+    required String Number,
+    required String ImagePath,
+    Function? onTapCardRec,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: ShapeDecoration(
@@ -391,226 +499,354 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin{
             )
           ],
         ),
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Total Students',
-                        style: GoogleFonts.ibmPlexMono(
-                          color: Color(0xFF164863),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
+        child: SingleChildScrollView(
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Total Students',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Color(0xFF164863),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      'See all',
-                      style: GoogleFonts.ibmPlexMono(
-                        color: Color(0xFF427D9D),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        decoration: TextDecoration.underline,
+                      TextButton(
+                        onPressed: () {
+                          Get.to(AllStudents(),
+                              transition: Transition.fadeIn,
+                              duration: Duration(seconds: 1));
+                        },
+                        child: Text(
+                          'See all',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Color(0xFF427D9D),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-                child: Row(
-                  textBaseline: TextBaseline.ideographic,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Container(
-                          height: 41,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFDDF2FD),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+                  child: Row(
+                    textBaseline: TextBaseline.ideographic,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: Container(
+                        height: 41,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFDDF2FD),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${_Std?.length ?? 0}',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.ibmPlexMono(
+                              color: Color(0xFF164863),
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          child: Center(
-                            child: Text(
-                              '16.5K',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ibmPlexMono(
-                                color: Color(0xFF164863),
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        )),
-                    const SizedBox(width: 20),
-                    CustomElevatedButton(
-                      height: 41,
-                      width: 161,
-                      text: "Add Student +",
-                      buttonStyle: CustomButtonStyles.fillPrimaryTL5,
-                      onPressed: () {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              title: Image.asset(
-                                'assets/Student.png',
-                                width: 96.53,
-                                height: 96.37,
-                              ),
-                              content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const SizedBox(height: 31),
-                                  SizedBox(
-                                    width: 275,
-                                    child: Text(
-                                      'Add username',
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        height: 0,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  TextFormField(
-                                    controller: _userNameController,
-                                    decoration: textInputDecoration.copyWith(hintText: 'userName'),
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Enter an userName';
-                                      } //TODO
-                                      //check isFound or not
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-                                  SizedBox(
-                                    width: 275,
-                                    child: Text(
-                                      'Add Password',
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        height: 0,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  TextFormField(
-                                    controller: _passwordController,
-                                    obscureText: _isObscure,
-                                    decoration: textInputDecoration.copyWith(
-                                      hintText: 'Password',
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _isObscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                      )),
+                      const SizedBox(width: 20),
+                      CustomElevatedButton(
+                        height: 41,
+                        width: 161,
+                        text: "Add Student +",
+                        buttonStyle: CustomButtonStyles.fillPrimaryTL5,
+                        onPressed: () {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                title: Image.asset(
+                                  'assets/Student.png',
+                                  width: 96.53,
+                                  height: 96.37,
+                                ),
+                                content: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add First Name',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
                                         ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _isObscure = !_isObscure;
-                                          });
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextFormField(
+                                        controller: _firstnameController,
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: 'FirstName'),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter an FirstName';
+                                          } //TODO
+                                          //check isFound or not
+                                          return null;
                                         },
                                       ),
-                                    ),
-                                    validator: (val) => val!.length < 6 ? 'Password too short' : null,
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: 140.50,
-                                          height: 48,
-                                          child: ElevatedButton(
-                                            onPressed: _onAddStudentPressed,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xFF427D9D),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              'Add Student',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.ibmPlexMono(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                height: 0,
-                                              ),
-                                            ),
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add Last Name',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 20),
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: 140.50,
-                                          height: 48,
-                                          child: OutlinedButton(
+                                      const SizedBox(height: 8),
+                                      TextFormField(
+                                        controller: _lastnameController,
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: 'LastName'),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter an LastName';
+                                          } //TODO
+                                          //check isFound or not
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 31),
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add username',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextFormField(
+                                        controller: _userNameController,
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: 'userName'),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter an userName';
+                                          } //TODO
+                                          //check isFound or not
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add Email',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        ),
+                                      ),
+                                      TextFormField(
+                                        controller: _emailController,
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: 'Email'),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter an Email';
+                                          } //TODO
+                                          //check isFound or not
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add Password',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextFormField(
+                                        controller: _passwordController,
+                                        obscureText: _isObscure,
+                                        decoration:
+                                            textInputDecoration.copyWith(
+                                          hintText: 'Password',
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _isObscure
+                                                  ? Icons.visibility_off
+                                                  : Icons.visibility,
+                                            ),
                                             onPressed: () {
-                                              Navigator.pop(context);
+                                              setState(() {
+                                                _isObscure = !_isObscure;
+                                              });
                                             },
-                                            style: OutlinedButton.styleFrom(
-                                              side: const BorderSide(color: Color(0xFF427D9D)),
-                                              backgroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                side: const BorderSide(width: 1, color: Color(0xFF427D9D)),
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              'Cancel',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.ibmPlexMono(
-                                                color: Color(0xFF427D9D),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                height: 0,
-                                              ),
-                                            ),
+                                          ),
+                                        ),
+                                        validator: (val) => val!.length < 6
+                                            ? 'Password too short'
+                                            : null,
+                                      ),
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add Phone',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
                                           ),
                                         ),
                                       ),
+                                      TextFormField(
+                                        controller: _phoneController,
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: 'Phone'),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter Your Phone';
+                                          } //TODO
+                                          //check isFound or not
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
                                     ],
                                   ),
                                 ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              )
-            ]));
+                                actions: [
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: SizedBox(
+                                            width: 140.50,
+                                            height: 48,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                _onAddStudentPressed();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color(0xFF427D9D),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Add Student',
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.ibmPlexMono(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 0,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: SizedBox(
+                                            width: 140.50,
+                                            height: 48,
+                                            child: OutlinedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                side: const BorderSide(
+                                                    color: Color(0xFF427D9D)),
+                                                backgroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  side: const BorderSide(
+                                                      width: 1,
+                                                      color: Color(0xFF427D9D)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Cancel',
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.ibmPlexMono(
+                                                  color: Color(0xFF427D9D),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 0,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              ]),
+        ));
   }
 }
 
