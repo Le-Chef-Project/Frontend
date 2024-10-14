@@ -118,8 +118,9 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 106),
                     TextButton(
                       onPressed: () {
-                        Get.to(()=>const AllVid(),transition: Transition.fade, duration: const Duration(seconds: 1));
-
+                        Get.to(() => const AllVid(),
+                            transition: Transition.fade,
+                            duration: const Duration(seconds: 1));
                       },
                       child: Text(
                         'See all',
@@ -158,26 +159,23 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(
-                        context,
-                        Title: "Exams",
-                        Number: "15",
-                        ImagePath: 'assets/Wonder Learners Graduating.png',
-                        onTapCardRec: () =>
-                            Get.to(()=>const Exams(),transition: Transition.fade, duration: const Duration(seconds: 1))
-
-                      ),
+                      child: _buildCardRec(context,
+                          Title: "Exams",
+                          Number: "15",
+                          ImagePath: 'assets/Wonder Learners Graduating.png',
+                          onTapCardRec: () => Get.to(() => const Exams(),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1))),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildCardRec(
-                          context,
+                      child: _buildCardRec(context,
                           Title: "Library",
                           Number: "20",
                           ImagePath: 'assets/Charco Education.png',
-                          onTapCardRec: () =>
-                            Get.to(()=>const Library(),transition: Transition.fade, duration: const Duration(seconds: 1))
-    ),
+                          onTapCardRec: () => Get.to(() => const Library(),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1))),
                     ),
                   ],
                 ),
@@ -187,15 +185,13 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(
-                        context,
-                        Title: "Notes",
-                        Number: "10",
-                        ImagePath: 'assets/Wonder Learners Book.png',
-                        onTapCardRec: () =>
-                            Get.to(()=>const Notes(),transition: Transition.fade, duration: const Duration(seconds: 1))
-
-                      ),
+                      child: _buildCardRec(context,
+                          Title: "Notes",
+                          Number: "10",
+                          ImagePath: 'assets/Wonder Learners Book.png',
+                          onTapCardRec: () => Get.to(() => const Notes(),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1))),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -216,9 +212,10 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         child: GestureDetector(
-                          onTap: (){
-                            Get.to(()=>OnlineSessions(),transition: Transition.fade, duration: Duration(seconds: 1));
-
+                          onTap: () {
+                            Get.to(() => OnlineSessions(),
+                                transition: Transition.fade,
+                                duration: Duration(seconds: 1));
                           },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,11 +253,15 @@ class _HomeState extends State<Home> {
           onItemTapped: (index) {
             switch (index) {
               case 1:
-                Get.to(()=>Notifications(),transition: Transition.fade, duration: const Duration(seconds: 1));
+                Get.to(() => Notifications(),
+                    transition: Transition.fade,
+                    duration: const Duration(seconds: 1));
 
                 break;
               case 2:
-                Get.to(()=>const Chats(),transition: Transition.fade, duration: const Duration(seconds: 1));
+                Get.to(() => const Chats(),
+                    transition: Transition.fade,
+                    duration: const Duration(seconds: 1));
 
                 break;
             }

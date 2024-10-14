@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Screens/AddExam.dart';
 import 'package:le_chef/Screens/all_students.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
-
 import '../Models/Student.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/textInputDecoration.dart';
@@ -62,6 +62,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     print('apiii ${_Std} + ${_Std!.length}');
     setState(() {
       _isLoading_Std = false;
+    });
+  }
+
+  Future<void> onRefresh() async {
+    setState(() {
+      getStd();
     });
   }
 
@@ -248,146 +254,150 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        body: RefreshIndicator(
+          onRefresh: onRefresh,
+          backgroundColor: Color(0xFF164863),
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          color: const Color(0x00565656),
+                          child: Text(
+                            'Hany Azmy',
+                            style: GoogleFonts.ibmPlexMono(
+                              color: Color(0xFF164863),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            'French Teacher',
+                            style: GoogleFonts.ibmPlexMono(
+                              color: Color(0xFF427D9D),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              height: 0,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 68),
+                _isLoading_Std
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : total_student(context),
+                const SizedBox(height: 68),
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
                     children: [
-                      Container(
-                        color: const Color(0x00565656),
-                        child: Text(
-                          'Hany Azmy',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            height: 0,
+                      Expanded(
+                        child: _buildCardRec(
+                          context,
+                          Title: "Exams",
+                          Number: "15",
+                          ImagePath: 'assets/Wonder Learners Graduating.png',
+                          onTapCardRec: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AddExam()),
                           ),
                         ),
                       ),
-                      Container(
-                        child: Text(
-                          'French Teacher',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF427D9D),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                          ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildCardRec(
+                          context,
+                          Title: "Library",
+                          Number: "20",
+                          ImagePath: 'assets/Charco Education.png',
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 68),
-              _isLoading_Std
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : total_student(context),
-              const SizedBox(height: 68),
-              SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildCardRec(
-                        context,
-                        Title: "Exams",
-                        Number: "15",
-                        ImagePath: 'assets/Wonder Learners Graduating.png',
-                        onTapCardRec: () => Navigator.push(
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildCardRec(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const Exams()),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildCardRec(
-                        context,
-                        Title: "Library",
-                        Number: "20",
-                        ImagePath: 'assets/Charco Education.png',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildCardRec(
-                        context,
-                        Title: "Notes",
-                        Number: "10",
-                        ImagePath: 'assets/Wonder Learners Book.png',
-                        onTapCardRec: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Notes()),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: ShapeDecoration(
-                          gradient: LinearGradient(
-                            begin: const Alignment(0.00, -1.00),
-                            end: const Alignment(0, 1),
-                            colors: [
-                              const Color(0x33DDF2FD),
-                              const Color(0x89C8C8C8),
-                              Colors.white.withOpacity(0)
-                            ],
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                          Title: "Notes",
+                          Number: "10",
+                          ImagePath: 'assets/Wonder Learners Book.png',
+                          onTapCardRec: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Notes()),
                           ),
                         ),
-                        child: GestureDetector(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(left: 16),
-                                child: Text(
-                                  'Online Sessions',
-                                  style: GoogleFonts.ibmPlexMono(
-                                    color: Color(0xFF164863),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    height: 0,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: ShapeDecoration(
+                            gradient: LinearGradient(
+                              begin: const Alignment(0.00, -1.00),
+                              end: const Alignment(0, 1),
+                              colors: [
+                                const Color(0x33DDF2FD),
+                                const Color(0x89C8C8C8),
+                                Colors.white.withOpacity(0)
+                              ],
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          child: GestureDetector(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 16),
+                                  child: Text(
+                                    'Online Sessions',
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: Color(0xFF164863),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      height: 0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Image.asset(
-                                'assets/Shopaholics Sitting On The Floor.png',
-                                height: 228,
-                                width: double.infinity,
-                              )
-                            ],
+                                const SizedBox(height: 8),
+                                Image.asset(
+                                  'assets/Shopaholics Sitting On The Floor.png',
+                                  height: 228,
+                                  width: double.infinity,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: CustomBottomNavBar(

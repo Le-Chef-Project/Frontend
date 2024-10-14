@@ -19,9 +19,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       MaterialPageRoute(
         builder: (context) => const GroupMembers(
           students: [
-            {'name': 'Student 1', 'avatarUrl': 'https://example.com/avatar1.png'},
-            {'name': 'Student 2', 'avatarUrl': 'https://example.com/avatar2.png'},
-            {'name': 'Student 3', 'avatarUrl': 'https://example.com/avatar3.png'},
+            {
+              'name': 'Student 1',
+              'avatarUrl': 'https://example.com/avatar1.png'
+            },
+            {
+              'name': 'Student 2',
+              'avatarUrl': 'https://example.com/avatar2.png'
+            },
+            {
+              'name': 'Student 3',
+              'avatarUrl': 'https://example.com/avatar3.png'
+            },
             // Add more students here
           ],
         ),

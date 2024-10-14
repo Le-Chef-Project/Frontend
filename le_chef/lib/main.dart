@@ -7,6 +7,8 @@ import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/THome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Screens/AddExam.dart';
+
 late SharedPreferences sharedPreferences;
 String? token;
 String? role;
@@ -29,8 +31,7 @@ class MyApp extends StatelessWidget {
     // Apply the status bar color globally
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: statusBarColor,
-      statusBarIconBrightness:
-          Brightness.dark, // You can adjust based on your color
+      statusBarIconBrightness: Brightness.dark,
     ));
 
     return ScreenUtilInit(
