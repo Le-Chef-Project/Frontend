@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:le_chef/Screens/THome.dart';
+import 'package:le_chef/Screens/admin/THome.dart';
 
 import '../Models/Student.dart';
-import '../Screens/Home.dart';
+import '../Screens/user/Home.dart';
 import '../main.dart';
 import 'SharedPrefes.dart';
 import 'apiendpoints.dart';

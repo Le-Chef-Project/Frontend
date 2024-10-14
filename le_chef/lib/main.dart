@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:le_chef/Screens/Home.dart';
+import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/Login.dart';
-import 'package:le_chef/Screens/THome.dart';
+import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Screens/AddExam.dart';
+import 'Screens/admin/AddExam.dart';
 
 late SharedPreferences sharedPreferences;
 String? token;

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/meeting/end_meeting.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'end_meeting.dart';
 
 class MeetingPage extends StatefulWidget {
   const MeetingPage({super.key});
@@ -123,64 +124,64 @@ class _MeetingPageState extends State<MeetingPage> {
                 Expanded(
                   child: _isCameraOn && _localRenderer.srcObject != null
                       ? Container(
-                          margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: RTCVideoView(_localRenderer, mirror: true),
-                        )
+                    margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: RTCVideoView(_localRenderer, mirror: true),
+                  )
                       : GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 15,
+                    gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 15,
+                    ),
+                    itemCount: 8,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: const Color(0xFFD9D9D9).withOpacity(0.1),
                           ),
-                          itemCount: 8,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: const Color(0xFFD9D9D9).withOpacity(0.1),
-                                ),
-                                child: Stack(children: [
-                                  Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 60,
-                                          backgroundImage: Image.asset(
-                                            'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-                                          ).image,
-                                        ),
-                                        const SizedBox(height: 21,),
-                                        Text(
-                                          'Thaowpsta Saiid',
-                                          style: GoogleFonts.ibmPlexMono(
-                                            color: const Color(0xFF083344),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                          child: Stack(children: [
+                            Center(
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 60,
+                                    backgroundImage: Image.asset(
+                                      'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+                                    ).image,
                                   ),
-                                  Positioned(
-                                      right: 8,
-                                      top: 10,
-                                      child: _isMicOn
-                                          ? const Icon(Icons.mic,
-                                              color: Color(0xFF164863))
-                                          : const Icon(Icons.mic_off,
-                                              color: Color(0xFF164863)))
-                                ]),
+                                  const SizedBox(height: 21,),
+                                  Text(
+                                    'Thaowpsta Saiid',
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: const Color(0xFF083344),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  )
+                                ],
                               ),
-                            );
-                          },
+                            ),
+                            Positioned(
+                                right: 8,
+                                top: 10,
+                                child: _isMicOn
+                                    ? const Icon(Icons.mic,
+                                    color: Color(0xFF164863))
+                                    : const Icon(Icons.mic_off,
+                                    color: Color(0xFF164863)))
+                          ]),
                         ),
+                      );
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -190,7 +191,7 @@ class _MeetingPageState extends State<MeetingPage> {
                       ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor:
-                                WidgetStateProperty.all(const Color(0xFFEA5B5B)),
+                            WidgetStateProperty.all(const Color(0xFFEA5B5B)),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25),
@@ -228,7 +229,7 @@ class _MeetingPageState extends State<MeetingPage> {
                         style: ButtonStyle(
                           elevation: WidgetStateProperty.all(0),
                           backgroundColor:
-                              WidgetStateProperty.all(const Color(0xFFFBFAFA)),
+                          WidgetStateProperty.all(const Color(0xFFFBFAFA)),
                           shape: WidgetStateProperty.all(
                             const CircleBorder(),
                           ),
@@ -248,7 +249,7 @@ class _MeetingPageState extends State<MeetingPage> {
                         style: ButtonStyle(
                           elevation: WidgetStateProperty.all(0),
                           backgroundColor:
-                              WidgetStateProperty.all(const Color(0xFFFBFAFA)),
+                          WidgetStateProperty.all(const Color(0xFFFBFAFA)),
                           shape: WidgetStateProperty.all(
                             const CircleBorder(),
                           ),

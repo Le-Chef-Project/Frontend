@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/Home.dart';
+import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../Shared/customBottomNavBar.dart';

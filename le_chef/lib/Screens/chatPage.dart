@@ -19,7 +19,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
-import 'Home.dart';
+import 'user/Home.dart';
 import 'notification.dart';
 
 class ChatPage extends StatefulWidget {

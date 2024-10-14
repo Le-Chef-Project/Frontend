@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
-import 'package:le_chef/Screens/AddExam.dart';
-import 'package:le_chef/Screens/all_students.dart';
+import 'package:le_chef/Screens/admin/AddExam.dart';
+import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
-import '../Models/Student.dart';
-import '../Shared/customBottomNavBar.dart';
-import '../Shared/textInputDecoration.dart';
-import '../theme/custom_button_style.dart';
-import 'Notes.dart';
-import 'notification.dart';
+import '../../Models/Student.dart';
+import '../../Shared/customBottomNavBar.dart';
+import '../../Shared/textInputDecoration.dart';
+import '../../theme/custom_button_style.dart';
+import '../Notes.dart';
+import '../notification.dart';
 
 class THome extends StatefulWidget {
   const THome({super.key});

@@ -4,11 +4,11 @@ import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_search_view.dart';
 
-import '../Api/apimethods.dart';
-import '../Shared/customBottomNavBar.dart';
-import 'Home.dart';
-import 'chats.dart';
-import 'notification.dart';
+import '../../Api/apimethods.dart';
+import '../../Shared/customBottomNavBar.dart';
+import '../user/Home.dart';
+import '../chats.dart';
+import '../notification.dart';
 
 class AllStudents extends StatefulWidget {
   AllStudents({super.key});

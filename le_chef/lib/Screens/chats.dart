@@ -6,7 +6,7 @@ import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_text_style.dart';
 import '../theme/theme_helper.dart';
-import 'Home.dart';
+import 'user/Home.dart';
 import 'notification.dart';
 
 class Chats extends StatelessWidget {

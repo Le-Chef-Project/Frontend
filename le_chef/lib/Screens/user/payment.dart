@@ -3,8 +3,8 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import 'package:le_chef/Shared/custom_outlined_button.dart';
 import 'package:le_chef/theme/custom_button_style.dart';
-import '../Shared/custom_app_bar.dart';
-import '../theme/custom_text_style.dart';
+import '../../Shared/custom_app_bar.dart';
+import '../../theme/custom_text_style.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({Key? key}) : super(key: key);

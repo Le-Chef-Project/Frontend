@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 
-import '../Models/Quiz.dart';
-import '../theme/custom_button_style.dart';
+import '../../Models/Quiz.dart';
+import '../../theme/custom_button_style.dart';
 
 class AddQuestion extends StatefulWidget {
   @override

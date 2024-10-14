@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/meeting/online_session_screen.dart';
-
-import '../../Shared/customBottomNavBar.dart';
+import '../../../Shared/customBottomNavBar.dart';
+import '../../chats.dart';
+import '../../notification.dart';
 import '../Home.dart';
-import '../chats.dart';
-import '../notification.dart';
+import 'online_session_screen.dart';
 
 class EndMeeting extends StatelessWidget {
   const EndMeeting({super.key});

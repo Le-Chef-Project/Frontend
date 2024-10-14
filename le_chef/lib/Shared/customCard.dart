@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../Screens/Payment.dart'; // Import your PaymentScreen
+
+import '../Screens/user/payment.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({super.key, required this.isLocked, required this.onTap});

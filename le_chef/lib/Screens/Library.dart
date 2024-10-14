@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
-import 'Home.dart';
+import 'user/Home.dart';
 import 'chats.dart';
 import 'notification.dart';
 

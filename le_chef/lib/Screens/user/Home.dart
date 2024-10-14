@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/Library.dart';
-import 'package:le_chef/Screens/OnlineSessions.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
-import 'package:le_chef/Screens/seeAllVid.dart';
-
-import '../Shared/customBottomNavBar.dart';
-import '../Shared/custom_search_view.dart';
-import 'Notes.dart';
-import 'notification.dart';
+import 'package:le_chef/Screens/user/meeting/online_session_screen.dart';
+import '../../Shared/customBottomNavBar.dart';
+import '../../Shared/custom_search_view.dart';
+import '../Notes.dart';
+import '../notification.dart';
+import 'seeAllVid.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -213,7 +212,7 @@ class _HomeState extends State<Home> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => OnlineSessions(),
+                            Get.to(() => OnlineSessionScreen(),
                                 transition: Transition.fade,
                                 duration: Duration(seconds: 1));
                           },
