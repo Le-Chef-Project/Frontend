@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="updates">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_04_10_2024_17_42_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_04_10_2024_17_42__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/Home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/THome.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/THome.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Shared/custom_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Shared/custom_app_bar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/admin/AddExam.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/admin/AddExam.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/admin/AddQuestion.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/admin/AddQuestion.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

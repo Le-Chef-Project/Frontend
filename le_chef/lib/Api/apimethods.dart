@@ -148,4 +148,47 @@ class ApisMethods {
       print('${jsonDecode(response.body)['message']}');
     }
   }
+
+//5- add quiz
+  static Future<void> AddQuiz(
+    title,
+    questions,
+    hours,
+    minutes,
+  ) async {
+    final body = jsonEncode({
+      'title': title,
+      'questions': questions,
+      'hours': hours.toString(),
+      'minutes': minutes.toString(),
+    });
+
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.addQuiz);
+    http.Response response = await http.post(url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+        body: body);
+
+    if (response.statusCode == 201) {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return SimpleDialog(
+              title: Text('Success'),
+              contentPadding: EdgeInsets.all(20),
+              children: [Text('Quiz added successfully!')],
+            );
+          });
+    } else {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return SimpleDialog(
+              title: Text('Error'),
+              contentPadding: EdgeInsets.all(20),
+              children: [Text('Failed to add quiz: ${response.body}')],
+            );
+          });
+    }
+  }
 }
