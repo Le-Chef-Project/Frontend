@@ -6,6 +6,7 @@ import 'package:le_chef/Shared/custom_search_view.dart';
 
 import '../../Api/apimethods.dart';
 import '../../Shared/customBottomNavBar.dart';
+import '../../Widgets/total_exams-students_card.dart';
 import '../user/Home.dart';
 import '../chats.dart';
 import '../notification.dart';
@@ -64,71 +65,6 @@ class _AllStudentsState extends State<AllStudents> {
     });
   }
 
-  Widget totalStudent(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x4C427D9D),
-            blurRadius: 32.50,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Total Students',
-                style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF164863),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  height: 0,
-                ),
-              ),
-              const SizedBox(width: 50),
-              Expanded(
-                  child: Container(
-                height: 41,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFDDF2FD),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    '${_Std?.length ?? 0}',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFF164863),
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              )),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +77,7 @@ class _AllStudentsState extends State<AllStudents> {
           child: Column(
             children: [
               const SizedBox(height: 39),
-              totalStudent(context),
+              totalStudent(context, 'Total Students', '${_Std?.length ?? 0}'),
               const SizedBox(height: 43),
               CustomSearchView(
                 clear: () {

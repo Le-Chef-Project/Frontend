@@ -315,7 +315,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           onTapCardRec: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => AddExam()),
+                            MaterialPageRoute(builder: (context) => Exams()),
                           ),
                         ),
                       ),

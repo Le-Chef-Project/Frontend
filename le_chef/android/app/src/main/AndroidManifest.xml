@@ -12,7 +12,8 @@
         android:name="${applicationName}"
         android:label="Le Chef"
         android:icon="@mipmap/launcher_icon"
-        tools:replace="android:icon,android:label">
+        tools:replace="android:icon,android:label"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

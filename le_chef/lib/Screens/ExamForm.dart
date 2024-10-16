@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../Models/Quiz.dart';
 import '../Shared/custom_elevated_button.dart';
+import '../main.dart';
 import '../theme/custom_button_style.dart';
 
 class QuizPage extends StatefulWidget {
@@ -17,11 +18,18 @@ class _QuizPageState extends State<QuizPage> {
   Timer? _timer;
   int _start = 50 * 60; // Countdown start value in seconds (50 minutes)
   double _progress = 1.0;
+  String? role = sharedPreferences.getString('role');
+  TextEditingController _questionController = TextEditingController();
+  List<TextEditingController> _answerControllers = [];
 
   @override
   void initState() {
     super.initState();
     startTimer();
+    _questionController.text = quizQuestions[selectedQuestion].questionText;
+    _answerControllers = quizQuestions[selectedQuestion].answers.map((answer) {
+      return TextEditingController(text: answer);
+    }).toList();
   }
 
   void startTimer() {
@@ -66,9 +74,14 @@ class _QuizPageState extends State<QuizPage> {
   void dispose() {
     _timer?.cancel();
     super.dispose();
+    _questionController.dispose();
+    for (var controller in _answerControllers) {
+      controller.dispose();
+    }
   }
 
   int selectedQuestion = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +92,7 @@ class _QuizPageState extends State<QuizPage> {
     int seconds = (_start % 60);
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Exam Form'),
           backgroundColor: Colors.white,
@@ -292,38 +306,49 @@ class _QuizPageState extends State<QuizPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const SizedBox(width: 16),
+                          VerticalDivider(
+                            color: Color(0xFF888888),
+                            thickness: 1,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
                           Expanded(
-                            child: Container(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: Text(
-                                      'Submit answers',
-                                      style: TextStyle(
-                                        color: Color(0xFF888888),
-                                        fontSize: 14,
-                                        fontFamily: 'IBM Plex Mono',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0,
-                                      ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    role == 'admin'
+                                        ? 'Edit Time'
+                                        : 'Submit answers',
+                                    style: TextStyle(
+                                      color: Color(0xFF888888),
+                                      fontSize: 14,
+                                      fontFamily: 'IBM Plex Mono',
+                                      fontWeight: FontWeight.w500,
+                                      height: 0,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  CustomElevatedButton(
-                                    width: 139,
-                                    height: 50,
-                                    text: "Submit",
-                                    onPressed: _submitAnswers,
-                                    buttonStyle:
-                                        CustomButtonStyles.fillPrimaryTL5,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomElevatedButton(
+                                  width: 139,
+                                  height: 50,
+                                  text: role == 'admin' ? 'Edit' : "Submit",
+                                  onPressed: _submitAnswers,
+                                  buttonStyle: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF427D9D),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12))),
+                                  // buttonStyle:
+                                  //     CustomButtonStyles.fillPrimaryTL5,
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -335,7 +360,7 @@ class _QuizPageState extends State<QuizPage> {
             ),
 
             SizedBox(
-              height: 39,
+              height: 20,
             ),
             // Question boxes
             Container(
@@ -364,14 +389,18 @@ class _QuizPageState extends State<QuizPage> {
                       decoration: ShapeDecoration(
                         color: selectedQuestion == index
                             ? Color(0xFF427D9D)
-                            : Color(0xFF888888),
+                            : Color(0xFFF1F2F6),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
+                            borderRadius: BorderRadius.circular(7)),
                       ),
                       child: Center(
                         child: Text(
                           '${index + 1}',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          style: TextStyle(
+                              color: selectedQuestion == index
+                                  ? Colors.white
+                                  : Color(0xFF888888),
+                              fontSize: 12),
                         ),
                       ),
                     ),
@@ -379,12 +408,9 @@ class _QuizPageState extends State<QuizPage> {
                 },
               ),
             ),
-            SizedBox(
-              height: 39,
-            ),
 
             Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -406,7 +432,10 @@ class _QuizPageState extends State<QuizPage> {
                               })
                             : selectedQuestion = 0;
                       },
-                      icon: Icon(Icons.arrow_left_outlined),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Color(0xFF888888),
+                      ),
                     ),
                   ),
                   Container(
@@ -427,59 +456,189 @@ class _QuizPageState extends State<QuizPage> {
                               })
                             : selectedQuestion = 39;
                       },
-                      icon: Icon(Icons.arrow_right),
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Color(0xFF888888),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
             // Question display
             Expanded(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Container(
-                    width: 500,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: ShapeDecoration(
-                      color: const Color.fromRGBO(216, 233, 238, 1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Container(
+                        width: 500,
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: ShapeDecoration(
+                          color: const Color.fromRGBO(216, 233, 238, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                role == 'admin' ? Theme(
+                                  data: ThemeData(
+                                    textSelectionTheme: const TextSelectionThemeData(
+                                      selectionColor: Color(0xFF164863),
+                                      selectionHandleColor: Color(0xFF164863),
+                                    ),
+                                  ),
+                                  child: TextField(
+                                    controller: _questionController,
+                                    maxLines: null,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                    ),
+                                    cursorColor: Color(0xFF164863),
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: Color(0xFF164863),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    onSubmitted: (val){
+                                      setState(() {
+                                        quizQuestions[selectedQuestion].questionText = val;
+                                      });
+                                    },
+                                  ),
+                                ) :Text(
+                                  quizQuestions[selectedQuestion].questionText,
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: Color(0xFF164863),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                role == 'admin' ? Positioned(
+                                  height: MediaQuery.of(context).size.height * 0.1,
+                                  bottom: -35,
+                                    right: 2,
+                                    child:
+                                      Image.asset('assets/solar_pen-outline.png', color: Colors.black,),
+                                    ): SizedBox.shrink()
+                              ],
+                            ),
+                            const SizedBox(height: 12.0),
+                            ...quizQuestions[selectedQuestion]
+                                .answers
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              int answerIndex = entry.key;
+                              String answerText = entry.value;
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
+                                  child: ListTile(
+                                    title: role == 'admin' ? Theme(
+                                      data: ThemeData(
+                                        textSelectionTheme: const TextSelectionThemeData(
+                                          selectionColor: Color(0xFF164863),
+                                          selectionHandleColor: Color(0xFF164863),
+                                        ),
+                                      ),
+                                      child: TextField(
+                                        controller: _answerControllers[answerIndex],
+                                        cursorColor: Color(0xFF164863),
+                                        maxLines: null,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                        ),
+                                        style: GoogleFonts.ibmPlexMono(
+                                          color: Color(0xFF164863),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        onSubmitted: (val){
+                                          quizQuestions[selectedQuestion].answers[answerIndex] = val;
+                                        },
+                                      ),
+                                    ) : Text(
+                                      answerText,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: Color(0xFF164863),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    leading: Radio<int?>(
+                                      value: answerIndex,
+                                      groupValue:
+                                          _selectedAnswers[selectedQuestion],
+                                      onChanged: (int? value) {
+                                        setState(() {
+                                          _selectedAnswers[selectedQuestion] =
+                                              value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          quizQuestions[selectedQuestion].questionText,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: ElevatedButton(onPressed: (){
+                          role == 'admin' ? showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              icon: Icon(Icons.check_circle_outline, color: Color(0xFF2ED573), size: 150,),
+                              title: Text('Success!', style: GoogleFonts.ibmPlexMono(color: Color(0xFF164863),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,),),
+                              content: Text('Exam Updated Successfully', style: GoogleFonts.ibmPlexMono(color: Color(0xFF888888),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,),),
+
+                            );
+                          }) : Navigator.pop(context);//Todo submit exam for student
+                          
+                          Future.delayed(Duration(seconds: 2), (){
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          });
+                        }, child: Text('Submit', style: GoogleFonts.ibmPlexMono(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                        ),),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF427D9D),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12))),
                         ),
-                        const SizedBox(height: 8.0),
-                        ...quizQuestions[selectedQuestion]
-                            .answers
-                            .asMap()
-                            .entries
-                            .map((entry) {
-                          int answerIndex = entry.key;
-                          String answerText = entry.value;
-                          return ListTile(
-                            title: Text(answerText),
-                            leading: Radio<int?>(
-                              value: answerIndex,
-                              groupValue: _selectedAnswers[selectedQuestion],
-                              onChanged: (int? value) {
-                                setState(() {
-                                  _selectedAnswers[selectedQuestion] = value;
-                                });
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),

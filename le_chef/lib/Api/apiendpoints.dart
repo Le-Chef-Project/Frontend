@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static final String baseUrl = "http://192.168.1.13:3000/";
+  static final String baseUrl = "http://192.168.1.12:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();

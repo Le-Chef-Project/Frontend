@@ -3,8 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/ExamInfo.dart';
 import 'package:le_chef/Screens/user/payment.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
+import 'package:le_chef/Widgets/total_exams-students_card.dart';
 
 import '../Shared/customBottomNavBar.dart';
+import '../Widgets/customExamWidgets.dart';
+import '../main.dart';
 import 'user/Home.dart';
 import 'chats.dart';
 import 'notification.dart';
@@ -20,6 +23,7 @@ class _ExamsState extends State<Exams> {
   final int itemCount = 3;
   int selectedUnit = 1;
   bool isLocked = true;
+  String? role = sharedPreferences.getString('role');
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +34,16 @@ class _ExamsState extends State<Exams> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Image.asset(
-                'assets/Wonder Learners Graduating.png',
-                width: 300,
-                height: 300,
-              ),
-            ),
+            role == 'admin'
+                ? totalStudent(context, 'Total Exams', '16k',
+                    buttonText: 'Add Exam')
+                : Center(
+                    child: Image.asset(
+                      'assets/Wonder Learners Graduating.png',
+                      width: 300,
+                      height: 300,
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -45,7 +52,7 @@ class _ExamsState extends State<Exams> {
                   bool isSelected = selectedUnit == index + 1;
                   return Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: isSelected
                           ? ElevatedButton(
                               onPressed: () {
@@ -54,8 +61,9 @@ class _ExamsState extends State<Exams> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF427D9D),
-                              ),
+                                  backgroundColor: const Color(0xFF427D9D),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12))),
                               child: Text(
                                 'Unit ${index + 1}',
                                 style: GoogleFonts.ibmPlexMono(
@@ -72,9 +80,11 @@ class _ExamsState extends State<Exams> {
                                 });
                               },
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Color(0xFF427D9D)),
-                                backgroundColor: Colors.white,
-                              ),
+                                  side: const BorderSide(
+                                      color: Color(0xFF427D9D)),
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12))),
                               child: Text(
                                 'Unit ${index + 1}',
                                 style: GoogleFonts.ibmPlexMono(
@@ -89,6 +99,7 @@ class _ExamsState extends State<Exams> {
                 }),
               ),
             ),
+            SizedBox(height: 8,),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(20),
@@ -98,143 +109,10 @@ class _ExamsState extends State<Exams> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0F4F8),
+                        color: const Color(0xFFFBFAFA),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: ListTile(
-                        title: Text(
-                          'Unit $selectedUnit - lesson ${index + 1}',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        trailing: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.arrow_forward_ios,
-                                color: Color(0xFF164863)),
-                            SizedBox(width: 8),
-                            Icon(Icons.lock_outline, color: Color(0xFF164863)),
-                          ],
-                        ),
-                        onTap: () {
-                          if (isLocked) {
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Icon(
-                                    Icons.lock_outline,
-                                    color: Color(0xFF164863),
-                                    size: 100,
-                                  ),
-                                  content: Text(
-                                    'This quiz is locked.. You should pay quiz fees',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: Color(0xFF083344),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  actions: [
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: SizedBox(
-                                              width: 140.50,
-                                              height: 48,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const PaymentScreen()));
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      const Color(0xFF427D9D),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  'Pay Fees',
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.ibmPlexMono(
-                                                    color: Colors.white,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    height: 0,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 20),
-                                          Expanded(
-                                            child: SizedBox(
-                                              width: 140.50,
-                                              height: 48,
-                                              child: OutlinedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                style: OutlinedButton.styleFrom(
-                                                  side: const BorderSide(
-                                                      color: Color(0xFF427D9D)),
-                                                  backgroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    side: const BorderSide(
-                                                        width: 1,
-                                                        color:
-                                                            Color(0xFF427D9D)),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                ),
-                                                child: const Text(
-                                                  'Cancel',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Color(0xFF427D9D),
-                                                    fontSize: 16,
-                                                    fontFamily: 'IBM Plex Mono',
-                                                    fontWeight: FontWeight.w600,
-                                                    height: 0,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ExamInfo()),
-                            );
-                          }
-                        },
-                      ),
+                      child: customExamListTile(index, selectedUnit, context, isLocked)
                     ),
                   );
                 },

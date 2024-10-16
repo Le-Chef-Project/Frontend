@@ -1,5 +1,5 @@
 class QuizQuestion {
-  final String questionText;
+  late final String questionText;
   final List<String> answers;
   final int correctAnswerIndex;
 
