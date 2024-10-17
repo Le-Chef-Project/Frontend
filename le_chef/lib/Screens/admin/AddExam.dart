@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
+import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 import '../../Models/Quiz.dart';
 import '../../theme/custom_button_style.dart';
 import 'AddQuestion.dart';
@@ -67,6 +68,19 @@ class _AddExamState extends State<AddExam> {
 
       await ApisMethods.AddQuiz(title, questions, hours, minutes);
     }
+
+    dialogWithButtons(context: context,
+        icon: Image.asset('assets/error-16_svgrepo.com.jpg'),
+        title: 'Are you sure you finish putting Exam ?',
+        button1Text: 'Finish Exam',
+        button1Action: () {
+            dialogWithButtons(context: context, icon: Icon(Icons.check_circle_outline, color: Colors.green, size: 117,), title: 'Success !', content: 'Exam posted to students.');
+            Future.delayed((Duration(seconds: 2)), (){
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+            });
+            }, button2Text: 'Cancel', button2Action: () => Navigator.pop(context));
   }
 
   @override
@@ -119,9 +133,9 @@ class _AddExamState extends State<AddExam> {
                           hintText: 'Title',
                           border: InputBorder.none, // No border
                           focusedBorder:
-                              InputBorder.none, // No border when focused
+                          InputBorder.none, // No border when focused
                           enabledBorder:
-                              InputBorder.none, // No border when enabled
+                          InputBorder.none, // No border when enabled
                         ),
                       ),
                     ),
@@ -221,73 +235,77 @@ class _AddExamState extends State<AddExam> {
               //question
               quizList.isNotEmpty
                   ? ListView.builder(
-                      shrinkWrap: true, // Add this line
-                      physics:
-                          NeverScrollableScrollPhysics(), // Prevents it from scrolling independently
-                      itemCount: quizList.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Container(
-                            color: Colors.grey[100],
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                // The main heading
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween, // Aligns delete icon to the right
+                shrinkWrap: true,
+                // Add this line
+                physics:
+                NeverScrollableScrollPhysics(),
+                // Prevents it from scrolling independently
+                itemCount: quizList.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      color: Colors.grey[100],
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // The main heading
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceBetween,
+                            // Aligns delete icon to the right
 
-                                  children: [
-                                    Text(
-                                      '${index + 1}. ${quizList[index].questionText}',
-                                      style: TextStyle(
-                                        color: Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontFamily: 'IBM Plex Mono',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon:
-                                          Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () {
-                                        setState(() {
-                                          widget.quizList!.removeAt(
-                                              index); // Remove the question at the given index
-                                        });
-                                      },
-                                    ),
-                                  ],
+                            children: [
+                              Text(
+                                '${index + 1}. ${quizList[index].questionText}',
+                                style: TextStyle(
+                                  color: Color(0xFF164863),
+                                  fontSize: 14,
+                                  fontFamily: 'IBM Plex Mono',
+                                  fontWeight: FontWeight.w500,
+                                  height: 0,
                                 ),
-                                SizedBox(height: 20),
-                                // The nested ListView with constrained height
-                                SizedBox(
-                                  height:
-                                      200, // Set a fixed height for the inner ListView
-                                  child: ListView.builder(
-                                    shrinkWrap: true, // Add this line as well
-                                    itemCount: quizList[index].answers.length,
-                                    itemBuilder: (context, innerIndex) {
-                                      return _buildListItem(
-                                          '${innerIndex + 1}. ${quizList[index].answers[innerIndex]}.');
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
+                              IconButton(
+                                icon:
+                                Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  setState(() {
+                                    widget.quizList!.removeAt(
+                                        index); // Remove the question at the given index
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          // The nested ListView with constrained height
+                          SizedBox(
+                            height:
+                            200, // Set a fixed height for the inner ListView
+                            child: ListView.builder(
+                              shrinkWrap: true, // Add this line as well
+                              itemCount: quizList[index].answers.length,
+                              itemBuilder: (context, innerIndex) {
+                                return _buildListItem(
+                                    '${innerIndex + 1}. ${quizList[index]
+                                        .answers[innerIndex]}.');
+                              },
                             ),
                           ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        'No questions added yet.',
-                        style: TextStyle(fontSize: 16),
+                        ],
                       ),
                     ),
+                  );
+                },
+              )
+                  : Center(
+                child: Text(
+                  'No questions added yet.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
             ],
           ),
         ),
@@ -305,7 +323,8 @@ class _AddExamState extends State<AddExam> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddQuestion(
+                  builder: (context) =>
+                      AddQuestion(
                         quizList: quizList,
                       )),
             );
