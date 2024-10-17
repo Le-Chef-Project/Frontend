@@ -43,7 +43,7 @@ class ExamInfo extends StatelessWidget {
                     child: Text(
                       '20',
                       style: GoogleFonts.ibmPlexMono(
-                        color: Color(0xFFFBFAFA),
+                        color: const Color(0xFFFBFAFA),
                         fontSize: 64,
                         fontWeight: FontWeight.w600,
                         height: 0,
@@ -63,7 +63,7 @@ class ExamInfo extends StatelessWidget {
                           text:
                               'Your Quiz is 20 Questions in 50 minutes..\n\nPay attention that you can enter to the quiz ',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -72,7 +72,7 @@ class ExamInfo extends StatelessWidget {
                         TextSpan(
                           text: 'ONLY ONE TIME',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF427D9D),
+                            color: const Color(0xFF427D9D),
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -81,7 +81,7 @@ class ExamInfo extends StatelessWidget {
                         TextSpan(
                           text: '.',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -98,7 +98,7 @@ class ExamInfo extends StatelessWidget {
                 Text(
                   'Are You Ready ?',
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF427D9D),
+                    color: const Color(0xFF427D9D),
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
                     height: 0,
@@ -113,7 +113,7 @@ class ExamInfo extends StatelessWidget {
                   text: 'Start Quiz',
                   buttonStyle: CustomButtonStyles.fillPrimaryTL5,
                   onPressed: () {
-                    Get.to(() => QuizPage(),
+                    Get.to(() => const QuizPage(),
                         transition: Transition.fade,
                         duration: const Duration(seconds: 1));
                   },

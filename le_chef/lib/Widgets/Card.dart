@@ -35,7 +35,7 @@ class CustomCardWithText extends StatelessWidget {
                   'This video is locked. You should pay video fees',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF083344),
+                    color: const Color(0xFF083344),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -98,7 +98,7 @@ class CustomCardWithText extends StatelessWidget {
                                 'Cancel',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.ibmPlexMono(
-                                  color: Color(0xFF427D9D),
+                                  color: const Color(0xFF427D9D),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -150,7 +150,7 @@ class CustomCardWithText extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFF164863),
+                      color: const Color(0xFF164863),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -159,7 +159,7 @@ class CustomCardWithText extends StatelessWidget {
                   Text(
                     subtitle,
                     style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFF427D9D),
+                      color: const Color(0xFF427D9D),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

@@ -39,11 +39,11 @@ class Library extends StatelessWidget {
                     Expanded(
                       child: SizedBox(
                         child: Padding(
-                          padding: EdgeInsets.only(left: 10.0),
+                          padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
                             'Today',
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF164863),
+                              color: const Color(0xFF164863),
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               height: 0,
@@ -68,14 +68,14 @@ class Library extends StatelessWidget {
                           Text(
                             'Filter by date range',
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF888888),
+                              color: const Color(0xFF888888),
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               height: 0,
                             ),
                           ),
-                          SizedBox(width: 6),
-                          SizedBox(
+                          const SizedBox(width: 6),
+                          const SizedBox(
                             width: 16,
                             height: 16,
                             child: FlutterLogo(),
@@ -138,14 +138,14 @@ Widget new_video(BuildContext context) {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Lesson Title',
                       style: GoogleFonts.ibmPlexMono(
-                        color: Color(0xFFFBFAFA),
+                        color: const Color(0xFFFBFAFA),
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         height: 1.2,
@@ -154,7 +154,7 @@ Widget new_video(BuildContext context) {
                     Text(
                       'Unit 3 - Lesson 1',
                       style: GoogleFonts.ibmPlexMono(
-                        color: Color(0xFFFBFAFA),
+                        color: const Color(0xFFFBFAFA),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         height: 1.2,

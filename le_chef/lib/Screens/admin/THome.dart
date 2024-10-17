@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
-import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
@@ -59,7 +58,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getStd() async {
     _Std = await ApisMethods.AllStudents();
-    print('apiii ${_Std} + ${_Std!.length}');
+    print('apiii $_Std + ${_Std!.length}');
     setState(() {
       _isLoading_Std = false;
     });
@@ -165,7 +164,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               ),
               const SizedBox(height: 10),
               Text(
-                '${Mess}',
+                '$Mess',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ibmPlexMono(
                   color: const Color(0xFF888888),
@@ -256,7 +255,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
         ),
         body: RefreshIndicator(
           onRefresh: onRefresh,
-          backgroundColor: Color(0xFF164863),
+          backgroundColor: const Color(0xFF164863),
           color: Colors.white,
           child: SingleChildScrollView(
             child: Column(
@@ -274,7 +273,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           child: Text(
                             'Hany Azmy',
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF164863),
+                              color: const Color(0xFF164863),
                               fontSize: 22,
                               fontWeight: FontWeight.w600,
                               height: 0,
@@ -285,7 +284,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           child: Text(
                             'French Teacher',
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF427D9D),
+                              color: const Color(0xFF427D9D),
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               height: 0,
@@ -315,7 +314,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           onTapCardRec: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Exams()),
+                            MaterialPageRoute(builder: (context) => const Exams()),
                           ),
                         ),
                       ),
@@ -371,11 +370,11 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(left: 16),
+                                  padding: const EdgeInsets.only(left: 16),
                                   child: Text(
                                     'Online Sessions',
                                     style: GoogleFonts.ibmPlexMono(
-                                      color: Color(0xFF164863),
+                                      color: const Color(0xFF164863),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       height: 0,
@@ -459,7 +458,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               child: Text(
                 Title,
                 style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF164863),
+                  color: const Color(0xFF164863),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   height: 0,
@@ -471,7 +470,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               child: Text(
                 Number,
                 style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF0E7490),
+                  color: const Color(0xFF0E7490),
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -527,7 +526,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: Text(
                           'Total Students',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -536,14 +535,14 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.to(AllStudents(),
+                          Get.to(const AllStudents(),
                               transition: Transition.fadeIn,
-                              duration: Duration(seconds: 1));
+                              duration: const Duration(seconds: 1));
                         },
                         child: Text(
                           'See all',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF427D9D),
+                            color: const Color(0xFF427D9D),
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             decoration: TextDecoration.underline,
@@ -577,7 +576,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                             '${_Std?.length ?? 0}',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF164863),
+                              color: const Color(0xFF164863),
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
                             ),
@@ -611,7 +610,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         child: Text(
                                           'Add First Name',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             height: 0,
@@ -636,7 +635,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         child: Text(
                                           'Add Last Name',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             height: 0,
@@ -662,7 +661,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         child: Text(
                                           'Add username',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             height: 0,
@@ -688,7 +687,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         child: Text(
                                           'Add Email',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             height: 0,
@@ -713,7 +712,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         child: Text(
                                           'Add Password',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             height: 0,
@@ -749,7 +748,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         child: Text(
                                           'Add Phone',
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             height: 0,
@@ -834,7 +833,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                                 'Cancel',
                                                 textAlign: TextAlign.center,
                                                 style: GoogleFonts.ibmPlexMono(
-                                                  color: Color(0xFF427D9D),
+                                                  color: const Color(0xFF427D9D),
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,
                                                   height: 0,
@@ -868,7 +867,7 @@ class FadeInDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       tween: Tween(begin: 0.0, end: 1.0),
       builder: (context, value, child) {
         return Opacity(

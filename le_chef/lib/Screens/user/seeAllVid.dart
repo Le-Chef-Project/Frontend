@@ -44,7 +44,7 @@ class _AllVidState extends State<AllVid> {
                       Text(
                         'Today',
                         style: GoogleFonts.ibmPlexMono(
-                          color: Color(0xFF164863),
+                          color: const Color(0xFF164863),
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -56,12 +56,12 @@ class _AllVidState extends State<AllVid> {
                           hint: Text(
                             'Filter by date range',
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF888888),
+                              color: const Color(0xFF888888),
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.keyboard_arrow_down_outlined,
                             size: 16,
                             color: Color(0xFF888888),
@@ -248,7 +248,7 @@ class _AllVidState extends State<AllVid> {
                                       Text(
                                         'Video name',
                                         style: GoogleFonts.ibmPlexMono(
-                                          color: Color(0xFF164863),
+                                          color: const Color(0xFF164863),
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -256,7 +256,7 @@ class _AllVidState extends State<AllVid> {
                                       Text(
                                         'Unit 1',
                                         style: GoogleFonts.ibmPlexMono(
-                                          color: Color(0xFFDDF2FD),
+                                          color: const Color(0xFFDDF2FD),
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
                                         ),

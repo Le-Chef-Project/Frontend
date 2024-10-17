@@ -7,7 +7,6 @@ import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Screens/admin/AddExam.dart';
 
 late SharedPreferences sharedPreferences;
 String? token;
@@ -44,10 +43,10 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: token == null || token == ""
-            ? Login()
+            ? const Login()
             : role == "admin"
-                ? THome()
-                : Home(),
+                ? const THome()
+                : const Home(),
       ),
     );
   }

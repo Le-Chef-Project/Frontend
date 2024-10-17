@@ -7,7 +7,7 @@ final textInputDecoration = InputDecoration(
   fillColor: const Color(0xFFFBFAFA),
   filled: true,
   hintStyle: GoogleFonts.ibmPlexMono(
-    color: Color(0xFF767B91),
+    color: const Color(0xFF767B91),
     fontSize: 14,
     fontWeight: FontWeight.w400,
     height: 0,

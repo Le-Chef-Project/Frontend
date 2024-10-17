@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
-import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Shared/textInputDecoration.dart';
 
 // Assuming textInputDecoration is defined here
@@ -39,7 +37,7 @@ class _LoginState extends State<Login> {
               Text(
                 'Welcome',
                 style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF164863),
+                  color: const Color(0xFF164863),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -48,7 +46,7 @@ class _LoginState extends State<Login> {
               Text(
                 'Please sign in to access your\n account',
                 style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF888888),
+                  color: const Color(0xFF888888),
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),

@@ -12,7 +12,7 @@ import '../chats.dart';
 import '../notification.dart';
 
 class AllStudents extends StatefulWidget {
-  AllStudents({super.key});
+  const AllStudents({super.key});
 
   @override
   State<AllStudents> createState() => _AllStudentsState();
@@ -71,7 +71,7 @@ class _AllStudentsState extends State<AllStudents> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: 'All Students'),
+        appBar: const CustomAppBar(title: 'All Students'),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -223,15 +223,15 @@ class _AllStudentsState extends State<AllStudents> {
                                 height: boxSize,
                                 decoration: ShapeDecoration(
                                   color: currentPage == i
-                                      ? Color(0xFF427D9D)
-                                      : Color(0xFF888888),
+                                      ? const Color(0xFF427D9D)
+                                      : const Color(0xFF888888),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4)),
                                 ),
                                 child: Center(
                                   child: Text(
-                                    '${i}',
-                                    style: TextStyle(
+                                    '$i',
+                                    style: const TextStyle(
                                         color: Colors.white, fontSize: 12),
                                   ),
                                 ),

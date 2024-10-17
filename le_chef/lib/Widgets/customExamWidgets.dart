@@ -11,14 +11,14 @@ Widget customExamContainer(string) {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(12),
-      color: Color(0xFFDDF2FD),
+      color: const Color(0xFFDDF2FD),
     ),
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
       child: Text(
         string,
         style: GoogleFonts.ibmPlexMono(
-          color: Color(0xFF2A324B),
+          color: const Color(0xFF2A324B),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -32,7 +32,7 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
     title: Text(
       'Unit $selectedUnit - lesson ${index + 1}',
       style: GoogleFonts.ibmPlexMono(
-        color: Color(0xFF164863),
+        color: const Color(0xFF164863),
         fontSize: 18,
         fontWeight: FontWeight.w600,
       ),
@@ -52,7 +52,7 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
         onPressed: () {
           showModalBottomSheet(
             backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(30),
               ),
@@ -60,13 +60,13 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
             builder: (context) => Container(
               decoration: BoxDecoration(
                 color: Colors.white, // Background color of the modal
-                borderRadius: BorderRadius.vertical(
+                borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
                 boxShadow: [
                   BoxShadow(
                       color: Colors.blue.withOpacity(0.3),
-                      offset: Offset(0, -2),
+                      offset: const Offset(0, -2),
                       blurStyle: BlurStyle.inner,
                       spreadRadius: 1.3
                   ),
@@ -84,20 +84,20 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
                       height: MediaQuery.of(context).size.height * 0.06,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => QuizPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizPage()));
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF427D9D),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         child: Text(
                           'Update',
                           style: GoogleFonts.ibmPlexMono(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF427D9D),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
@@ -110,24 +110,24 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
                         onPressed: () {
                           dialogWithButtons(context: context, icon: Image.asset('assets/trash-1.png',), title: 'Delete!', content: 'Are you sure that you want to Delete Exam!', button1Text: 'Delete', button1Action: (){
                             dialogWithButtons(context: context, icon: Image.asset('assets/trash-1.png',), title: 'Exam is deleted successfully.');
-                            Future.delayed(Duration(seconds: 2), (){
+                            Future.delayed(const Duration(seconds: 2), (){
                               Navigator.pop(context);
                               Navigator.pop(context);
                             });
                           }, button2Text: 'Cancel', button2Action: () => Navigator.pop(context), buttonColor: Colors.red, outlineButtonColor: Colors.red);
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEA5B5B),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         child: Text(
                           'Delete',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFEA5B5B),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
@@ -140,7 +140,7 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
             context: context,
           );
         },
-        icon: Icon(
+        icon: const Icon(
           Icons.more_horiz,
         ))
         : const Row(
@@ -170,7 +170,7 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
                   'This quiz is locked.. You should pay quiz fees',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF083344),
+                    color: const Color(0xFF083344),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),

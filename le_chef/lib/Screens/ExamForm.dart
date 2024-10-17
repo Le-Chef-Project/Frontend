@@ -6,9 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Models/Quiz.dart';
 import '../Shared/custom_elevated_button.dart';
 import '../main.dart';
-import '../theme/custom_button_style.dart';
 
 class QuizPage extends StatefulWidget {
+  const QuizPage({super.key});
+
   @override
   _QuizPageState createState() => _QuizPageState();
 }
@@ -19,7 +20,7 @@ class _QuizPageState extends State<QuizPage> {
   int _start = 50 * 60; // Countdown start value in seconds (50 minutes)
   double _progress = 1.0;
   String? role = sharedPreferences.getString('role');
-  TextEditingController _questionController = TextEditingController();
+  final TextEditingController _questionController = TextEditingController();
   List<TextEditingController> _answerControllers = [];
 
   @override
@@ -119,20 +120,20 @@ class _QuizPageState extends State<QuizPage> {
                               'Warning!',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ibmPlexMono(
-                                color: Color(0xFF164863),
+                                color: const Color(0xFF164863),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 height: 0,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Text(
                               'If you leave the quiz you will not \n be able to take it again !',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ibmPlexMono(
-                                color: Color(0xFF888888),
+                                color: const Color(0xFF888888),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 height: 0,
@@ -201,7 +202,7 @@ class _QuizPageState extends State<QuizPage> {
                                           'Leave',
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF427D9D),
+                                            color: const Color(0xFF427D9D),
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             height: 0,
@@ -225,7 +226,7 @@ class _QuizPageState extends State<QuizPage> {
               height: 138,
               padding: const EdgeInsets.all(16),
               decoration: ShapeDecoration(
-                color: Color(0xFFFBFAFA),
+                color: const Color(0xFFFBFAFA),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -249,7 +250,7 @@ class _QuizPageState extends State<QuizPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           width: 96.56,
                           height: 97,
                           child: Stack(
@@ -299,18 +300,18 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                   const SizedBox(width: 24),
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 102,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          VerticalDivider(
+                          const VerticalDivider(
                             color: Color(0xFF888888),
                             thickness: 1,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
@@ -325,7 +326,7 @@ class _QuizPageState extends State<QuizPage> {
                                     role == 'admin'
                                         ? 'Edit Time'
                                         : 'Submit answers',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Color(0xFF888888),
                                       fontSize: 14,
                                       fontFamily: 'IBM Plex Mono',
@@ -359,7 +360,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Question boxes
@@ -368,8 +369,8 @@ class _QuizPageState extends State<QuizPage> {
               height: 160,
               padding: const EdgeInsets.all(10.0),
               child: GridView.builder(
-                physics: NeverScrollableScrollPhysics(), // Disable scrolling
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 10,
                   childAspectRatio: 1,
                   crossAxisSpacing: 4,
@@ -388,8 +389,8 @@ class _QuizPageState extends State<QuizPage> {
                       height: boxSize,
                       decoration: ShapeDecoration(
                         color: selectedQuestion == index
-                            ? Color(0xFF427D9D)
-                            : Color(0xFFF1F2F6),
+                            ? const Color(0xFF427D9D)
+                            : const Color(0xFFF1F2F6),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(7)),
                       ),
@@ -399,7 +400,7 @@ class _QuizPageState extends State<QuizPage> {
                           style: TextStyle(
                               color: selectedQuestion == index
                                   ? Colors.white
-                                  : Color(0xFF888888),
+                                  : const Color(0xFF888888),
                               fontSize: 12),
                         ),
                       ),
@@ -420,7 +421,7 @@ class _QuizPageState extends State<QuizPage> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: ShapeDecoration(
-                      color: Color(0xFFF1F2F6),
+                      color: const Color(0xFFF1F2F6),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4)),
                     ),
@@ -432,7 +433,7 @@ class _QuizPageState extends State<QuizPage> {
                               })
                             : selectedQuestion = 0;
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_ios,
                         color: Color(0xFF888888),
                       ),
@@ -444,7 +445,7 @@ class _QuizPageState extends State<QuizPage> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: ShapeDecoration(
-                      color: Color(0xFFF1F2F6),
+                      color: const Color(0xFFF1F2F6),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4)),
                     ),
@@ -456,7 +457,7 @@ class _QuizPageState extends State<QuizPage> {
                               })
                             : selectedQuestion = 39;
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_forward_ios,
                         color: Color(0xFF888888),
                       ),
@@ -465,7 +466,7 @@ class _QuizPageState extends State<QuizPage> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             // Question display
@@ -474,7 +475,7 @@ class _QuizPageState extends State<QuizPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Container(
                         width: 500,
                         padding:
@@ -500,14 +501,14 @@ class _QuizPageState extends State<QuizPage> {
                                   child: TextField(
                                     controller: _questionController,
                                     maxLines: null,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
                                       enabledBorder: InputBorder.none,
                                     ),
-                                    cursorColor: Color(0xFF164863),
+                                    cursorColor: const Color(0xFF164863),
                                     style: GoogleFonts.ibmPlexMono(
-                                      color: Color(0xFF164863),
+                                      color: const Color(0xFF164863),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -520,7 +521,7 @@ class _QuizPageState extends State<QuizPage> {
                                 ) :Text(
                                   quizQuestions[selectedQuestion].questionText,
                                   style: GoogleFonts.ibmPlexMono(
-                                    color: Color(0xFF164863),
+                                    color: const Color(0xFF164863),
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -531,7 +532,7 @@ class _QuizPageState extends State<QuizPage> {
                                     right: 2,
                                     child:
                                       Image.asset('assets/solar_pen-outline.png', color: Colors.black,),
-                                    ): SizedBox.shrink()
+                                    ): const SizedBox.shrink()
                               ],
                             ),
                             const SizedBox(height: 12.0),
@@ -559,15 +560,15 @@ class _QuizPageState extends State<QuizPage> {
                                       ),
                                       child: TextField(
                                         controller: _answerControllers[answerIndex],
-                                        cursorColor: Color(0xFF164863),
+                                        cursorColor: const Color(0xFF164863),
                                         maxLines: null,
-                                        decoration: InputDecoration(
+                                        decoration: const InputDecoration(
                                           border: InputBorder.none,
                                           focusedBorder: InputBorder.none,
                                           enabledBorder: InputBorder.none,
                                         ),
                                         style: GoogleFonts.ibmPlexMono(
-                                          color: Color(0xFF164863),
+                                          color: const Color(0xFF164863),
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -578,7 +579,7 @@ class _QuizPageState extends State<QuizPage> {
                                     ) : Text(
                                       answerText,
                                       style: GoogleFonts.ibmPlexMono(
-                                        color: Color(0xFF164863),
+                                        color: const Color(0xFF164863),
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -611,30 +612,30 @@ class _QuizPageState extends State<QuizPage> {
                           role == 'admin' ? showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(
                               backgroundColor: Colors.white,
-                              icon: Icon(Icons.check_circle_outline, color: Color(0xFF2ED573), size: 150,),
-                              title: Text('Success!', style: GoogleFonts.ibmPlexMono(color: Color(0xFF164863),
+                              icon: const Icon(Icons.check_circle_outline, color: Color(0xFF2ED573), size: 150,),
+                              title: Text('Success!', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF164863),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,),),
-                              content: Text('Exam Updated Successfully', style: GoogleFonts.ibmPlexMono(color: Color(0xFF888888),
+                              content: Text('Exam Updated Successfully', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF888888),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,),),
 
                             );
                           }) : Navigator.pop(context);//Todo submit exam for student
                           
-                          Future.delayed(Duration(seconds: 2), (){
+                          Future.delayed(const Duration(seconds: 2), (){
                             Navigator.pop(context);
                             Navigator.pop(context);
                           });
-                        }, child: Text('Submit', style: GoogleFonts.ibmPlexMono(
+                        },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF427D9D),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12))), child: Text('Submit', style: GoogleFonts.ibmPlexMono(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                         ),),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF427D9D),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))),
                         ),
                       ),
                     )

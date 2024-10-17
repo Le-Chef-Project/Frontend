@@ -11,7 +11,7 @@ import 'chats.dart';
 import 'notification.dart';
 
 class Exams extends StatefulWidget {
-  Exams({super.key});
+  const Exams({super.key});
 
   @override
   State<Exams> createState() => _ExamsState();
@@ -109,7 +109,7 @@ class _ExamsState extends State<Exams> {
                         child: Text(
                           'Unit ${index + 1}',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -133,11 +133,11 @@ class _ExamsState extends State<Exams> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ListTile(
-                        tileColor:  Color(0xFFFBFAFA),
+                        tileColor:  const Color(0xFFFBFAFA),
                         title: Text(
                           'Unit $selectedUnit - lesson ${index + 1}',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -145,7 +145,7 @@ class _ExamsState extends State<Exams> {
                         trailing:
                         role == 'admin' ?
                         IconButton(onPressed: _toggleContainer
-                            , icon: Icon(Icons.more_horiz))
+                            , icon: const Icon(Icons.more_horiz))
                             : const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -171,7 +171,7 @@ class _ExamsState extends State<Exams> {
                                     'This quiz is locked.. You should pay quiz fees',
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.ibmPlexMono(
-                                      color: Color(0xFF083344),
+                                      color: const Color(0xFF083344),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -277,21 +277,21 @@ class _ExamsState extends State<Exams> {
                             children: [
                               Container(
                                 decoration: ShapeDecoration(
-                                  color: Color(0xFFDDF2FD),
+                                  color: const Color(0xFFDDF2FD),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text('50 Question', style: GoogleFonts.ibmPlexMono(color: Color(0xFF2A324B),
+                                child: Text('50 Question', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF2A324B),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,),),
                               ),
                               Container(
                                 decoration: ShapeDecoration(
-                                  color: Color(0xFFDDF2FD),
+                                  color: const Color(0xFFDDF2FD),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text('60 Minutes', style: GoogleFonts.ibmPlexMono(color: Color(0xFF2A324B),
+                                child: Text('60 Minutes', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF2A324B),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,),),
                               )
@@ -306,12 +306,12 @@ class _ExamsState extends State<Exams> {
             ),
             if(_showContainer)
               Container(
-                margin: EdgeInsets.only(top: 20),
-                padding: EdgeInsets.all(16),
+                margin: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black26,
                       blurRadius: 10,
@@ -328,9 +328,9 @@ class _ExamsState extends State<Exams> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue, // Update button color
                       ),
-                      child: Text('Update'),
+                      child: const Text('Update'),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
                         // Handle delete logic here
@@ -338,7 +338,7 @@ class _ExamsState extends State<Exams> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red, // Delete button color
                       ),
-                      child: Text('Delete'),
+                      child: const Text('Delete'),
                     ),
                   ],
                 ),
@@ -408,7 +408,7 @@ class _ExamsState extends State<Exams> {
                 Text(
                   'Total Exams',
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF164863),
+                    color: const Color(0xFF164863),
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     height: 0,
@@ -430,7 +430,7 @@ class _ExamsState extends State<Exams> {
                         '16.5K',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.ibmPlexMono(
-                          color: Color(0xFF164863),
+                          color: const Color(0xFF164863),
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                         ),
@@ -440,23 +440,23 @@ class _ExamsState extends State<Exams> {
                 ),
               ],
             ),
-            SizedBox(height: 16,),
+            const SizedBox(height: 16,),
             Center(
-              child: ElevatedButton(onPressed: (){}, child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Add Exam ', style: GoogleFonts.ibmPlexMono(color: Color(0xFFFBFAFA),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,),),
-                  SizedBox(width: 2,),
-                  Icon(Icons.add, color: Color(0xFFFBFAFA), size: 20,)
-                ],
-              ), style: ElevatedButton.styleFrom(
+              child: ElevatedButton(onPressed: (){}, style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF427D9D),
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)
                   )
+              ), child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Add Exam ', style: GoogleFonts.ibmPlexMono(color: const Color(0xFFFBFAFA),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,),),
+                  const SizedBox(width: 2,),
+                  const Icon(Icons.add, color: Color(0xFFFBFAFA), size: 20,)
+                ],
               )),
             )
           ],

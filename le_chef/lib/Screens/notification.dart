@@ -37,7 +37,7 @@ class Notifications extends StatelessWidget {
                     child: Text(
                       day,
                       style: GoogleFonts.ibmPlexMono(
-                        color: Color(0xFF083344),
+                        color: const Color(0xFF083344),
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                         height: 0,

@@ -72,7 +72,7 @@ class SplashTwo extends StatelessWidget {
                         left: 155,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => Login(), transition: Transition.rightToLeftWithFade, duration: Duration(seconds: 2));
+                            Get.to(() => const Login(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 2));
                           },
                           child: const CircleAvatar(
                             backgroundColor: Colors.white,

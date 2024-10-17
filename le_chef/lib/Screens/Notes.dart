@@ -172,20 +172,20 @@ Widget Note(BuildContext context) {
                                     'Just now',
                                     textAlign: TextAlign.justify,
                                     style: GoogleFonts.ibmPlexMono(
-                                      color: Color(0xFF888888),
+                                      color: const Color(0xFF888888),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
                                       height: 0,
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 SizedBox(
                                   width: double.infinity,
                                   child: Text(
                                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                                     style: GoogleFonts.ibmPlexMono(
-                                      color: Color(0xFF164863),
+                                      color: const Color(0xFF164863),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                       height: 0,

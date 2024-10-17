@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:get/get.dart';
 import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
@@ -11,7 +9,7 @@ import '../../theme/custom_button_style.dart';
 class AddQuestion extends StatefulWidget {
   final List<QuizQuestion> quizList;
 
-  AddQuestion({required this.quizList});
+  const AddQuestion({super.key, required this.quizList});
 
   @override
   _AddQuestionState createState() => _AddQuestionState();
@@ -34,8 +32,8 @@ class _AddQuestionState extends State<AddQuestion> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xFFFBFAFA),
-        appBar: CustomAppBar(title: 'Add Question'),
+        backgroundColor: const Color(0xFFFBFAFA),
+        appBar: const CustomAppBar(title: 'Add Question'),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
@@ -43,7 +41,7 @@ class _AddQuestionState extends State<AddQuestion> {
               width: 360,
               height: 850,
               decoration: ShapeDecoration(
-                color: Color(0xFFFBFAFA),
+                color: const Color(0xFFFBFAFA),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),
@@ -51,7 +49,7 @@ class _AddQuestionState extends State<AddQuestion> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Write The Question',
                     style: TextStyle(
                       color: Color(0xFF164863),
@@ -61,7 +59,7 @@ class _AddQuestionState extends State<AddQuestion> {
                       height: 0,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -73,7 +71,7 @@ class _AddQuestionState extends State<AddQuestion> {
                     ),
                     child: TextField(
                       controller: _questionController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Write here...',
                         border: InputBorder.none, // No border
                         focusedBorder:
@@ -84,8 +82,8 @@ class _AddQuestionState extends State<AddQuestion> {
                       maxLines: 3,
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     'Choices',
                     style: TextStyle(
                       color: Color(0xFF164863),
@@ -95,7 +93,7 @@ class _AddQuestionState extends State<AddQuestion> {
                       height: 0,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Column(
                     children: _choiceControllers.asMap().entries.map((entry) {
                       int index = entry.key;
@@ -126,21 +124,21 @@ class _AddQuestionState extends State<AddQuestion> {
                       );
                     }).toList(),
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   Center(
                     child: ElevatedButton(
                       onPressed: _addChoice,
-                      child: Text('Add Choice +',
-                          style: TextStyle(color: Colors.white)),
                       style: CustomButtonStyles.fillPrimaryTL5,
+                      child: const Text('Add Choice +',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ),
-                  SizedBox(height: 70),
-                  Text(
+                  const SizedBox(height: 70),
+                  const Text(
                     'Select Correct answer..',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Wrap(
                     spacing: 8.0, // spacing between circles
                     runSpacing: 8.0, // spacing between rows
@@ -173,7 +171,7 @@ class _AddQuestionState extends State<AddQuestion> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: CustomElevatedButton(
             onPressed: () {
               if (_questionController.text.isNotEmpty &&

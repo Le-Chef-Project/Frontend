@@ -529,7 +529,7 @@ class _ChatPageState extends State<ChatPage> {
                             decoration: InputDecoration(
                               hintText: 'Type a message...',
                               border: InputBorder.none,
-                              hintStyle: GoogleFonts.ibmPlexMono(color: Color(0xFF888888),
+                              hintStyle: GoogleFonts.ibmPlexMono(color: const Color(0xFF888888),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 )

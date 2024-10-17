@@ -34,7 +34,7 @@ Widget totalStudent(BuildContext context, String total, String number,
               Text(
                 total,
                 style: GoogleFonts.ibmPlexMono(
-                  color: Color(0xFF164863),
+                  color: const Color(0xFF164863),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   height: 0,
@@ -54,7 +54,7 @@ Widget totalStudent(BuildContext context, String total, String number,
                     number,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFF164863),
+                      color: const Color(0xFF164863),
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                     ),
@@ -63,44 +63,44 @@ Widget totalStudent(BuildContext context, String total, String number,
               ),
             ],
           ),
-          SizedBox(height: 12,),
+          const SizedBox(height: 12,),
           buttonText != null
               ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => AddExam())),
-                      child: Row(
-                        children: [
-                          Text(
-                            buttonText,
-                            style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFFFBFAFA),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Icon(
-                            Icons.add,
-                            size: 25,
-                            color: Colors.white,
-                          )
-                        ],
-                      ),
+                          MaterialPageRoute(builder: (context) => const AddExam())),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
+                      child: Row(
+                        children: [
+                          Text(
+                            buttonText,
+                            style: GoogleFonts.ibmPlexMono(
+                              color: const Color(0xFFFBFAFA),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          const Icon(
+                            Icons.add,
+                            size: 25,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
                     )
                   ],
                 )
-              : SizedBox.shrink()
+              : const SizedBox.shrink()
         ],
       ),
     ),

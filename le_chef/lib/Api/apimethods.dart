@@ -24,7 +24,7 @@ class ApisMethods {
             'email': emailController.trim(),
             'password': passwordController
           }));
-      print('apiiii ${emailController} + ${passwordController} ');
+      print('apiiii $emailController + $passwordController ');
       final json = jsonDecode(response.body);
       print('apiiii ${json['role']}');
 
@@ -32,11 +32,11 @@ class ApisMethods {
         SharedPrefes.SaveToken(json['token']);
         SharedPrefes.SaveRole(json['role']);
         if (json['role'] == "admin") {
-          Get.off(THome(),
+          Get.off(const THome(),
               transition: Transition.fade,
               duration: const Duration(seconds: 1));
         } else {
-          Get.off(Home(),
+          Get.off(const Home(),
               transition: Transition.fade,
               duration: const Duration(seconds: 1));
         }
@@ -45,8 +45,8 @@ class ApisMethods {
             context: Get.context!,
             builder: (context) {
               return SimpleDialog(
-                title: Text('Error'),
-                contentPadding: EdgeInsets.all(20),
+                title: const Text('Error'),
+                contentPadding: const EdgeInsets.all(20),
                 children: [Text(json['message'])],
               );
             });
@@ -55,7 +55,7 @@ class ApisMethods {
       showDialog(
           context: Get.context!,
           builder: (context) {
-            return SimpleDialog(
+            return const SimpleDialog(
               title: Text('Error'),
               contentPadding: EdgeInsets.all(20),
               children: [Text('black field not allowed')],
@@ -93,7 +93,7 @@ class ApisMethods {
           }));
       final json = jsonDecode(response.body);
       if (response.statusCode == 201) {
-        print('apiii ${json}');
+        print('apiii $json');
         Mess = 'success';
       } else {
         Mess = json['error'];
@@ -102,7 +102,7 @@ class ApisMethods {
       showDialog(
           context: Get.context!,
           builder: (context) {
-            return SimpleDialog(
+            return const SimpleDialog(
               title: Text('Error'),
               contentPadding: EdgeInsets.all(20),
               children: [Text('black field not allowed')],
@@ -123,21 +123,19 @@ class ApisMethods {
     );
     var data = jsonDecode(response.body);
 
-    List _temp = [];
-    print('apiiii students ${data}');
+    List temp = [];
+    print('apiiii students $data');
 
     for (var i in data) {
-      _temp.add(i);
+      temp.add(i);
     }
 
-    return Student.itemsFromSnapshot(_temp);
+    return Student.itemsFromSnapshot(temp);
   }
 
   //4-Delete Student
   static Future<void> DelStudent(String ID) async {
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() +
-        ApiEndPoints.userManage.DelStudent +
-        '${ID}');
+    var url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.userManage.DelStudent}$ID');
     http.Response response = await http.delete(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
@@ -173,7 +171,7 @@ class ApisMethods {
       showDialog(
           context: Get.context!,
           builder: (context) {
-            return SimpleDialog(
+            return const SimpleDialog(
               title: Text('Success'),
               contentPadding: EdgeInsets.all(20),
               children: [Text('Quiz added successfully!')],
@@ -184,8 +182,8 @@ class ApisMethods {
           context: Get.context!,
           builder: (context) {
             return SimpleDialog(
-              title: Text('Error'),
-              contentPadding: EdgeInsets.all(20),
+              title: const Text('Error'),
+              contentPadding: const EdgeInsets.all(20),
               children: [Text('Failed to add quiz: ${response.body}')],
             );
           });

@@ -99,7 +99,7 @@ class MembersScreen extends StatelessWidget {
             Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       radius: 25,
                       backgroundImage: AssetImage(
                         'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',

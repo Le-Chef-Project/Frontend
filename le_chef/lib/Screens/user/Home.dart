@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
                         child: Text(
                           'Christine Gabrail',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -71,7 +71,7 @@ class _HomeState extends State<Home> {
                         child: Text(
                           'Level 2',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF427D9D),
+                            color: const Color(0xFF427D9D),
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -106,7 +106,7 @@ class _HomeState extends State<Home> {
                         child: Text(
                           'Newest Videos',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -124,7 +124,7 @@ class _HomeState extends State<Home> {
                       child: Text(
                         'See all',
                         style: GoogleFonts.ibmPlexMono(
-                          color: Color(0xFF427D9D),
+                          color: const Color(0xFF427D9D),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           height: 0,
@@ -139,13 +139,13 @@ class _HomeState extends State<Home> {
                 child: new_video(context),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
+                padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
                 child: SizedBox(
                   width: 380,
                   child: Text(
                     'More',
                     style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFF164863),
+                      color: const Color(0xFF164863),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       height: 0,
@@ -212,19 +212,19 @@ class _HomeState extends State<Home> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => OnlineSessionScreen(),
+                            Get.to(() => const OnlineSessionScreen(),
                                 transition: Transition.fade,
-                                duration: Duration(seconds: 1));
+                                duration: const Duration(seconds: 1));
                           },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(left: 16),
+                                padding: const EdgeInsets.only(left: 16),
                                 child: Text(
                                   'Online Seesions',
                                   style: GoogleFonts.ibmPlexMono(
-                                    color: Color(0xFF164863),
+                                    color: const Color(0xFF164863),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     height: 0,
@@ -291,14 +291,14 @@ Widget new_video(BuildContext context) {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Lesson Title',
                     style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFFFBFAFA),
+                      color: const Color(0xFFFBFAFA),
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       height: 1.2,
@@ -307,7 +307,7 @@ Widget new_video(BuildContext context) {
                   Text(
                     'Unit 3 - Lesson 1',
                     style: GoogleFonts.ibmPlexMono(
-                      color: Color(0xFFFBFAFA),
+                      color: const Color(0xFFFBFAFA),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       height: 1.2,
@@ -358,7 +358,7 @@ Widget _buildCardRec(
             child: Text(
               Title,
               style: GoogleFonts.ibmPlexMono(
-                color: Color(0xFF164863),
+                color: const Color(0xFF164863),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 height: 0,
@@ -370,7 +370,7 @@ Widget _buildCardRec(
             child: Text(
               Number,
               style: GoogleFonts.ibmPlexMono(
-                color: Color(0xFF0E7490),
+                color: const Color(0xFF0E7490),
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
                 height: 0,

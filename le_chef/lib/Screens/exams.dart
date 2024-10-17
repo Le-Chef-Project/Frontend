@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/ExamInfo.dart';
-import 'package:le_chef/Screens/user/payment.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Widgets/total_exams-students_card.dart';
 
@@ -88,7 +86,7 @@ class _ExamsState extends State<Exams> {
                               child: Text(
                                 'Unit ${index + 1}',
                                 style: GoogleFonts.ibmPlexMono(
-                                  color: Color(0xFF164863),
+                                  color: const Color(0xFF164863),
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -99,7 +97,7 @@ class _ExamsState extends State<Exams> {
                 }),
               ),
             ),
-            SizedBox(height: 8,),
+            const SizedBox(height: 8,),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(20),

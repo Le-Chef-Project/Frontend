@@ -9,7 +9,7 @@ import 'AddQuestion.dart';
 class AddExam extends StatefulWidget {
   final List<QuizQuestion>? quizList;
 
-  AddExam({this.quizList});
+  const AddExam({super.key, this.quizList});
 
   @override
   _AddExamState createState() => _AddExamState();
@@ -74,8 +74,8 @@ class _AddExamState extends State<AddExam> {
         title: 'Are you sure you finish putting Exam ?',
         button1Text: 'Finish Exam',
         button1Action: () {
-            dialogWithButtons(context: context, icon: Icon(Icons.check_circle_outline, color: Colors.green, size: 117,), title: 'Success !', content: 'Exam posted to students.');
-            Future.delayed((Duration(seconds: 2)), (){
+            dialogWithButtons(context: context, icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 117,), title: 'Success !', content: 'Exam posted to students.');
+            Future.delayed((const Duration(seconds: 2)), (){
               Navigator.pop(context);
               Navigator.pop(context);
               Navigator.pop(context);
@@ -92,7 +92,7 @@ class _AddExamState extends State<AddExam> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text('Select Exam Time'),
+          title: const Text('Select Exam Time'),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -102,8 +102,8 @@ class _AddExamState extends State<AddExam> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16.0),
                     child: Text(
                       'Quiz Title',
                       style: TextStyle(
@@ -115,7 +115,7 @@ class _AddExamState extends State<AddExam> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Container(
@@ -129,7 +129,7 @@ class _AddExamState extends State<AddExam> {
                       ),
                       child: TextField(
                         controller: TitleController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Title',
                           border: InputBorder.none, // No border
                           focusedBorder:
@@ -143,8 +143,8 @@ class _AddExamState extends State<AddExam> {
                 ],
               ),
 
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 48, 24, 48),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(24, 48, 24, 48),
                 child: Text(
                   'Press (+) If you want to add question.',
                   style: TextStyle(
@@ -170,7 +170,7 @@ class _AddExamState extends State<AddExam> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Select Exam Time',
                           style: TextStyle(
                             color: Color(0xFF164863),
@@ -180,7 +180,7 @@ class _AddExamState extends State<AddExam> {
                             height: 0,
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -190,7 +190,7 @@ class _AddExamState extends State<AddExam> {
                               child: TextFormField(
                                 controller: _hourController,
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Hours',
                                   labelStyle: TextStyle(
                                     color: Color(0xFF888888),
@@ -204,14 +204,14 @@ class _AddExamState extends State<AddExam> {
                                 validator: _validateHours,
                               ),
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                             // Minutes Input Field
                             SizedBox(
                               width: 80,
                               child: TextFormField(
                                 controller: _minuteController,
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Minutes',
                                   labelStyle: TextStyle(
                                     color: Color(0xFF888888),
@@ -238,7 +238,7 @@ class _AddExamState extends State<AddExam> {
                 shrinkWrap: true,
                 // Add this line
                 physics:
-                NeverScrollableScrollPhysics(),
+                const NeverScrollableScrollPhysics(),
                 // Prevents it from scrolling independently
                 itemCount: quizList.length,
                 itemBuilder: (context, index) {
@@ -246,7 +246,7 @@ class _AddExamState extends State<AddExam> {
                     padding: const EdgeInsets.all(16.0),
                     child: Container(
                       color: Colors.grey[100],
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -259,7 +259,7 @@ class _AddExamState extends State<AddExam> {
                             children: [
                               Text(
                                 '${index + 1}. ${quizList[index].questionText}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF164863),
                                   fontSize: 14,
                                   fontFamily: 'IBM Plex Mono',
@@ -269,7 +269,7 @@ class _AddExamState extends State<AddExam> {
                               ),
                               IconButton(
                                 icon:
-                                Icon(Icons.delete, color: Colors.red),
+                                const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   setState(() {
                                     widget.quizList!.removeAt(
@@ -279,7 +279,7 @@ class _AddExamState extends State<AddExam> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           // The nested ListView with constrained height
                           SizedBox(
                             height:
@@ -300,7 +300,7 @@ class _AddExamState extends State<AddExam> {
                   );
                 },
               )
-                  : Center(
+                  : const Center(
                 child: Text(
                   'No questions added yet.',
                   style: TextStyle(fontSize: 16),
@@ -329,9 +329,9 @@ class _AddExamState extends State<AddExam> {
                       )),
             );
           },
-          backgroundColor: Color(0xFFDDF2FD),
-          shape: CircleBorder(),
-          child: Icon(
+          backgroundColor: const Color(0xFFDDF2FD),
+          shape: const CircleBorder(),
+          child: const Icon(
             Icons.add,
             color: Color(0xFF164863),
             size: 44,
@@ -354,7 +354,7 @@ class _AddExamState extends State<AddExam> {
           padding: const EdgeInsets.all(16.0),
           child: Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF164863),
               fontSize: 14,
               fontFamily: 'IBM Plex Mono',

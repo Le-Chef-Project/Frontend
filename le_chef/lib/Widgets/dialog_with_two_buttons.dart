@@ -20,7 +20,7 @@ Future<void> dialogWithButtons({
       return AlertDialog(
         backgroundColor: Colors.white,
         icon: icon,
-        title:Text(title, style: GoogleFonts.ibmPlexMono(color: Color(0xFF164863),
+        title:Text(title, style: GoogleFonts.ibmPlexMono(color: const Color(0xFF164863),
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
@@ -29,11 +29,11 @@ Future<void> dialogWithButtons({
           content,
           textAlign: TextAlign.center,
           style: GoogleFonts.ibmPlexMono(
-            color: Color(0xFF888888),
+            color: const Color(0xFF888888),
             fontSize: 12,
             fontWeight: FontWeight.w400,
           ),
-        ) : SizedBox.shrink(),
+        ) : const SizedBox.shrink(),
         actions: [
           if(button1Text != null && button1Action != null)
           if (button2Text != null && button2Action != null)
@@ -41,13 +41,13 @@ Future<void> dialogWithButtons({
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildButton(button1Text, button1Action, true, buttonColor: buttonColor != null ? buttonColor :  const Color(0xFF427D9D), outlineButtonColor: outlineButtonColor != null ? outlineButtonColor : const Color(0xFF427D9D)),
+                _buildButton(button1Text, button1Action, true, buttonColor: buttonColor ?? const Color(0xFF427D9D), outlineButtonColor: outlineButtonColor ?? const Color(0xFF427D9D)),
                 const SizedBox(width: 20),
-                _buildButton(button2Text, button2Action, false, buttonColor: buttonColor != null ? buttonColor :  const Color(0xFF427D9D), outlineButtonColor: outlineButtonColor != null ? outlineButtonColor : const Color(0xFF427D9D)),
+                _buildButton(button2Text, button2Action, false, buttonColor: buttonColor ?? const Color(0xFF427D9D), outlineButtonColor: outlineButtonColor ?? const Color(0xFF427D9D)),
               ],
             )
           else
-            _buildButton(button1Text, button1Action, true, isExpanded: true, buttonColor: buttonColor != null ? buttonColor :  const Color(0xFF427D9D), outlineButtonColor: outlineButtonColor != null ? outlineButtonColor : const Color(0xFF427D9D)),
+            _buildButton(button1Text, button1Action, true, isExpanded: true, buttonColor: buttonColor ?? const Color(0xFF427D9D), outlineButtonColor: outlineButtonColor ?? const Color(0xFF427D9D)),
         ],
       );
     },
