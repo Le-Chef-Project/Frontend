@@ -5,6 +5,7 @@ import 'package:le_chef/Screens/Library.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Screens/user/meeting/online_session_screen.dart';
+import 'package:le_chef/Widgets/SmallCard.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_search_view.dart';
 import '../Notes.dart';
@@ -136,7 +137,17 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(
                 height: 250, // Specify a fixed height for the ListView
-                child: new_video(context),
+                child: ListView.builder(
+                    itemCount: 5,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Smallcard(
+                        Title: 'Unit one',
+                        description: 'lesson two',
+                        ontap: () {},
+                        imageurl: 'assets/desk_book_apple.jpeg',
+                      );
+                    }),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
@@ -271,56 +282,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-}
-
-Widget new_video(BuildContext context) {
-  return ListView.builder(
-    itemCount: 2,
-    scrollDirection: Axis.horizontal,
-    itemBuilder: (context, index) {
-      return Container(
-        width: 273, // Fixed width for each item in the horizontal ListView
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Image.asset(
-                'assets/desk_book_apple.jpeg',
-                fit: BoxFit.cover,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Lesson Title',
-                    style: GoogleFonts.ibmPlexMono(
-                      color: const Color(0xFFFBFAFA),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
-                    ),
-                  ),
-                  Text(
-                    'Unit 3 - Lesson 1',
-                    style: GoogleFonts.ibmPlexMono(
-                      color: const Color(0xFFFBFAFA),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      );
-    },
-  );
 }
 
 Widget _buildCardRec(

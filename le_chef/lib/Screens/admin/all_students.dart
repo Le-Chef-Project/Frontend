@@ -10,6 +10,7 @@ import '../../Widgets/total_exams-students_card.dart';
 import '../user/Home.dart';
 import '../chats.dart';
 import '../notification.dart';
+import 'AddExam.dart';
 
 class AllStudents extends StatefulWidget {
   const AllStudents({super.key});
@@ -77,7 +78,10 @@ class _AllStudentsState extends State<AllStudents> {
           child: Column(
             children: [
               const SizedBox(height: 39),
-              totalStudent(context, 'Total Students', '${_Std?.length ?? 0}'),
+              totalStudent(context, 'Total Students', '${_Std?.length ?? 0}', ontap: ()=> Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddExam())),),
               const SizedBox(height: 43),
               CustomSearchView(
                 clear: () {

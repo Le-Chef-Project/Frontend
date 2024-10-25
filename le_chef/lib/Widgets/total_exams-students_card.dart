@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/admin/AddExam.dart';
 
 Widget totalStudent(BuildContext context, String total, String number,
-    {String? buttonText}) {
+    {String? buttonText, Function? ontap}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 16),
     child: Container(
@@ -35,7 +35,7 @@ Widget totalStudent(BuildContext context, String total, String number,
                 total,
                 style: GoogleFonts.ibmPlexMono(
                   color: const Color(0xFF164863),
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   height: 0,
                 ),
@@ -63,14 +63,15 @@ Widget totalStudent(BuildContext context, String total, String number,
               ),
             ],
           ),
-          const SizedBox(height: 12,),
+          const SizedBox(
+            height: 12,
+          ),
           buttonText != null
               ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const AddExam())),
+                      onPressed: ontap != null ? () => ontap!() : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),
                         shape: RoundedRectangleBorder(

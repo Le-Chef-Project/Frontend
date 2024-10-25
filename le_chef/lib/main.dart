@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 late SharedPreferences sharedPreferences;
 String? token;
@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         home: token == null || token == ""
             ? const Login()
             : role == "admin"
-                ? const THome()
+                ? THome()
                 : const Home(),
       ),
     );

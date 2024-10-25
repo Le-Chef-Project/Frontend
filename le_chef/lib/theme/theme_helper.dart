@@ -51,8 +51,7 @@ class ThemeHelper {
         style: ElevatedButton.styleFrom(
           backgroundColor: colorScheme.primary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8
-            ),
+            borderRadius: BorderRadius.circular(8),
           ),
           visualDensity: const VisualDensity(
             vertical: -4,
@@ -66,12 +65,10 @@ class ThemeHelper {
           backgroundColor: Colors.transparent,
           side: BorderSide(
             color: colorScheme.primary,
-            width: 1
-            ,
+            width: 1,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5
-            ),
+            borderRadius: BorderRadius.circular(5),
           ),
           visualDensity: const VisualDensity(
             vertical: -4,
@@ -192,7 +189,7 @@ class ColorSchemes {
 class PrimaryColors {
   // Black
   Color get black900 => const Color(0XFF000000);
-
+  Color get darkgrey => const Color(0xFF888888);
   // Blue
   Color get blue50 => const Color(0XFFEBF4FF);
   Color get blue500 => const Color(0XFF2FA3D5);

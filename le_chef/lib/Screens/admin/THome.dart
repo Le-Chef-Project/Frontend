@@ -12,6 +12,7 @@ import '../../Shared/textInputDecoration.dart';
 import '../../theme/custom_button_style.dart';
 import '../Notes.dart';
 import '../notification.dart';
+import 'library.dart';
 
 class THome extends StatefulWidget {
   const THome({super.key});
@@ -314,7 +315,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           onTapCardRec: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const Exams()),
+                            MaterialPageRoute(
+                                builder: (context) => const Exams()),
                           ),
                         ),
                       ),
@@ -325,6 +327,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           Title: "Library",
                           Number: "20",
                           ImagePath: 'assets/Charco Education.png',
+                          onTapCardRec: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LibraryTabContainerScreen()),
+                          ),
                         ),
                       ),
                     ],
@@ -833,7 +841,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                                 'Cancel',
                                                 textAlign: TextAlign.center,
                                                 style: GoogleFonts.ibmPlexMono(
-                                                  color: const Color(0xFF427D9D),
+                                                  color:
+                                                      const Color(0xFF427D9D),
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,
                                                   height: 0,
@@ -857,6 +866,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               ]),
         ));
   }
+
+
 }
 
 class FadeInDialog extends StatelessWidget {
