@@ -65,6 +65,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
               context,
               'Total Items in Library',
               '150',
+              isLibrary: true,
               ontap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AddLibrary()),
@@ -236,15 +237,15 @@ class Circletabindicator extends Decoration {
 
 class _CirclePainter extends BoxPainter {
   final double radius;
-  Color color = Color(0xFF427D9D);
+  final Color color;
 
-  _CirclePainter({required this.radius});
+  _CirclePainter({required this.radius, this.color = const Color(0xFF427D9D)});
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration cfg) {
-    late Paint _paint;
-    _paint = Paint()..color = Color(0xFF427D9D);
-    _paint = Paint()..isAntiAlias = true;
+    final Paint _paint = Paint()
+      ..color = color
+      ..isAntiAlias = true;
 
     final Offset circleOffset =
         offset + Offset(cfg.size!.width / 2, cfg.size!.height - radius);

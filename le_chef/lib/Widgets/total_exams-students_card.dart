@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/admin/AddExam.dart';
 
+import 'customExamWidgets.dart';
+
 Widget totalStudent(BuildContext context, String total, String number,
-    {String? buttonText, Function? ontap}) {
+    {String? buttonText, Function? ontap, bool? isLibrary}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 16),
     child: Container(
@@ -63,6 +65,18 @@ Widget totalStudent(BuildContext context, String total, String number,
               ),
             ],
           ),
+          if (isLibrary!)
+            Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  customExamContainer('50 Vieeos'),
+                  customExamContainer('50 Books'),
+                  customExamContainer('60 PDFs')
+                ],
+              ),
+            ),
           const SizedBox(
             height: 12,
           ),

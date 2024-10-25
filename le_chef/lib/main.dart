@@ -39,14 +39,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Le Chef',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF164863)),
           useMaterial3: true,
         ),
         home: token == null || token == ""
             ? const Login()
             : role == "admin"
                 ? THome()
-                : const Home(),
+                : Home(),
       ),
     );
   }

@@ -24,4 +24,6 @@ class Content {
   final String uploadVideo = 'content/videos';
   final String uploadPDF = 'content/Pdfs';
   final String allPDFs = 'content/ShowAllPdfs';
+  final String allNotes = 'content/ShowAllNotes';
 }
+

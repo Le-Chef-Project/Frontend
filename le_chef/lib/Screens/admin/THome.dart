@@ -350,8 +350,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const Notes()),
+                            MaterialPageRoute(builder: (context) => Notes()),
                           ),
                         ),
                       ),
@@ -866,8 +865,6 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               ]),
         ));
   }
-
-
 }
 
 class FadeInDialog extends StatelessWidget {

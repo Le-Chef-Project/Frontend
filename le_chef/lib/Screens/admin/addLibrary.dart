@@ -8,7 +8,10 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../Api/apimethods.dart';
 import '../../Shared/custom_elevated_button.dart';
+import '../../Widgets/SmallCard.dart';
 import '../../theme/custom_button_style.dart';
+import 'viewPDF.dart';
+import 'viewVideo.dart';
 
 class AddLibrary extends StatefulWidget {
   @override
@@ -47,6 +50,28 @@ class _AddLibraryState extends State<AddLibrary> {
     }
   }
 
+  void _handleNavigation(BuildContext context) {
+    if (selectedSection == 'Video' && _videoFile != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VideoPlayerScreen(
+            url: _videoFile!.path,
+          ),
+        ),
+      );
+    } else if (selectedSection == 'PDF' && selectedFile != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PDFViewerScreen(
+            pdfUrl: selectedFile!.path,
+          ),
+        ),
+      );
+    }
+  }
+
   File? selectedFile;
 
   Future<void> pickFile() async {
@@ -73,6 +98,8 @@ class _AddLibraryState extends State<AddLibrary> {
 
   @override
   Widget build(BuildContext context) {
+    final hasFile = _videoFile != null || selectedFile != null;
+
     return SafeArea(
         child: Scaffold(
       appBar: CustomAppBar(
@@ -319,39 +346,59 @@ class _AddLibraryState extends State<AddLibrary> {
               ),
               SizedBox(height: 40),
               // Upload button
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    if (selectedSection == 'Video') _pickVideo();
-                    if (selectedSection == 'Book' || selectedSection == 'PDF')
-                      pickFile();
-                  },
-                  child: Container(
-                    width: 320,
-                    height: 275,
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+              if (hasFile)
+                Center(
+                  child: Smallcard(
+                    imageurl: selectedSection == 'Video' && _videoFile != null
+                        ? 'assets/desk_book_apple.jpeg'
+                        : 'assets/pdf.jpg',
+                    ontap: () => _handleNavigation(context),
+                  ),
+                )
+              else
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (selectedSection == 'Video') {
+                        _pickVideo();
+                      } else if (selectedSection == 'Book' ||
+                          selectedSection == 'PDF') {
+                        pickFile();
+                      }
+                    },
+                    child: Container(
+                      width: 320,
+                      height: 275,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ),
-                    child: Center(
-                      child: DottedBorder(
-                        borderType: BorderType.Circle,
-                        radius: Radius.circular(12),
-                        dashPattern: [6, 3],
-                        child: Container(
-                          width: 157,
-                          height: 157,
-                          child: Center(
-                            child: IconButton(
-                              onPressed: () {
-                                if (selectedSection == 'Video') _pickVideo();
-                                if (selectedSection == 'Book' ||
-                                    selectedSection == 'PDF') pickFile();
-                              },
-                              icon: Icon(Icons.cloud_upload,
-                                  size: 40, color: Color(0xFF427D9D)),
+                      child: Center(
+                        child: DottedBorder(
+                          borderType: BorderType.Circle,
+                          radius: Radius.circular(12),
+                          dashPattern: [6, 3],
+                          child: Container(
+                            width: 157,
+                            height: 157,
+                            child: Center(
+                              child: IconButton(
+                                onPressed: () {
+                                  if (selectedSection == 'Video') {
+                                    _pickVideo();
+                                  } else if (selectedSection == 'Book' ||
+                                      selectedSection == 'PDF') {
+                                    pickFile();
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.cloud_upload,
+                                  size: 40,
+                                  color: Color(0xFF427D9D),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -359,7 +406,7 @@ class _AddLibraryState extends State<AddLibrary> {
                     ),
                   ),
                 ),
-              ),
+
               SizedBox(height: 16),
             ],
           ),

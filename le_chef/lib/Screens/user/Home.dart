@@ -199,7 +199,7 @@ class _HomeState extends State<Home> {
                           Title: "Notes",
                           Number: "10",
                           ImagePath: 'assets/Wonder Learners Book.png',
-                          onTapCardRec: () => Get.to(() => const Notes(),
+                          onTapCardRec: () => Get.to(() => Notes(),
                               transition: Transition.fade,
                               duration: const Duration(seconds: 1))),
                     ),

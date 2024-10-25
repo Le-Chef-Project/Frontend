@@ -3,15 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Smallcard extends StatelessWidget {
   final Function ontap;
-  final String Title;
-  final String description;
+  final String? Title;
+  final String? description;
   final String imageurl;
-  const Smallcard(
-      {super.key,
-      required this.Title,
-      required this.description,
-      required this.imageurl,
-      required this.ontap});
+  const Smallcard({
+    super.key,
+    this.Title,
+    this.description,
+    required this.imageurl,
+    required this.ontap,
+  });
 
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -33,27 +34,29 @@ class Smallcard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    Title,
-                    style: GoogleFonts.ibmPlexMono(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
+                  if (Title != null)
+                    Text(
+                      Title!,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
                     ),
-                  ),
-                  Text(
-                    description,
-                    style: GoogleFonts.ibmPlexMono(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
+                  if (description != null)
+                    Text(
+                      description!,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
                     ),
-                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

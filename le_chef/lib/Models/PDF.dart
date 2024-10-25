@@ -14,7 +14,8 @@ class PDF {
     return PDF(
       id: json['_id'] as String,
       title: json['title'] as String,
-      description: json['description'] as String,
+      description:
+          json['description'] == null ? '' : json['description'] as String,
       url: json['url'] as String,
     );
   }
