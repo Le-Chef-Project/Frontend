@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/admin/AddExam.dart';
 
 import 'customExamWidgets.dart';
 
-Widget totalStudent(BuildContext context, String total, String number,
-    {String? buttonText, Function? ontap, bool? isLibrary}) {
+Widget totalStudent(
+  BuildContext context,
+  String total,
+  String number, {
+  String? buttonText,
+  Function? ontap,
+  bool isLibrary = false,
+}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 16),
     child: Container(
@@ -65,13 +70,13 @@ Widget totalStudent(BuildContext context, String total, String number,
               ),
             ],
           ),
-          if (isLibrary!)
+          if (isLibrary)
             Padding(
               padding: const EdgeInsets.only(top: 25.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  customExamContainer('50 Vieeos'),
+                  customExamContainer('50 Videos'),
                   customExamContainer('50 Books'),
                   customExamContainer('60 PDFs')
                 ],
@@ -80,42 +85,41 @@ Widget totalStudent(BuildContext context, String total, String number,
           const SizedBox(
             height: 12,
           ),
-          buttonText != null
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: ontap != null ? () => ontap!() : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF427D9D),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+          if (buttonText != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: ontap != null ? () => ontap() : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF427D9D),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        buttonText,
+                        style: GoogleFonts.ibmPlexMono(
+                          color: const Color(0xFFFBFAFA),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          Text(
-                            buttonText,
-                            style: GoogleFonts.ibmPlexMono(
-                              color: const Color(0xFFFBFAFA),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Icon(
-                            Icons.add,
-                            size: 25,
-                            color: Colors.white,
-                          )
-                        ],
+                      const SizedBox(
+                        width: 4,
                       ),
-                    )
-                  ],
+                      const Icon(
+                        Icons.add,
+                        size: 25,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
                 )
-              : const SizedBox.shrink()
+              ],
+            ),
         ],
       ),
     ),

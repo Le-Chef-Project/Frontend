@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
+import 'package:le_chef/Screens/admin/notesLevels.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
@@ -350,7 +351,9 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Notes()),
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NotesTabContainerScreen()),
                           ),
                         ),
                       ),

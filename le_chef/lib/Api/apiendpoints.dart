@@ -25,5 +25,5 @@ class Content {
   final String uploadPDF = 'content/Pdfs';
   final String allPDFs = 'content/ShowAllPdfs';
   final String allNotes = 'content/ShowAllNotes';
+  final String addNote = 'content/Notes';
 }
-

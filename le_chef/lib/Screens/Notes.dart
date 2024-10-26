@@ -1,123 +1,116 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Notes extends StatelessWidget {
-  final List<Map<String, String>> todayMessages = [
-    {
-      "time": "Just now",
-      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-    },
-    {
-      "time": "1 hour ago",
-      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-    },
-    {
-      "time": "2 hours ago",
-      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-    },
-  ];
+import '../Api/apimethods.dart';
+import '../Models/Notes.dart';
+import '../main.dart';
 
-  final List<Map<String, String>> yesterdayMessages = [
-    {
-      "time": "20:24 pm",
-      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-    },
-  ];
+class NotesScreen extends StatefulWidget {
+  @override
+  State<NotesScreen> createState() => _NotesScreenState();
+}
 
-  // New list for notes with createdAt
-  final List<Map<String, String>> notes = [
-    {
-      "_id": "66b48f544bdce22358cd0bc8",
-      "title": "Sample Note",
-      "content": "This is the content of the sample note.",
-      "createdAt": "2024-10-25T09:26:44.931Z",
-    },
-    {
-      "_id": "66b48f544bdce22358cd0bc9",
-      "title": "Another Note",
-      "content": "This note was created yesterday.",
-      "createdAt": "2024-10-24T09:26:44.931Z",
-    },
-    {
-      "_id": "66b48f544bdce22358cd0bca",
-      "title": "Old Note",
-      "content": "This is an older note.",
-      "createdAt": "2024-09-15T11:59:47.998Z",
-    },
-  ];
+class _NotesScreenState extends State<NotesScreen> {
+  String? role = sharedPreferences.getString('role');
+
+  Future<List<Notes>>? _notesFuture;
+  @override
+  void initState() {
+    super.initState();
+    _notesFuture = ApisMethods.fetchAllNotes();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Notes'),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16),
-        children: [
-          Text(
-            "Today",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "Yesterday",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "Notes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          ...notes
-              .map((note) => NoteCard(
-                  title: note["title"]!,
-                  content: note["content"]!,
-                  createdAt: note["createdAt"]!))
-              .toList(),
-        ],
-      ),
+      backgroundColor: Colors.white,
+      appBar: role == "user"
+          ? AppBar(
+              title: Text('Notes'),
+            )
+          : null, // Return null when role is not "user"
+      body: FutureBuilder<List<Notes>>(
+          future: _notesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text("No notes available"));
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final note = snapshot.data![index];
+                return NoteCard(
+                  content: note.content,
+                  title: note.title,
+                  createdAt: note.createdAt,
+                );
+              },
+            );
+          }),
     );
   }
 }
 
-// New Note Card widget
+// Note Card widget
 class NoteCard extends StatelessWidget {
   final String title;
   final String content;
   final String createdAt;
 
-  const NoteCard(
-      {required this.title, required this.content, required this.createdAt});
+  const NoteCard({
+    required this.title,
+    required this.content,
+    required this.createdAt,
+  });
 
   @override
   Widget build(BuildContext context) {
     final displayDate = _formatCreatedAt(createdAt);
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.all(16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: Color(0xFFF9F9F9),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              displayDate,
+              style: TextStyle(
+                color: Color(0xFF888888),
+                fontSize: 12,
+                fontFamily: 'IBM Plex Mono',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               content,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                color: Color(0xFF164863),
+                fontSize: 14,
+                fontFamily: 'IBM Plex Mono',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
             ),
             SizedBox(height: 8),
-            Text(
-              displayDate,
-              style: TextStyle(color: Colors.grey),
-            ),
           ],
         ),
       ),
     );
   }
+
 
   // Method to format createdAt into a user-friendly string
   String _formatCreatedAt(String createdAt) {
@@ -127,18 +120,16 @@ class NoteCard extends StatelessWidget {
     if (dateTime.year == now.year &&
         dateTime.month == now.month &&
         dateTime.day == now.day) {
-      return "Today at ${DateFormat.jm().format(dateTime)}"; // e.g., Today at 9:26 AM
+      return "Today at ${DateFormat.jm().format(dateTime)}";
     } else if (dateTime.year == now.year &&
         dateTime.month == now.month &&
         dateTime.day == now.day - 1) {
-      return "Yesterday at ${DateFormat.jm().format(dateTime)}"; // e.g., Yesterday at 9:26 AM
+      return "Yesterday at ${DateFormat.jm().format(dateTime)}";
     } else if (dateTime.isAfter(now.subtract(Duration(days: 7)))) {
       final daysAgo = now.difference(dateTime).inDays;
-      return "$daysAgo day${daysAgo > 1 ? 's' : ''} ago at ${DateFormat.jm().format(dateTime)}"; // e.g., 2 days ago at 9:26 AM
+      return "$daysAgo day${daysAgo > 1 ? 's' : ''} ago at ${DateFormat.jm().format(dateTime)}";
     } else {
-      return DateFormat.yMMMd()
-          .add_jm()
-          .format(dateTime); // e.g., Oct 15, 2024 at 9:26 AM
+      return DateFormat.yMMMd().add_jm().format(dateTime);
     }
   }
 }

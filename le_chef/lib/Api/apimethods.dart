@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
+import '../Models/Notes.dart';
 import '../Models/Student.dart';
 import '../Screens/user/Home.dart';
 import '../main.dart';
@@ -358,5 +359,115 @@ class ApisMethods {
     }
 
     return Video.itemsFromSnapshot(temp);
+  }
+
+//10- GET ALL Notes
+
+  static Future<List<Notes>> fetchAllNotes() async {
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allNotes);
+    http.Response response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    var data = jsonDecode(response.body);
+
+    List temp = [];
+    print('apiiii Notes $data');
+
+    for (var i in data) {
+      temp.add(i);
+    }
+
+    return Notes.itemsFromSnapshot(temp);
+  }
+
+  //11- add note
+
+  static Future<void> addNote(String content) async {
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.addNote);
+
+    http.Response response = await http.post(url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+        body: jsonEncode({'title': 'API', 'content': content}));
+
+    if (response.statusCode == 201) {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/correct sign.png',
+                    width: 117,
+                    height: 117,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Success!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Note Added Successfully',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF888888),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/error-16_svgrepo.com.png',
+                    width: 117,
+                    height: 117,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Warning!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Try again',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF888888),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    }
   }
 }
