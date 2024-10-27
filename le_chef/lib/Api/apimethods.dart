@@ -6,10 +6,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:le_chef/Models/PDF.dart';
+import 'package:le_chef/Models/Quiz.dart' as quizModel;
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import '../Models/Notes.dart';
 import '../Models/Student.dart';
+import '../Screens/exams.dart';
 import '../Screens/user/Home.dart';
 import '../main.dart';
 import 'SharedPrefes.dart';
@@ -470,4 +472,22 @@ class ApisMethods {
           });
     }
   }
+
+  //10-get all quizzes
+
+static Future<List<quizModel.Quiz>> getAllQuizzes() async{
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
+    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    List temp = [];
+    print('apiiii Get Videos $data');
+
+    for(var i in data){
+      temp.add(i);
+    }
+
+    return quizModel.Quiz.itemsFromSnapshot(temp);
+}
 }

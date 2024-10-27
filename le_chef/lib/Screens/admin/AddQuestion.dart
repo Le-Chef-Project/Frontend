@@ -182,8 +182,8 @@ class _AddQuestionState extends State<AddQuestion> {
                     .toList();
                 QuizQuestion newQuestion = QuizQuestion(
                   questionText: _questionController.text,
-                  answers: choices,
-                  correctAnswerIndex: _selectedAnswerIndex,
+                  options: choices,
+                  answer: choices[_selectedAnswerIndex],
                 );
 
                 widget.quizList.add(newQuestion);

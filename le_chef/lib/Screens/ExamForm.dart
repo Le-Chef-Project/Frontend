@@ -8,7 +8,7 @@ import '../Shared/custom_elevated_button.dart';
 import '../main.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+  const QuizPage({super.key,});
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -17,18 +17,19 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   final Map<int, int?> _selectedAnswers = {};
   Timer? _timer;
-  int _start = 50 * 60; // Countdown start value in seconds (50 minutes)
+  int _start = 50 * 60;
   double _progress = 1.0;
   String? role = sharedPreferences.getString('role');
   final TextEditingController _questionController = TextEditingController();
   List<TextEditingController> _answerControllers = [];
+  late final Quiz quiz;
 
   @override
   void initState() {
     super.initState();
     startTimer();
-    _questionController.text = quizQuestions[selectedQuestion].questionText;
-    _answerControllers = quizQuestions[selectedQuestion].answers.map((answer) {
+    _questionController.text = quiz.questions[selectedQuestion].questionText;
+    _answerControllers = quiz.questions[selectedQuestion].options.map((answer) {
       return TextEditingController(text: answer);
     }).toList();
   }
@@ -50,12 +51,12 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _submitAnswers() {
-    for (int i = 0; i < quizQuestions.length; i++) {
+    for (int i = 0; i < quiz.questions.length; i++) {
       final selectedAnswerIndex = _selectedAnswers[i];
       if (selectedAnswerIndex != null) {
-        final selectedAnswer = quizQuestions[i].answers[selectedAnswerIndex];
-        final correctAnswerIndex = quizQuestions[i].correctAnswerIndex;
-        if (selectedAnswerIndex == correctAnswerIndex) {
+        final selectedAnswer = quiz.questions[i].options[selectedAnswerIndex];
+        final correctAnswerIndex = quiz.questions[i].answer;
+        if (selectedAnswer == correctAnswerIndex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Question ${i + 1}: Correct!')),
           );
@@ -63,7 +64,7 @@ class _QuizPageState extends State<QuizPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text(
-                    'Question ${i + 1}: Wrong. The correct answer is: ${quizQuestions[i].answers[correctAnswerIndex]}')),
+                    'Question ${i + 1}: Wrong. The correct answer is: ${quiz.questions[i].answer}')),
           );
         }
       }
@@ -376,7 +377,7 @@ class _QuizPageState extends State<QuizPage> {
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
                 ),
-                itemCount: quizQuestions.length,
+                itemCount: quiz.questions.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
@@ -514,12 +515,12 @@ class _QuizPageState extends State<QuizPage> {
                                     ),
                                     onSubmitted: (val){
                                       setState(() {
-                                        quizQuestions[selectedQuestion].questionText = val;
+                                        quiz.questions[selectedQuestion].questionText = val;
                                       });
                                     },
                                   ),
                                 ) :Text(
-                                  quizQuestions[selectedQuestion].questionText,
+                                  quiz.questions[selectedQuestion].questionText,
                                   style: GoogleFonts.ibmPlexMono(
                                     color: const Color(0xFF164863),
                                     fontSize: 14,
@@ -536,8 +537,8 @@ class _QuizPageState extends State<QuizPage> {
                               ],
                             ),
                             const SizedBox(height: 12.0),
-                            ...quizQuestions[selectedQuestion]
-                                .answers
+                            ...quiz.questions[selectedQuestion]
+                                .options
                                 .asMap()
                                 .entries
                                 .map((entry) {
@@ -573,7 +574,7 @@ class _QuizPageState extends State<QuizPage> {
                                           fontWeight: FontWeight.w500,
                                         ),
                                         onSubmitted: (val){
-                                          quizQuestions[selectedQuestion].answers[answerIndex] = val;
+                                          quiz.questions[selectedQuestion].options[answerIndex] = val;
                                         },
                                       ),
                                     ) : Text(

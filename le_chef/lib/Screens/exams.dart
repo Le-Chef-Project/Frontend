@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/Quiz.dart';
+import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Widgets/total_exams-students_card.dart';
 
@@ -22,6 +25,22 @@ class _ExamsState extends State<Exams> {
   int selectedUnit = 1;
   bool isLocked = true;
   String? role = sharedPreferences.getString('role');
+  bool _isLoading = true;
+  List<Quiz>  _exams = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getExams();
+  }
+
+  Future<void> getExams()async {
+    _exams = await ApisMethods.getAllQuizzes();
+    print('apiii $_exams + ${_exams.length}');
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +52,8 @@ class _ExamsState extends State<Exams> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             role == 'admin'
-                ? totalStudent(context, 'Total Exams', '16k',
-                    buttonText: 'Add Exam')
+                ? totalStudent(context, 'Total Exams', '${_exams.length}',
+                    buttonText: 'Add Exam', ontap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>AddExam()));})
                 : Center(
                     child: Image.asset(
                       'assets/Wonder Learners Graduating.png',
