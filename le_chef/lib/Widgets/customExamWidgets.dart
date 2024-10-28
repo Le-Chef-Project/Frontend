@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Models/Quiz.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 
 import '../Screens/ExamForm.dart';
@@ -27,10 +28,10 @@ Widget customExamContainer(string) {
   );
 }
 
-Widget customExamListTile(int index, int selectedUnit, BuildContext context, bool isLocked){
+Widget customExamListTile(int index, int selectedUnit, BuildContext context, bool isLocked, Quiz exams){
   return ListTile(
     title: Text(
-      'Unit $selectedUnit - lesson ${index + 1}',
+      exams.title,
       style: GoogleFonts.ibmPlexMono(
         color: const Color(0xFF164863),
         fontSize: 18,
@@ -42,8 +43,8 @@ Widget customExamListTile(int index, int selectedUnit, BuildContext context, boo
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          customExamContainer('50 Questions'),
-          customExamContainer('60 Minutes')
+          customExamContainer(exams.questions.length.toString()),
+          customExamContainer(exams.duration.toString())
         ],
       ),
     ),

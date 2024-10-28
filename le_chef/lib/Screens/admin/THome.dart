@@ -7,6 +7,7 @@ import 'package:le_chef/Screens/admin/notesLevels.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
+import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/textInputDecoration.dart';
@@ -37,6 +38,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   bool _isLoading_Std = true;
   List<Student>? _Std;
+  List<Quiz>? _exams;
 
   @override
   void initState() {
@@ -50,6 +52,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
       curve: Curves.easeInOut,
     );
     getStd();
+    getExams();
+  }
+
+  Future<void> getExams()async {
+    _exams = await ApisMethods.getAllQuizzes();
+    print('apiii $_exams + ${_exams?.length}');
   }
 
   @override
@@ -312,7 +320,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Exams",
-                          Number: "15",
+                          Number: _exams!.length.toString(),
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           onTapCardRec: () => Navigator.push(
                             context,

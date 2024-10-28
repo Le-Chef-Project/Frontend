@@ -3,6 +3,9 @@ class Quiz {
   final String title;
   final List<QuizQuestion> questions;
   final Duration duration;
+  final int level;
+  final int unit;
+  final bool isPaid;
   final DateTime createdAt;
 
   Quiz({
@@ -10,6 +13,9 @@ class Quiz {
     required this.title,
     required this.questions,
     required this.duration,
+    required this.level,
+    required this.unit,
+    required this.isPaid,
     required this.createdAt,
   });
 
@@ -24,6 +30,9 @@ class Quiz {
         hours: json['duration']['hours'] ?? '',
         minutes: json['duration']['minutes'] ?? '',
       ),
+      level: json['educationLevel'] ?? 0,
+      unit: json['Unit'] ?? 0,
+      isPaid: json['paid'] ?? true,
       createdAt: DateTime.parse(json['createdAt']),
     );
   }
@@ -37,6 +46,9 @@ class Quiz {
         'hours': duration.inHours,
         'minutes': duration.inMinutes % 60,
       },
+      'educationLevel' : level,
+      'Unit' : unit,
+      'paid' : isPaid,
       'createdAt': createdAt.toIso8601String(),
     };
   }

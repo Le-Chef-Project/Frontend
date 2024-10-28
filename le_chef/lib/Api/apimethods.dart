@@ -157,16 +157,24 @@ class ApisMethods {
 
 //5- add quiz
   static Future<void> AddQuiz(
-    title,
-    questions,
-    hours,
-    minutes,
+    String title,
+    List questions,
+    String hours,
+    String minutes,
+      String level,
+      String unit,
+      bool isPaid
   ) async {
     final body = jsonEncode({
       'title': title,
       'questions': questions,
-      'hours': hours.toString(),
-      'minutes': minutes.toString(),
+      'duration': {
+        'hours': hours,
+        'minutes': minutes,
+      },
+      'educationLevel' : level,
+      'Unit' : unit,
+      'paid' : isPaid,
     });
 
     var url =

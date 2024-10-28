@@ -21,7 +21,6 @@ class Exams extends StatefulWidget {
 }
 
 class _ExamsState extends State<Exams> {
-  final int itemCount = 3;
   int selectedUnit = 1;
   bool isLocked = true;
   String? role = sharedPreferences.getString('role');
@@ -44,6 +43,9 @@ class _ExamsState extends State<Exams> {
 
   @override
   Widget build(BuildContext context) {
+    List<Quiz> filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit).toList();
+    print('selected unit: $selectedUnit');
+    print('exams: $filteredExams');
     return SafeArea(
       child: Scaffold(
         appBar: const CustomAppBar(title: 'Exams'),
@@ -63,64 +65,67 @@ class _ExamsState extends State<Exams> {
                   ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(itemCount, (index) {
-                  bool isSelected = selectedUnit == index + 1;
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: isSelected
-                          ? ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  selectedUnit = index + 1;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF427D9D),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12))),
-                              child: Text(
-                                'Unit ${index + 1}',
-                                style: GoogleFonts.ibmPlexMono(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            )
-                          : OutlinedButton(
-                              onPressed: () {
-                                setState(() {
-                                  selectedUnit = index + 1;
-                                });
-                              },
-                              style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                      color: Color(0xFF427D9D)),
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12))),
-                              child: Text(
-                                'Unit ${index + 1}',
-                                style: GoogleFonts.ibmPlexMono(
-                                  color: const Color(0xFF164863),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(5, (index) {
+                    bool isSelected = selectedUnit == index + 1;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: SizedBox(
+                        height: 40,
+                        child: isSelected
+                            ? ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedUnit = index + 1;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF427D9D),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12))),
+                          child: Text(
+                            'Unit ${index + 1}',
+                            style: GoogleFonts.ibmPlexMono(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
-                    ),
-                  );
-                }),
+                          ),
+                        )
+                            : OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedUnit = index + 1;
+                            });
+                          },
+                          style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                  color: Color(0xFF427D9D)),
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12))),
+                          child: Text(
+                            'Unit ${index + 1}',
+                            style: GoogleFonts.ibmPlexMono(
+                              color: const Color(0xFF164863),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
             const SizedBox(height: 8,),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(20),
-                itemCount: itemCount,
+                itemCount: filteredExams.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -129,7 +134,7 @@ class _ExamsState extends State<Exams> {
                         color: const Color(0xFFFBFAFA),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: customExamListTile(index, selectedUnit, context, isLocked)
+                      child: customExamListTile(index, selectedUnit, context, isLocked, _exams[index])
                     ),
                   );
                 },

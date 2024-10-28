@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Screens/ExamForm.dart';
+import 'package:le_chef/Screens/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 import '../../Models/Quiz.dart';
@@ -17,35 +20,37 @@ class AddExam extends StatefulWidget {
 
 class _AddExamState extends State<AddExam> {
   final _formKey = GlobalKey<FormState>();
-  final _hourController = TextEditingController();
-  final _minuteController = TextEditingController();
-  final TextEditingController TitleController = TextEditingController();
+  final _hourOneController = TextEditingController();
+  final _hourTwoController = TextEditingController();
+  final _minuteOneController = TextEditingController();
+  final _minuteTwoController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController quizFees = TextEditingController();
+  final TextEditingController addController = TextEditingController();
+  bool light = true;
+  List<String> levels = ['Level 1', 'Level 2', 'Level 3'];
+  List<String> units = ['Unit 1', 'Unit 2', 'Unit 3'];
+  String? selectedLevels;
+  String? selectedUnit;
 
   @override
   void dispose() {
-    _hourController.dispose();
-    _minuteController.dispose();
-    TitleController.dispose();
+    _hourOneController.dispose();
+    _hourTwoController.dispose();
+    _minuteOneController.dispose();
+    _minuteTwoController.dispose();
+    titleController.dispose();
+    quizFees.dispose();
+    addController.dispose();
     super.dispose();
   }
 
-  String? _validateHours(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter hours';
-    }
-    final int? hours = int.tryParse(value);
-    if (hours == null || hours < 0 || hours > 23) {
-      return 'Enter a valid hour (0-23)';
-    }
-    return null;
-  }
-
-  String? _validateMinutes(String? value) {
+  String? _validateTime(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter minutes';
     }
     final int? minutes = int.tryParse(value);
-    if (minutes == null || minutes < 0 || minutes > 59) {
+    if (minutes == null || minutes < 0 || minutes > 9) {
       return 'Enter valid minutes (0-59)';
     }
     return null;
@@ -53,20 +58,18 @@ class _AddExamState extends State<AddExam> {
 
   // Function to handle submitting the form
   void _submitQuiz() async {
-    if (_formKey.currentState!.validate() && TitleController.text.isNotEmpty) {
-      String title = TitleController.text;
+    if (_formKey.currentState!.validate() && titleController.text.isNotEmpty) {
       List<Map<String, dynamic>> questions = widget.quizList!.map((quiz) {
         return {
           'question': quiz.questionText,
-          'options': quiz.answers,
-          'answer': quiz.answers[quiz.correctAnswerIndex],
+          'options': quiz.options,
+          'answer': quiz.answer,
         };
       }).toList();
 
-      int hours = int.parse(_hourController.text);
-      int minutes = int.parse(_minuteController.text);
-
-      await ApisMethods.AddQuiz(title, questions, hours, minutes);
+      print('Waiting...');
+      await ApisMethods.AddQuiz(titleController.text, questions, _hourOneController.text + _hourTwoController.text, _minuteOneController.text + _minuteTwoController.text, selectedLevels!, selectedUnit!, light);
+      print('added...');
     }
 
     dialogWithButtons(
@@ -88,6 +91,8 @@ class _AddExamState extends State<AddExam> {
             Navigator.pop(context);
             Navigator.pop(context);
             Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Exams()));
           });
         },
         button2Text: 'Cancel',
@@ -108,54 +113,8 @@ class _AddExamState extends State<AddExam> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16.0),
-                    child: Text(
-                      'Quiz Title',
-                      style: TextStyle(
-                        color: Color(0xFF164863),
-                        fontSize: 14,
-                        fontFamily: 'IBM Plex Mono',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 8),
-                      decoration: ShapeDecoration(
-                        color: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: TextField(
-                        controller: TitleController,
-                        decoration: const InputDecoration(
-                          hintText: 'Title',
-                          border: InputBorder.none, // No border
-                          focusedBorder:
-                              InputBorder.none, // No border when focused
-                          enabledBorder:
-                              InputBorder.none, // No border when enabled
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
               const Padding(
-                padding: EdgeInsets.fromLTRB(24, 48, 24, 48),
+                padding: EdgeInsets.fromLTRB(24, 38, 24, 48),
                 child: Text(
                   'Press (+) If you want to add question.',
                   style: TextStyle(
@@ -167,13 +126,399 @@ class _AddExamState extends State<AddExam> {
                   ),
                 ),
               ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                'Paid',
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: Color(0xFF164863),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(width: 50),
+                              Switch(
+                                value: light,
+                                activeColor: Color(0xFF00B84A),
+                                thumbColor:
+                                    WidgetStatePropertyAll(Colors.white),
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    light = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 25),
+                        Expanded(
+                          child: Text(
+                            'Exam name',
+                            style: GoogleFonts.ibmPlexMono(
+                              color: Color(0xFF164863),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFFBFAFA),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: TextFormField(
+                              controller: quizFees,
+                              enabled: light,
+                              style: GoogleFonts.ibmPlexMono(
+                                color: light ? Color(0xFF164863) : Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'amount to pay',
+                                hintStyle: GoogleFonts.ibmPlexMono(
+                                  color:
+                                      light ? Color(0xFF164863) : Colors.grey,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 25, horizontal: 25),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                disabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Color(0xFFFBFAFA),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFFBFAFA),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: TextFormField(
+                              controller: titleController,
+                              enabled: true,
+                              style: GoogleFonts.ibmPlexMono(
+                                color: Color(0xFF164863),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'write exam name',
+                                hintMaxLines: 2,
+                                hintStyle: GoogleFonts.ibmPlexMono(
+                                  color: Color(0xFF164863),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 25),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                disabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Color(0xFFFBFAFA),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 23.0, horizontal: 24),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                            child: Text(
+                          'Choose Level',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Color(0xFF164863),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )),
+                        Expanded(
+                            child: Text(
+                          'Choose Unit',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Color(0xFF164863),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                            child: DropdownMenu(
+                          hintText: 'Select Level',
+                          textStyle: TextStyle(
+                            color: Color(0xFF667084),
+                            fontSize: 12,
+                            fontFamily: 'IBM Plex Mono',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          // trailingIcon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0xFF667085),),
+                          menuStyle: MenuStyle(
+                            backgroundColor:
+                                WidgetStatePropertyAll(Colors.white),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          onSelected: (String? value) {
+                            setState(() {
+                              selectedLevels = value;
+                            });
+                          },
+                          inputDecorationTheme: InputDecorationTheme(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Color(0xFFD0D5DD)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Color(0xFF164863)),
+                            ),
+                          ),
+                          dropdownMenuEntries: levels
+                              .map<DropdownMenuEntry<String>>((String value) {
+                            return DropdownMenuEntry<String>(
+                                value: value,
+                                label: value,
+                                style: MenuItemButton.styleFrom(
+                                    textStyle: GoogleFonts.ibmPlexMono(
+                                  color: Color(0xFF0F1728),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                )));
+                          }).toList(),
+                        )),
+                        Expanded(
+                            child: DropdownMenu(
+                          hintText: 'Select unit',
+                          textStyle: TextStyle(
+                            color: Color(0xFF667084),
+                            fontSize: 12,
+                            fontFamily: 'IBM Plex Mono',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          menuStyle: MenuStyle(
+                            backgroundColor:
+                                WidgetStatePropertyAll(Colors.white),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          onSelected: (String? value) {
+                            setState(() {
+                              selectedUnit = value;
+                            });
+                          },
+                          inputDecorationTheme: InputDecorationTheme(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Color(0xFFD0D5DD)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Color(0xFF164863)),
+                            ),
+                          ),
+                          dropdownMenuEntries: [
+                            ...units
+                                .map<DropdownMenuEntry<String>>((String value) {
+                              return DropdownMenuEntry<String>(
+                                  value: value,
+                                  label: value,
+                                  style: MenuItemButton.styleFrom(
+                                      textStyle: GoogleFonts.ibmPlexMono(
+                                    color: Color(0xFF0F1728),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  )));
+                            }).toList(),
+                            DropdownMenuEntry<String>(
+                              value: 'add_new',
+                              label: 'Add Unit',
+                              enabled: false,
+                              style: MenuItemButton.styleFrom(
+                                  backgroundColor: Color(0xFFDDF2FD),
+                                  padding: EdgeInsets.all(8),
+                                  textStyle: GoogleFonts.ibmPlexMono(
+                                    color: Colors.transparent,
+                                    fontSize: 0,
+                                  )),
+                              leadingIcon: Container(
+                                width: 100,
+                                height: 40,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller: addController,
+                                        decoration: InputDecoration(
+                                          hintText: 'Add Unit',
+                                          hintStyle: GoogleFonts.ibmPlexMono(
+                                            color: Color(0xFF164863),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                        style: GoogleFonts.ibmPlexMono(
+                                          color: Color(0xFF0F1728),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        onFieldSubmitted: (value) {
+                                          if (value.isNotEmpty) {
+                                            setState(() {
+                                              units.add(value);
+                                              addController.clear();
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            DropdownMenuEntry<String>(
+                                value: 'add_button',
+                                label: 'Add Unit',
+                                style: MenuItemButton.styleFrom(
+                                    padding: EdgeInsets.all(8),
+                                    textStyle: GoogleFonts.ibmPlexMono(
+                                      color: Colors.transparent,
+                                      fontSize: 0,
+                                    )),
+                                leadingIcon: Padding(
+                                  padding: const EdgeInsets.only(left: 38.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      String value = addController.text;
+
+                                      if (value.isNotEmpty) {
+                                        setState(() {
+                                          units.add(value);
+                                          addController.clear();
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      'Add Unit',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF427D9D),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14.5, horizontal: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ))
+                          ],
+                        ))
+                      ],
+                    )
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
                   width: double.infinity,
                   height: 180,
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: Colors.grey[100]),
+                  decoration: ShapeDecoration(
+                    color: Color(0xFFFBFAFA),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -191,49 +536,198 @@ class _AddExamState extends State<AddExam> {
                             height: 0,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 14.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(
+                                'Hours',
+                                style: GoogleFonts.heebo(
+                                  color: Color(0xFF888888),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                'Minutes',
+                                style: GoogleFonts.heebo(
+                                  color: Color(0xFF888888),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             // Hours Input Field
-                            SizedBox(
-                              width: 80,
-                              child: TextFormField(
-                                controller: _hourController,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  labelText: 'Hours',
-                                  labelStyle: TextStyle(
-                                    color: Color(0xFF888888),
-                                    fontSize: 12,
-                                    fontFamily: 'Heebo',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                  border: OutlineInputBorder(),
+                            Container(
+                              width: 55,
+                              height: 55,
+                              padding: const EdgeInsets.all(8),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1, color: Color(0xFFCFD4DC)),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                validator: _validateHours,
+                                shadows: [
+                                  BoxShadow(
+                                    color: Color(0x0C101828),
+                                    blurRadius: 2,
+                                    offset: Offset(0, 1),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                              child: TextFormField(
+                                controller: _hourOneController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '0',
+                                  hintStyle: GoogleFonts.heebo(
+                                    color: Color(0xFFCFD4DC),
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                textAlign: TextAlign.center,
+                                validator: _validateTime,
                               ),
                             ),
-                            const SizedBox(width: 20),
-                            // Minutes Input Field
                             SizedBox(
-                              width: 80,
-                              child: TextFormField(
-                                controller: _minuteController,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  labelText: 'Minutes',
-                                  labelStyle: TextStyle(
-                                    color: Color(0xFF888888),
-                                    fontSize: 12,
-                                    fontFamily: 'Heebo',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                  border: OutlineInputBorder(),
+                              width: 12,
+                            ),
+                            Container(
+                              width: 55,
+                              height: 55,
+                              padding: const EdgeInsets.all(8),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1, color: Color(0xFFCFD4DC)),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                validator: _validateMinutes,
+                                shadows: [
+                                  BoxShadow(
+                                    color: Color(0x0C101828),
+                                    blurRadius: 2,
+                                    offset: Offset(0, 1),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                              child: TextFormField(
+                                controller: _hourTwoController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '0',
+                                  hintStyle: GoogleFonts.heebo(
+                                    color: Color(0xFFCFD4DC),
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                textAlign: TextAlign.center,
+                                validator: _validateTime,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '-',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.inter(
+                                  color: Color(0xFFCFD4DC),
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.w500,
+                                  height: 0.02,
+                                ),
+                              ),
+                            ),
+                            // Minutes Input Field
+                            Container(
+                              width: 55,
+                              height: 55,
+                              padding: const EdgeInsets.all(8),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1, color: Color(0xFFCFD4DC)),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                shadows: [
+                                  BoxShadow(
+                                    color: Color(0x0C101828),
+                                    blurRadius: 2,
+                                    offset: Offset(0, 1),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                              child: TextFormField(
+                                controller: _minuteOneController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '0',
+                                  hintStyle: GoogleFonts.heebo(
+                                    color: Color(0xFFCFD4DC),
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                textAlign: TextAlign.center,
+                                validator: _validateTime,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Container(
+                              width: 55,
+                              height: 55,
+                              padding: const EdgeInsets.all(8),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1, color: Color(0xFFCFD4DC)),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                shadows: [
+                                  BoxShadow(
+                                    color: Color(0x0C101828),
+                                    blurRadius: 2,
+                                    offset: Offset(0, 1),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                              child: TextFormField(
+                                controller: _minuteTwoController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '0',
+                                  hintStyle: GoogleFonts.heebo(
+                                    color: Color(0xFFCFD4DC),
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                textAlign: TextAlign.center,
+                                validator: _validateTime,
                               ),
                             ),
                           ],
@@ -296,10 +790,11 @@ class _AddExamState extends State<AddExam> {
                                       200, // Set a fixed height for the inner ListView
                                   child: ListView.builder(
                                     shrinkWrap: true, // Add this line as well
-                                    itemCount: quizList[index].answers.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: quizList[index].options.length,
                                     itemBuilder: (context, innerIndex) {
                                       return _buildListItem(
-                                          '${innerIndex + 1}. ${quizList[index].answers[innerIndex]}.');
+                                          '${innerIndex + 1}. ${quizList[index].options[innerIndex]}.');
                                     },
                                   ),
                                 ),
@@ -321,10 +816,18 @@ class _AddExamState extends State<AddExam> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(24.0),
           child: CustomElevatedButton(
+            height: 55,
             onPressed: _submitQuiz,
             // Submit the form and add the quiz
             text: 'Submit',
-            buttonStyle: CustomButtonStyles.fillPrimaryTL5,
+            buttonStyle: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF427D9D),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 14.5, horizontal: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
