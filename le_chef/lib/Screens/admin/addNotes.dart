@@ -128,8 +128,15 @@ class _addNotesState extends State<addNotes> {
                     padding: const EdgeInsets.all(24.0),
                     child: CustomElevatedButton(
                       onPressed: () async {
+                        print('from Uiiiiii ' +
+                            noteContentController.text.toString() +
+                            (int.tryParse(selectedlevel!)?.toString() ?? ''));
+
                         await ApisMethods.addNote(
-                            noteContentController.text.toString());
+                            noteContentController.text.toString(),
+                            selectedlevel == 'Level 1'
+                                ? 1
+                                : (selectedlevel == 'Level 2' ? 2 : 3));
                       },
                       text: 'Add Note',
                       buttonStyle: CustomButtonStyles.fillPrimaryTL5,

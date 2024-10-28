@@ -68,11 +68,24 @@ class _AddExamState extends State<AddExam> {
       }).toList();
 
       print('Waiting...');
-      await ApisMethods.AddQuiz(titleController.text, questions, _hourOneController.text + _hourTwoController.text, _minuteOneController.text + _minuteTwoController.text, selectedLevels!, selectedUnit!, light);
+      await ApisMethods.AddQuiz(
+        titleController.text,
+        questions,
+        int.tryParse(_hourOneController.text.trim() +
+                _hourTwoController.text.trim()) ??
+            0,
+        int.tryParse(_minuteOneController.text.trim() +
+                _minuteTwoController.text.trim()) ??
+            0,
+        selectedLevels!,
+        selectedUnit!,
+        light,
+        light ? double.tryParse(quizFees.text) : null,
+      );
       print('added...');
     }
 
-    dialogWithButtons(
+    /* dialogWithButtons(
         context: context,
         icon: Image.asset('assets/error-16_svgrepo.com.jpg'),
         title: 'Are you sure you finish putting Exam ?',
@@ -92,11 +105,12 @@ class _AddExamState extends State<AddExam> {
             Navigator.pop(context);
             Navigator.pop(context);
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Exams()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Exams()));
           });
         },
         button2Text: 'Cancel',
-        button2Action: () => Navigator.pop(context));
+        button2Action: () => Navigator.pop(context));*/
   }
 
   @override

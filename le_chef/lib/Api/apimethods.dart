@@ -131,13 +131,26 @@ class ApisMethods {
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii students $data');
+    if (response.statusCode == 200) {
+      print('apiiii students $data');
 
-    for (var i in data) {
-      temp.add(i);
+      for (var i in data) {
+        temp.add(i);
+      }
+
+      return Student.itemsFromSnapshot(temp);
+    } else {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return SimpleDialog(
+              title: const Text('Error'),
+              contentPadding: const EdgeInsets.all(20),
+              children: [Text('can not get student : ${response.body}')],
+            );
+          });
+      return Student.itemsFromSnapshot(temp);
     }
-
-    return Student.itemsFromSnapshot(temp);
   }
 
   //4-Delete Student
@@ -159,22 +172,24 @@ class ApisMethods {
   static Future<void> AddQuiz(
     String title,
     List questions,
-    String hours,
-    String minutes,
-      String level,
-      String unit,
-      bool isPaid
+    int hours,
+    int minutes,
+    String level,
+    String unit,
+    bool isPaid,
+    double? amountToPay,
   ) async {
     final body = jsonEncode({
       'title': title,
-      'questions': questions,
+      'questions': questions.map((q) => q.toJson()).toList(),
       'duration': {
         'hours': hours,
         'minutes': minutes,
       },
-      'educationLevel' : level,
-      'Unit' : unit,
-      'paid' : isPaid,
+      'educationLevel': level,
+      'Unit': unit,
+      'paid': isPaid,
+      if (isPaid && amountToPay != null) 'amountToPay': amountToPay,
     });
 
     var url =
@@ -394,13 +409,14 @@ class ApisMethods {
 
   //11- add note
 
-  static Future<void> addNote(String content) async {
+  static Future<void> addNote(String content, int educationLevel) async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.addNote);
 
     http.Response response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'token': token!},
-        body: jsonEncode({'title': 'API', 'content': content}));
+        body:
+            jsonEncode({'educationLevel': educationLevel, 'content': content}));
 
     if (response.statusCode == 201) {
       showDialog(
@@ -450,7 +466,7 @@ class ApisMethods {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
-                    'assets/error-16_svgrepo.com.png',
+                    'assets/error-16_svgrepo.com.jpg',
                     width: 117,
                     height: 117,
                   ),
@@ -466,7 +482,7 @@ class ApisMethods {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Try again',
+                    '${response.body}',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ibmPlexMono(
                       color: const Color(0xFF888888),
@@ -483,19 +499,21 @@ class ApisMethods {
 
   //10-get all quizzes
 
-static Future<List<quizModel.Quiz>> getAllQuizzes() async{
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
-    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json', 'token': token!});
+  static Future<List<quizModel.Quiz>> getAllQuizzes() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 
     List temp = [];
     print('apiiii Get Videos $data');
 
-    for(var i in data){
+    for (var i in data) {
       temp.add(i);
     }
 
     return quizModel.Quiz.itemsFromSnapshot(temp);
-}
+  }
 }

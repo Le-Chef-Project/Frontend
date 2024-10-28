@@ -39,6 +39,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isLoading_Std = true;
   List<Student>? _Std;
   List<Quiz>? _exams;
+  bool _isLoading_Exams = true; // Add loading state for exams
 
   @override
   void initState() {
@@ -55,9 +56,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     getExams();
   }
 
-  Future<void> getExams()async {
+  Future<void> getExams() async {
     _exams = await ApisMethods.getAllQuizzes();
     print('apiii $_exams + ${_exams?.length}');
+    setState(() {
+      _isLoading_Exams = false;
+    });
   }
 
   @override
@@ -320,7 +324,9 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Exams",
-                          Number: _exams!.length.toString(),
+                          Number: _isLoading_Exams
+                              ? "..."
+                              : "${_exams?.length ?? 0}",
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           onTapCardRec: () => Navigator.push(
                             context,

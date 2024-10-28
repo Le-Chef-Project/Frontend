@@ -13,12 +13,19 @@ class NotesScreen extends StatefulWidget {
 
 class _NotesScreenState extends State<NotesScreen> {
   String? role = sharedPreferences.getString('role');
-
   Future<List<Notes>>? _notesFuture;
+
   @override
   void initState() {
     super.initState();
-    _notesFuture = ApisMethods.fetchAllNotes();
+    _notesFuture = _fetchAndSortNotes();
+  }
+
+  Future<List<Notes>> _fetchAndSortNotes() async {
+    final notes = await ApisMethods.fetchAllNotes();
+    notes.sort((a, b) =>
+        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+    return notes;
   }
 
   @override
@@ -29,7 +36,7 @@ class _NotesScreenState extends State<NotesScreen> {
           ? AppBar(
               title: Text('Notes'),
             )
-          : null, // Return null when role is not "user"
+          : null,
       body: FutureBuilder<List<Notes>>(
           future: _notesFuture,
           builder: (context, snapshot) {
@@ -40,30 +47,69 @@ class _NotesScreenState extends State<NotesScreen> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text("No notes available"));
             }
+
+            final notes = snapshot.data!;
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: notes.length,
               itemBuilder: (context, index) {
-                final note = snapshot.data![index];
-                return NoteCard(
-                  content: note.content,
-                  title: note.title,
-                  createdAt: note.createdAt,
+                final note = notes[index];
+                final dateText = _getDateText(note.createdAt);
+
+                // Check if a header text should be displayed before this note
+                bool showHeaderText = (index == 0 ||
+                    _getDateText(notes[index - 1].createdAt) != dateText);
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (showHeaderText)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          dateText,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    NoteCard(
+                      content: note.content,
+                      createdAt: note.createdAt,
+                    ),
+                  ],
                 );
               },
             );
           }),
     );
   }
+
+  String _getDateText(String createdAt) {
+    final dateTime = DateTime.parse(createdAt);
+    final now = DateTime.now();
+
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      return "Today";
+    } else if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day - 1) {
+      return "Yesterday";
+    } else {
+      return DateFormat.yMMMd().format(dateTime);
+    }
+  }
 }
 
 // Note Card widget
 class NoteCard extends StatelessWidget {
-  final String title;
   final String content;
   final String createdAt;
 
   const NoteCard({
-    required this.title,
     required this.content,
     required this.createdAt,
   });
@@ -71,46 +117,48 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayDate = _formatCreatedAt(createdAt);
-    return Card(
-      margin: const EdgeInsets.all(16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      color: Color(0xFFF9F9F9),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              displayDate,
-              style: TextStyle(
-                color: Color(0xFF888888),
-                fontSize: 12,
-                fontFamily: 'IBM Plex Mono',
-                fontWeight: FontWeight.w400,
-                height: 0,
+    return Container(
+      width: double.infinity, // Makes the card take the full width
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        color: Color(0xFFF9F9F9),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                displayDate,
+                style: TextStyle(
+                  color: Color(0xFF888888),
+                  fontSize: 12,
+                  fontFamily: 'IBM Plex Mono',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              content,
-              style: TextStyle(
-                color: Color(0xFF164863),
-                fontSize: 14,
-                fontFamily: 'IBM Plex Mono',
-                fontWeight: FontWeight.w500,
-                height: 0,
+              const SizedBox(height: 8),
+              Text(
+                content,
+                style: TextStyle(
+                  color: Color(0xFF164863),
+                  fontSize: 14,
+                  fontFamily: 'IBM Plex Mono',
+                  fontWeight: FontWeight.w500,
+                  height: 0,
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-          ],
+              SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );
   }
-
 
   // Method to format createdAt into a user-friendly string
   String _formatCreatedAt(String createdAt) {
@@ -120,16 +168,13 @@ class NoteCard extends StatelessWidget {
     if (dateTime.year == now.year &&
         dateTime.month == now.month &&
         dateTime.day == now.day) {
-      return "Today at ${DateFormat.jm().format(dateTime)}";
+      return "${DateFormat.jm().format(dateTime)}";
     } else if (dateTime.year == now.year &&
         dateTime.month == now.month &&
         dateTime.day == now.day - 1) {
-      return "Yesterday at ${DateFormat.jm().format(dateTime)}";
-    } else if (dateTime.isAfter(now.subtract(Duration(days: 7)))) {
-      final daysAgo = now.difference(dateTime).inDays;
-      return "$daysAgo day${daysAgo > 1 ? 's' : ''} ago at ${DateFormat.jm().format(dateTime)}";
+      return " ${DateFormat.jm().format(dateTime)}";
     } else {
-      return DateFormat.yMMMd().add_jm().format(dateTime);
+      return DateFormat.jm().format(dateTime);
     }
   }
 }
