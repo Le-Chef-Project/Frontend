@@ -3,13 +3,19 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/ExamForm.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
-
+import '../Models/Quiz.dart';
 import '../Shared/custom_app_bar.dart';
 import '../theme/custom_button_style.dart';
 
-class ExamInfo extends StatelessWidget {
-  const ExamInfo({super.key});
+class ExamInfo extends StatefulWidget {
+  final Quiz quiz;
+  const ExamInfo({super.key, required this.quiz});
 
+  @override
+  State<ExamInfo> createState() => _ExamInfoState();
+}
+
+class _ExamInfoState extends State<ExamInfo> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -113,7 +119,7 @@ class ExamInfo extends StatelessWidget {
                   text: 'Start Quiz',
                   buttonStyle: CustomButtonStyles.fillPrimaryTL5,
                   onPressed: () {
-                    Get.to(() => const QuizPage(),
+                    Get.to(() => QuizPage(quiz: widget.quiz,),
                         transition: Transition.fade,
                         duration: const Duration(seconds: 1));
                   },

@@ -27,39 +27,73 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   String? role = sharedPreferences.getString('role');
   bool _isLoading = true;
   List<Quiz> _exams = [];
+  List<Quiz> _filteredExams = [];
+  List _units = [];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          selectedUnit = _tabController.index + 1;
-        });
-      }
-    });
+    getUnits();
     getExams();
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+  void _handleTabChange() {
+    if (_tabController.indexIsChanging) {
+      setState(() {
+        selectedUnit = _tabController.index + 1;
+        _filterExams();
+      });
+    }
+  }
+
+  void _filterExams() {
+    setState(() {
+      print('Calling filter func');
+      _filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit).toList();
+      print('Filtered exams for unit $selectedUnit: ${_filteredExams.length}');
+
+      for (var exam in _filteredExams) {
+        print('Exam: ${exam.title}, Unit: ${exam.unit}, Questions: ${exam.questions.length}, duration: ${exam.duration.toString()}');
+      }
+    });
   }
 
   Future<void> getExams() async {
-    _exams = await ApisMethods.getAllQuizzes();
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final exams = await ApisMethods.getAllQuizzes();
+      setState(() {
+        _exams = exams;
+        _isLoading = false;
+        _filterExams();
+      });
+      print('Total exams loaded: ${_exams.length}');
+    } catch (e) {
+      print('Error loading exams: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> getUnits() async{
+    try{
+      final units = await ApisMethods.getExamUnits();
+      setState(() {
+        _units = units;
+        _tabController = TabController(length: _units.length, vsync: this);
+        _tabController.addListener(_handleTabChange);
+        _filterExams();
+      });
+      print('Total units loaded: ${_units.length}');
+    }catch(e){
+      print('Error loading units: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Quiz> filteredExams =
-        _exams.where((quiz) => quiz.unit == selectedUnit).toList();
-    print(' tryyyyyyyyyy quizeeeeeee ${filteredExams}');
+
+    print(' tryyyyyyyyyy quizeeeeeee ${_filteredExams}');
 
     return SafeArea(
       child: Scaffold(
@@ -105,7 +139,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                     ),
                     indicator: CircleTabIndicator(radius: 4.0),
                     tabs: List.generate(
-                      5,
+                      _units.length,
                       (index) => Tab(
                         child: Text(
                           'Unit ${index + 1}',
@@ -120,10 +154,21 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: ListView.builder(
+              child: _filteredExams.isEmpty
+                  ? Center(
+                child: Text(
+                  'No exams available for Unit $selectedUnit',
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              )
+                  : ListView.builder(
                 padding: const EdgeInsets.all(20),
-                itemCount: filteredExams.length,
+                itemCount: _filteredExams.length,
                 itemBuilder: (context, index) {
+                  final exam = _filteredExams[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Container(
@@ -133,17 +178,16 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                       ),
                       child: customExamListTile(
                         index,
-                        selectedUnit,
                         context,
-                        isLocked,
-                        _exams[index],
+                        exam.isPaid && role != 'admin',
+                        exam,
                       ),
                     ),
                   );
                 },
               ),
             ),
-          ],
+        ],
         ),
         bottomNavigationBar: CustomBottomNavBar(
           onItemTapped: (index) {

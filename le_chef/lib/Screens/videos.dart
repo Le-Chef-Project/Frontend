@@ -263,11 +263,11 @@ class _ExamsState extends State<Exams> {
                               },
                             );
                           } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ExamInfo()),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => const ExamInfo()),
+                            // );
                           }
                         },
                         subtitle: Padding(

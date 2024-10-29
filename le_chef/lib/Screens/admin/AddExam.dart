@@ -29,9 +29,15 @@ class _AddExamState extends State<AddExam> {
   final TextEditingController addController = TextEditingController();
   bool light = true;
   List<String> levels = ['Level 1', 'Level 2', 'Level 3'];
-  List<String> units = ['Unit 1', 'Unit 2', 'Unit 3'];
+  List _units = [];
   String? selectedLevel;
   String? selectedUnit;
+
+  @override
+  void initState() {
+    getUnits();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -55,6 +61,19 @@ class _AddExamState extends State<AddExam> {
     }
     return null;
   }
+
+  Future<void> getUnits() async{
+    try{
+      final units = await ApisMethods.getExamUnits();
+      setState(() {
+        _units = units;
+      });
+      print('Total units loaded: ${_units.length}');
+    }catch(e){
+      print('Error loading units: $e');
+    }
+  }
+
 
   // Function to handle submitting the form
   void _submitQuiz() async {
@@ -391,8 +410,8 @@ class _AddExamState extends State<AddExam> {
                             ),
                           ),
                           dropdownMenuEntries: [
-                            ...units
-                                .map<DropdownMenuEntry<String>>((String value) {
+                            ..._units
+                                .map<DropdownMenuEntry<String>>((dynamic value) {
                               return DropdownMenuEntry<String>(
                                   value: value,
                                   label: value,
@@ -439,7 +458,7 @@ class _AddExamState extends State<AddExam> {
                                         onFieldSubmitted: (value) {
                                           if (value.isNotEmpty) {
                                             setState(() {
-                                              units.add(value);
+                                              _units.add(value);
                                               addController.clear();
                                             });
                                           }
@@ -467,7 +486,7 @@ class _AddExamState extends State<AddExam> {
 
                                       if (value.isNotEmpty) {
                                         setState(() {
-                                          units.add(value);
+                                          _units.add(value);
                                           addController.clear();
                                         });
                                       }

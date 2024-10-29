@@ -8,7 +8,8 @@ import '../Shared/custom_elevated_button.dart';
 import '../main.dart';
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key,});
+  final Quiz quiz;
+  const QuizPage({super.key, required this.quiz});
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -22,14 +23,13 @@ class _QuizPageState extends State<QuizPage> {
   String? role = sharedPreferences.getString('role');
   final TextEditingController _questionController = TextEditingController();
   List<TextEditingController> _answerControllers = [];
-  late final Quiz quiz;
 
   @override
   void initState() {
     super.initState();
     startTimer();
-    _questionController.text = quiz.questions[selectedQuestion].questionText;
-    _answerControllers = quiz.questions[selectedQuestion].options.map((answer) {
+    _questionController.text = widget.quiz.questions[selectedQuestion].questionText;
+    _answerControllers = widget.quiz.questions[selectedQuestion].options.map((answer) {
       return TextEditingController(text: answer);
     }).toList();
   }
@@ -51,11 +51,11 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _submitAnswers() {
-    for (int i = 0; i < quiz.questions.length; i++) {
+    for (int i = 0; i < widget.quiz.questions.length; i++) {
       final selectedAnswerIndex = _selectedAnswers[i];
       if (selectedAnswerIndex != null) {
-        final selectedAnswer = quiz.questions[i].options[selectedAnswerIndex];
-        final correctAnswerIndex = quiz.questions[i].answer;
+        final selectedAnswer = widget.quiz.questions[i].options[selectedAnswerIndex];
+        final correctAnswerIndex = widget.quiz.questions[i].answer;
         if (selectedAnswer == correctAnswerIndex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Question ${i + 1}: Correct!')),
@@ -64,7 +64,7 @@ class _QuizPageState extends State<QuizPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text(
-                    'Question ${i + 1}: Wrong. The correct answer is: ${quiz.questions[i].answer}')),
+                    'Question ${i + 1}: Wrong. The correct answer is: ${widget.quiz.questions[i].answer}')),
           );
         }
       }
@@ -377,7 +377,7 @@ class _QuizPageState extends State<QuizPage> {
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
                 ),
-                itemCount: quiz.questions.length,
+                itemCount: widget.quiz.questions.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
@@ -515,12 +515,12 @@ class _QuizPageState extends State<QuizPage> {
                                     ),
                                     onSubmitted: (val){
                                       setState(() {
-                                        quiz.questions[selectedQuestion].questionText = val;
+                                        widget.quiz.questions[selectedQuestion].questionText = val;
                                       });
                                     },
                                   ),
                                 ) :Text(
-                                  quiz.questions[selectedQuestion].questionText,
+                                  widget.quiz.questions[selectedQuestion].questionText,
                                   style: GoogleFonts.ibmPlexMono(
                                     color: const Color(0xFF164863),
                                     fontSize: 14,
@@ -537,7 +537,7 @@ class _QuizPageState extends State<QuizPage> {
                               ],
                             ),
                             const SizedBox(height: 12.0),
-                            ...quiz.questions[selectedQuestion]
+                            ...widget.quiz.questions[selectedQuestion]
                                 .options
                                 .asMap()
                                 .entries
@@ -574,7 +574,7 @@ class _QuizPageState extends State<QuizPage> {
                                           fontWeight: FontWeight.w500,
                                         ),
                                         onSubmitted: (val){
-                                          quiz.questions[selectedQuestion].options[answerIndex] = val;
+                                          widget.quiz.questions[selectedQuestion].options[answerIndex] = val;
                                         },
                                       ),
                                     ) : Text(
@@ -612,6 +612,7 @@ class _QuizPageState extends State<QuizPage> {
                         child: ElevatedButton(onPressed: (){
                           role == 'admin' ? showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(
+
                               backgroundColor: Colors.white,
                               icon: const Icon(Icons.check_circle_outline, color: Color(0xFF2ED573), size: 150,),
                               title: Text('Success!', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF164863),
@@ -632,7 +633,7 @@ class _QuizPageState extends State<QuizPage> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF427D9D),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))), child: Text('Submit', style: GoogleFonts.ibmPlexMono(
+                                  borderRadius: BorderRadius.circular(12))), child: Text(role == 'admin' ? 'Edit' :'Submit', style: GoogleFonts.ibmPlexMono(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

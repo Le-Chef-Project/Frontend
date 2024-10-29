@@ -20,6 +20,10 @@ class Quiz {
   });
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
+    final durationData = json['duration'] as Map<String, dynamic>?;
+    final hours = (durationData?['hours'] ?? 0).toInt();
+    final minutes = (durationData?['minutes'] ?? 0).toInt();
+
     return Quiz(
       id: json['_id'] ?? '',
       title: json['title'] ?? '',
@@ -27,8 +31,8 @@ class Quiz {
           .map((q) => QuizQuestion.fromJson(q))
           .toList(),
       duration: Duration(
-        hours: json['hours'] ?? 0,
-        minutes: json['minutes'] ?? 0,
+        hours: hours,
+        minutes: minutes,
       ),
       level: json['educationLevel'] ?? 0,
       unit: json['Unit'] ?? 0,
@@ -40,12 +44,17 @@ class Quiz {
   }
 
   Map<String, dynamic> toJson() {
+    // Debug print
+    print('Converting to JSON with duration - hours: ${duration.inHours}, minutes: ${duration.inMinutes % 60}');
+
     return {
       '_id': id,
       'title': title,
       'questions': questions.map((q) => q.toJson()).toList(),
-      'hours': duration.inHours,
-      'minutes': duration.inMinutes % 60,
+      'duration': {
+        'hours': duration.inHours,
+        'minutes': duration.inMinutes % 60,
+      },
       'educationLevel': level,
       'Unit': unit,
       'paid': isPaid,
@@ -54,7 +63,24 @@ class Quiz {
   }
 
   static List<Quiz> itemsFromSnapshot(List snapshot) {
-    return snapshot.map((data) => Quiz.fromJson(data)).toList();
+    return snapshot.map((data) {
+      print('Processing snapshot item: $data');
+      return Quiz.fromJson(data);
+    }).toList();
+  }
+
+  String get formattedDuration {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    print('Formatting duration: $duration (hours: $hours, minutes: $minutes)');
+
+    if (hours > 0 && minutes > 0) {
+      return '$hours h $minutes m';
+    } else if (hours > 0) {
+      return '$hours h';
+    } else {
+      return '$minutes m';
+    }
   }
 }
 

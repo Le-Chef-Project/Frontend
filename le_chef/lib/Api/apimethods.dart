@@ -189,7 +189,6 @@ class ApisMethods {
         throw Exception('Amount to pay is required for paid quizzes');
       }
 
-      // Convert questions to proper format if they're not already QuizQuestion objects
       final formattedQuestions = questions.map((question) {
         if (question is QuizQuestion) {
           return question.toJson();
@@ -574,7 +573,7 @@ class ApisMethods {
     }
   }
 
-  //10-get all quizzes
+  //12-get all quizzes
 
   static Future<List<quizModel.Quiz>> getAllQuizzes() async {
     var url = Uri.parse(
@@ -594,22 +593,40 @@ class ApisMethods {
     return quizModel.Quiz.itemsFromSnapshot(temp);
   }
 
-  //11-get all units used in exams
+  //13-get all units used in exams
   static Future<List> getExamUnits() async {
-    var url =
-        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
-    http.Response response = await http.get(url,
-        headers: {'Content-Type': 'application/json', 'token': token!});
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
+    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 
     List temp = [];
     print('apiiii Get all Units $data');
 
-    for (var i in data) {
-      temp.add(i);
+    // Access the 'units' list inside 'data'
+    if (data.containsKey('units') && data['units'] is List) {
+      temp = data['units'];
+    } else {
+      throw Exception("Unexpected data format: 'units' key not found or is not a list.");
     }
 
-    return quizModel.Quiz.itemsFromSnapshot(temp);
+    return temp;
   }
+
+  //14-Delete quiz
+  static Future<void> delQuiz(String id) async {
+    var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.delQuiz}$id');
+    http.Response response = await http.delete(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('${jsonDecode(response.body)['message']}');
+    }
+  }
+
+
 }
