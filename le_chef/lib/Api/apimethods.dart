@@ -559,7 +559,7 @@ class ApisMethods {
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii Get Videos $data');
+    print('apiiii Get Exams $data');
 
     for (var i in data) {
       temp.add(i);
