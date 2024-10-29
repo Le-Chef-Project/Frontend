@@ -68,49 +68,22 @@ class _AddExamState extends State<AddExam> {
       }).toList();
 
       print('Waiting...');
-      await ApisMethods.AddQuiz(
-        titleController.text,
-        questions,
-        int.tryParse(_hourOneController.text.trim() +
+      await ApisMethods.addQuiz(
+        title: titleController.text,
+        questions: questions,
+        hours: int.tryParse(_hourOneController.text.trim() +
                 _hourTwoController.text.trim()) ??
             0,
-        int.tryParse(_minuteOneController.text.trim() +
+        minutes: int.tryParse(_minuteOneController.text.trim() +
                 _minuteTwoController.text.trim()) ??
             0,
-        selectedLevels!,
-        selectedUnit!,
-        light,
-        light ? double.tryParse(quizFees.text) : null,
+        level: int.tryParse(selectedLevels!),
+        unit: int.tryParse(selectedUnit!),
+        isPaid: light,
+        amountToPay: light ? double.tryParse(quizFees.text) : null,
       );
       print('added...');
     }
-
-    /* dialogWithButtons(
-        context: context,
-        icon: Image.asset('assets/error-16_svgrepo.com.jpg'),
-        title: 'Are you sure you finish putting Exam ?',
-        button1Text: 'Finish Exam',
-        button1Action: () {
-          dialogWithButtons(
-              context: context,
-              icon: const Icon(
-                Icons.check_circle_outline,
-                color: Colors.green,
-                size: 117,
-              ),
-              title: 'Success !',
-              content: 'Exam posted to students.');
-          Future.delayed((const Duration(seconds: 2)), () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-            Navigator.pop(context);
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Exams()));
-          });
-        },
-        button2Text: 'Cancel',
-        button2Action: () => Navigator.pop(context));*/
   }
 
   @override

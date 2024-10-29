@@ -10,6 +10,7 @@ import 'package:le_chef/Models/Quiz.dart' as quizModel;
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import '../Models/Notes.dart';
+import '../Models/Quiz.dart';
 import '../Models/Student.dart';
 import '../Screens/exams.dart';
 import '../Screens/user/Home.dart';
@@ -169,56 +170,106 @@ class ApisMethods {
   }
 
 //5- add quiz
-  static Future<void> AddQuiz(
-    String title,
-    List questions,
-    int hours,
-    int minutes,
-    String level,
-    String unit,
-    bool isPaid,
+  static Future<bool> addQuiz({
+    required String title,
+    required List<dynamic> questions,
+    required int hours,
+    required int minutes,
+    required int? level,
+    required int? unit,
+    required bool isPaid,
     double? amountToPay,
-  ) async {
-    final body = jsonEncode({
-      'title': title,
-      'questions': questions.map((q) => q.toJson()).toList(),
-      'duration': {
+  }) async {
+    try {
+      if (questions.isEmpty) {
+        throw Exception('Questions list cannot be empty');
+      }
+
+      if (isPaid && amountToPay == null) {
+        throw Exception('Amount to pay is required for paid quizzes');
+      }
+
+      // Convert questions to proper format if they're not already QuizQuestion objects
+      final formattedQuestions = questions.map((question) {
+        if (question is QuizQuestion) {
+          return question.toJson();
+        } else if (question is Map<String, dynamic>) {
+          return {
+            'question': question['question'] ?? '',
+            'options': question['options'] ?? [],
+            'answer': question['answer'] ?? '',
+          };
+        } else {
+          throw Exception('Invalid question format');
+        }
+      }).toList();
+
+      final body = jsonEncode({
+        'title': title,
+        'questions': formattedQuestions,
         'hours': hours,
         'minutes': minutes,
-      },
-      'educationLevel': level,
-      'Unit': unit,
-      'paid': isPaid,
-      if (isPaid && amountToPay != null) 'amountToPay': amountToPay,
-    });
+        'educationLevel': level,
+        'Unit': unit,
+        'paid': isPaid,
+        if (isPaid) 'amountToPay': amountToPay,
+      });
 
-    var url =
-        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.addQuiz);
-    http.Response response = await http.post(url,
-        headers: {'Content-Type': 'application/json', 'token': token!},
-        body: body);
+      final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
 
-    if (response.statusCode == 201) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              title: Text('Success'),
-              contentPadding: EdgeInsets.all(20),
-              children: [Text('Quiz added successfully!')],
-            );
-          });
-    } else {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text('Error'),
-              contentPadding: const EdgeInsets.all(20),
-              children: [Text('Failed to add quiz: ${response.body}')],
-            );
-          });
+      final response = await http.post(
+        url,
+        headers: {
+         'Content-Type': 'application/json', 'token': token!,
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 201) {
+        await _showSuccessDialog();
+        return true;
+      } else {
+        await _showErrorDialog(response.body);
+        return false;
+      }
+    } catch (e) {
+      await _showErrorDialog(e.toString());
+      return false;
     }
+  }
+
+  static Future<void> _showSuccessDialog() async {
+    await showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Success'),
+        content: const Text('Quiz added successfully!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Future<void> _showErrorDialog(String errorMessage) async {
+    await showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text('Failed to add quiz: $errorMessage'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
 //6- upload video

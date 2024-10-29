@@ -21,19 +21,21 @@ class Quiz {
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
     return Quiz(
-      id: json['_id'],
+      id: json['_id'] ?? '',
       title: json['title'] ?? '',
-      questions: (json['questions'] as List)
+      questions: (json['questions'] as List? ?? [])
           .map((q) => QuizQuestion.fromJson(q))
           .toList(),
       duration: Duration(
-        hours: json['duration']['hours'] ?? '',
-        minutes: json['duration']['minutes'] ?? '',
+        hours: json['hours'] ?? 0,
+        minutes: json['minutes'] ?? 0,
       ),
       level: json['educationLevel'] ?? 0,
       unit: json['Unit'] ?? 0,
-      isPaid: json['paid'] ?? true,
-      createdAt: DateTime.parse(json['createdAt']),
+      isPaid: json['paid'] ?? false,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
     );
   }
 
@@ -42,23 +44,18 @@ class Quiz {
       '_id': id,
       'title': title,
       'questions': questions.map((q) => q.toJson()).toList(),
-      'duration': {
-        'hours': duration.inHours,
-        'minutes': duration.inMinutes % 60,
-      },
-      'educationLevel' : level,
-      'Unit' : unit,
-      'paid' : isPaid,
+      'hours': duration.inHours,
+      'minutes': duration.inMinutes % 60,
+      'educationLevel': level,
+      'Unit': unit,
+      'paid': isPaid,
       'createdAt': createdAt.toIso8601String(),
     };
   }
 
   static List<Quiz> itemsFromSnapshot(List snapshot) {
-    return snapshot.map((data) {
-      return Quiz.fromJson(data);
-    }).toList();
+    return snapshot.map((data) => Quiz.fromJson(data)).toList();
   }
-
 }
 
 class QuizQuestion {
@@ -82,9 +79,9 @@ class QuizQuestion {
 
   Map<String, dynamic> toJson() {
     return {
-      'questionText': questionText,
+      'question': questionText,
       'options': options,
-      'points': answer,
+      'answer': answer,
     };
   }
 }
