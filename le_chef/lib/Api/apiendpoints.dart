@@ -19,6 +19,7 @@ class UserManage {
 class Quiz {
   final String addQuiz = 'Quiz/AddQuiz';
   final String getAllQuizzes = 'Quiz/ShowAllQuizzes';
+  final String getExamUnits = 'Quiz/Unit';
 }
 
 class Content {

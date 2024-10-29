@@ -30,7 +30,7 @@ class _AddExamState extends State<AddExam> {
   bool light = true;
   List<String> levels = ['Level 1', 'Level 2', 'Level 3'];
   List<String> units = ['Unit 1', 'Unit 2', 'Unit 3'];
-  String? selectedLevels;
+  String? selectedLevel;
   String? selectedUnit;
 
   @override
@@ -77,8 +77,8 @@ class _AddExamState extends State<AddExam> {
         minutes: int.tryParse(_minuteOneController.text.trim() +
                 _minuteTwoController.text.trim()) ??
             0,
-        level: int.tryParse(selectedLevels!),
-        unit: int.tryParse(selectedUnit!),
+        level: int.parse(selectedLevel!.replaceFirst('Level ', '')),
+        unit: int.parse(selectedUnit!.replaceFirst('Unit ', '')),
         isPaid: light,
         amountToPay: light ? double.tryParse(quizFees.text) : null,
       );
@@ -310,7 +310,6 @@ class _AddExamState extends State<AddExam> {
                             fontFamily: 'IBM Plex Mono',
                             fontWeight: FontWeight.w400,
                           ),
-                          // trailingIcon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0xFF667085),),
                           menuStyle: MenuStyle(
                             backgroundColor:
                                 WidgetStatePropertyAll(Colors.white),
@@ -322,7 +321,7 @@ class _AddExamState extends State<AddExam> {
                           ),
                           onSelected: (String? value) {
                             setState(() {
-                              selectedLevels = value;
+                              selectedLevel = value;
                             });
                           },
                           inputDecorationTheme: InputDecorationTheme(

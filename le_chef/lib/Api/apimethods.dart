@@ -559,7 +559,7 @@ class ApisMethods {
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii Get Videos $data');
+    print('apiiii Get Exams $data');
 
     for (var i in data) {
       temp.add(i);
@@ -567,4 +567,24 @@ class ApisMethods {
 
     return quizModel.Quiz.itemsFromSnapshot(temp);
   }
+
+  //11-get all units used in exams
+  // static Future<List> getExamUnits(){
+  //   var url = Uri.parse(
+  //     ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits
+  //   );
+  //   http.Response response = await http.get(url,
+  //       headers: {'Content-Type': 'application/json', 'token': token!});
+  //
+  //   var data = jsonDecode(response.body);
+  //
+  //   List temp = [];
+  //   print('apiiii Get all Units $data');
+  //
+  //   for (var i in data) {
+  //     temp.add(i);
+  //   }
+  //
+  //   return quizModel.Quiz.itemsFromSnapshot(temp);
+  // }
 }
