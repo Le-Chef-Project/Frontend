@@ -44,7 +44,13 @@ class _AddLibraryState extends State<AddLibrary> {
   Future<void> _uploadVideo() async {
     if (_videoFile != null) {
       await ApisMethods.uploadVideo(
-          _videoFile!, itemNameController.text, itemDescriptionController.text);
+        videoFile: _videoFile!,
+        title: itemNameController.text,
+        description: itemDescriptionController.text,
+        amountToPay: isPaid ? double.tryParse(amountController.text) : null,
+        paid: isPaid,
+        educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
+      );
     } else {
       print('No video selected');
     }
@@ -89,8 +95,15 @@ class _AddLibraryState extends State<AddLibrary> {
 
   Future<void> _uploadPDF() async {
     if (selectedFile != null) {
-      await ApisMethods.uploadPDF(itemNameController.text,
-          itemDescriptionController.text, selectedFile!);
+      print('Selected file: ${selectedFile!.path}'); // Debugging line
+
+      await ApisMethods.uploadPDF(
+          title: itemNameController.text,
+          description: itemDescriptionController.text,
+          amountToPay: isPaid ? double.tryParse(amountController.text) : null,
+          paid: isPaid,
+          educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
+          PDF: selectedFile!);
     } else {
       print('No PDF selected');
     }

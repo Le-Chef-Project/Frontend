@@ -57,7 +57,9 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    List<Quiz> filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit).toList();
+    List<Quiz> filteredExams =
+        _exams.where((quiz) => quiz.unit == selectedUnit).toList();
+    print(' tryyyyyyyyyy quizeeeeeee ${filteredExams}');
 
     return SafeArea(
       child: Scaffold(
@@ -67,22 +69,18 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             role == 'admin'
-                ? totalStudent(
-                context,
-                'Total Exams',
-                '${_exams.length}',
-                buttonText: 'Add Exam',
-                ontap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddExam()));
-                })
+                ? totalStudent(context, 'Total Exams', '${_exams.length}',
+                    buttonText: 'Add Exam', ontap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddExam()));
+                  })
                 : Center(
-              child: Image.asset(
-                'assets/Wonder Learners Graduating.png',
-                width: 300,
-                height: 300,
-              ),
-            ),
+                    child: Image.asset(
+                      'assets/Wonder Learners Graduating.png',
+                      width: 300,
+                      height: 300,
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: SingleChildScrollView(
@@ -108,7 +106,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                     indicator: CircleTabIndicator(radius: 4.0),
                     tabs: List.generate(
                       5,
-                          (index) => Tab(
+                      (index) => Tab(
                         child: Text(
                           'Unit ${index + 1}',
                           overflow: TextOverflow.ellipsis,

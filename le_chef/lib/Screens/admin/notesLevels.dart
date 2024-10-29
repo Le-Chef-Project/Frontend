@@ -90,7 +90,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
             Expanded(
               child: TabBarView(
                 controller: tabviewController,
-                children: [NotesScreen(), NotesScreen(), NotesScreen()],
+                children: [NotesScreen(level :1), NotesScreen(level :2), NotesScreen(level :3)],
               ),
             ),
             const SizedBox(height: 40),

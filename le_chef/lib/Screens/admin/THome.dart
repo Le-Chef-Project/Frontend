@@ -14,6 +14,7 @@ import '../../Shared/textInputDecoration.dart';
 import '../../theme/custom_button_style.dart';
 import '../Notes.dart';
 import '../notification.dart';
+import 'Exam&LibraryLevels.dart';
 import 'library.dart';
 
 class THome extends StatefulWidget {
@@ -331,7 +332,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           onTapCardRec: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Exams()),
+                                builder: (context) =>
+                                    ExamLibraryLevels(title: 'Exams')),
                           ),
                         ),
                       ),
@@ -346,7 +348,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    LibraryTabContainerScreen()),
+                                    ExamLibraryLevels(title: 'Library')),
                           ),
                         ),
                       ),

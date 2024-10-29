@@ -215,12 +215,14 @@ class ApisMethods {
         if (isPaid) 'amountToPay': amountToPay,
       });
 
-      final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
+      final url = Uri.parse(
+          '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
 
       final response = await http.post(
         url,
         headers: {
-         'Content-Type': 'application/json', 'token': token!,
+          'Content-Type': 'application/json',
+          'token': token!,
         },
         body: body,
       );
@@ -273,25 +275,41 @@ class ApisMethods {
   }
 
 //6- upload video
-  static Future<void> uploadVideo(
-      File videoFile, String title, String description) async {
+  static Future<void> uploadVideo({
+    required File videoFile,
+    required String title,
+    required String description,
+    double? amountToPay,
+    required bool paid,
+    required int educationLevel,
+  }) async {
     // Parse the upload URL
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
 
-    final request = http.MultipartRequest('POST', url);
-    request.fields['title'] = title;
-    request.fields['description'] = description;
+    final request = http.MultipartRequest('POST', url)
+      ..fields['title'] = title
+      ..fields['description'] = description
+      ..fields['amountToPay'] =
+          amountToPay.toString() // Send amountToPay as string
+      ..fields['paid'] =
+          paid ? 'true' : 'false' // Send paid as string 'true' or 'false'
+      ..fields['educationLevel'] =
+          educationLevel.toString(); // Send educationLevel as string
     request.headers['token'] = token!;
+
     // Add the video file to the request
     request.files
         .add(await http.MultipartFile.fromPath('video', videoFile.path));
 
     try {
-      final response = await request.send();
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
       if (response.statusCode == 201) {
-        final responseBody = await response.stream.bytesToString();
-        final jsonResponse = jsonDecode(responseBody);
+        final responseData = jsonDecode(response.body);
+
+        final jsonResponse = jsonDecode(responseData);
         showDialog(
             context: Get.context!,
             builder: (context) {
@@ -309,12 +327,10 @@ class ApisMethods {
               return SimpleDialog(
                 title: const Text('Error'),
                 contentPadding: const EdgeInsets.all(20),
-                children: [
-                  Text('Failed to upload video: ${response.statusCode}')
-                ],
+                children: [Text('Failed to upload video: ${response.body}')],
               );
             });
-        print('Failed to upload video: ${response.statusCode}');
+        print('Failed to upload video: ${response.body}');
       }
     } catch (error) {
       print('Error uploading video: $error');
@@ -322,16 +338,26 @@ class ApisMethods {
   }
 
 //7- upload PDF
-  static Future<void> uploadPDF(
-      String title, String description, File PDF) async {
+  static Future<void> uploadPDF({
+    required String title,
+    required String description,
+    double? amountToPay,
+    required bool paid,
+    required int educationLevel,
+    required File PDF,
+  }) async {
     // Convert the Uri to a String
     String url = ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadPDF;
     // Create the multipart request
-    var request = http.MultipartRequest('POST', Uri.parse(url));
+    var request = http.MultipartRequest('POST', Uri.parse(url))
 
-    // Add the fields to the request
-    request.fields['title'] = title;
-    request.fields['description'] = description;
+      // Add the fields to the request
+      ..fields['title'] = title
+      ..fields['description'] = description
+      ..fields['amountToPay'] = amountToPay.toString() // Double as string
+      ..fields['paid'] = paid ? 'true' : 'false' // Boolean as 'true' or 'false'
+      ..fields['educationLevel'] = educationLevel.toString(); // Int as string
+
     request.headers['token'] = token!;
 
     // Add the file to the request
@@ -341,9 +367,8 @@ class ApisMethods {
     request.files.add(file);
 
     try {
-      // Send the request
-      var response = await request.send();
-
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
       // Check the response status
       if (response.statusCode == 201) {
         print('PDF Uploaded successful');
@@ -385,7 +410,8 @@ class ApisMethods {
               );
             });
         // Read the response if needed
-        var responseData = await http.Response.fromStream(response);
+        final responseData = jsonDecode(response.body);
+
         print('Response: ${responseData.body}');
       } else {
         print('Upload failed with status: ${response.statusCode}');
@@ -569,22 +595,21 @@ class ApisMethods {
   }
 
   //11-get all units used in exams
-  // static Future<List> getExamUnits(){
-  //   var url = Uri.parse(
-  //     ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits
-  //   );
-  //   http.Response response = await http.get(url,
-  //       headers: {'Content-Type': 'application/json', 'token': token!});
-  //
-  //   var data = jsonDecode(response.body);
-  //
-  //   List temp = [];
-  //   print('apiiii Get all Units $data');
-  //
-  //   for (var i in data) {
-  //     temp.add(i);
-  //   }
-  //
-  //   return quizModel.Quiz.itemsFromSnapshot(temp);
-  // }
+  static Future<List> getExamUnits() async {
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    List temp = [];
+    print('apiiii Get all Units $data');
+
+    for (var i in data) {
+      temp.add(i);
+    }
+
+    return quizModel.Quiz.itemsFromSnapshot(temp);
+  }
 }

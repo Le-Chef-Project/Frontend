@@ -7,6 +7,9 @@ import '../Models/Notes.dart';
 import '../main.dart';
 
 class NotesScreen extends StatefulWidget {
+  final int level;
+  NotesScreen({super.key, required this.level});
+
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
@@ -23,9 +26,23 @@ class _NotesScreenState extends State<NotesScreen> {
 
   Future<List<Notes>> _fetchAndSortNotes() async {
     final notes = await ApisMethods.fetchAllNotes();
-    notes.sort((a, b) =>
+
+    // Filter notes based on education level
+    final filteredNotes = notes.where((note) {
+      if (widget.level == 1) {
+        return note.educationLevel == 1;
+      } else if (widget.level == 2) {
+        return note.educationLevel == 12;
+      } else if (widget.level == 3) {
+        return note.educationLevel == 3;
+      }
+      return false;
+    }).toList();
+
+    // Sort the filtered notes by date
+    filteredNotes.sort((a, b) =>
         DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
-    return notes;
+    return filteredNotes;
   }
 
   @override
@@ -49,6 +66,7 @@ class _NotesScreenState extends State<NotesScreen> {
             }
 
             final notes = snapshot.data!;
+
             return ListView.builder(
               itemCount: notes.length,
               itemBuilder: (context, index) {
@@ -68,9 +86,11 @@ class _NotesScreenState extends State<NotesScreen> {
                         child: Text(
                           dateText,
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: Color(0xFF164863),
+                            fontSize: 20,
+                            fontFamily: 'IBM Plex Mono',
+                            fontWeight: FontWeight.w600,
+                            height: 0,
                           ),
                         ),
                       ),
