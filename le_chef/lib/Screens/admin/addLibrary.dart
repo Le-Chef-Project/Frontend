@@ -22,6 +22,7 @@ class _AddLibraryState extends State<AddLibrary> {
   bool isPaid = false;
   String? selectedSection;
   String? selectedlevel;
+  bool isLoading = false; // Track loading status
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController itemNameController = TextEditingController();
@@ -43,6 +44,12 @@ class _AddLibraryState extends State<AddLibrary> {
 
   Future<void> _uploadVideo() async {
     if (_videoFile != null) {
+      setState(() {
+        isLoading = true; // Start loading
+      });
+
+      _showLoadingDialog(); // Show the loading dialog
+
       await ApisMethods.uploadVideo(
         videoFile: _videoFile!,
         title: itemNameController.text,
@@ -51,6 +58,12 @@ class _AddLibraryState extends State<AddLibrary> {
         paid: isPaid,
         educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
       );
+
+      setState(() {
+        isLoading = false; // Stop loading
+      });
+
+      Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
     } else {
       print('No video selected');
     }
@@ -93,17 +106,53 @@ class _AddLibraryState extends State<AddLibrary> {
     }
   }
 
+  Future<void> _showLoadingDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16),
+                Text("Uploading, please wait..."),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _uploadPDF() async {
     if (selectedFile != null) {
-      print('Selected file: ${selectedFile!.path}'); // Debugging line
+      setState(() {
+        isLoading = true; // Start loading
+      });
+
+      _showLoadingDialog(); // Show the loading dialog
 
       await ApisMethods.uploadPDF(
-          title: itemNameController.text,
-          description: itemDescriptionController.text,
-          amountToPay: isPaid ? double.tryParse(amountController.text) : null,
-          paid: isPaid,
-          educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
-          PDF: selectedFile!);
+        title: itemNameController.text,
+        description: itemDescriptionController.text,
+        amountToPay: isPaid ? double.tryParse(amountController.text) : null,
+        paid: isPaid,
+        educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
+        PDF: selectedFile!,
+      );
+
+      setState(() {
+        isLoading = false; // Stop loading
+      });
+
+      Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
     } else {
       print('No PDF selected');
     }
