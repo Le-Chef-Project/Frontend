@@ -22,7 +22,7 @@ class Exams extends StatefulWidget {
 }
 
 class _ExamsState extends State<Exams> with TickerProviderStateMixin {
-  TabController? _tabController;
+  late TabController _tabController;
   int selectedUnit = 1;
   bool isLocked = true;
   String? role = sharedPreferences.getString('role');
@@ -34,14 +34,16 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: _units.length, vsync: this);
+    _tabController.addListener(_handleTabChange);
     getUnits();
     getExams();
   }
 
   void _handleTabChange() {
-    if (_tabController!.indexIsChanging) {
+    if (_tabController.indexIsChanging) {
       setState(() {
-        selectedUnit = _tabController!.index + 1;
+        selectedUnit = _tabController.index + 1;
         _filterExams();
       });
     }
@@ -50,15 +52,11 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   void _filterExams() {
     setState(() {
       print('Calling filter func');
-      _filteredExams = _exams
-          .where((quiz) =>
-              quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
-          .toList();
+      _filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit && quiz.level == widget.selectedLevel).toList();
       print('Filtered exams for unit $selectedUnit: ${_filteredExams.length}');
 
       for (var exam in _filteredExams) {
-        print(
-            'Exam: ${exam.title}, Unit: ${exam.unit}, Questions: ${exam.questions.length}, duration: ${exam.duration.toString()}');
+        print('Exam: ${exam.title}, Unit: ${exam.unit}, Questions: ${exam.questions.length}, duration: ${exam.duration.toString()}');
       }
     });
   }
@@ -85,18 +83,25 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
       final units = await ApisMethods.getExamUnits();
       setState(() {
         _units = units;
+        _isLoading = false;
         _tabController = TabController(length: _units.length, vsync: this);
-        _tabController!.addListener(_handleTabChange);
+        _tabController.addListener(_handleTabChange);
         _filterExams();
       });
       print('Total units loaded: ${_units.length}');
     } catch (e) {
       print('Error loading units: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    print(' tryyyyyyyyyy quizeeeeeee ${_filteredExams}');
+
     return SafeArea(
       child: Scaffold(
         appBar: const CustomAppBar(title: 'Exams'),
@@ -158,38 +163,38 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
             Expanded(
               child: _filteredExams.isEmpty
                   ? Center(
-                      child: Text(
-                        'No exams available for Unit $selectedUnit',
-                        style: GoogleFonts.ibmPlexMono(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    )
+                child: Text(
+                  'No exams available for Unit $selectedUnit',
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              )
                   : ListView.builder(
-                      padding: const EdgeInsets.all(20),
-                      itemCount: _filteredExams.length,
-                      itemBuilder: (context, index) {
-                        final exam = _filteredExams[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFBFAFA),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: customExamListTile(
-                              index,
-                              context,
-                              exam.isPaid && role != 'admin',
-                              exam,
-                            ),
-                          ),
-                        );
-                      },
+                padding: const EdgeInsets.all(20),
+                itemCount: _filteredExams.length,
+                itemBuilder: (context, index) {
+                  final exam = _filteredExams[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFBFAFA),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: customExamListTile(
+                        index,
+                        context,
+                        exam.isPaid && role != 'admin',
+                        exam,
+                      ),
                     ),
+                  );
+                },
+              ),
             ),
-          ],
+        ],
         ),
         bottomNavigationBar: CustomBottomNavBar(
           onItemTapped: (index) {

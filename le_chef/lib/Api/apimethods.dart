@@ -595,10 +595,8 @@ class ApisMethods {
 
   //13-get all units used in exams
   static Future<List> getExamUnits() async {
-    var url =
-        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
-    http.Response response = await http.get(url,
-        headers: {'Content-Type': 'application/json', 'token': token!});
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
+    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 
@@ -609,8 +607,7 @@ class ApisMethods {
     if (data.containsKey('units') && data['units'] is List) {
       temp = data['units'];
     } else {
-      throw Exception(
-          "Unexpected data format: 'units' key not found or is not a list.");
+      throw Exception("Unexpected data format: 'units' key not found or is not a list.");
     }
 
     return temp;
@@ -634,40 +631,30 @@ class ApisMethods {
   //15-update quiz
   static Future<void> updateQuiz({
     required String id,
-    required String title,
     required List<dynamic> questions,
     required int hours,
     required int minutes,
-    required int? level,
-    required int? unit,
-    required bool isPaid,
-    double? amountToPay,
   }) async {
+
     final Map<String, dynamic> body = {
-      'title': title,
-      'questions': questions
-          .map((q) => {
-                'question': q['question'],
-                'options': q['options'],
-                'answer': q['answer'],
-              })
-          .toList(),
+      'questions': questions.map((q) =>
+      {
+        'question': q['question'],
+        'options': q['options'],
+        'answer': q['answer'],
+      }).toList(),
       'hours': hours,
       'minutes': minutes,
-      'paid': isPaid,
-      'educationLevel': level,
-      'Unit': unit,
     };
 
-    if (isPaid && amountToPay != null) {
-      body['amountToPay'] = amountToPay;
-    }
-
     var url = Uri.parse(
-        '${ApiEndPoints.baseUrl.trim()} + ${ApiEndPoints.quiz.updateQuiz}$id');
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.updateQuiz}$id'
+    );
+
     http.Response response = await http.put(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
+      body: jsonEncode(body)
     );
     if (response.statusCode == 200) {
       print('${jsonDecode(response.body)['message']}');
