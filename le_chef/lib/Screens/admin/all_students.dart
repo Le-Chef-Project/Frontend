@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Models/Student.dart';
+import 'package:le_chef/Screens/admin/studentProfile.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_search_view.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
@@ -66,7 +67,8 @@ class _AllStudentsState extends State<AllStudents> {
       searched_Student = [];
     });
   }
-@override
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -138,54 +140,64 @@ class _AllStudentsState extends State<AllStudents> {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12.0),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: AssetImage(StdImg),
-                                  ),
-                                  title: Text(
-                                    searched_Student[index].firstname,
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF083344),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfilePage()),
+                                    );
+                                  },
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: AssetImage(StdImg),
                                     ),
-                                  ),
-                                  trailing: IconButton(
-                                    icon: Image.asset('assets/trash.png'),
-                                    onPressed: () {
-                                      dialogWithButtons(
-                                          context: context,
-                                          icon:
-                                              Image.asset('assets/trash-1.png'),
-                                          title: 'Remove Student !',
-                                          content:
-                                              'Are you sure that you want to remove student!',
-button1Text: 'Remove',
-                                          button1Action: () async {
-                                            Navigator.pop(context);
-                                            await ApisMethods.DelStudent(
-                                                searched_Student[index].ID);
-                                            dialogWithButtons(
-                                                context: context,
-                                                icon: Image.asset(
-                                                    'assets/trash-1.png'),
-                                                title:
-                                                    'Student is removed successfully !');
-                                            Future.delayed(Duration(seconds: 2),
-                                                () {
+                                    title: Text(
+                                      searched_Student[index].firstname,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF083344),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: Image.asset('assets/trash.png'),
+                                      onPressed: () {
+                                        dialogWithButtons(
+                                            context: context,
+                                            icon: Image.asset(
+                                                'assets/trash-1.png'),
+                                            title: 'Remove Student !',
+                                            content:
+                                                'Are you sure that you want to remove student!',
+                                            button1Text: 'Remove',
+                                            button1Action: () async {
                                               Navigator.pop(context);
-                                            });
-                                          },
-                                          buttonColor: Colors.red,
-                                          button2Text: 'Cancel',
-                                          button2Action: () {
-                                            Navigator.pop(context);
-                                          }, outlineButtonColor: Colors.red);
-                                      setState(() {
-                                        getStd();
-                                      });
-                                    },
+                                              await ApisMethods.DelStudent(
+                                                  searched_Student[index].ID);
+                                              dialogWithButtons(
+                                                  context: context,
+                                                  icon: Image.asset(
+                                                      'assets/trash-1.png'),
+                                                  title:
+                                                      'Student is removed successfully !');
+                                              Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            buttonColor: Colors.red,
+                                            button2Text: 'Cancel',
+                                            button2Action: () {
+                                              Navigator.pop(context);
+                                            },
+                                            outlineButtonColor: Colors.red);
+                                        setState(() {
+                                          getStd();
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
                               );
@@ -199,54 +211,64 @@ button1Text: 'Remove',
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12.0),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: AssetImage(StdImg),
-                                  ),
-                                  title: Text(
-                                    currentStudents[index].firstname,
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF083344),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfilePage()),
+                                    );
+                                  },
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: AssetImage(StdImg),
                                     ),
-                                  ),
-                                  trailing: IconButton(
-                                    icon: Image.asset('assets/trash.png'),
-                                    onPressed: () {
-                                      dialogWithButtons(
-                                          context: context,
-                                          icon:
-                                          Image.asset('assets/trash-1.png'),
-                                          title: 'Remove Student !',
-                                          content:
-                                          'Are you sure that you want to remove student!',
-                                          button1Text: 'Remove',
-                                          button1Action: () async {
-                                            Navigator.pop(context);
-                                            await ApisMethods.DelStudent(
-                                                searched_Student[index].ID);
-                                            dialogWithButtons(
-                                                context: context,
-                                                icon: Image.asset(
-'assets/trash-1.png'),
-                                                title:
-                                                'Student is removed successfully !');
-                                            Future.delayed(Duration(seconds: 2),
-                                                    () {
-                                                  Navigator.pop(context);
-                                                });
-                                          },
-                                          buttonColor: Colors.red,
-                                          button2Text: 'Cancel',
-                                          button2Action: () {
-                                            Navigator.pop(context);
-                                          }, outlineButtonColor: Colors.red);
-                                      setState(() {
-                                        getStd();
-                                      });
-                                    },
+                                    title: Text(
+                                      currentStudents[index].firstname,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF083344),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: Image.asset('assets/trash.png'),
+                                      onPressed: () {
+                                        dialogWithButtons(
+                                            context: context,
+                                            icon: Image.asset(
+                                                'assets/trash-1.png'),
+                                            title: 'Remove Student !',
+                                            content:
+                                                'Are you sure that you want to remove student!',
+                                            button1Text: 'Remove',
+                                            button1Action: () async {
+                                              Navigator.pop(context);
+                                              await ApisMethods.DelStudent(
+                                                  searched_Student[index].ID);
+                                              dialogWithButtons(
+                                                  context: context,
+                                                  icon: Image.asset(
+                                                      'assets/trash-1.png'),
+                                                  title:
+                                                      'Student is removed successfully !');
+                                              Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            buttonColor: Colors.red,
+                                            button2Text: 'Cancel',
+                                            button2Action: () {
+                                              Navigator.pop(context);
+                                            },
+                                            outlineButtonColor: Colors.red);
+                                        setState(() {
+                                          getStd();
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
                               );
@@ -319,7 +341,7 @@ button1Text: 'Remove',
                   MaterialPageRoute(builder: (context) => const Home()),
                 );
                 break;
-case 1:
+              case 1:
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Notifications()),

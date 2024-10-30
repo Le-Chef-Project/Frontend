@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/Login.dart';
 import 'package:le_chef/Screens/admin/THome.dart';

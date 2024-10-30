@@ -164,7 +164,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleMessageTap(BuildContext _, types.Message message) async {
-    final index = _messages.indexWhere((element) => element.message.id == message.id);
+    final index =
+        _messages.indexWhere((element) => element.message.id == message.id);
     if (index != -1) {
       final wrappedMessage = _messages[index];
       if (wrappedMessage.message is CustomMessage) {
@@ -204,9 +205,11 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
+  void _handlePreviewDataFetched(
+      types.Message message, types.PreviewData previewData) {
     // Find the index of the message in _messages list
-    final index = _messages.indexWhere((element) => element.message.id == message.id);
+    final index =
+        _messages.indexWhere((element) => element.message.id == message.id);
 
     if (index != -1 && message is types.TextMessage) {
       final wrappedMessage = _messages[index];
@@ -216,7 +219,8 @@ class _ChatPageState extends State<ChatPage> {
         id: wrappedMessage.message.id,
         author: wrappedMessage.message.author,
         createdAt: wrappedMessage.message.createdAt,
-        text: (wrappedMessage.message as types.TextMessage).text, // Cast to TextMessage to access text
+        text: (wrappedMessage.message as types.TextMessage)
+            .text, // Cast to TextMessage to access text
         previewData: previewData, // Update preview data
       );
 
@@ -260,7 +264,8 @@ class _ChatPageState extends State<ChatPage> {
 
     await _recorder!.openRecorder();
     if (await Permission.microphone.request().isGranted) {
-      await _recorder!.setSubscriptionDuration(const Duration(milliseconds: 10));
+      await _recorder!
+          .setSubscriptionDuration(const Duration(milliseconds: 10));
     } else {
       // Handle permission denied
     }
@@ -310,12 +315,16 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  Widget _buildCustomMessage(types.Message message, {required int messageWidth}) {
-    final messageTime = DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
+  Widget _buildCustomMessage(types.Message message,
+      {required int messageWidth}) {
+    final messageTime = DateFormat('hh:mm a')
+        .format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
 
     // Define the colors based on whether the message is sent or received
-    final messageColor = message.author.id == _user.id ? Colors.blue : Colors.grey[300];
-    final textColor = message.author.id == _user.id ? Colors.white : Colors.black;
+    final messageColor =
+        message.author.id == _user.id ? Colors.blue : Colors.grey[300];
+    final textColor =
+        message.author.id == _user.id ? Colors.white : Colors.black;
 
     Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
 
@@ -341,7 +350,9 @@ class _ChatPageState extends State<ChatPage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
-          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: message.author.id == _user.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             Text(
               message.text,
@@ -349,7 +360,9 @@ class _ChatPageState extends State<ChatPage> {
             ),
             const SizedBox(height: 4.0),
             Row(
-              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+              mainAxisAlignment: message.author.id == _user.id
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
               children: [
                 seenIndicator, // Add the seen indicator here
                 const SizedBox(width: 4.0),
@@ -369,16 +382,22 @@ class _ChatPageState extends State<ChatPage> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         decoration: BoxDecoration(
-          color: messageColor, // Use the same color for image message background
+          color:
+              messageColor, // Use the same color for image message background
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
-          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: message.author.id == _user.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
-            Image.file(File(message.uri), width: message.width, height: message.height),
+            Image.file(File(message.uri),
+                width: message.width, height: message.height),
             const SizedBox(height: 4.0),
             Row(
-              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+              mainAxisAlignment: message.author.id == _user.id
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
               children: [
                 seenIndicator, // Add the seen indicator here
                 const SizedBox(width: 4.0),
@@ -402,7 +421,9 @@ class _ChatPageState extends State<ChatPage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
-          crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: message.author.id == _user.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -424,7 +445,9 @@ class _ChatPageState extends State<ChatPage> {
             ),
             const SizedBox(height: 4.0),
             Row(
-              mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+              mainAxisAlignment: message.author.id == _user.id
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
               children: [
                 seenIndicator, // Add the seen indicator here
                 const SizedBox(width: 4.0),
@@ -471,15 +494,15 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         appBar: person
             ? const CustomAppBar(
-          title: "Thaowpsta",
-          avatarUrl:
-          'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-        )
+                title: "Thaowpsta",
+                avatarUrl:
+                    'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+              )
             : const CustomAppBar(
-          title: "Group",
-          avatarUrl:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
-        ),
+                title: "Group",
+                avatarUrl:
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
+              ),
         body: Chat(
             messages: _messages.map((wm) => wm.message).toList(),
             onAttachmentPressed: _handleAttachmentPressed,
@@ -495,91 +518,104 @@ class _ChatPageState extends State<ChatPage> {
               builder: (context, isRecording, child) {
                 return isRecording
                     ? Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0E7490),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Recording...',
-                        style: TextStyle(
-                            color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  ),
-                )
-                    : Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 4.0, horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFBFAFA),
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _textController,
-                            decoration: InputDecoration(
-                              hintText: 'Type a message...',
-                              border: InputBorder.none,
-                              hintStyle: GoogleFonts.ibmPlexMono(color: const Color(0xFF888888),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                )
+                        padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0E7490),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Recording...',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
-                            style: const TextStyle(color: Colors.black),
-                            onSubmitted: (value) {
-                              if (value.isNotEmpty) {
-                                _handleSendPressed(
-                                    types.PartialText(text: value));
-                              }
-                            },
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.attach_file,
-                              color: Colors.black),
-                          onPressed: _handleAttachmentPressed,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFBFAFA),
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _textController,
+                                  decoration: InputDecoration(
+                                      hintText: 'Type a message...',
+                                      border: InputBorder.none,
+                                      hintStyle: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF888888),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      )),
+                                  style: const TextStyle(color: Colors.black),
+                                  onSubmitted: (value) {
+                                    if (value.isNotEmpty) {
+                                      _handleSendPressed(
+                                          types.PartialText(text: value));
+                                    }
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.attach_file,
+                                    color: Colors.black),
+                                onPressed: _handleAttachmentPressed,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
+                      );
               },
             ),
             fileMessageBuilder: (message, {required int messageWidth}) {
               if (message.mimeType?.startsWith('audio/') == true) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
+                    color: message.author.id == _user.id
+                        ? Colors.blue
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Column(
-                    crossAxisAlignment: message.author.id == _user.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    crossAxisAlignment: message.author.id == _user.id
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.audiotrack, color: message.author.id == _user.id ? Colors.white : Colors.black),
+                          Icon(Icons.audiotrack,
+                              color: message.author.id == _user.id
+                                  ? Colors.white
+                                  : Colors.black),
                           const SizedBox(width: 8.0),
                           Expanded(
                             child: Text(
                               'Voice Message',
                               style: TextStyle(
-                                color: message.author.id == _user.id ? Colors.white : Colors.black,
+                                color: message.author.id == _user.id
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.play_arrow, color: message.author.id == _user.id ? Colors.white : Colors.black),
+                            icon: Icon(Icons.play_arrow,
+                                color: message.author.id == _user.id
+                                    ? Colors.white
+                                    : Colors.black),
                             onPressed: () {
                               _playAudio(message.uri);
                             },
@@ -588,11 +624,16 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                       const SizedBox(height: 4.0),
                       Row(
-                        mainAxisAlignment: message.author.id == _user.id ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        mainAxisAlignment: message.author.id == _user.id
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
                         children: [
                           Text(
-                            DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
-                            style: const TextStyle(color: Colors.white, fontSize: 10.0),
+                            DateFormat('hh:mm a').format(
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    message.createdAt!)),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10.0),
                           ),
                         ],
                       ),
@@ -603,36 +644,35 @@ class _ChatPageState extends State<ChatPage> {
 
               // For other file messages
               return _buildCustomMessage(message, messageWidth: messageWidth);
-            }
-        ),
+            }),
         floatingActionButton: _showFloatingButton
             ? ValueListenableBuilder<bool>(
-          valueListenable: _isTyping,
-          builder: (context, isTyping, child) {
-            return isTyping
-                ? FloatingActionButton(
-              backgroundColor: const Color(0xFF0E7490),
-              onPressed: () {
-                final text = _textController.text.trim();
-                if (text.isNotEmpty) {
-                  _handleSendPressed(types.PartialText(text: text));
-                }
-              },
-              child: const Icon(Icons.send, color: Colors.white),
-            )
-                : GestureDetector(
-              onLongPress: _startRecording,
-              onLongPressUp: _stopRecording,
-              child: FloatingActionButton(
-                backgroundColor: const Color(0xFF0E7490),
-                onPressed: () {
-                  // Handle other functionalities
+                valueListenable: _isTyping,
+                builder: (context, isTyping, child) {
+                  return isTyping
+                      ? FloatingActionButton(
+                          backgroundColor: const Color(0xFF0E7490),
+                          onPressed: () {
+                            final text = _textController.text.trim();
+                            if (text.isNotEmpty) {
+                              _handleSendPressed(types.PartialText(text: text));
+                            }
+                          },
+                          child: const Icon(Icons.send, color: Colors.white),
+                        )
+                      : GestureDetector(
+                          onLongPress: _startRecording,
+                          onLongPressUp: _stopRecording,
+                          child: FloatingActionButton(
+                            backgroundColor: const Color(0xFF0E7490),
+                            onPressed: () {
+                              // Handle other functionalities
+                            },
+                            child: const Icon(Icons.mic, color: Colors.white),
+                          ),
+                        );
                 },
-                child: const Icon(Icons.mic, color: Colors.white),
-              ),
-            );
-          },
-        )
+              )
             : null,
         bottomNavigationBar: CustomBottomNavBar(
           onItemTapped: (index) {

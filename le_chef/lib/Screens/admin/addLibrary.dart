@@ -22,7 +22,8 @@ class _AddLibraryState extends State<AddLibrary> {
   bool isPaid = false;
   String? selectedSection;
   String? selectedlevel;
-  bool isLoading = false; // Track loading status
+  bool isLoading_video = false; // Track loading status
+  bool isLoading_pdf = false; // Track loading status
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController itemNameController = TextEditingController();
@@ -45,11 +46,12 @@ class _AddLibraryState extends State<AddLibrary> {
   Future<void> _uploadVideo() async {
     if (_videoFile != null) {
       setState(() {
-        isLoading = true; // Start loading
+        isLoading_video = true; // Start loading
       });
 
       _showLoadingDialog(); // Show the loading dialog
 
+      // Call the API and handle the response
       await ApisMethods.uploadVideo(
         videoFile: _videoFile!,
         title: itemNameController.text,
@@ -57,15 +59,57 @@ class _AddLibraryState extends State<AddLibrary> {
         amountToPay: isPaid ? double.tryParse(amountController.text) : null,
         paid: isPaid,
         educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
-      );
-
-      setState(() {
-        isLoading = false; // Stop loading
+      ).then((_) {
+        // On success, close the loading dialog
+        setState(() {
+          isLoading_video = false; // Stop loading
+          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
+        });
+      }).catchError((error) {
+        // Handle the error if needed
+        print('Error uploading video: $error');
+        setState(() {
+          isLoading_video = false; // Stop loading
+          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
+        });
       });
-
-      Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
     } else {
       print('No video selected');
+    }
+  }
+
+  Future<void> _uploadPDF() async {
+    if (selectedFile != null) {
+      setState(() {
+        isLoading_pdf = true; // Start loading
+      });
+
+      _showLoadingDialog(); // Show the loading dialog
+
+      // Call the API and handle the response
+      await ApisMethods.uploadPDF(
+        title: itemNameController.text,
+        description: itemDescriptionController.text,
+        amountToPay: isPaid ? double.tryParse(amountController.text) : null,
+        paid: isPaid,
+        educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
+        PDF: selectedFile!,
+      ).then((_) {
+        // On success, close the loading dialog
+        setState(() {
+          isLoading_pdf = false; // Stop loading
+          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
+        });
+      }).catchError((error) {
+        // Handle the error if needed
+        print('Error uploading PDF: $error');
+        setState(() {
+          isLoading_pdf = false; // Stop loading
+          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
+        });
+      });
+    } else {
+      print('No PDF selected');
     }
   }
 
@@ -129,33 +173,6 @@ class _AddLibraryState extends State<AddLibrary> {
         );
       },
     );
-  }
-
-  Future<void> _uploadPDF() async {
-    if (selectedFile != null) {
-      setState(() {
-        isLoading = true; // Start loading
-      });
-
-      _showLoadingDialog(); // Show the loading dialog
-
-      await ApisMethods.uploadPDF(
-        title: itemNameController.text,
-        description: itemDescriptionController.text,
-        amountToPay: isPaid ? double.tryParse(amountController.text) : null,
-        paid: isPaid,
-        educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
-        PDF: selectedFile!,
-      );
-
-      setState(() {
-        isLoading = false; // Stop loading
-      });
-
-      Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
-    } else {
-      print('No PDF selected');
-    }
   }
 
   @override

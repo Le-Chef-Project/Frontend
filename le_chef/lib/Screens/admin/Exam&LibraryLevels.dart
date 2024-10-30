@@ -46,7 +46,9 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        LibraryTabContainerScreen()),
+                                        LibraryTabContainerScreen(
+                                          selectedLevel: index + 1,
+                                        )),
                               );
                       },
                       child: Container(

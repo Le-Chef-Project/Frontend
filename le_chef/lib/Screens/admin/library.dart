@@ -21,7 +21,8 @@ import 'Videos.dart';
 import 'addLibrary.dart';
 
 class LibraryTabContainerScreen extends StatefulWidget {
-  const LibraryTabContainerScreen({Key? key}) : super(key: key);
+  final int selectedLevel;
+  const LibraryTabContainerScreen({super.key, required this.selectedLevel});
 
   @override
   LibraryTabContainerScreenState createState() =>
@@ -99,9 +100,9 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
               child: TabBarView(
                 controller: tabviewController,
                 children: [
-                  VideoListScreen(),
+                  VideoListScreen(selectedLevel: widget.selectedLevel),
                   Text('hello'),
-                  AllPDFs(),
+                  AllPDFs(selectedLevel: widget.selectedLevel),
                 ],
               ),
             ),

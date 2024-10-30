@@ -370,6 +370,9 @@ class ApisMethods {
       final response = await http.Response.fromStream(streamedResponse);
       // Check the response status
       if (response.statusCode == 201) {
+        // Read the response if needed
+        final responseData = jsonDecode(response.body);
+
         print('PDF Uploaded successful');
         showDialog(
             context: Get.context!,
@@ -408,10 +411,7 @@ class ApisMethods {
                 ),
               );
             });
-        // Read the response if needed
-        final responseData = jsonDecode(response.body);
-
-        print('Response: ${responseData.body}');
+        print('Response: ${responseData}');
       } else {
         print('Upload failed with status: ${response.statusCode}');
       }
@@ -595,8 +595,10 @@ class ApisMethods {
 
   //13-get all units used in exams
   static Future<List> getExamUnits() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
-    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json', 'token': token!});
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 
@@ -607,7 +609,8 @@ class ApisMethods {
     if (data.containsKey('units') && data['units'] is List) {
       temp = data['units'];
     } else {
-      throw Exception("Unexpected data format: 'units' key not found or is not a list.");
+      throw Exception(
+          "Unexpected data format: 'units' key not found or is not a list.");
     }
 
     return temp;
@@ -639,15 +642,16 @@ class ApisMethods {
     required int? unit,
     required bool isPaid,
     double? amountToPay,
-  })async{
-
+  }) async {
     final Map<String, dynamic> body = {
       'title': title,
-      'questions': questions.map((q) => {
-        'question': q['question'],
-        'options': q['options'],
-        'answer': q['answer'],
-      }).toList(),
+      'questions': questions
+          .map((q) => {
+                'question': q['question'],
+                'options': q['options'],
+                'answer': q['answer'],
+              })
+          .toList(),
       'hours': hours,
       'minutes': minutes,
       'paid': isPaid,
@@ -660,8 +664,7 @@ class ApisMethods {
     }
 
     var url = Uri.parse(
-      '${ApiEndPoints.baseUrl.trim()} + ${ApiEndPoints.quiz.updateQuiz}$id'
-    );
+        '${ApiEndPoints.baseUrl.trim()} + ${ApiEndPoints.quiz.updateQuiz}$id');
     http.Response response = await http.put(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
