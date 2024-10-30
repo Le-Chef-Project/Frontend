@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Shared/customBottomNavBar.dart';
-import '../Shared/custom_app_bar.dart';
-import '../Widgets/SmallCard.dart';
-import 'user/Home.dart';
-import 'chats.dart';
-import 'notification.dart';
+import '../../Shared/customBottomNavBar.dart';
+import '../../Shared/custom_app_bar.dart';
+import '../../Widgets/SmallCard.dart';
+import 'Home.dart';
+import '../chats.dart';
+import '../notification.dart';
 
 class Library extends StatelessWidget {
   const Library({Key? key}) : super(key: key);

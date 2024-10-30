@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:le_chef/Screens/splash_two.dart';
+import 'package:le_chef/Shared/splash_two.dart';
 
 class SplashOne extends StatefulWidget {
   const SplashOne({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/ExamForm.dart';
+import 'package:le_chef/Shared/ExamForm.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import '../Models/Quiz.dart';
 import '../Shared/custom_app_bar.dart';

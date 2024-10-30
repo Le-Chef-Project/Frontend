@@ -4,9 +4,9 @@ import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Quiz.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 
-import '../Screens/ExamForm.dart';
-import '../Screens/ExamInfo.dart';
+import '../Shared/ExamForm.dart';
 import '../Screens/user/payment.dart';
+import '../Shared/ExamInfo.dart';
 import '../main.dart';
 
 Widget customExamContainer(string) {

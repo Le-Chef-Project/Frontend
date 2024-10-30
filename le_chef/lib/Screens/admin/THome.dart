@@ -5,7 +5,8 @@ import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/admin/notesLevels.dart';
 import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Screens/exams.dart';
+import 'package:le_chef/Screens/user/meeting/online_session_screen.dart';
+import 'package:le_chef/Shared/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
@@ -392,6 +393,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                             ),
                           ),
                           child: GestureDetector(
+                            onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => OnlineSessionScreen()));},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/Library.dart';
+import 'package:le_chef/Screens/user/Library.dart';
 import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Screens/exams.dart';
+import 'package:le_chef/Shared/exams.dart';
 import 'package:le_chef/Screens/user/meeting/online_session_screen.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import '../../Shared/customBottomNavBar.dart';

@@ -116,7 +116,7 @@ class _MeetingPageState extends State<MeetingPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF3D3D3D),
         body: OrientationBuilder(
           builder: (context, orientation) {
             return Column(
@@ -133,17 +133,16 @@ class _MeetingPageState extends State<MeetingPage> {
                     gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      mainAxisSpacing: 15,
                     ),
                     itemCount: 8,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding:
-                        const EdgeInsets.symmetric(horizontal: 12.0),
+                        const EdgeInsets.only(left: 15.0, right: 15, top: 30),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: const Color(0xFFD9D9D9).withOpacity(0.1),
+                            color:  Colors.white,
                           ),
                           child: Stack(children: [
                             Center(

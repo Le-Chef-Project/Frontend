@@ -85,7 +85,7 @@ class Quiz {
 }
 
 class QuizQuestion {
-  late final String questionText;
+  String questionText;
   final List<String> options;
   final String answer;
 

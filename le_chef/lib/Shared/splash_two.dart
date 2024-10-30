@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/login.dart';
+import 'package:le_chef/Shared/login.dart';
 
 class SplashTwo extends StatelessWidget {
   const SplashTwo({super.key});

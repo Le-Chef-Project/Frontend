@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Api/apimethods.dart';
 
 import '../Models/Quiz.dart';
-import '../Shared/custom_elevated_button.dart';
+import 'custom_elevated_button.dart';
 import '../main.dart';
+import 'exams.dart';
 
 class QuizPage extends StatefulWidget {
   final Quiz quiz;
@@ -18,7 +20,7 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   final Map<int, int?> _selectedAnswers = {};
   Timer? _timer;
-  int _start = 50 * 60;
+  int _start = 0;
   double _progress = 1.0;
   String? role = sharedPreferences.getString('role');
   final TextEditingController _questionController = TextEditingController();
@@ -27,6 +29,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
+    _start = widget.quiz.duration.inSeconds;
     if (role != 'admin') {
       startTimer();
     }
@@ -34,7 +37,47 @@ class _QuizPageState extends State<QuizPage> {
     _answerControllers = widget.quiz.questions[selectedQuestion].options.map((answer) {
       return TextEditingController(text: answer);
     }).toList();
+
+    // Add listeners to update the underlying data when text changes
+    _questionController.addListener(() {
+      widget.quiz.questions[selectedQuestion].questionText = _questionController.text;
+    });
+
+    for (var i = 0; i < _answerControllers.length; i++) {
+      _answerControllers[i].addListener(() {
+        widget.quiz.questions[selectedQuestion].options[i] = _answerControllers[i].text;
+      });
+    }
   }
+
+  void updateControllers() {
+    _questionController.text = widget.quiz.questions[selectedQuestion].questionText;
+
+    for (var controller in _answerControllers) {
+      controller.dispose();
+    }
+
+    _answerControllers = widget.quiz.questions[selectedQuestion].options.map((answer) {
+      return TextEditingController(text: answer);
+    }).toList();
+
+    for (var i = 0; i < _answerControllers.length; i++) {
+      final index = i;
+      _answerControllers[i].addListener(() {
+        widget.quiz.questions[selectedQuestion].options[index] = _answerControllers[index].text;
+      });
+    }
+  }
+
+  void navigateToQuestion(int newIndex) {
+    if (newIndex >= 0 && newIndex < widget.quiz.questions.length) {
+      setState(() {
+        selectedQuestion = newIndex;
+        updateControllers();
+      });
+    }
+  }
+
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -42,32 +85,50 @@ class _QuizPageState extends State<QuizPage> {
       if (_start == 0) {
         setState(() {
           _timer?.cancel();
-          // Auto submit when time is up
           _submitAnswers();
         });
       } else {
         setState(() {
           _start--;
-          _progress = _start / (50 * 60);
+          _progress = _start / widget.quiz.duration.inSeconds;
         });
       }
     });
   }
 
-  void _submitAnswers() {
+
+  void _submitAnswers() async {
+    print('Submit button pressed');
     if (role == 'admin') {
-      // Update exam logic
-      setState(() {
-        // Update question text
-        widget.quiz.questions[selectedQuestion].questionText = _questionController.text;
+      print('Current questions state:');
+      for (var question in widget.quiz.questions) {
+        print('Question: ${question.questionText}');
+        print('Options: ${question.options}');
+        print('Answer: ${question.answer}');
+      }
+      List<Map<String, dynamic>> questions = widget.quiz.questions.map((quiz) {
+        return {
+          'question': quiz.questionText,
+          'options': quiz.options,
+          'answer': quiz.answer,
+        };
+      }).toList();
 
-        // Update options
-        for (int i = 0; i < _answerControllers.length; i++) {
-          widget.quiz.questions[selectedQuestion].options[i] = _answerControllers[i].text;
-        }
-      });
+      try {
+        print('Waiting to update quiz...');
+        await ApisMethods.updateQuiz(
+          id: widget.quiz.id,
+          questions: questions,
+          hours: widget.quiz.duration.inHours,
+          minutes: widget.quiz.duration.inMinutes,
+        );
 
-      // Show success dialog
+        print('Updated quiz successfully');
+
+      } catch (e) {
+        print('Error during update: ${e.toString()}');
+      }
+
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -100,12 +161,12 @@ class _QuizPageState extends State<QuizPage> {
       );
 
       // Close dialogs and return after delay
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Navigator.pop(context); // Close success dialog
         Navigator.pop(context); // Return to previous screen
       });
     } else {
-      // Student submission logic
+      // Student submission logic (unchanged)
       int correctAnswers = 0;
       for (int i = 0; i < widget.quiz.questions.length; i++) {
         final selectedAnswerIndex = _selectedAnswers[i];
@@ -434,7 +495,7 @@ class _QuizPageState extends State<QuizPage> {
                                   width: 139,
                                   height: 50,
                                   text: role == 'admin' ? 'Edit' : "Submit",
-                                  onPressed: _submitAnswers,
+                                  onPressed:role != 'admin' ? _submitAnswers: (){},
                                   buttonStyle: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF427D9D),
                                       shape: RoundedRectangleBorder(
@@ -509,57 +570,66 @@ class _QuizPageState extends State<QuizPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Back button
                   Container(
                     width: 48.28,
                     height: 46,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: ShapeDecoration(
                       color: const Color(0xFFF1F2F6),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4)),
+                          borderRadius: BorderRadius.circular(4)
+                      ),
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        selectedQuestion != 0
-                            ? setState(() {
-                                selectedQuestion--;
-                              })
-                            : selectedQuestion = 0;
-                      },
-                      icon: const Icon(
+                      onPressed: selectedQuestion > 0
+                          ? () {
+                        setState(() {
+                          selectedQuestion--;
+                          navigateToQuestion(selectedQuestion);
+                        });
+                      }
+                          : null,
+                      icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Color(0xFF888888),
+                        color: selectedQuestion > 0
+                            ? const Color(0xFF888888)
+                            : const Color(0xFFCCCCCC), // Disabled color
                       ),
                     ),
                   ),
+                  // Forward button
                   Container(
                     width: 48.28,
                     height: 46,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: ShapeDecoration(
                       color: const Color(0xFFF1F2F6),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4)),
+                          borderRadius: BorderRadius.circular(4)
+                      ),
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        selectedQuestion != 39
-                            ? setState(() {
-                                selectedQuestion++;
-                              })
-                            : selectedQuestion = 39;
-                      },
-                      icon: const Icon(
+                      onPressed: selectedQuestion < widget.quiz.questions.length - 1
+                          ? () {
+                        setState(() {
+                          selectedQuestion++;
+                          navigateToQuestion(selectedQuestion);
+                        });
+                      }
+                          : null,
+                      icon: Icon(
                         Icons.arrow_forward_ios,
-                        color: Color(0xFF888888),
+                        color: selectedQuestion < widget.quiz.questions.length - 1
+                            ? const Color(0xFF888888)
+                            : const Color(0xFFCCCCCC), // Disabled color
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+
             const SizedBox(
               height: 10,
             ),
@@ -697,43 +767,26 @@ class _QuizPageState extends State<QuizPage> {
                         ),
                       ),
                     ),
+                    role == 'admin'?
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5),
                       child: SizedBox(
                         width: double.infinity,
                         height: MediaQuery.of(context).size.height * 0.06,
                         child: ElevatedButton(onPressed: (){
-                          role == 'admin' ? showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(
-
-                              backgroundColor: Colors.white,
-                              icon: const Icon(Icons.check_circle_outline, color: Color(0xFF2ED573), size: 150,),
-                              title: Text('Success!', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF164863),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,),),
-                              content: Text('Exam Updated Successfully', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF888888),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,),),
-
-                            );
-                          }) : Navigator.pop(context);//Todo submit exam for student
-
-                          Future.delayed(const Duration(seconds: 2), (){
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          });
-                        },
+                          _submitAnswers();
+                          },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF427D9D),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))), child: Text(role == 'admin' ? 'Edit' :'Submit', style: GoogleFonts.ibmPlexMono(
+                                  borderRadius: BorderRadius.circular(12))), child: Text('Submit', style: GoogleFonts.ibmPlexMono(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                         ),),
                         ),
                       ),
-                    )
+                    ) : SizedBox.shrink()
                   ],
                 ),
               ),
