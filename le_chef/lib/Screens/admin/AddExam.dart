@@ -11,8 +11,25 @@ import 'AddQuestion.dart';
 
 class AddExam extends StatefulWidget {
   final List<QuizQuestion>? quizList;
+  final bool? isPaid;
+  final String? examName;
+  final String? fees;
+  final String? selectedLevel;
+  final String? selectedUnit;
+  final String? hours;
+  final String? minutes;
 
-  const AddExam({super.key, this.quizList});
+  const AddExam({
+    super.key,
+    this.quizList,
+    this.isPaid,
+    this.examName,
+    this.fees,
+    this.selectedLevel,
+    this.selectedUnit,
+    this.hours,
+    this.minutes,
+  });
 
   @override
   _AddExamState createState() => _AddExamState();
@@ -35,8 +52,34 @@ class _AddExamState extends State<AddExam> {
 
   @override
   void initState() {
-    getUnits();
     super.initState();
+    getUnits();
+
+    if (widget.isPaid != null) {
+      light = widget.isPaid!;
+    }
+    if (widget.examName != null) {
+      titleController.text = widget.examName!;
+    }
+    if (widget.fees != null) {
+      quizFees.text = widget.fees!;
+    }
+    if (widget.selectedLevel != null) {
+      selectedLevel = widget.selectedLevel;
+    }
+    if (widget.selectedUnit != null) {
+      selectedUnit = widget.selectedUnit;
+    }
+    if (widget.hours != null) {
+      var hours = widget.hours!.padLeft(2, '0');
+      _hourOneController.text = hours[0];
+      _hourTwoController.text = hours[1];
+    }
+    if (widget.minutes != null) {
+      var minutes = widget.minutes!.padLeft(2, '0');
+      _minuteOneController.text = minutes[0];
+      _minuteTwoController.text = minutes[1];
+    }
   }
 
   @override
@@ -75,7 +118,6 @@ class _AddExamState extends State<AddExam> {
   }
 
 
-  // Function to handle submitting the form
   void _submitQuiz() async {
     if (_formKey.currentState!.validate() && titleController.text.isNotEmpty) {
       List<Map<String, dynamic>> questions = widget.quizList!.map((quiz) {
@@ -86,24 +128,39 @@ class _AddExamState extends State<AddExam> {
         };
       }).toList();
 
-      print('Waiting...');
-      await ApisMethods.addQuiz(
-        title: titleController.text,
-        questions: questions,
-        hours: int.tryParse(_hourOneController.text.trim() +
-                _hourTwoController.text.trim()) ??
-            0,
-        minutes: int.tryParse(_minuteOneController.text.trim() +
-                _minuteTwoController.text.trim()) ??
-            0,
-        level: int.parse(selectedLevel!.replaceFirst('Level ', '')),
-        unit: int.parse(selectedUnit!.replaceFirst('Unit ', '')),
-        isPaid: light,
-        amountToPay: light ? double.tryParse(quizFees.text) : null,
-      );
-      print('added...');
+      try {
+        print('Waiting...');
+        await ApisMethods.addQuiz(
+          title: titleController.text,
+          questions: questions,
+          hours: int.tryParse(_hourOneController.text.trim() + _hourTwoController.text.trim()) ?? 0,
+          minutes: int.tryParse(_minuteOneController.text.trim() + _minuteTwoController.text.trim()) ?? 0,
+          level: int.parse(selectedLevel!.replaceFirst('Level ', '')),
+          unit: int.parse(selectedUnit!.replaceFirst('Unit ', '')),
+          isPaid: light,
+          amountToPay: light ? double.tryParse(quizFees.text) : null,
+        );
+        print('added...');
+
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) =>  Exams(selectedLevel: int.parse(selectedLevel!.replaceFirst('Level ', '')),)),
+                (Route<dynamic> route) => false,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error submitting quiz: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -840,9 +897,17 @@ class _AddExamState extends State<AddExam> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddQuestion(
-                        quizList: quizList,
-                      )),
+                builder: (context) => AddQuestion(
+                  quizList: quizList,
+                  isPaid: light,
+                  examName: titleController.text,
+                  fees: quizFees.text,
+                  selectedLevel: selectedLevel,
+                  selectedUnit: selectedUnit,
+                  hours: "${_hourOneController.text}${_hourTwoController.text}",
+                  minutes: "${_minuteOneController.text}${_minuteTwoController.text}",
+                ),
+              ),
             );
           },
           backgroundColor: const Color(0xFFDDF2FD),

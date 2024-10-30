@@ -27,7 +27,9 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
-    startTimer();
+    if (role != 'admin') {
+      startTimer();
+    }
     _questionController.text = widget.quiz.questions[selectedQuestion].questionText;
     _answerControllers = widget.quiz.questions[selectedQuestion].options.map((answer) {
       return TextEditingController(text: answer);
@@ -40,6 +42,8 @@ class _QuizPageState extends State<QuizPage> {
       if (_start == 0) {
         setState(() {
           _timer?.cancel();
+          // Auto submit when time is up
+          _submitAnswers();
         });
       } else {
         setState(() {
@@ -51,25 +55,115 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _submitAnswers() {
-    for (int i = 0; i < widget.quiz.questions.length; i++) {
-      final selectedAnswerIndex = _selectedAnswers[i];
-      if (selectedAnswerIndex != null) {
-        final selectedAnswer = widget.quiz.questions[i].options[selectedAnswerIndex];
-        final correctAnswerIndex = widget.quiz.questions[i].answer;
-        if (selectedAnswer == correctAnswerIndex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Question ${i + 1}: Correct!')),
+    if (role == 'admin') {
+      // Update exam logic
+      setState(() {
+        // Update question text
+        widget.quiz.questions[selectedQuestion].questionText = _questionController.text;
+
+        // Update options
+        for (int i = 0; i < _answerControllers.length; i++) {
+          widget.quiz.questions[selectedQuestion].options[i] = _answerControllers[i].text;
+        }
+      });
+
+      // Show success dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            icon: const Icon(
+              Icons.check_circle_outline,
+              color: Color(0xFF2ED573),
+              size: 150,
+            ),
+            title: Text(
+              'Success!',
+              style: GoogleFonts.ibmPlexMono(
+                color: const Color(0xFF164863),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            content: Text(
+              'Exam Updated Successfully',
+              style: GoogleFonts.ibmPlexMono(
+                color: const Color(0xFF888888),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                    'Question ${i + 1}: Wrong. The correct answer is: ${widget.quiz.questions[i].answer}')),
-          );
+        },
+      );
+
+      // Close dialogs and return after delay
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pop(context); // Close success dialog
+        Navigator.pop(context); // Return to previous screen
+      });
+    } else {
+      // Student submission logic
+      int correctAnswers = 0;
+      for (int i = 0; i < widget.quiz.questions.length; i++) {
+        final selectedAnswerIndex = _selectedAnswers[i];
+        if (selectedAnswerIndex != null) {
+          if (selectedAnswerIndex == widget.quiz.questions[i].answer) {
+            correctAnswers++;
+          }
         }
       }
+
+      // Show results dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Quiz Complete',
+              style: GoogleFonts.ibmPlexMono(
+                color: const Color(0xFF164863),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            content: Text(
+              'You got $correctAnswers out of ${widget.quiz.questions.length} questions correct.',
+              style: GoogleFonts.ibmPlexMono(
+                color: const Color(0xFF888888),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Return to previous screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF427D9D),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Done',
+                  style: GoogleFonts.ibmPlexMono(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
     }
-    // Optionally, you can reset the selections or navigate to a different page.
   }
 
   @override
@@ -88,7 +182,6 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     double boxSize = 30.0;
-    // Calculate the total height needed for the grid
 
     int minutes = (_start ~/ 60);
     int seconds = (_start % 60);
@@ -624,7 +717,7 @@ class _QuizPageState extends State<QuizPage> {
 
                             );
                           }) : Navigator.pop(context);//Todo submit exam for student
-                          
+
                           Future.delayed(const Duration(seconds: 2), (){
                             Navigator.pop(context);
                             Navigator.pop(context);

@@ -8,8 +8,25 @@ import '../../theme/custom_button_style.dart';
 
 class AddQuestion extends StatefulWidget {
   final List<QuizQuestion> quizList;
+  final bool? isPaid;
+  final String? examName;
+  final String? fees;
+  final String? selectedLevel;
+  final String? selectedUnit;
+  final String? hours;
+  final String? minutes;
 
-  const AddQuestion({super.key, required this.quizList});
+  const AddQuestion({
+    super.key,
+    required this.quizList,
+    this.isPaid,
+    this.examName,
+    this.fees,
+    this.selectedLevel,
+    this.selectedUnit,
+    this.hours,
+    this.minutes,
+  });
 
   @override
   _AddQuestionState createState() => _AddQuestionState();
@@ -193,6 +210,13 @@ class _AddQuestionState extends State<AddQuestion> {
                   MaterialPageRoute(
                     builder: (context) => AddExam(
                       quizList: widget.quizList,
+                      isPaid: widget.isPaid,  // Add these parameters to AddQuestion constructor
+                      examName: widget.examName,
+                      fees: widget.fees,
+                      selectedLevel: widget.selectedLevel,
+                      selectedUnit: widget.selectedUnit,
+                      hours: widget.hours,
+                      minutes: widget.minutes,
                     ),
                   ),
                 );

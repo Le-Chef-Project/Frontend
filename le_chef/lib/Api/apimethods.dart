@@ -628,5 +628,48 @@ class ApisMethods {
     }
   }
 
+  //15-update quiz
+  static Future<void> updateQuiz({
+    required String id,
+    required String title,
+    required List<dynamic> questions,
+    required int hours,
+    required int minutes,
+    required int? level,
+    required int? unit,
+    required bool isPaid,
+    double? amountToPay,
+  })async{
 
+    final Map<String, dynamic> body = {
+      'title': title,
+      'questions': questions.map((q) => {
+        'question': q['question'],
+        'options': q['options'],
+        'answer': q['answer'],
+      }).toList(),
+      'hours': hours,
+      'minutes': minutes,
+      'paid': isPaid,
+      'educationLevel': level,
+      'Unit': unit,
+    };
+
+    if (isPaid && amountToPay != null) {
+      body['amountToPay'] = amountToPay;
+    }
+
+    var url = Uri.parse(
+      '${ApiEndPoints.baseUrl.trim()} + ${ApiEndPoints.quiz.updateQuiz}$id'
+    );
+    http.Response response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('${jsonDecode(response.body)['message']}');
+    }
+  }
 }

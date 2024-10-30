@@ -89,6 +89,7 @@ Widget customExamListTile(
                           height: MediaQuery.of(context).size.height * 0.06,
                           child: ElevatedButton(
                             onPressed: () {
+                              Navigator.pop(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -128,6 +129,7 @@ Widget customExamListTile(
                                       'Are you sure that you want to Delete Exam!',
                                   button1Text: 'Delete',
                                   button1Action: () async{
+                                    Navigator.pop(context);
                                     await ApisMethods.delQuiz(exam.id);
                                     dialogWithButtons(
                                         context: context,
@@ -135,9 +137,8 @@ Widget customExamListTile(
                                           'assets/trash-1.png',
                                         ),
                                         title: 'Exam is deleted successfully.');
-                                    Future.delayed(const Duration(seconds: 2),
+                                    Future.delayed(const Duration(seconds: 1),
                                         () {
-                                      Navigator.pop(context);
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                     });

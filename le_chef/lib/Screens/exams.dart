@@ -14,7 +14,8 @@ import 'chats.dart';
 import 'notification.dart';
 
 class Exams extends StatefulWidget {
-  const Exams({super.key});
+  final int selectedLevel;
+  const Exams({super.key, required this.selectedLevel});
 
   @override
   State<Exams> createState() => _ExamsState();
@@ -49,7 +50,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   void _filterExams() {
     setState(() {
       print('Calling filter func');
-      _filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit).toList();
+      _filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit && quiz.level == widget.selectedLevel).toList();
       print('Filtered exams for unit $selectedUnit: ${_filteredExams.length}');
 
       for (var exam in _filteredExams) {

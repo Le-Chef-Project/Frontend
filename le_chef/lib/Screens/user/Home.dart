@@ -173,9 +173,11 @@ class _HomeState extends State<Home> {
                           Title: "Exams",
                           Number: "15",
                           ImagePath: 'assets/Wonder Learners Graduating.png',
-                          onTapCardRec: () => Get.to(() => const Exams(),
-                              transition: Transition.fade,
-                              duration: const Duration(seconds: 1))),
+                          //Todo go to exam for student
+                          // onTapCardRec: () => Get.to(() => const Exams(),
+                          //     transition: Transition.fade,
+                          //     duration: const Duration(seconds: 1))
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
