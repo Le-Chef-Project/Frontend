@@ -39,7 +39,7 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Exams(
-                                          selectedLevel: index,
+                                          selectedLevel: index + 1,
                                         )),
                               )
                             : Navigator.push(

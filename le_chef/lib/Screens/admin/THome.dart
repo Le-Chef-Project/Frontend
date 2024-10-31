@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/Notes.dart';
+import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/admin/notesLevels.dart';
 import 'package:le_chef/Screens/chats.dart';
@@ -42,6 +44,10 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   List<Student>? _Std;
   List<Quiz>? _exams;
   bool _isLoading_Exams = true; // Add loading state for exams
+  List<Notes>? _notes;
+  bool _isLoading_notes = true;
+  List<PDF>? _pdfs;
+  bool _isLoading_pdfs = true;
 
   @override
   void initState() {
@@ -56,6 +62,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     );
     getStd();
     getExams();
+    getNotes();
+    getPDFs();
   }
 
   Future<void> getExams() async {
@@ -63,6 +71,22 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     print('apiii $_exams + ${_exams?.length}');
     setState(() {
       _isLoading_Exams = false;
+    });
+  }
+
+  Future<void> getNotes() async{
+    _notes = await ApisMethods.fetchAllNotes();
+    print('apiii $_notes + ${_notes?.length}');
+    setState(() {
+      _isLoading_notes = false;
+    });
+  }
+
+  Future<void> getPDFs() async{
+    _pdfs = await ApisMethods().fetchAllPDFs();
+    print('apiii $_pdfs + ${_pdfs?.length}');
+    setState(() {
+      _isLoading_pdfs = false;
     });
   }
 
@@ -343,7 +367,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Library",
-                          Number: "20",
+                          Number: _isLoading_pdfs? '...' : '${_pdfs?.length ?? 0}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Navigator.push(
                             context,
@@ -364,7 +388,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Notes",
-                          Number: "10",
+                          Number: _isLoading_notes ? '...' : '${_notes?.length ?? 0}',
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Navigator.push(
                             context,

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 
 import '../Models/Quiz.dart';
+import '../Widgets/quiz_time.dart';
 import 'custom_elevated_button.dart';
 import '../main.dart';
 import 'exams.dart';
@@ -264,25 +265,43 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  String? _validateTime(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter minutes';
-    }
-    final int? minutes = int.tryParse(value);
-    if (minutes == null || minutes < 0 || minutes > 9) {
-      return 'Enter valid minutes (0-59)';
-    }
-    return null;
-  }
-
   void _updateQuizTime() {
-    // Parse hours and minutes from controllers
-    final hours = int.tryParse(
-            _hourOneController.text.trim() + _hourTwoController.text.trim()) ??
-        widget.quiz.duration.inHours;
-    final minutes = int.tryParse(_minuteOneController.text.trim() +
-            _minuteTwoController.text.trim()) ??
-        widget.quiz.duration.inMinutes;
+    // Get the individual digits
+    String hourFirst = _hourOneController.text.trim();
+    String hourSecond = _hourTwoController.text.trim();
+    String minuteFirst = _minuteOneController.text.trim();
+    String minuteSecond = _minuteTwoController.text.trim();
+
+    // Calculate hours and minutes properly
+    int hours = 0;
+    int minutes = 0;
+
+    // Parse hours if both digits are present
+    if (hourFirst.isNotEmpty && hourSecond.isNotEmpty) {
+      hours = int.parse(hourFirst + hourSecond);
+    } else if (hourFirst.isNotEmpty) {
+      hours = int.parse(hourFirst);
+    } else if (hourSecond.isNotEmpty) {
+      hours = int.parse(hourSecond);
+    }
+
+    // Parse minutes if both digits are present
+    if (minuteFirst.isNotEmpty && minuteSecond.isNotEmpty) {
+      minutes = int.parse(minuteFirst + minuteSecond);
+    } else if (minuteFirst.isNotEmpty) {
+      // If only first digit is present, multiply by 10 (e.g., 3 becomes 30)
+      minutes = int.parse(minuteFirst) * 10;
+    } else if (minuteSecond.isNotEmpty) {
+      // If only second digit is present, use it as is
+      minutes = int.parse(minuteSecond);
+    }
+
+    // Validate minutes
+    if (minutes >= 60) {
+      // Add overflow to hours
+      hours += minutes ~/ 60;
+      minutes = minutes % 60;
+    }
 
     // Calculate total duration in seconds
     final totalSeconds = (hours * 3600) + (minutes * 60);
@@ -297,6 +316,18 @@ class _QuizPageState extends State<QuizPage> {
 
     // Close the dialog
     Navigator.pop(context);
+
+  }
+
+  String? _validateTime(String? value) {
+    if (value == null || value.isEmpty) {
+      return null; // Allow empty values as we'll handle them in _updateQuizTime
+    }
+    final int? digit = int.tryParse(value);
+    if (digit == null || digit < 0 || digit > 9) {
+      return 'Enter 0-9';
+    }
+    return null;
   }
 
   @override
@@ -327,6 +358,7 @@ class _QuizPageState extends State<QuizPage> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
+              role == 'admin' ? Navigator.pop(context) :
               showDialog(
                   barrierDismissible: false,
                   context: context,
@@ -662,146 +694,22 @@ class _QuizPageState extends State<QuizPage> {
                                                               // Hours Input Field
                                                               Expanded(
                                                                 child:
-                                                                    Container(
-                                                                  width: 55,
-                                                                  height: 55,
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          8),
-                                                                  decoration:
-                                                                      ShapeDecoration(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      side: BorderSide(
-                                                                          width:
-                                                                              1,
-                                                                          color:
-                                                                              Color(0xFFCFD4DC)),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8),
+                                                                    ScrollableTimeInput(
+                                                                      controller: _hourOneController,
+                                                                      validator: _validateTime,
+                                                                      maxValue: 9, // For first minute digit
                                                                     ),
-                                                                    shadows: [
-                                                                      BoxShadow(
-                                                                        color: Color(
-                                                                            0x0C101828),
-                                                                        blurRadius:
-                                                                            2,
-                                                                        offset: Offset(
-                                                                            0,
-                                                                            1),
-                                                                        spreadRadius:
-                                                                            0,
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _hourOneController,
-                                                                    keyboardType:
-                                                                        TextInputType
-                                                                            .number,
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      hintText:
-                                                                          '0',
-                                                                      hintStyle:
-                                                                          GoogleFonts
-                                                                              .heebo(
-                                                                        color: Color(
-                                                                            0xFFCFD4DC),
-                                                                        fontSize:
-                                                                            32,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                      ),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    validator:
-                                                                        _validateTime,
-                                                                  ),
-                                                                ),
                                                               ),
                                                               SizedBox(
                                                                 width: 12,
                                                               ),
                                                               Expanded(
                                                                 child:
-                                                                    Container(
-                                                                  width: 55,
-                                                                  height: 55,
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          8),
-                                                                  decoration:
-                                                                      ShapeDecoration(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      side: BorderSide(
-                                                                          width:
-                                                                              1,
-                                                                          color:
-                                                                              Color(0xFFCFD4DC)),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8),
+                                                                    ScrollableTimeInput(
+                                                                      controller: _hourTwoController,
+                                                                      validator: _validateTime,
+                                                                      maxValue: 9, // For first minute digit
                                                                     ),
-                                                                    shadows: [
-                                                                      BoxShadow(
-                                                                        color: Color(
-                                                                            0x0C101828),
-                                                                        blurRadius:
-                                                                            2,
-                                                                        offset: Offset(
-                                                                            0,
-                                                                            1),
-                                                                        spreadRadius:
-                                                                            0,
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _hourTwoController,
-                                                                    keyboardType:
-                                                                        TextInputType
-                                                                            .number,
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      hintText:
-                                                                          '0',
-                                                                      hintStyle:
-                                                                          GoogleFonts
-                                                                              .heebo(
-                                                                        color: Color(
-                                                                            0xFFCFD4DC),
-                                                                        fontSize:
-                                                                            32,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                      ),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    validator:
-                                                                        _validateTime,
-                                                                  ),
-                                                                ),
                                                               ),
                                                               Expanded(
                                                                 child: Padding(
@@ -832,146 +740,22 @@ class _QuizPageState extends State<QuizPage> {
                                                               // Minutes Input Field
                                                               Expanded(
                                                                 child:
-                                                                    Container(
-                                                                  width: 55,
-                                                                  height: 55,
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          8),
-                                                                  decoration:
-                                                                      ShapeDecoration(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      side: BorderSide(
-                                                                          width:
-                                                                              1,
-                                                                          color:
-                                                                              Color(0xFFCFD4DC)),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8),
+                                                                    ScrollableTimeInput(
+                                                                      controller: _minuteOneController,
+                                                                      validator: _validateTime,
+                                                                      maxValue: 5, // For first minute digit
                                                                     ),
-                                                                    shadows: [
-                                                                      BoxShadow(
-                                                                        color: Color(
-                                                                            0x0C101828),
-                                                                        blurRadius:
-                                                                            2,
-                                                                        offset: Offset(
-                                                                            0,
-                                                                            1),
-                                                                        spreadRadius:
-                                                                            0,
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _minuteOneController,
-                                                                    keyboardType:
-                                                                        TextInputType
-                                                                            .number,
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      hintText:
-                                                                          '0',
-                                                                      hintStyle:
-                                                                          GoogleFonts
-                                                                              .heebo(
-                                                                        color: Color(
-                                                                            0xFFCFD4DC),
-                                                                        fontSize:
-                                                                            32,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                      ),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    validator:
-                                                                        _validateTime,
-                                                                  ),
-                                                                ),
                                                               ),
                                                               SizedBox(
                                                                 width: 12,
                                                               ),
                                                               Expanded(
                                                                 child:
-                                                                    Container(
-                                                                  width: 55,
-                                                                  height: 55,
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          8),
-                                                                  decoration:
-                                                                      ShapeDecoration(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      side: BorderSide(
-                                                                          width:
-                                                                              1,
-                                                                          color:
-                                                                              Color(0xFFCFD4DC)),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8),
+                                                                    ScrollableTimeInput(
+                                                                      controller: _minuteTwoController,
+                                                                      validator: _validateTime,
+                                                                      maxValue: 9, // For first minute digit
                                                                     ),
-                                                                    shadows: [
-                                                                      BoxShadow(
-                                                                        color: Color(
-                                                                            0x0C101828),
-                                                                        blurRadius:
-                                                                            2,
-                                                                        offset: Offset(
-                                                                            0,
-                                                                            1),
-                                                                        spreadRadius:
-                                                                            0,
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _minuteTwoController,
-                                                                    keyboardType:
-                                                                        TextInputType
-                                                                            .number,
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      hintText:
-                                                                          '0',
-                                                                      hintStyle:
-                                                                          GoogleFonts
-                                                                              .heebo(
-                                                                        color: Color(
-                                                                            0xFFCFD4DC),
-                                                                        fontSize:
-                                                                            32,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                      ),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    validator:
-                                                                        _validateTime,
-                                                                  ),
-                                                                ),
                                                               ),
                                                             ],
                                                           ),

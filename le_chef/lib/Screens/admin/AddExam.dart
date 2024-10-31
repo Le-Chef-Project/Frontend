@@ -6,6 +6,7 @@ import 'package:le_chef/Shared/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 import '../../Models/Quiz.dart';
+import '../../Widgets/quiz_time.dart';
 import '../../theme/custom_button_style.dart';
 import 'AddQuestion.dart';
 
@@ -94,17 +95,6 @@ class _AddExamState extends State<AddExam> {
     super.dispose();
   }
 
-  String? _validateTime(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter minutes';
-    }
-    final int? minutes = int.tryParse(value);
-    if (minutes == null || minutes < 0 || minutes > 9) {
-      return 'Enter valid minutes (0-59)';
-    }
-    return null;
-  }
-
   Future<void> getUnits() async{
     try{
       final units = await ApisMethods.getExamUnits();
@@ -120,6 +110,7 @@ class _AddExamState extends State<AddExam> {
 
   void _submitQuiz() async {
     if (_formKey.currentState!.validate() && titleController.text.isNotEmpty) {
+      _updateQuizTime();
       List<Map<String, dynamic>> questions = widget.quizList!.map((quiz) {
         return {
           'question': quiz.questionText,
@@ -143,6 +134,13 @@ class _AddExamState extends State<AddExam> {
         print('added...');
 
         if (mounted) {
+          
+          dialogWithButtons(context: context, icon: const Icon(
+            Icons.check_circle_outline,
+            color: Color(0xFF2ED573),
+            size: 150,
+          ), title: 'Success !', content: 'Exam posted to students.');
+
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) =>  Exams(selectedLevel: int.parse(selectedLevel!.replaceFirst('Level ', '')),)),
                 (Route<dynamic> route) => false,
@@ -161,6 +159,59 @@ class _AddExamState extends State<AddExam> {
     }
   }
 
+  void _updateQuizTime() {
+    // Get the individual digits
+    String hourFirst = _hourOneController.text.trim();
+    String hourSecond = _hourTwoController.text.trim();
+    String minuteFirst = _minuteOneController.text.trim();
+    String minuteSecond = _minuteTwoController.text.trim();
+
+    // Calculate hours and minutes properly
+    int hours = 0;
+    int minutes = 0;
+
+    // Parse hours if both digits are present
+    if (hourFirst.isNotEmpty && hourSecond.isNotEmpty) {
+      hours = int.parse(hourFirst + hourSecond);
+    } else if (hourFirst.isNotEmpty) {
+      hours = int.parse(hourFirst);
+    } else if (hourSecond.isNotEmpty) {
+      hours = int.parse(hourSecond);
+    }
+
+    // Parse minutes if both digits are present
+    if (minuteFirst.isNotEmpty && minuteSecond.isNotEmpty) {
+      minutes = int.parse(minuteFirst + minuteSecond);
+    } else if (minuteFirst.isNotEmpty) {
+      // If only first digit is present, multiply by 10 (e.g., 3 becomes 30)
+      minutes = int.parse(minuteFirst) * 10;
+    } else if (minuteSecond.isNotEmpty) {
+      // If only second digit is present, use it as is
+      minutes = int.parse(minuteSecond);
+    }
+
+    // Validate minutes
+    if (minutes >= 60) {
+      // Add overflow to hours
+      hours += minutes ~/ 60;
+      minutes = minutes % 60;
+    }
+
+    // Close the dialog
+    Navigator.pop(context);
+
+  }
+
+  String? _validateTime(String? value) {
+    if (value == null || value.isEmpty) {
+      return null; // Allow empty values as we'll handle them in _updateQuizTime
+    }
+    final int? digit = int.tryParse(value);
+    if (digit == null || digit < 0 || digit > 9) {
+      return 'Enter 0-9';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -627,80 +678,18 @@ class _AddExamState extends State<AddExam> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             // Hours Input Field
-                            Container(
-                              width: 55,
-                              height: 55,
-                              padding: const EdgeInsets.all(8),
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      width: 1, color: Color(0xFFCFD4DC)),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x0C101828),
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: TextFormField(
-                                controller: _hourOneController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: '0',
-                                  hintStyle: GoogleFonts.heebo(
-                                    color: Color(0xFFCFD4DC),
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                textAlign: TextAlign.center,
-                                validator: _validateTime,
-                              ),
+                            ScrollableTimeInput(
+                              controller: _hourOneController,
+                              validator: _validateTime,
+                              maxValue: 9, // For first minute digit
                             ),
                             SizedBox(
                               width: 12,
                             ),
-                            Container(
-                              width: 55,
-                              height: 55,
-                              padding: const EdgeInsets.all(8),
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      width: 1, color: Color(0xFFCFD4DC)),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x0C101828),
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: TextFormField(
-                                controller: _hourTwoController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: '0',
-                                  hintStyle: GoogleFonts.heebo(
-                                    color: Color(0xFFCFD4DC),
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                textAlign: TextAlign.center,
-                                validator: _validateTime,
-                              ),
+                            ScrollableTimeInput(
+                              controller: _hourTwoController,
+                              validator: _validateTime,
+                              maxValue: 9, // For first minute digit
                             ),
                             Padding(
                               padding:
@@ -717,80 +706,19 @@ class _AddExamState extends State<AddExam> {
                               ),
                             ),
                             // Minutes Input Field
-                            Container(
-                              width: 55,
-                              height: 55,
-                              padding: const EdgeInsets.all(8),
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      width: 1, color: Color(0xFFCFD4DC)),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x0C101828),
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: TextFormField(
-                                controller: _minuteOneController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: '0',
-                                  hintStyle: GoogleFonts.heebo(
-                                    color: Color(0xFFCFD4DC),
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                textAlign: TextAlign.center,
-                                validator: _validateTime,
-                              ),
+                            ScrollableTimeInput(
+                              controller: _minuteOneController,
+                              validator: _validateTime,
+                              maxValue: 9, // For first minute digit
                             ),
+
                             SizedBox(
                               width: 12,
                             ),
-                            Container(
-                              width: 55,
-                              height: 55,
-                              padding: const EdgeInsets.all(8),
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      width: 1, color: Color(0xFFCFD4DC)),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x0C101828),
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: TextFormField(
-                                controller: _minuteTwoController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: '0',
-                                  hintStyle: GoogleFonts.heebo(
-                                    color: Color(0xFFCFD4DC),
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                textAlign: TextAlign.center,
-                                validator: _validateTime,
-                              ),
+                            ScrollableTimeInput(
+                              controller: _minuteTwoController,
+                              validator: _validateTime,
+                              maxValue: 9, // For first minute digit
                             ),
                           ],
                         ),
@@ -879,7 +807,10 @@ class _AddExamState extends State<AddExam> {
           padding: const EdgeInsets.all(24.0),
           child: CustomElevatedButton(
             height: 55,
-            onPressed: _submitQuiz,
+            onPressed: ()
+             => dialogWithButtons(context: context, icon: Icon(Icons.error_outline_rounded,
+               color: Color(0xFF164863),
+               size: 150,), title: 'Are you sure you finish putting Exam ?', button1Text: 'Finish Exam', button1Action: _submitQuiz, button2Text: 'Cancel', button2Action: () => Navigator.pop(context)),
             // Submit the form and add the quiz
             text: 'Submit',
             buttonStyle: ElevatedButton.styleFrom(

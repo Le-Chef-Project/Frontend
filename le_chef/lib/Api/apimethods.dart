@@ -170,7 +170,7 @@ class ApisMethods {
   }
 
 //5- add quiz
-  static Future<bool> addQuiz({
+  static Future<void> addQuiz({
     required String title,
     required List<dynamic> questions,
     required int hours,
@@ -180,7 +180,7 @@ class ApisMethods {
     required bool isPaid,
     double? amountToPay,
   }) async {
-    try {
+
       if (questions.isEmpty) {
         throw Exception('Questions list cannot be empty');
       }
@@ -226,52 +226,14 @@ class ApisMethods {
         body: body,
       );
 
-      if (response.statusCode == 201) {
-        await _showSuccessDialog();
-        return true;
+      if (response.statusCode == 200) {
+        print('${jsonDecode(response.body)['message']}');
       } else {
-        await _showErrorDialog(response.body);
-        return false;
+        print('${jsonDecode(response.body)['message']}');
       }
-    } catch (e) {
-      await _showErrorDialog(e.toString());
-      return false;
-    }
+
   }
 
-  static Future<void> _showSuccessDialog() async {
-    await showDialog(
-      context: Get.context!,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Success'),
-        content: const Text('Quiz added successfully!'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Future<void> _showErrorDialog(String errorMessage) async {
-    await showDialog(
-      context: Get.context!,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Error'),
-        content: Text('Failed to add quiz: $errorMessage'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
 
 //6- upload video
   static Future<void> uploadVideo({
