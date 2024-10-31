@@ -2,7 +2,7 @@ class Quiz {
   final String id;
   final String title;
   final List<QuizQuestion> questions;
-  final Duration duration;
+  Duration duration;
   final int level;
   final int unit;
   final bool isPaid;
@@ -86,7 +86,7 @@ class Quiz {
 
 class QuizQuestion {
   String questionText;
-  final List<String> options;
+  List<String> options;
   final String answer;
 
   QuizQuestion({

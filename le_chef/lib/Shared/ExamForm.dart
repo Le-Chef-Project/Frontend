@@ -11,6 +11,7 @@ import 'exams.dart';
 
 class QuizPage extends StatefulWidget {
   final Quiz quiz;
+
   const QuizPage({super.key, required this.quiz});
 
   @override
@@ -25,6 +26,12 @@ class _QuizPageState extends State<QuizPage> {
   String? role = sharedPreferences.getString('role');
   final TextEditingController _questionController = TextEditingController();
   List<TextEditingController> _answerControllers = [];
+  final _formKey = GlobalKey<FormState>();
+  final _hourOneController = TextEditingController();
+  final _hourTwoController = TextEditingController();
+  final _minuteOneController = TextEditingController();
+  final _minuteTwoController = TextEditingController();
+  int count = 0;
 
   @override
   void initState() {
@@ -33,38 +40,45 @@ class _QuizPageState extends State<QuizPage> {
     if (role != 'admin') {
       startTimer();
     }
-    _questionController.text = widget.quiz.questions[selectedQuestion].questionText;
-    _answerControllers = widget.quiz.questions[selectedQuestion].options.map((answer) {
+    _questionController.text =
+        widget.quiz.questions[selectedQuestion].questionText;
+    _answerControllers =
+        widget.quiz.questions[selectedQuestion].options.map((answer) {
       return TextEditingController(text: answer);
     }).toList();
 
     // Add listeners to update the underlying data when text changes
     _questionController.addListener(() {
-      widget.quiz.questions[selectedQuestion].questionText = _questionController.text;
+      widget.quiz.questions[selectedQuestion].questionText =
+          _questionController.text;
     });
 
     for (var i = 0; i < _answerControllers.length; i++) {
       _answerControllers[i].addListener(() {
-        widget.quiz.questions[selectedQuestion].options[i] = _answerControllers[i].text;
+        widget.quiz.questions[selectedQuestion].options[i] =
+            _answerControllers[i].text;
       });
     }
   }
 
   void updateControllers() {
-    _questionController.text = widget.quiz.questions[selectedQuestion].questionText;
+    _questionController.text =
+        widget.quiz.questions[selectedQuestion].questionText;
 
     for (var controller in _answerControllers) {
       controller.dispose();
     }
 
-    _answerControllers = widget.quiz.questions[selectedQuestion].options.map((answer) {
+    _answerControllers =
+        widget.quiz.questions[selectedQuestion].options.map((answer) {
       return TextEditingController(text: answer);
     }).toList();
 
     for (var i = 0; i < _answerControllers.length; i++) {
       final index = i;
       _answerControllers[i].addListener(() {
-        widget.quiz.questions[selectedQuestion].options[index] = _answerControllers[index].text;
+        widget.quiz.questions[selectedQuestion].options[index] =
+            _answerControllers[index].text;
       });
     }
   }
@@ -77,7 +91,6 @@ class _QuizPageState extends State<QuizPage> {
       });
     }
   }
-
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -96,10 +109,10 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
-
   void _submitAnswers() async {
     print('Submit button pressed');
     if (role == 'admin') {
+      _updateQuizTime();
       print('Current questions state:');
       for (var question in widget.quiz.questions) {
         print('Question: ${question.questionText}');
@@ -119,52 +132,73 @@ class _QuizPageState extends State<QuizPage> {
         await ApisMethods.updateQuiz(
           id: widget.quiz.id,
           questions: questions,
-          hours: widget.quiz.duration.inHours,
-          minutes: widget.quiz.duration.inMinutes,
+          hours: int.tryParse(_hourOneController.text.trim() +
+                  _hourTwoController.text.trim()) ??
+              widget.quiz.duration.inHours,
+          minutes: int.tryParse(_minuteOneController.text.trim() +
+                  _minuteTwoController.text.trim()) ??
+              widget.quiz.duration.inMinutes,
         );
 
         print('Updated quiz successfully');
 
+        if (mounted) {
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                icon: const Icon(
+                  Icons.check_circle_outline,
+                  color: Color(0xFF2ED573),
+                  size: 150,
+                ),
+                title: Text(
+                  'Success!',
+                  style: GoogleFonts.ibmPlexMono(
+                    color: const Color(0xFF164863),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                content: Text(
+                  'Exam Updated Successfully',
+                  style: GoogleFonts.ibmPlexMono(
+                    color: const Color(0xFF888888),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            },
+          );
+
+          Future.delayed(const Duration(seconds: 1), () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          });
+        }
       } catch (e) {
         print('Error during update: ${e.toString()}');
+        // Show error dialog if widget is still mounted
+        if (!mounted) return;
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Failed to update quiz: ${e.toString()}'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
-
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            icon: const Icon(
-              Icons.check_circle_outline,
-              color: Color(0xFF2ED573),
-              size: 150,
-            ),
-            title: Text(
-              'Success!',
-              style: GoogleFonts.ibmPlexMono(
-                color: const Color(0xFF164863),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            content: Text(
-              'Exam Updated Successfully',
-              style: GoogleFonts.ibmPlexMono(
-                color: const Color(0xFF888888),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          );
-        },
-      );
-
-      // Close dialogs and return after delay
-      Future.delayed(const Duration(seconds: 1), () {
-        Navigator.pop(context); // Close success dialog
-        Navigator.pop(context); // Return to previous screen
-      });
     } else {
       // Student submission logic (unchanged)
       int correctAnswers = 0;
@@ -176,6 +210,8 @@ class _QuizPageState extends State<QuizPage> {
           }
         }
       }
+
+      if (!mounted) return;
 
       // Show results dialog
       showDialog(
@@ -202,8 +238,9 @@ class _QuizPageState extends State<QuizPage> {
             actions: [
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); // Close dialog
-                  Navigator.pop(context); // Return to previous screen
+                  Navigator.of(context).popUntil((route) {
+                    return count++ >= 2;
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF427D9D),
@@ -227,6 +264,41 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
+  String? _validateTime(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter minutes';
+    }
+    final int? minutes = int.tryParse(value);
+    if (minutes == null || minutes < 0 || minutes > 9) {
+      return 'Enter valid minutes (0-59)';
+    }
+    return null;
+  }
+
+  void _updateQuizTime() {
+    // Parse hours and minutes from controllers
+    final hours = int.tryParse(
+            _hourOneController.text.trim() + _hourTwoController.text.trim()) ??
+        widget.quiz.duration.inHours;
+    final minutes = int.tryParse(_minuteOneController.text.trim() +
+            _minuteTwoController.text.trim()) ??
+        widget.quiz.duration.inMinutes;
+
+    // Calculate total duration in seconds
+    final totalSeconds = (hours * 3600) + (minutes * 60);
+
+    setState(() {
+      // Update the quiz duration
+      widget.quiz.duration = Duration(seconds: totalSeconds);
+      // Reset the timer with new duration
+      _start = totalSeconds;
+      _progress = 1.0;
+    });
+
+    // Close the dialog
+    Navigator.pop(context);
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -238,7 +310,6 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   int selectedQuestion = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -495,12 +566,526 @@ class _QuizPageState extends State<QuizPage> {
                                   width: 139,
                                   height: 50,
                                   text: role == 'admin' ? 'Edit' : "Submit",
-                                  onPressed:role != 'admin' ? _submitAnswers: (){},
+                                  onPressed: role != 'admin'
+                                      ? _submitAnswers
+                                      : () {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  backgroundColor: Colors.white,
+                                                  title: Center(
+                                                      child: Text(
+                                                          'Select new time')),
+                                                  titleTextStyle:
+                                                      GoogleFonts.ibmPlexMono(
+                                                    color: Color(0xFF164863),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  content: Container(
+                                                    width: double.infinity,
+                                                    height: 180,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    decoration: ShapeDecoration(
+                                                      color: Color(0xFFFBFAFA),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                      ),
+                                                    ),
+                                                    child: Form(
+                                                      key: _formKey,
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 14.0),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceAround,
+                                                              children: [
+                                                                Text(
+                                                                  'Hours',
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .heebo(
+                                                                    color: Color(
+                                                                        0xFF888888),
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  'Minutes',
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .heebo(
+                                                                    color: Color(
+                                                                        0xFF888888),
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 15),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              // Hours Input Field
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  width: 55,
+                                                                  height: 55,
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8),
+                                                                  decoration:
+                                                                      ShapeDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      side: BorderSide(
+                                                                          width:
+                                                                              1,
+                                                                          color:
+                                                                              Color(0xFFCFD4DC)),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                    ),
+                                                                    shadows: [
+                                                                      BoxShadow(
+                                                                        color: Color(
+                                                                            0x0C101828),
+                                                                        blurRadius:
+                                                                            2,
+                                                                        offset: Offset(
+                                                                            0,
+                                                                            1),
+                                                                        spreadRadius:
+                                                                            0,
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        _hourOneController,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      hintText:
+                                                                          '0',
+                                                                      hintStyle:
+                                                                          GoogleFonts
+                                                                              .heebo(
+                                                                        color: Color(
+                                                                            0xFFCFD4DC),
+                                                                        fontSize:
+                                                                            32,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                      border: InputBorder
+                                                                          .none,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    validator:
+                                                                        _validateTime,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 12,
+                                                              ),
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  width: 55,
+                                                                  height: 55,
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8),
+                                                                  decoration:
+                                                                      ShapeDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      side: BorderSide(
+                                                                          width:
+                                                                              1,
+                                                                          color:
+                                                                              Color(0xFFCFD4DC)),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                    ),
+                                                                    shadows: [
+                                                                      BoxShadow(
+                                                                        color: Color(
+                                                                            0x0C101828),
+                                                                        blurRadius:
+                                                                            2,
+                                                                        offset: Offset(
+                                                                            0,
+                                                                            1),
+                                                                        spreadRadius:
+                                                                            0,
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        _hourTwoController,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      hintText:
+                                                                          '0',
+                                                                      hintStyle:
+                                                                          GoogleFonts
+                                                                              .heebo(
+                                                                        color: Color(
+                                                                            0xFFCFD4DC),
+                                                                        fontSize:
+                                                                            32,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                      border: InputBorder
+                                                                          .none,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    validator:
+                                                                        _validateTime,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          8.0),
+                                                                  child: Text(
+                                                                    '-',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: GoogleFonts
+                                                                        .inter(
+                                                                      color: Color(
+                                                                          0xFFCFD4DC),
+                                                                      fontSize:
+                                                                          60,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      height:
+                                                                          0.02,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              // Minutes Input Field
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  width: 55,
+                                                                  height: 55,
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8),
+                                                                  decoration:
+                                                                      ShapeDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      side: BorderSide(
+                                                                          width:
+                                                                              1,
+                                                                          color:
+                                                                              Color(0xFFCFD4DC)),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                    ),
+                                                                    shadows: [
+                                                                      BoxShadow(
+                                                                        color: Color(
+                                                                            0x0C101828),
+                                                                        blurRadius:
+                                                                            2,
+                                                                        offset: Offset(
+                                                                            0,
+                                                                            1),
+                                                                        spreadRadius:
+                                                                            0,
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        _minuteOneController,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      hintText:
+                                                                          '0',
+                                                                      hintStyle:
+                                                                          GoogleFonts
+                                                                              .heebo(
+                                                                        color: Color(
+                                                                            0xFFCFD4DC),
+                                                                        fontSize:
+                                                                            32,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                      border: InputBorder
+                                                                          .none,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    validator:
+                                                                        _validateTime,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 12,
+                                                              ),
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  width: 55,
+                                                                  height: 55,
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8),
+                                                                  decoration:
+                                                                      ShapeDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      side: BorderSide(
+                                                                          width:
+                                                                              1,
+                                                                          color:
+                                                                              Color(0xFFCFD4DC)),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                    ),
+                                                                    shadows: [
+                                                                      BoxShadow(
+                                                                        color: Color(
+                                                                            0x0C101828),
+                                                                        blurRadius:
+                                                                            2,
+                                                                        offset: Offset(
+                                                                            0,
+                                                                            1),
+                                                                        spreadRadius:
+                                                                            0,
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        _minuteTwoController,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      hintText:
+                                                                          '0',
+                                                                      hintStyle:
+                                                                          GoogleFonts
+                                                                              .heebo(
+                                                                        color: Color(
+                                                                            0xFFCFD4DC),
+                                                                        fontSize:
+                                                                            32,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                      border: InputBorder
+                                                                          .none,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    validator:
+                                                                        _validateTime,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  backgroundColor:
+                                                                      Color(
+                                                                          0xFF427D9D),
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12),
+                                                                  ),
+                                                                  minimumSize: Size(
+                                                                      double
+                                                                          .minPositive,
+                                                                      48)),
+                                                          child: Text(
+                                                            'Save Changes',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 16,
+                                                              fontFamily:
+                                                                  'IBM Plex Mono',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 12),
+                                                        // Add spacing between buttons
+                                                        OutlinedButton(
+                                                          onPressed: () {
+                                                            _minuteOneController
+                                                                .clear();
+                                                            _minuteTwoController
+                                                                .clear();
+                                                            _hourOneController
+                                                                .clear();
+                                                            _hourTwoController
+                                                                .clear();
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          style: OutlinedButton
+                                                              .styleFrom(
+                                                            side: BorderSide(
+                                                                color: Color(
+                                                                    0xFF427D9D)),
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  width: 1,
+                                                                  color: Color(
+                                                                      0xFF427D9D)),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                            ),
+                                                          ),
+                                                          child: Text(
+                                                            'Cancel',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFF427D9D),
+                                                              fontSize: 16,
+                                                              fontFamily:
+                                                                  'IBM Plex Mono',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
                                   buttonStyle: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF427D9D),
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(12))),
+                                              BorderRadius.circular(12)),
+                                      minimumSize:
+                                          Size(double.minPositive, 60)),
                                   // buttonStyle:
                                   //     CustomButtonStyles.fillPrimaryTL5,
                                 ),
@@ -524,7 +1109,8 @@ class _QuizPageState extends State<QuizPage> {
               height: 160,
               padding: const EdgeInsets.all(10.0),
               child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                physics: const NeverScrollableScrollPhysics(),
+                // Disable scrolling
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 10,
                   childAspectRatio: 1,
@@ -574,21 +1160,21 @@ class _QuizPageState extends State<QuizPage> {
                   Container(
                     width: 48.28,
                     height: 46,
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: ShapeDecoration(
                       color: const Color(0xFFF1F2F6),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4)
-                      ),
+                          borderRadius: BorderRadius.circular(4)),
                     ),
                     child: IconButton(
                       onPressed: selectedQuestion > 0
                           ? () {
-                        setState(() {
-                          selectedQuestion--;
-                          navigateToQuestion(selectedQuestion);
-                        });
-                      }
+                              setState(() {
+                                selectedQuestion--;
+                                navigateToQuestion(selectedQuestion);
+                              });
+                            }
                           : null,
                       icon: Icon(
                         Icons.arrow_back_ios,
@@ -602,27 +1188,29 @@ class _QuizPageState extends State<QuizPage> {
                   Container(
                     width: 48.28,
                     height: 46,
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: ShapeDecoration(
                       color: const Color(0xFFF1F2F6),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4)
-                      ),
+                          borderRadius: BorderRadius.circular(4)),
                     ),
                     child: IconButton(
-                      onPressed: selectedQuestion < widget.quiz.questions.length - 1
-                          ? () {
-                        setState(() {
-                          selectedQuestion++;
-                          navigateToQuestion(selectedQuestion);
-                        });
-                      }
-                          : null,
+                      onPressed:
+                          selectedQuestion < widget.quiz.questions.length - 1
+                              ? () {
+                                  setState(() {
+                                    selectedQuestion++;
+                                    navigateToQuestion(selectedQuestion);
+                                  });
+                                }
+                              : null,
                       icon: Icon(
                         Icons.arrow_forward_ios,
-                        color: selectedQuestion < widget.quiz.questions.length - 1
-                            ? const Color(0xFF888888)
-                            : const Color(0xFFCCCCCC), // Disabled color
+                        color:
+                            selectedQuestion < widget.quiz.questions.length - 1
+                                ? const Color(0xFF888888)
+                                : const Color(0xFFCCCCCC), // Disabled color
                       ),
                     ),
                   ),
@@ -642,8 +1230,8 @@ class _QuizPageState extends State<QuizPage> {
                       padding: const EdgeInsets.all(16),
                       child: Container(
                         width: 500,
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         decoration: ShapeDecoration(
                           color: const Color.fromRGBO(216, 233, 238, 1),
                           shape: RoundedRectangleBorder(
@@ -655,99 +1243,123 @@ class _QuizPageState extends State<QuizPage> {
                           children: [
                             Stack(
                               children: [
-                                role == 'admin' ? Theme(
-                                  data: ThemeData(
-                                    textSelectionTheme: const TextSelectionThemeData(
-                                      selectionColor: Color(0xFF164863),
-                                      selectionHandleColor: Color(0xFF164863),
-                                    ),
-                                  ),
-                                  child: TextField(
-                                    controller: _questionController,
-                                    maxLines: null,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                    ),
-                                    cursorColor: const Color(0xFF164863),
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF164863),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    onSubmitted: (val){
-                                      setState(() {
-                                        widget.quiz.questions[selectedQuestion].questionText = val;
-                                      });
-                                    },
-                                  ),
-                                ) :Text(
-                                  widget.quiz.questions[selectedQuestion].questionText,
-                                  style: GoogleFonts.ibmPlexMono(
-                                    color: const Color(0xFF164863),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                role == 'admin' ? Positioned(
-                                  height: MediaQuery.of(context).size.height * 0.1,
-                                  bottom: -35,
-                                    right: 2,
-                                    child:
-                                      Image.asset('assets/solar_pen-outline.png', color: Colors.black,),
-                                    ): const SizedBox.shrink()
+                                role == 'admin'
+                                    ? Theme(
+                                        data: ThemeData(
+                                          textSelectionTheme:
+                                              const TextSelectionThemeData(
+                                            selectionColor: Color(0xFF164863),
+                                            selectionHandleColor:
+                                                Color(0xFF164863),
+                                          ),
+                                        ),
+                                        child: TextField(
+                                          controller: _questionController,
+                                          maxLines: null,
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                          ),
+                                          cursorColor: const Color(0xFF164863),
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: const Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          onSubmitted: (val) {
+                                            setState(() {
+                                              widget
+                                                  .quiz
+                                                  .questions[selectedQuestion]
+                                                  .questionText = val;
+                                            });
+                                          },
+                                        ),
+                                      )
+                                    : Text(
+                                        widget.quiz.questions[selectedQuestion]
+                                            .questionText,
+                                        style: GoogleFonts.ibmPlexMono(
+                                          color: const Color(0xFF164863),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                role == 'admin'
+                                    ? Positioned(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.1,
+                                        bottom: -35,
+                                        right: 2,
+                                        child: Image.asset(
+                                          'assets/solar_pen-outline.png',
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    : const SizedBox.shrink()
                               ],
                             ),
                             const SizedBox(height: 12.0),
-                            ...widget.quiz.questions[selectedQuestion]
-                                .options
+                            ...widget.quiz.questions[selectedQuestion].options
                                 .asMap()
                                 .entries
                                 .map((entry) {
                               int answerIndex = entry.key;
                               String answerText = entry.value;
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.white,
                                   ),
                                   child: ListTile(
-                                    title: role == 'admin' ? Theme(
-                                      data: ThemeData(
-                                        textSelectionTheme: const TextSelectionThemeData(
-                                          selectionColor: Color(0xFF164863),
-                                          selectionHandleColor: Color(0xFF164863),
-                                        ),
-                                      ),
-                                      child: TextField(
-                                        controller: _answerControllers[answerIndex],
-                                        cursorColor: const Color(0xFF164863),
-                                        maxLines: null,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                        ),
-                                        style: GoogleFonts.ibmPlexMono(
-                                          color: const Color(0xFF164863),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        onSubmitted: (val){
-                                          widget.quiz.questions[selectedQuestion].options[answerIndex] = val;
-                                        },
-                                      ),
-                                    ) : Text(
-                                      answerText,
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: const Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
+                                    title: role == 'admin'
+                                        ? Theme(
+                                            data: ThemeData(
+                                              textSelectionTheme:
+                                                  const TextSelectionThemeData(
+                                                selectionColor:
+                                                    Color(0xFF164863),
+                                                selectionHandleColor:
+                                                    Color(0xFF164863),
+                                              ),
+                                            ),
+                                            child: TextField(
+                                              controller: _answerControllers[
+                                                  answerIndex],
+                                              cursorColor:
+                                                  const Color(0xFF164863),
+                                              maxLines: null,
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                              ),
+                                              style: GoogleFonts.ibmPlexMono(
+                                                color: const Color(0xFF164863),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              onSubmitted: (val) {
+                                                widget
+                                                    .quiz
+                                                    .questions[selectedQuestion]
+                                                    .options[answerIndex] = val;
+                                              },
+                                            ),
+                                          )
+                                        : Text(
+                                            answerText,
+                                            style: GoogleFonts.ibmPlexMono(
+                                              color: const Color(0xFF164863),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
                                     leading: Radio<int?>(
                                       value: answerIndex,
                                       groupValue:
@@ -767,26 +1379,34 @@ class _QuizPageState extends State<QuizPage> {
                         ),
                       ),
                     ),
-                    role == 'admin'?
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 5),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        child: ElevatedButton(onPressed: (){
-                          _submitAnswers();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF427D9D),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))), child: Text('Submit', style: GoogleFonts.ibmPlexMono(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                        ),),
-                        ),
-                      ),
-                    ) : SizedBox.shrink()
+                    role == 'admin'
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 18.0, vertical: 5),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _submitAnswers();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF427D9D),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12))),
+                                child: Text(
+                                  'Submit',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink()
                   ],
                 ),
               ),
