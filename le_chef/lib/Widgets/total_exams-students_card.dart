@@ -76,9 +76,9 @@ Widget totalStudent(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  customExamContainer('50 Videos'),
-                  customExamContainer('50 Books'),
-                  customExamContainer('60 PDFs')
+                  customExamContainer('50', 'Videos'),
+                  customExamContainer('50', 'Books'),
+                  customExamContainer('60', 'PDFs')
                 ],
               ),
             ),

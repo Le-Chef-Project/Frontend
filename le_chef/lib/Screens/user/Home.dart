@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/user/Library.dart';
 import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Shared/exams.dart';
-import 'package:le_chef/Screens/user/meeting/online_session_screen.dart';
+import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_search_view.dart';
+import '../../Shared/meeting/online_session_screen.dart';
 import '../Notes.dart';
 import '../notification.dart';
 import 'seeAllVid.dart';
@@ -227,7 +227,7 @@ class _HomeState extends State<Home> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => const OnlineSessionScreen(),
+                            Get.to(() => OnlineSessionScreen(),
                                 transition: Transition.fade,
                                 duration: const Duration(seconds: 1));
                           },

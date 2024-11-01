@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../Shared/customBottomNavBar.dart';
-import '../../chats.dart';
-import '../../notification.dart';
-import '../Home.dart';
+import '../../Screens/chats.dart';
+import '../../Screens/notification.dart';
+import '../../Screens/user/Home.dart';
 import 'online_session_screen.dart';
 
 class EndMeeting extends StatelessWidget {
@@ -45,7 +45,7 @@ class EndMeeting extends StatelessWidget {
                         //     context,
                         //     MaterialPageRoute(
                         //         builder: (context) => const OnlineSessionScreen()));
-                        Get.to(() => const OnlineSessionScreen(), transition: Transition.fadeIn, duration: const Duration(milliseconds: 1000));
+                        Get.to(() => OnlineSessionScreen(), transition: Transition.fadeIn, duration: const Duration(milliseconds: 1000));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),

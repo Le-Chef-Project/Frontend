@@ -6,12 +6,12 @@ import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Widgets/total_exams-students_card.dart';
 
-import 'customBottomNavBar.dart';
-import '../Widgets/customExamWidgets.dart';
-import '../main.dart';
-import '../Screens/user/Home.dart';
-import '../Screens/chats.dart';
-import '../Screens/notification.dart';
+import '../customBottomNavBar.dart';
+import '../../Widgets/customExamWidgets.dart';
+import '../../main.dart';
+import '../../Screens/user/Home.dart';
+import '../../Screens/chats.dart';
+import '../../Screens/notification.dart';
 
 class Exams extends StatefulWidget {
   final int selectedLevel;

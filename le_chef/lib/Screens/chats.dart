@@ -92,31 +92,36 @@ Widget PersonalChat(BuildContext context) {
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: 2,
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: Image.asset(
-                      'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-                      height: 50,
-                      width: 49,
-                    ).image,
+            return GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
+              },
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: Image.asset(
+                        'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+                        height: 50,
+                        width: 49,
+                      ).image,
+                    ),
                   ),
-                ),
-                Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      _buildHeader(context, name: "Kokii", time: "10:30PM"),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Hi!!',
-                        // style: Theme.of(context).textTheme.bodyText2,
-                      )
-                    ]))
-              ],
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        _buildHeader(context, name: "Kokii", time: "10:30PM"),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Hi!!',
+                          // style: Theme.of(context).textTheme.bodyText2,
+                        )
+                      ]))
+                ],
+              ),
             );
           },
         )
@@ -137,14 +142,14 @@ Widget groupChat(BuildContext context) {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(groupName: "Group ${index + 1}", membersNumber: 34,)));
               },
               child: Container(
                 color: Colors.transparent,
                 padding: const EdgeInsets.all(8.0),
                 width: double.infinity,
                 child: GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MembersScreen())),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MembersScreen(groupName: "Group ${index + 1}", membersNumber: 34,))),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -162,7 +167,7 @@ Widget groupChat(BuildContext context) {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildHeader(context,
-                                name: "Group${index + 1}", time: "10:30PM"),
+                                name: "Group ${index + 1}", time: "10:30PM"),
                             const SizedBox(height: 8),
                             const Text(
                               'Hi!!',

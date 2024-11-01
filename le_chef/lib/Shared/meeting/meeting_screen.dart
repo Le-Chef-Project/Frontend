@@ -130,33 +130,32 @@ class _MeetingPageState extends State<MeetingPage> {
                     child: RTCVideoView(_localRenderer, mirror: true),
                   )
                       : GridView.builder(
-                    gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
+                      mainAxisSpacing: 0,
+                      crossAxisSpacing: 10,
                     ),
                     itemCount: 8,
                     itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding:
-                        const EdgeInsets.only(left: 15.0, right: 15, top: 30),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color:  Colors.white,
-                          ),
-                          child: Stack(children: [
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                        ),
+                        child: Stack(
+                          children: [
                             Center(
                               child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   CircleAvatar(
-                                    radius: 60,
+                                    radius: 45,
                                     backgroundImage: Image.asset(
                                       'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
                                     ).image,
                                   ),
-                                  const SizedBox(height: 21,),
+                                  const SizedBox(height: 21),
                                   Text(
                                     'Thaowpsta Saiid',
                                     style: GoogleFonts.ibmPlexMono(
@@ -172,15 +171,15 @@ class _MeetingPageState extends State<MeetingPage> {
                                 right: 8,
                                 top: 10,
                                 child: _isMicOn
-                                    ? const Icon(Icons.mic,
-                                    color: Color(0xFF164863))
-                                    : const Icon(Icons.mic_off,
-                                    color: Color(0xFF164863)))
-                          ]),
+                                    ? const Icon(Icons.mic, color: Color(0xFF164863))
+                                    : const Icon(Icons.mic_off, color: Color(0xFF164863),
+                                )),
+                          ],
                         ),
                       );
                     },
                   ),
+
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(

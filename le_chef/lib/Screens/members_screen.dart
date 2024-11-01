@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/main.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import 'user/Home.dart';
@@ -7,12 +8,13 @@ import 'chats.dart';
 import 'notification.dart';
 
 class MembersScreen extends StatelessWidget {
-  final String groupName = 'Group 1';
-  final int membersNumber = 34;
+  final String groupName;
+  final int membersNumber;
   final String userImg = 'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp';
   final List usersName = ['Mhammed Ali', 'Jouna Moayyad', 'Hawraa Mahmoud', 'Ruqaya Layth', 'Aya Abd Alazyz', 'Ibrahem Abas'];
+  String? role = sharedPreferences.getString('role');
 
-  MembersScreen({super.key});
+  MembersScreen({super.key, required this.groupName, required this.membersNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class MembersScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Row(
+            role == 'admin' ?Row(
               children: [
                 Expanded(
                   child: Padding(
@@ -94,7 +96,7 @@ class MembersScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ) : SizedBox.shrink(),
             const SizedBox(height: 47),
             Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -144,12 +146,12 @@ class MembersScreen extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      trailing: IconButton(
+                      trailing: role == 'admin' ? IconButton(
                         icon: Image.asset('assets/trash.png'),
                         onPressed: () {
                           //ToDo delete logic
                         },
-                      ),
+                      ) : SizedBox.shrink(),
                     ),
                   );
                 },

@@ -4,12 +4,12 @@ import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Quiz.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 
-import '../Shared/ExamForm.dart';
+import '../Shared/exams/ExamForm.dart';
 import '../Screens/user/payment.dart';
-import '../Shared/ExamInfo.dart';
+import '../Shared/exams/ExamInfo.dart';
 import '../main.dart';
 
-Widget customExamContainer(string) {
+Widget customExamContainer(string, type) {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(12),
@@ -18,7 +18,7 @@ Widget customExamContainer(string) {
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
       child: Text(
-        string,
+        '$string $type',
         style: GoogleFonts.ibmPlexMono(
           color: const Color(0xFF2A324B),
           fontSize: 14,
@@ -48,8 +48,8 @@ Widget customExamListTile(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          customExamContainer(exam.questions.length.toString()),
-          customExamContainer(exam.formattedDuration)
+          customExamContainer(exam.questions.length.toString(), exam.questions.length == 1 ? 'Question' : 'Questions'),
+          customExamContainer(exam.formattedDuration, '')
         ],
       ),
     ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
-import 'package:le_chef/Shared/ExamForm.dart';
-import 'package:le_chef/Shared/exams.dart';
+import 'package:le_chef/Shared/exams/ExamForm.dart';
+import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 import '../../Models/Quiz.dart';

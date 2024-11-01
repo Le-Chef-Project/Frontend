@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Shared/ExamForm.dart';
+import 'package:le_chef/Shared/exams/ExamForm.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
-import '../Models/Quiz.dart';
-import '../Shared/custom_app_bar.dart';
-import '../theme/custom_button_style.dart';
+import '../../Models/Quiz.dart';
+import '../custom_app_bar.dart';
+import '../../theme/custom_button_style.dart';
 
 class ExamInfo extends StatefulWidget {
   final Quiz quiz;

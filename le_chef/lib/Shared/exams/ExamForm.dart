@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 
-import '../Models/Quiz.dart';
-import '../Widgets/quiz_time.dart';
-import 'custom_elevated_button.dart';
-import '../main.dart';
+import '../../Models/Quiz.dart';
+import '../../Widgets/quiz_time.dart';
+import '../custom_elevated_button.dart';
+import '../../main.dart';
 import 'exams.dart';
 
 class QuizPage extends StatefulWidget {
@@ -119,6 +119,8 @@ class _QuizPageState extends State<QuizPage> {
         print('Question: ${question.questionText}');
         print('Options: ${question.options}');
         print('Answer: ${question.answer}');
+        print('hours: ${widget.quiz.duration.inHours}');
+        print('mint: ${widget.quiz.duration.inMinutes}');
       }
       List<Map<String, dynamic>> questions = widget.quiz.questions.map((quiz) {
         return {
@@ -133,12 +135,8 @@ class _QuizPageState extends State<QuizPage> {
         await ApisMethods.updateQuiz(
           id: widget.quiz.id,
           questions: questions,
-          hours: int.tryParse(_hourOneController.text.trim() +
-                  _hourTwoController.text.trim()) ??
-              widget.quiz.duration.inHours,
-          minutes: int.tryParse(_minuteOneController.text.trim() +
-                  _minuteTwoController.text.trim()) ??
-              widget.quiz.duration.inMinutes,
+          hours: widget.quiz.duration.inHours,
+          minutes: widget.quiz.duration.inMinutes,
         );
 
         print('Updated quiz successfully');
@@ -266,35 +264,15 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _updateQuizTime() {
-    // Get the individual digits
-    String hourFirst = _hourOneController.text.trim();
-    String hourSecond = _hourTwoController.text.trim();
-    String minuteFirst = _minuteOneController.text.trim();
-    String minuteSecond = _minuteTwoController.text.trim();
+    // Get the individual digits and default to '0' if empty
+    String hourFirst = _hourOneController.text.trim().isEmpty ? '0' : _hourOneController.text.trim();
+    String hourSecond = _hourTwoController.text.trim().isEmpty ? '0' : _hourTwoController.text.trim();
+    String minuteFirst = _minuteOneController.text.trim().isEmpty ? '0' : _minuteOneController.text.trim();
+    String minuteSecond = _minuteTwoController.text.trim().isEmpty ? '0' : _minuteTwoController.text.trim();
 
-    // Calculate hours and minutes properly
-    int hours = 0;
-    int minutes = 0;
-
-    // Parse hours if both digits are present
-    if (hourFirst.isNotEmpty && hourSecond.isNotEmpty) {
-      hours = int.parse(hourFirst + hourSecond);
-    } else if (hourFirst.isNotEmpty) {
-      hours = int.parse(hourFirst);
-    } else if (hourSecond.isNotEmpty) {
-      hours = int.parse(hourSecond);
-    }
-
-    // Parse minutes if both digits are present
-    if (minuteFirst.isNotEmpty && minuteSecond.isNotEmpty) {
-      minutes = int.parse(minuteFirst + minuteSecond);
-    } else if (minuteFirst.isNotEmpty) {
-      // If only first digit is present, multiply by 10 (e.g., 3 becomes 30)
-      minutes = int.parse(minuteFirst) * 10;
-    } else if (minuteSecond.isNotEmpty) {
-      // If only second digit is present, use it as is
-      minutes = int.parse(minuteSecond);
-    }
+    // Calculate hours and minutes
+    int hours = int.parse(hourFirst + hourSecond);
+    int minutes = int.parse(minuteFirst + minuteSecond);
 
     // Validate minutes
     if (minutes >= 60) {
@@ -316,8 +294,8 @@ class _QuizPageState extends State<QuizPage> {
 
     // Close the dialog
     Navigator.pop(context);
-
   }
+
 
   String? _validateTime(String? value) {
     if (value == null || value.isEmpty) {

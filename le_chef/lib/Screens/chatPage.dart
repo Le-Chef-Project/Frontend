@@ -23,7 +23,9 @@ import 'user/Home.dart';
 import 'notification.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final String? groupName;
+  final int? membersNumber;
+  const ChatPage({Key? key, this.groupName, this.membersNumber}) : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -43,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
-  bool person = true;
+  bool person = false;
   bool _showFloatingButton = true;
 
   @override
@@ -219,8 +221,8 @@ class _ChatPageState extends State<ChatPage> {
         id: wrappedMessage.message.id,
         author: wrappedMessage.message.author,
         createdAt: wrappedMessage.message.createdAt,
-        text: (wrappedMessage.message as types.TextMessage)
-            .text, // Cast to TextMessage to access text
+        text: (wrappedMessage.message as types.TextMessage).text,
+        // Cast to TextMessage to access text
         previewData: previewData, // Update preview data
       );
 
@@ -315,168 +317,17 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  Widget _buildCustomMessage(types.Message message,
-      {required int messageWidth}) {
-    final messageTime = DateFormat('hh:mm a')
-        .format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
-
-    // Define the colors based on whether the message is sent or received
-    final messageColor =
-        message.author.id == _user.id ? Colors.blue : Colors.grey[300];
-    final textColor =
-        message.author.id == _user.id ? Colors.white : Colors.black;
-
-    Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
-
-    if (message is WrappedMessage) {
-      final wrappedMessage = message as WrappedMessage;
-      if (wrappedMessage.seen) {
-        seenIndicator = const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.check, color: Colors.blue, size: 16.0),
-            SizedBox(width: 2.0),
-            Icon(Icons.check, color: Colors.blue, size: 16.0),
-          ],
-        );
-      }
-    }
-
-    if (message is types.TextMessage) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          color: messageColor, // Use the same color for text message background
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: message.author.id == _user.id
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
-          children: [
-            Text(
-              message.text,
-              style: TextStyle(color: textColor), // Use the same color for text
-            ),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: message.author.id == _user.id
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.start,
-              children: [
-                seenIndicator, // Add the seen indicator here
-                const SizedBox(width: 4.0),
-                Text(
-                  messageTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else if (message is types.ImageMessage) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          color:
-              messageColor, // Use the same color for image message background
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: message.author.id == _user.id
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
-          children: [
-            Image.file(File(message.uri),
-                width: message.width, height: message.height),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: message.author.id == _user.id
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.start,
-              children: [
-                seenIndicator, // Add the seen indicator here
-                const SizedBox(width: 4.0),
-                Text(
-                  messageTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else if (message is types.FileMessage) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          color: messageColor, // Use the same color for file message background
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: message.author.id == _user.id
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.attach_file,
-                  color: textColor, // Use the same color for file icon
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    message.name,
-                    style: TextStyle(
-                      color: textColor, // Use the same color for file name
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: message.author.id == _user.id
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.start,
-              children: [
-                seenIndicator, // Add the seen indicator here
-                const SizedBox(width: 4.0),
-                Text(
-                  messageTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    }
-
-    return const SizedBox.shrink();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final String abbreviatedName = widget.groupName![0] + widget.groupName!.split(' ')[1];
     const groupChatTheme = DefaultChatTheme(
       primaryColor: Color(0xFF0E7490),
       secondaryColor: Color(0xFFFBFAFA),
       backgroundColor: Colors.white,
       receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
       sentMessageBodyTextStyle: TextStyle(color: Colors.white),
-      inputBackgroundColor: Colors.white, // Message input background color
+      inputBackgroundColor: Colors.white,
+      // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
 
@@ -486,7 +337,8 @@ class _ChatPageState extends State<ChatPage> {
       backgroundColor: Colors.white,
       receivedMessageBodyTextStyle: TextStyle(color: Color(0xFF083344)),
       sentMessageBodyTextStyle: TextStyle(color: Colors.white),
-      inputBackgroundColor: Colors.white, // Message input background color
+      inputBackgroundColor: Colors.white,
+      // Message input background color
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
 
@@ -498,10 +350,47 @@ class _ChatPageState extends State<ChatPage> {
                 avatarUrl:
                     'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
               )
-            : const CustomAppBar(
-                title: "Group",
-                avatarUrl:
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZeR6Y0pmPtmNaWamoKJ7soTxAERZIMrjHbg&s',
+            : AppBar(
+                backgroundColor: Colors.white,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  color: Colors.black,
+                ),
+                title: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: const Color(0xFF0E7490),
+                      child: Text(
+                        abbreviatedName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.groupName!,
+                          style: GoogleFonts.ibmPlexMono(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          '${widget.membersNumber} members',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF888888),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
         body: Chat(
             messages: _messages.map((wm) => wm.message).toList(),
@@ -702,6 +591,158 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+  Widget _buildCustomMessage(types.Message message,
+      {required int messageWidth}) {
+    final messageTime = DateFormat('hh:mm a')
+        .format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!));
+
+    // Define the colors based on whether the message is sent or received
+    final messageColor =
+    message.author.id == _user.id ? Colors.blue : Colors.grey[300];
+    final textColor =
+    message.author.id == _user.id ? Colors.white : Colors.black;
+
+    Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
+
+    if (message is WrappedMessage) {
+      final wrappedMessage = message as WrappedMessage;
+      if (wrappedMessage.seen) {
+        seenIndicator = const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.check, color: Colors.blue, size: 16.0),
+            SizedBox(width: 2.0),
+            Icon(Icons.check, color: Colors.blue, size: 16.0),
+          ],
+        );
+      }
+    }
+
+    if (message is types.TextMessage) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: messageColor, // Use the same color for text message background
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: message.author.id == _user.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            Text(
+              message.text,
+              style: TextStyle(color: textColor), // Use the same color for text
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: message.author.id == _user.id
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
+              children: [
+                seenIndicator, // Add the seen indicator here
+                const SizedBox(width: 4.0),
+                Text(
+                  messageTime,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else if (message is types.ImageMessage) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color:
+          messageColor, // Use the same color for image message background
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: message.author.id == _user.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            Image.file(File(message.uri),
+                width: message.width, height: message.height),
+            const SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: message.author.id == _user.id
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
+              children: [
+                seenIndicator, // Add the seen indicator here
+                const SizedBox(width: 4.0),
+                Text(
+                  messageTime,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else if (message is types.FileMessage) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: messageColor, // Use the same color for file message background
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: message.author.id == _user.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.attach_file,
+                  color: textColor, // Use the same color for file icon
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    message.name,
+                    style: TextStyle(
+                      color: textColor, // Use the same color for file name
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              mainAxisAlignment: message.author.id == _user.id
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
+              children: [
+                seenIndicator, // Add the seen indicator here
+                const SizedBox(width: 4.0),
+                Text(
+                  messageTime,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
 }
 
 class WrappedMessage {
@@ -739,4 +780,3 @@ class WrappedMessage {
 //     );
 //   }
 // }
-

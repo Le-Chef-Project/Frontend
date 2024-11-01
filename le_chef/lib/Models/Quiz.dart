@@ -77,9 +77,9 @@ class Quiz {
     if (hours > 0 && minutes > 0) {
       return '$hours h $minutes m';
     } else if (hours > 0) {
-      return '$hours h';
+      return '$hours Hours';
     } else {
-      return '$minutes m';
+      return '$minutes Minutes';
     }
   }
 }

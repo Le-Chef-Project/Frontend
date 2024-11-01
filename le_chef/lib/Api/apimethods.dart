@@ -12,7 +12,7 @@ import 'package:le_chef/Screens/admin/THome.dart';
 import '../Models/Notes.dart';
 import '../Models/Quiz.dart';
 import '../Models/Student.dart';
-import '../Shared/exams.dart';
+import '../Shared/exams/exams.dart';
 import '../Screens/user/Home.dart';
 import '../main.dart';
 import 'SharedPrefes.dart';

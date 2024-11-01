@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Shared/exams.dart';
+import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import '../../Models/Student.dart';
 import '../../Shared/customBottomNavBar.dart';
