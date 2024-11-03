@@ -19,7 +19,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
 
   // Fetch videos and filter them based on the selected level
   void _fetchAndFilterVideos() async {
-    List<Video> allVideos = await ApisMethods().fetchAllVideos();
+    List<Video> allVideos = await ApisMethods.fetchAllVideos();
 
     setState(() {
       isloading = false;

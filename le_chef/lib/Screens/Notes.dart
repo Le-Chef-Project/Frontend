@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Api/apimethods.dart';
 import '../Models/Notes.dart';
 import '../main.dart';
@@ -32,7 +30,7 @@ class _NotesScreenState extends State<NotesScreen> {
       if (widget.level == 1) {
         return note.educationLevel == 1;
       } else if (widget.level == 2) {
-        return note.educationLevel == 12;
+        return note.educationLevel == 2;
       } else if (widget.level == 3) {
         return note.educationLevel == 3;
       }

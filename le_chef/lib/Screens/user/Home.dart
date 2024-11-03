@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/user/Library.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
+import '../../Api/apimethods.dart';
+import '../../Models/Video.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_search_view.dart';
 import '../../Shared/meeting/online_session_screen.dart';
+import '../../main.dart';
 import '../Notes.dart';
+import '../admin/library.dart';
+import '../admin/viewVideo.dart';
 import '../notification.dart';
 import 'seeAllVid.dart';
 
@@ -22,6 +26,31 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
   final int _selectedIndex = 0; // Initial index for Chats screen
+  static int? level = sharedPreferences.getInt('educationLevel');
+
+  Future<List<Video>>? _VideosFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _VideosFuture = _fetchAndSortVideos();
+  }
+
+  Future<List<Video>> _fetchAndSortVideos() async {
+    final Videos = await ApisMethods.fetchAllVideos();
+
+    // Filter and sort videos by date
+    final filteredVideos = Videos.where((video) {
+      return video.educationLevel == level;
+    }).toList();
+
+    // Sort videos by date
+    filteredVideos.sort((a, b) =>
+        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+
+    print("Sorted Videos: ${filteredVideos.length}");
+    return filteredVideos;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +99,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         child: Text(
-                          'Level 2',
+                          'Level ${level}',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF427D9D),
                             fontSize: 16,
@@ -135,20 +164,41 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 250, // Specify a fixed height for the ListView
-                child: ListView.builder(
-                    itemCount: 5,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Smallcard(
-                        Title: 'Unit one',
-                        description: 'lesson two',
-                        ontap: () {},
-                        imageurl: 'assets/desk_book_apple.jpeg',
-                      );
-                    }),
-              ),
+              FutureBuilder<List<Video>>(
+                  future: _VideosFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text("No videos available"));
+                    }
+                    final Videos = snapshot.data!;
+
+                    return SizedBox(
+                      height: 250,
+                      child: ListView.builder(
+                        itemCount: 3,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          final video = Videos[index];
+                          return Smallcard(
+                            Title: video.title,
+                            description: video.description,
+                            imageurl: 'assets/desk_book_apple.jpeg',
+                            ontap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    VideoPlayerScreen(url: video.url),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
                 child: SizedBox(
@@ -174,10 +224,12 @@ class _HomeState extends State<Home> {
                           Number: "15",
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           //Todo go to exam for student
-                          // onTapCardRec: () => Get.to(() => const Exams(),
-                          //     transition: Transition.fade,
-                          //     duration: const Duration(seconds: 1))
-                      ),
+                          onTapCardRec: () => Get.to(
+                              () => Exams(
+                                    selectedLevel: level!,
+                                  ),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1))),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -185,7 +237,10 @@ class _HomeState extends State<Home> {
                           Title: "Library",
                           Number: "20",
                           ImagePath: 'assets/Charco Education.png',
-                          onTapCardRec: () => Get.to(() => const Library(),
+                          onTapCardRec: () => Get.to(
+                              () => LibraryTabContainerScreen(
+                                    selectedLevel: level!,
+                                  ),
                               transition: Transition.fade,
                               duration: const Duration(seconds: 1))),
                     ),
@@ -197,15 +252,16 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _buildCardRec(
-                        context,
-                        Title: "Notes",
-                        Number: "10",
-                        ImagePath: 'assets/Wonder Learners Book.png',
-                        /*onTapCardRec: () => Get.to(() => NotesScreen(),
+                      child: _buildCardRec(context,
+                          Title: "Notes",
+                          Number: "10",
+                          ImagePath: 'assets/Wonder Learners Book.png',
+                          onTapCardRec: () => Get.to(
+                              () => NotesScreen(
+                                    level: level!,
+                                  ),
                               transition: Transition.fade,
-                              duration: const Duration(seconds: 1))*/
-                      ),
+                              duration: const Duration(seconds: 1))),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

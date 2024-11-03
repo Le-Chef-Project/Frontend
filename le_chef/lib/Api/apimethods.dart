@@ -44,9 +44,11 @@ class ApisMethods {
               transition: Transition.fade,
               duration: const Duration(seconds: 1));
         } else {
+          SharedPrefes.Savelevel(json['educationLevel']);
           Get.off(const Home(),
               transition: Transition.fade,
               duration: const Duration(seconds: 1));
+          print('educationLevel is ' + json['educationLevel']);
         }
       } else {
         showDialog(
@@ -180,60 +182,57 @@ class ApisMethods {
     required bool isPaid,
     double? amountToPay,
   }) async {
+    if (questions.isEmpty) {
+      throw Exception('Questions list cannot be empty');
+    }
 
-      if (questions.isEmpty) {
-        throw Exception('Questions list cannot be empty');
-      }
+    if (isPaid && amountToPay == null) {
+      throw Exception('Amount to pay is required for paid quizzes');
+    }
 
-      if (isPaid && amountToPay == null) {
-        throw Exception('Amount to pay is required for paid quizzes');
-      }
-
-      final formattedQuestions = questions.map((question) {
-        if (question is QuizQuestion) {
-          return question.toJson();
-        } else if (question is Map<String, dynamic>) {
-          return {
-            'question': question['question'] ?? '',
-            'options': question['options'] ?? [],
-            'answer': question['answer'] ?? '',
-          };
-        } else {
-          throw Exception('Invalid question format');
-        }
-      }).toList();
-
-      final body = jsonEncode({
-        'title': title,
-        'questions': formattedQuestions,
-        'hours': hours,
-        'minutes': minutes,
-        'educationLevel': level,
-        'Unit': unit,
-        'paid': isPaid,
-        if (isPaid) 'amountToPay': amountToPay,
-      });
-
-      final url = Uri.parse(
-          '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token!,
-        },
-        body: body,
-      );
-
-      if (response.statusCode == 200) {
-        print('${jsonDecode(response.body)['message']}');
+    final formattedQuestions = questions.map((question) {
+      if (question is QuizQuestion) {
+        return question.toJson();
+      } else if (question is Map<String, dynamic>) {
+        return {
+          'question': question['question'] ?? '',
+          'options': question['options'] ?? [],
+          'answer': question['answer'] ?? '',
+        };
       } else {
-        print('${jsonDecode(response.body)['message']}');
+        throw Exception('Invalid question format');
       }
+    }).toList();
 
+    final body = jsonEncode({
+      'title': title,
+      'questions': formattedQuestions,
+      'hours': hours,
+      'minutes': minutes,
+      'educationLevel': level,
+      'Unit': unit,
+      'paid': isPaid,
+      if (isPaid) 'amountToPay': amountToPay,
+    });
+
+    final url =
+        Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('${jsonDecode(response.body)['message']}');
+    }
   }
-
 
 //6- upload video
   static Future<void> uploadVideo({
@@ -405,7 +404,7 @@ class ApisMethods {
 
 //9- GET ALL Videos
 
-  Future<List<Video>> fetchAllVideos() async {
+  static Future<List<Video>> fetchAllVideos() async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
     http.Response response = await http.get(
@@ -557,8 +556,10 @@ class ApisMethods {
 
   //13-get all units used in exams
   static Future<List> getExamUnits() async {
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
-    http.Response response = await http.get(url, headers: {'Content-Type': 'application/json', 'token': token!});
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 
@@ -569,7 +570,8 @@ class ApisMethods {
     if (data.containsKey('units') && data['units'] is List) {
       temp = data['units'];
     } else {
-      throw Exception("Unexpected data format: 'units' key not found or is not a list.");
+      throw Exception(
+          "Unexpected data format: 'units' key not found or is not a list.");
     }
 
     return temp;
@@ -597,27 +599,24 @@ class ApisMethods {
     required int hours,
     required int minutes,
   }) async {
-
     final Map<String, dynamic> body = {
-      'questions': questions.map((q) =>
-      {
-        'question': q['question'],
-        'options': q['options'],
-        'answer': q['answer'],
-      }).toList(),
+      'questions': questions
+          .map((q) => {
+                'question': q['question'],
+                'options': q['options'],
+                'answer': q['answer'],
+              })
+          .toList(),
       'hours': hours,
       'minutes': minutes,
     };
 
     var url = Uri.parse(
-        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.updateQuiz}$id'
-    );
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.updateQuiz}$id');
 
-    http.Response response = await http.put(
-      url,
-      headers: {'Content-Type': 'application/json', 'token': token!},
-      body: jsonEncode(body)
-    );
+    http.Response response = await http.put(url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+        body: jsonEncode(body));
     if (response.statusCode == 200) {
       print('${jsonDecode(response.body)['message']}');
     } else {

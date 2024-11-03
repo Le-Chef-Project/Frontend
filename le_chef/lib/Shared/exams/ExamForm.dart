@@ -265,10 +265,18 @@ class _QuizPageState extends State<QuizPage> {
 
   void _updateQuizTime() {
     // Get the individual digits and default to '0' if empty
-    String hourFirst = _hourOneController.text.trim().isEmpty ? '0' : _hourOneController.text.trim();
-    String hourSecond = _hourTwoController.text.trim().isEmpty ? '0' : _hourTwoController.text.trim();
-    String minuteFirst = _minuteOneController.text.trim().isEmpty ? '0' : _minuteOneController.text.trim();
-    String minuteSecond = _minuteTwoController.text.trim().isEmpty ? '0' : _minuteTwoController.text.trim();
+    String hourFirst = _hourOneController.text.trim().isEmpty
+        ? '0'
+        : _hourOneController.text.trim();
+    String hourSecond = _hourTwoController.text.trim().isEmpty
+        ? '0'
+        : _hourTwoController.text.trim();
+    String minuteFirst = _minuteOneController.text.trim().isEmpty
+        ? '0'
+        : _minuteOneController.text.trim();
+    String minuteSecond = _minuteTwoController.text.trim().isEmpty
+        ? '0'
+        : _minuteTwoController.text.trim();
 
     // Calculate hours and minutes
     int hours = int.parse(hourFirst + hourSecond);
@@ -295,7 +303,6 @@ class _QuizPageState extends State<QuizPage> {
     // Close the dialog
     Navigator.pop(context);
   }
-
 
   String? _validateTime(String? value) {
     if (value == null || value.isEmpty) {
@@ -336,121 +343,112 @@ class _QuizPageState extends State<QuizPage> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
-              role == 'admin' ? Navigator.pop(context) :
-              showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Image.asset(
-                        'assets/error-16_svgrepo.com.jpg',
-                        width: 117,
-                        height: 117,
-                      ),
-                      content: SizedBox(
-                        width: 150,
-                        height: 80,
-                        child: Column(
-                          children: [
-                            Text(
-                              'Warning!',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ibmPlexMono(
-                                color: const Color(0xFF164863),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                height: 0,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'If you leave the quiz you will not \n be able to take it again !',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ibmPlexMono(
-                                color: const Color(0xFF888888),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                height: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      actions: [
-                        Expanded(
-                          child: Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+              role == 'admin'
+                  ? Navigator.pop(context)
+                  : showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          contentPadding: EdgeInsets.zero,
+                          title: Image.asset(
+                            'assets/error-16_svgrepo.com.jpg',
+                            width: 117,
+                            height: 117,
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Expanded(
-                                child: SizedBox(
-                                  width: 140.50,
-                                  height: 48,
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF427D9D),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Complete quiz',
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.ibmPlexMono(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      )),
+                              Text(
+                                'Warning!',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF164863),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
                                 ),
                               ),
-                              const SizedBox(
-                                width: 20,
+                              const SizedBox(height: 10),
+                              Text(
+                                'If you leave the quiz you will not \nbe able to take it again!',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF888888),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
+                                ),
                               ),
-                              Expanded(
-                                child: SizedBox(
-                                    width: 140.50,
-                                    height: 48,
-                                    child: OutlinedButton(
-                                        onPressed: () {},
-                                        style: OutlinedButton.styleFrom(
-                                          side: const BorderSide(
-                                              color: Color(0xFF427D9D)),
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(
-                                                width: 1,
-                                                color: Color(0xFF427D9D)),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          'Leave',
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.ibmPlexMono(
-                                            color: const Color(0xFF427D9D),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            height: 0,
-                                          ),
-                                        ))),
-                              )
+                              const SizedBox(height: 20),
                             ],
                           ),
-                        )
-                      ],
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      120, // Set a fixed width instead of using Expanded
+                                  height: 48,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF427D9D),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Complete quiz',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                SizedBox(
+                                  width:
+                                      120, // Set a fixed width instead of using Expanded
+                                  height: 48,
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // First, pop the dialog
+                                      Navigator.pop(context);
+                                      Navigator.pop(
+                                          context); // Then, pop the page
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Color(0xFF427D9D)),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Leave',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF427D9D),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        );
+                      },
                     );
-                  });
             },
           ),
         ),
@@ -673,10 +671,13 @@ class _QuizPageState extends State<QuizPage> {
                                                               Expanded(
                                                                 child:
                                                                     ScrollableTimeInput(
-                                                                      controller: _hourOneController,
-                                                                      validator: _validateTime,
-                                                                      maxValue: 9, // For first minute digit
-                                                                    ),
+                                                                  controller:
+                                                                      _hourOneController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      9, // For first minute digit
+                                                                ),
                                                               ),
                                                               SizedBox(
                                                                 width: 12,
@@ -684,10 +685,13 @@ class _QuizPageState extends State<QuizPage> {
                                                               Expanded(
                                                                 child:
                                                                     ScrollableTimeInput(
-                                                                      controller: _hourTwoController,
-                                                                      validator: _validateTime,
-                                                                      maxValue: 9, // For first minute digit
-                                                                    ),
+                                                                  controller:
+                                                                      _hourTwoController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      9, // For first minute digit
+                                                                ),
                                                               ),
                                                               Expanded(
                                                                 child: Padding(
@@ -719,10 +723,13 @@ class _QuizPageState extends State<QuizPage> {
                                                               Expanded(
                                                                 child:
                                                                     ScrollableTimeInput(
-                                                                      controller: _minuteOneController,
-                                                                      validator: _validateTime,
-                                                                      maxValue: 5, // For first minute digit
-                                                                    ),
+                                                                  controller:
+                                                                      _minuteOneController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      5, // For first minute digit
+                                                                ),
                                                               ),
                                                               SizedBox(
                                                                 width: 12,
@@ -730,10 +737,13 @@ class _QuizPageState extends State<QuizPage> {
                                                               Expanded(
                                                                 child:
                                                                     ScrollableTimeInput(
-                                                                      controller: _minuteTwoController,
-                                                                      validator: _validateTime,
-                                                                      maxValue: 9, // For first minute digit
-                                                                    ),
+                                                                  controller:
+                                                                      _minuteTwoController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      9, // For first minute digit
+                                                                ),
                                                               ),
                                                             ],
                                                           ),

@@ -12,6 +12,7 @@ import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../Widgets/total_exams-students_card.dart';
+import '../../main.dart';
 import '../../theme/custom_button_style.dart';
 import '../../theme/theme_helper.dart';
 import '../Notes.dart';
@@ -33,6 +34,7 @@ class LibraryTabContainerScreen extends StatefulWidget {
 class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
+  String? role = sharedPreferences.getString('role');
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int currentIndex = 0; // Add this to track current tab index
@@ -61,17 +63,25 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
         ),
         body: Column(
           children: [
-            totalStudent(
-              buttonText: 'Add to Library',
-              context,
-              'Total Items in Library',
-              '150',
-              isLibrary: true,
-              ontap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddLibrary()),
-              ),
-            ),
+            role == 'admin'
+                ? totalStudent(
+                    buttonText: 'Add to Library',
+                    context,
+                    'Total Items in Library',
+                    '150',
+                    isLibrary: true,
+                    ontap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddLibrary()),
+                    ),
+                  )
+                : Center(
+                    child: Image.asset(
+                      'assets/Wonder Learners Graduating.png',
+                      width: 300,
+                      height: 300,
+                    ),
+                  ),
             Material(
               color: Colors.white,
               child: TabBar(

@@ -7,16 +7,19 @@ class Video {
   final bool paid;
   final int educationLevel;
   final int amountToPay;
+  final String createdAt; // Ensure this is defined
 
-  Video(
-      {required this.id,
-      required this.description,
-      required this.title,
-      required this.url,
-      required this.paid,
-      required this.educationLevel,
-      required this.isLocked,
-      required this.amountToPay});
+  Video({
+    required this.id,
+    required this.description,
+    required this.title,
+    required this.url,
+    required this.paid,
+    required this.educationLevel,
+    required this.isLocked,
+    required this.amountToPay,
+    required this.createdAt, // Ensure this is defined
+  });
 
   factory Video.fromjson(dynamic json) {
     return Video(
@@ -25,6 +28,7 @@ class Video {
       description: json['description'] as String? ?? '',
       educationLevel: json['educationLevel'] as int? ?? 0,
       url: json['url'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
       isLocked: json['isLocked'] as bool? ?? false,
       paid: json['paid'] as bool? ?? false,
       amountToPay: json['amountToPay'] as int? ?? 0,

@@ -47,7 +47,7 @@ class _ExamInfoState extends State<ExamInfo> {
                   child: Center(
                     // Center the text inside the container
                     child: Text(
-                      '20',
+                      '${widget.quiz.questions.length}',
                       style: GoogleFonts.ibmPlexMono(
                         color: const Color(0xFFFBFAFA),
                         fontSize: 64,
@@ -66,8 +66,11 @@ class _ExamInfoState extends State<ExamInfo> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text:
-                              'Your Quiz is 20 Questions in 50 minutes..\n\nPay attention that you can enter to the quiz ',
+                          text: 'Your Quiz is ' +
+                              '${widget.quiz.questions.length} ' +
+                              ' Questions in ' +
+                              widget.quiz.formattedDuration +
+                              '..\n\nPay attention that you can enter to the quiz ',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF164863),
                             fontSize: 16,
@@ -119,7 +122,10 @@ class _ExamInfoState extends State<ExamInfo> {
                   text: 'Start Quiz',
                   buttonStyle: CustomButtonStyles.fillPrimaryTL5,
                   onPressed: () {
-                    Get.to(() => QuizPage(quiz: widget.quiz,),
+                    Get.to(
+                        () => QuizPage(
+                              quiz: widget.quiz,
+                            ),
                         transition: Transition.fade,
                         duration: const Duration(seconds: 1));
                   },

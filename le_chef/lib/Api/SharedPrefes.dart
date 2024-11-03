@@ -10,4 +10,9 @@ class SharedPrefes {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('role', role);
   }
+
+  static Future Savelevel(int educationLevel) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('educationLevel', educationLevel);
+  }
 }

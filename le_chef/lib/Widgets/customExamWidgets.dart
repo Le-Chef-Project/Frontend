@@ -48,7 +48,8 @@ Widget customExamListTile(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          customExamContainer(exam.questions.length.toString(), exam.questions.length == 1 ? 'Question' : 'Questions'),
+          customExamContainer(exam.questions.length.toString(),
+              exam.questions.length == 1 ? 'Question' : 'Questions'),
           customExamContainer(exam.formattedDuration, '')
         ],
       ),
@@ -128,7 +129,7 @@ Widget customExamListTile(
                                   content:
                                       'Are you sure that you want to Delete Exam!',
                                   button1Text: 'Delete',
-                                  button1Action: () async{
+                                  button1Action: () async {
                                     Navigator.pop(context);
                                     await ApisMethods.delQuiz(exam.id);
                                     dialogWithButtons(
@@ -175,12 +176,12 @@ Widget customExamListTile(
             icon: const Icon(
               Icons.more_horiz,
             ))
-        : const Row(
+        : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.arrow_forward_ios, color: Color(0xFF164863)),
               SizedBox(width: 8),
-              Icon(Icons.lock_outline, color: Color(0xFF164863)),
+              if (isLocked) Icon(Icons.lock_outline, color: Color(0xFF164863)),
             ],
           ),
     onTap: () {
@@ -285,10 +286,7 @@ Widget customExamListTile(
         } else {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => ExamInfo(
-                      quiz: exam,
-                    )),
+            MaterialPageRoute(builder: (context) => ExamInfo(quiz: exam)),
           );
         }
       }

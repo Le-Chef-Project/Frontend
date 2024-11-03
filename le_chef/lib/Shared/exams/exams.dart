@@ -24,7 +24,6 @@ class Exams extends StatefulWidget {
 class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   late TabController _tabController;
   int selectedUnit = 1;
-  bool isLocked = true;
   String? role = sharedPreferences.getString('role');
   bool _isLoading = true;
   List<Quiz> _exams = [];
@@ -52,11 +51,15 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   void _filterExams() {
     setState(() {
       print('Calling filter func');
-      _filteredExams = _exams.where((quiz) => quiz.unit == selectedUnit && quiz.level == widget.selectedLevel).toList();
+      _filteredExams = _exams
+          .where((quiz) =>
+              quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
+          .toList();
       print('Filtered exams for unit $selectedUnit: ${_filteredExams.length}');
 
       for (var exam in _filteredExams) {
-        print('Exam: ${exam.title}, Unit: ${exam.unit}, Questions: ${exam.questions.length}, duration: ${exam.duration.toString()}');
+        print(
+            'Exam: ${exam.title}, Unit: ${exam.unit}, Questions: ${exam.questions.length}, duration: ${exam.duration.toString()}');
       }
     });
   }
@@ -99,7 +102,6 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
     print(' tryyyyyyyyyy quizeeeeeee ${_filteredExams}');
 
     return SafeArea(
@@ -163,38 +165,38 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
             Expanded(
               child: _filteredExams.isEmpty
                   ? Center(
-                child: Text(
-                  'No exams available for Unit $selectedUnit',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              )
+                      child: Text(
+                        'No exams available for Unit $selectedUnit',
+                        style: GoogleFonts.ibmPlexMono(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    )
                   : ListView.builder(
-                padding: const EdgeInsets.all(20),
-                itemCount: _filteredExams.length,
-                itemBuilder: (context, index) {
-                  final exam = _filteredExams[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFBFAFA),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: customExamListTile(
-                        index,
-                        context,
-                        exam.isPaid && role != 'admin',
-                        exam,
-                      ),
+                      padding: const EdgeInsets.all(20),
+                      itemCount: _filteredExams.length,
+                      itemBuilder: (context, index) {
+                        final exam = _filteredExams[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFBFAFA),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: customExamListTile(
+                              index,
+                              context,
+                              exam.isPaid,
+                              exam,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
-        ],
+          ],
         ),
         bottomNavigationBar: CustomBottomNavBar(
           onItemTapped: (index) {
