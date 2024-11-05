@@ -198,13 +198,25 @@ class _QuizPageState extends State<QuizPage> {
           },
         );
       }
-    } else {
+    }
+    // Student submission
+    else {
+      if (_selectedAnswers.length != widget.quiz.questions.length) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Please answer all questions before submitting')),
+        );
+        return;
+      }
+
       // Student submission logic (unchanged)
       int correctAnswers = 0;
       for (int i = 0; i < widget.quiz.questions.length; i++) {
         final selectedAnswerIndex = _selectedAnswers[i];
         if (selectedAnswerIndex != null) {
           if (selectedAnswerIndex == widget.quiz.questions[i].answer) {
+            print(
+                '  widget.quiz.questions[i].answer ${widget.quiz.questions[i].answer}');
             correctAnswers++;
           }
         }

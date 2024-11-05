@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/user/examsResults.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import '../../Models/Student.dart';
@@ -42,7 +43,10 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
   @override
   void initState() {
     super.initState();
-    tabviewController = TabController(length: 3, vsync: this);
+    tabviewController = TabController(
+      length: role == 'admin' ? 3 : 4,
+      vsync: this,
+    );
     // Add listener for tab changes
     tabviewController.addListener(() {
       if (tabviewController.indexIsChanging) {
@@ -99,24 +103,40 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                   fontSize: 12,
                 ),
                 indicator: Circletabindicator(radius: 4.0),
-                tabs: [
-                  Tab(child: Text('Videos')),
-                  Tab(child: Text('Books')),
-                  Tab(child: Text('PDFs')),
-                ],
+                tabs: role == 'admin'
+                    ? [
+                        Tab(child: Text('Videos')),
+                        Tab(child: Text('Books')),
+                        Tab(child: Text('PDFs')),
+                      ]
+                    : [
+                        Tab(child: Text('Videos')),
+                        Tab(child: Text('Books')),
+                        Tab(child: Text('PDFs')),
+                        Tab(
+                          child: Text('Exams Results'),
+                        )
+                      ],
               ),
             ),
+            SizedBox(height: 20),
             Expanded(
               child: TabBarView(
                 controller: tabviewController,
-                children: [
-                  VideoListScreen(selectedLevel: widget.selectedLevel),
-                  Text('hello'),
-                  AllPDFs(selectedLevel: widget.selectedLevel),
-                ],
+                children: role == 'admin'
+                    ? [
+                        VideoListScreen(selectedLevel: widget.selectedLevel),
+                        Text('hello'),
+                        AllPDFs(selectedLevel: widget.selectedLevel),
+                      ]
+                    : [
+                        VideoListScreen(selectedLevel: widget.selectedLevel),
+                        Text('hello'),
+                        AllPDFs(selectedLevel: widget.selectedLevel),
+                        ExamsResults(),
+                      ],
               ),
             ),
-            SizedBox(height: 40),
           ],
         ),
       ),
