@@ -110,8 +110,7 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
-  void _submitAnswers() async {
-    print('Submit button pressed');
+  void _submitEdit() async{
     if (role == 'admin') {
       _updateQuizTime();
       print('Current questions state:');
@@ -199,8 +198,10 @@ class _QuizPageState extends State<QuizPage> {
         );
       }
     }
-    // Student submission
-    else {
+  }
+
+  void _submitAnswers() async {
+    print('Submit button pressed');
       if (_selectedAnswers.length != widget.quiz.questions.length) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -273,7 +274,6 @@ class _QuizPageState extends State<QuizPage> {
         },
       );
     }
-  }
 
   void _updateQuizTime() {
     // Get the individual digits and default to '0' if empty
@@ -1172,7 +1172,7 @@ class _QuizPageState extends State<QuizPage> {
                               height: MediaQuery.of(context).size.height * 0.06,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _submitAnswers();
+                                  _submitEdit();
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF427D9D),
