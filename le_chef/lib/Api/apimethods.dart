@@ -623,4 +623,62 @@ class ApisMethods {
       print('${jsonDecode(response.body)['message']}');
     }
   }
+
+  //16- submit quiz
+
+  static Future<String> submitQuiz(
+    answers,
+    String quizID,
+  ) async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.submitQuiz + quizID);
+
+    http.Response response = await http.post(url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+        body: jsonEncode({'answers': answers}));
+
+    if (response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(
+        showDialog(
+            context: Get.context!,
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/error-16_svgrepo.com.jpg',
+                      width: 117,
+                      height: 117,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Warning!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF164863),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${jsonDecode(response.body)['message'] ?? 'Failed to submit quiz'}',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF888888),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+      );
+    }
+  }
 }

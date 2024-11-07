@@ -45,7 +45,8 @@ class Quiz {
 
   Map<String, dynamic> toJson() {
     // Debug print
-    print('Converting to JSON with duration - hours: ${duration.inHours}, minutes: ${duration.inMinutes % 60}');
+    print(
+        'Converting to JSON with duration - hours: ${duration.inHours}, minutes: ${duration.inMinutes % 60}');
 
     return {
       '_id': id,
@@ -88,11 +89,13 @@ class QuizQuestion {
   String questionText;
   List<String> options;
   final String answer;
+  String? id;
 
   QuizQuestion({
     required this.questionText,
     required this.options,
     required this.answer,
+    this.id,
   });
 
   factory QuizQuestion.fromJson(Map<String, dynamic> json) {
@@ -100,6 +103,7 @@ class QuizQuestion {
       questionText: json['question'] ?? '',
       options: List<String>.from(json['options'] ?? []),
       answer: json['answer'] ?? '',
+      id: json['_id'] ?? '',
     );
   }
 
@@ -108,6 +112,7 @@ class QuizQuestion {
       'question': questionText,
       'options': options,
       'answer': answer,
+      '_id': id,
     };
   }
 }

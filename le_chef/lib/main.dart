@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
+import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:le_chef/Shared/login.dart';
 
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: token == null || token == ""
-            ? const Login()
+            ? const SplashOne()
             : role == "admin"
                 ? THome()
                 : Home(),

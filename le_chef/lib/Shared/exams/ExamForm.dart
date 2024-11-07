@@ -27,6 +27,11 @@ class _QuizPageState extends State<QuizPage> {
   String? role = sharedPreferences.getString('role');
   final TextEditingController _questionController = TextEditingController();
   List<TextEditingController> _answerControllers = [];
+  List<Map<String, dynamic>> answers =
+      []; // This will store answers for submission
+
+  String result = '';
+
   final _formKey = GlobalKey<FormState>();
   final _hourOneController = TextEditingController();
   final _hourTwoController = TextEditingController();
@@ -110,7 +115,7 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
-  void _submitEdit() async{
+  void _submitEdit() async {
     if (role == 'admin') {
       _updateQuizTime();
       print('Current questions state:');
@@ -202,7 +207,14 @@ class _QuizPageState extends State<QuizPage> {
 
   void _submitAnswers() async {
     print('Submit button pressed');
-      if (_selectedAnswers.length != widget.quiz.questions.length) {
+
+    // Reset answers list to avoid duplicates
+    answers.clear();
+
+    // Check if all questions are answered
+    for (int i = 0; i < widget.quiz.questions.length; i++) {
+      final selectedAnswerIndex = _selectedAnswers[i];
+      if (selectedAnswerIndex == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text('Please answer all questions before submitting')),
@@ -210,70 +222,20 @@ class _QuizPageState extends State<QuizPage> {
         return;
       }
 
-      // Student submission logic (unchanged)
-      int correctAnswers = 0;
-      for (int i = 0; i < widget.quiz.questions.length; i++) {
-        final selectedAnswerIndex = _selectedAnswers[i];
-        if (selectedAnswerIndex != null) {
-          if (selectedAnswerIndex == widget.quiz.questions[i].answer) {
-            print(
-                '  widget.quiz.questions[i].answer ${widget.quiz.questions[i].answer}');
-            correctAnswers++;
-          }
-        }
-      }
+      // Add each answer to the answers list
+      answers.add({
+        'questionId': widget.quiz.questions[i].id,
+        'selectedOption':
+            selectedAnswerIndex + 1, // Using the selected index directly
+      });
 
-      if (!mounted) return;
-
-      // Show results dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              'Quiz Complete',
-              style: GoogleFonts.ibmPlexMono(
-                color: const Color(0xFF164863),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            content: Text(
-              'You got $correctAnswers out of ${widget.quiz.questions.length} questions correct.',
-              style: GoogleFonts.ibmPlexMono(
-                color: const Color(0xFF888888),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).popUntil((route) {
-                    return count++ >= 2;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF427D9D),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  'Done',
-                  style: GoogleFonts.ibmPlexMono(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
+      result = ApisMethods.submitQuiz(answers, widget.quiz.id) as String;
     }
+
+    // At this point, all questions have been answered
+    print(' showing answers' + '${answers}'); // For debugging
+    print(' result' + '${result}'); // For debugging
+  }
 
   void _updateQuizTime() {
     // Get the individual digits and default to '0' if empty
