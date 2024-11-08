@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Screens/chatPage.dart';
 import 'package:le_chef/Screens/members_screen.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
@@ -83,6 +84,7 @@ class Chats extends StatelessWidget {
 }
 
 Widget PersonalChat(BuildContext context) {
+  Student std = Student(username: 'saso', Lastname: 'Saiid', firstname: 'thaowpsta', email: 'thaowpsta@gmail.com', phone: '01211024432', ID: '671bb7965c2d72826a977b76');
   return SingleChildScrollView(
     child: Column(
       children: [
@@ -92,9 +94,9 @@ Widget PersonalChat(BuildContext context) {
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: 2,
           itemBuilder: (context, index) {
-            return GestureDetector(
+            return InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(receiver: std,)));
               },
               child: Row(
                 children: [

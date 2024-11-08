@@ -11,6 +11,8 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
@@ -24,8 +26,11 @@ import 'notification.dart';
 
 class ChatPage extends StatefulWidget {
   final String? groupName;
+  final Student? receiver;
   final int? membersNumber;
-  const ChatPage({Key? key, this.groupName, this.membersNumber}) : super(key: key);
+
+  ChatPage({Key? key, this.groupName, this.membersNumber, this.receiver})
+      : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -36,7 +41,7 @@ class _ChatPageState extends State<ChatPage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   final _user = const types.User(
-    id: '82091008-a484-4a89-ae75-a22bf8d6f3ac',
+    id: '67085c58db26c90500708af9',
   );
 
   final TextEditingController _textController = TextEditingController();
@@ -45,7 +50,7 @@ class _ChatPageState extends State<ChatPage> {
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
-  bool person = false;
+  bool person = true;
   bool _showFloatingButton = true;
 
   @override
@@ -68,6 +73,162 @@ class _ChatPageState extends State<ChatPage> {
 
   void _onTextChanged() {
     _isTyping.value = _textController.text.isNotEmpty;
+  }
+
+  void _handleSendPressed(types.PartialText message) async {
+    final textMessage = types.TextMessage(
+      author: _user,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: const Uuid().v4(),
+      text: message.text,
+    );
+
+    // Add message to UI first for immediate feedback
+    _addMessage(textMessage);
+
+    // Send message to database
+    try {
+      await ApisMethods.sendDirectMsg(
+        textMessage.id,
+        [_user.id, widget.receiver?.ID],
+        _user.id,
+        message.text,
+        null,
+        // images
+        null,
+        // documents
+        null,
+        // audio
+        DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
+      );
+      print('Updated sending message');
+    } catch (e) {
+      print('Error sending message: $e');
+    }
+
+    _textController.clear();
+  }
+
+  void _handleImageSelection() async {
+    final result = await ImagePicker().pickImage(
+      imageQuality: 70,
+      maxWidth: 1440,
+      source: ImageSource.gallery,
+    );
+
+    if (result != null) {
+      final bytes = await result.readAsBytes();
+      final image = await decodeImageFromList(bytes);
+
+      final message = types.ImageMessage(
+        author: _user,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        height: image.height.toDouble(),
+        id: const Uuid().v4(),
+        name: result.name ?? '',
+        size: bytes.length,
+        uri: result.path,
+        width: image.width.toDouble(),
+      );
+
+      // Add message to UI
+      _addMessage(message);
+
+      // Send to database
+      try {
+        await ApisMethods.sendDirectMsg(
+          message.id,
+          [_user.id, widget.receiver?.ID],
+          _user.id,
+          '',
+          // No text content for image
+          [result.path],
+          // Image path
+          null,
+          null,
+          DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+        );
+      } catch (e) {
+        print('Error sending image message: $e');
+      }
+    }
+  }
+
+  void _handleFileSelection() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+    );
+
+    if (result != null && result.files.single.path != null) {
+      final message = types.FileMessage(
+        author: _user,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: const Uuid().v4(),
+        mimeType: lookupMimeType(result.files.single.path!),
+        name: result.files.single.name,
+        size: result.files.single.size,
+        uri: result.files.single.path!,
+      );
+
+      // Add message to UI
+      _addMessage(message);
+
+      // Send to database
+      try {
+        await ApisMethods.sendDirectMsg(
+          message.id,
+          [_user.id, widget.receiver?.ID],
+          _user.id,
+          '',
+          // No text content for file
+          null,
+          [result.files.single.path!],
+          // Document path
+          null,
+          DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+        );
+      } catch (e) {
+        print('Error sending file message: $e');
+      }
+    }
+  }
+
+  void _stopRecording() async {
+    await _recorder!.stopRecorder();
+    _isRecording.value = false;
+
+    if (_recordedFilePath != null) {
+      final message = types.FileMessage(
+        author: _user,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: const Uuid().v4(),
+        mimeType: 'audio/aac',
+        name: 'Voice Message',
+        size: File(_recordedFilePath!).lengthSync(),
+        uri: _recordedFilePath!,
+      );
+
+      // Add message to UI
+      _addMessage(message);
+
+      // Send to database
+      try {
+        await ApisMethods.sendDirectMsg(
+          message.id,
+          [_user.id, widget.receiver?.ID],
+          _user.id,
+          '',
+          // No text content for audio
+          null,
+          null,
+          _recordedFilePath,
+          // Audio path
+          DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+        );
+      } catch (e) {
+        print('Error sending audio message: $e');
+      }
+    }
   }
 
   void _addMessage(types.Message message) {
@@ -117,52 +278,6 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
     );
-  }
-
-  void _handleFileSelection() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
-    );
-
-    if (result != null && result.files.single.path != null) {
-      final message = types.FileMessage(
-        author: _user,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: const Uuid().v4(),
-        mimeType: lookupMimeType(result.files.single.path!),
-        name: result.files.single.name,
-        size: result.files.single.size,
-        uri: result.files.single.path!,
-      );
-
-      _addMessage(message);
-    }
-  }
-
-  void _handleImageSelection() async {
-    final result = await ImagePicker().pickImage(
-      imageQuality: 70,
-      maxWidth: 1440,
-      source: ImageSource.gallery,
-    );
-
-    if (result != null) {
-      final bytes = await result.readAsBytes();
-      final image = await decodeImageFromList(bytes);
-
-      final message = types.ImageMessage(
-        author: _user,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        height: image.height.toDouble(),
-        id: const Uuid().v4(),
-        name: result.name ?? '',
-        size: bytes.length,
-        uri: result.path,
-        width: image.width.toDouble(),
-      );
-
-      _addMessage(message);
-    }
   }
 
   void _handleMessageTap(BuildContext _, types.Message message) async {
@@ -235,20 +350,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _handleSendPressed(types.PartialText message) {
-    final textMessage = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: const Uuid().v4(),
-      text: message.text,
-    );
-
-    _addMessage(textMessage);
-
-    // Clear the text input field
-    _textController.clear();
-  }
-
   void _loadMessages() async {
     final response = await rootBundle.loadString('assets/messages.json');
     final messages = (jsonDecode(response) as List)
@@ -298,28 +399,8 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _stopRecording() async {
-    await _recorder!.stopRecorder();
-    _isRecording.value = false;
-
-    if (_recordedFilePath != null) {
-      final message = types.FileMessage(
-        author: _user,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: const Uuid().v4(),
-        mimeType: 'audio/aac',
-        name: 'Voice Message',
-        size: File(_recordedFilePath!).lengthSync(),
-        uri: _recordedFilePath!,
-      );
-
-      _addMessage(message);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final String abbreviatedName = widget.groupName![0] + widget.groupName!.split(' ')[1];
     const groupChatTheme = DefaultChatTheme(
       primaryColor: Color(0xFF0E7490),
       secondaryColor: Color(0xFFFBFAFA),
@@ -342,255 +423,464 @@ class _ChatPageState extends State<ChatPage> {
       attachmentButtonIcon: Icon(Icons.attach_file), // Attachment button icon
     );
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: person
-            ? const CustomAppBar(
-                title: "Thaowpsta",
-                avatarUrl:
-                    'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-              )
-            : AppBar(
-                backgroundColor: Colors.white,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  color: Colors.black,
+    if (widget.groupName != null && widget.groupName!.contains(' ')) {
+      final names = widget.groupName!.split(' ');
+      final abbreviatedName = names[0][0] + names[1][0];
+
+      return SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              color: Colors.black,
+            ),
+            title: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: const Color(0xFF0E7490),
+                  child: Text(
+                    abbreviatedName,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
-                title: Row(
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: const Color(0xFF0E7490),
-                      child: Text(
-                        abbreviatedName,
-                        style: const TextStyle(color: Colors.white),
+                    Text(
+                      widget.groupName!,
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.groupName!,
-                          style: GoogleFonts.ibmPlexMono(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    if (widget.membersNumber != null)
+                      Text(
+                        '${widget.membersNumber} members',
+                        style: GoogleFonts.ibmPlexMono(
+                          color: const Color(0xFF888888),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
                         ),
-                        Text(
-                          '${widget.membersNumber} members',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: const Color(0xFF888888),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
                   ],
                 ),
-              ),
-        body: Chat(
-            messages: _messages.map((wm) => wm.message).toList(),
-            onAttachmentPressed: _handleAttachmentPressed,
-            onMessageTap: _handleMessageTap,
-            onPreviewDataFetched: _handlePreviewDataFetched,
-            onSendPressed: _handleSendPressed,
-            showUserAvatars: person,
-            showUserNames: true,
-            user: _user,
-            theme: person ? personalChatTheme : groupChatTheme,
-            customBottomWidget: ValueListenableBuilder<bool>(
-              valueListenable: _isRecording,
-              builder: (context, isRecording, child) {
-                return isRecording
-                    ? Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF0E7490),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Recording...',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 8.0),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFBFAFA),
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _textController,
-                                  decoration: InputDecoration(
-                                      hintText: 'Type a message...',
-                                      border: InputBorder.none,
-                                      hintStyle: GoogleFonts.ibmPlexMono(
-                                        color: const Color(0xFF888888),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                      )),
-                                  style: const TextStyle(color: Colors.black),
-                                  onSubmitted: (value) {
-                                    if (value.isNotEmpty) {
-                                      _handleSendPressed(
-                                          types.PartialText(text: value));
-                                    }
-                                  },
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.attach_file,
-                                    color: Colors.black),
-                                onPressed: _handleAttachmentPressed,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-              },
+              ],
             ),
-            fileMessageBuilder: (message, {required int messageWidth}) {
-              if (message.mimeType?.startsWith('audio/') == true) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: message.author.id == _user.id
-                        ? Colors.blue
-                        : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: message.author.id == _user.id
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.audiotrack,
-                              color: message.author.id == _user.id
-                                  ? Colors.white
-                                  : Colors.black),
-                          const SizedBox(width: 8.0),
-                          Expanded(
-                            child: Text(
-                              'Voice Message',
-                              style: TextStyle(
-                                color: message.author.id == _user.id
-                                    ? Colors.white
-                                    : Colors.black,
+          ),
+          body: Chat(
+              messages: _messages.map((wm) => wm.message).toList(),
+              onAttachmentPressed: _handleAttachmentPressed,
+              onMessageTap: _handleMessageTap,
+              onPreviewDataFetched: _handlePreviewDataFetched,
+              onSendPressed: _handleSendPressed,
+              showUserAvatars: person,
+              showUserNames: true,
+              user: _user,
+              theme: groupChatTheme,
+              customBottomWidget: ValueListenableBuilder<bool>(
+                valueListenable: _isRecording,
+                builder: (context, isRecording, child) {
+                  return isRecording
+                      ? Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0E7490),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'Recording...',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          IconButton(
-                            icon: Icon(Icons.play_arrow,
-                                color: message.author.id == _user.id
-                                    ? Colors.white
-                                    : Colors.black),
-                            onPressed: () {
-                              _playAudio(message.uri);
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4.0),
-                      Row(
-                        mainAxisAlignment: message.author.id == _user.id
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            DateFormat('hh:mm a').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    message.createdAt!)),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 10.0),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              // For other file messages
-              return _buildCustomMessage(message, messageWidth: messageWidth);
-            }),
-        floatingActionButton: _showFloatingButton
-            ? ValueListenableBuilder<bool>(
-                valueListenable: _isTyping,
-                builder: (context, isTyping, child) {
-                  return isTyping
-                      ? FloatingActionButton(
-                          backgroundColor: const Color(0xFF0E7490),
-                          onPressed: () {
-                            final text = _textController.text.trim();
-                            if (text.isNotEmpty) {
-                              _handleSendPressed(types.PartialText(text: text));
-                            }
-                          },
-                          child: const Icon(Icons.send, color: Colors.white),
                         )
-                      : GestureDetector(
-                          onLongPress: _startRecording,
-                          onLongPressUp: _stopRecording,
-                          child: FloatingActionButton(
-                            backgroundColor: const Color(0xFF0E7490),
-                            onPressed: () {
-                              // Handle other functionalities
-                            },
-                            child: const Icon(Icons.mic, color: Colors.white),
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFBFAFA),
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _textController,
+                                    decoration: InputDecoration(
+                                        hintText: 'Type a message...',
+                                        border: InputBorder.none,
+                                        hintStyle: GoogleFonts.ibmPlexMono(
+                                          color: const Color(0xFF888888),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        )),
+                                    style: const TextStyle(color: Colors.black),
+                                    onSubmitted: (value) {
+                                      if (value.isNotEmpty) {
+                                        _handleSendPressed(
+                                            types.PartialText(text: value));
+                                      }
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.attach_file,
+                                      color: Colors.black),
+                                  onPressed: _handleAttachmentPressed,
+                                ),
+                              ],
+                            ),
                           ),
                         );
                 },
-              )
-            : null,
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-            }
-          },
-          context: context,
+              ),
+              fileMessageBuilder: (message, {required int messageWidth}) {
+                if (message.mimeType?.startsWith('audio/') == true) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      color: message.author.id == _user.id
+                          ? Colors.blue
+                          : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: message.author.id == _user.id
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.audiotrack,
+                                color: message.author.id == _user.id
+                                    ? Colors.white
+                                    : Colors.black),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Text(
+                                'Voice Message',
+                                style: TextStyle(
+                                  color: message.author.id == _user.id
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.play_arrow,
+                                  color: message.author.id == _user.id
+                                      ? Colors.white
+                                      : Colors.black),
+                              onPressed: () {
+                                _playAudio(message.uri);
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4.0),
+                        Row(
+                          mainAxisAlignment: message.author.id == _user.id
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              DateFormat('hh:mm a').format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      message.createdAt!)),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 10.0),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // For other file messages
+                return _buildCustomMessage(message, messageWidth: messageWidth);
+              }),
+          floatingActionButton: _showFloatingButton
+              ? ValueListenableBuilder<bool>(
+                  valueListenable: _isTyping,
+                  builder: (context, isTyping, child) {
+                    return isTyping
+                        ? FloatingActionButton(
+                            backgroundColor: const Color(0xFF0E7490),
+                            onPressed: () {
+                              final text = _textController.text.trim();
+                              if (text.isNotEmpty) {
+                                _handleSendPressed(
+                                    types.PartialText(text: text));
+                              }
+                            },
+                            child: const Icon(Icons.send, color: Colors.white),
+                          )
+                        : GestureDetector(
+                            onLongPress: _startRecording,
+                            onLongPressUp: _stopRecording,
+                            child: FloatingActionButton(
+                              backgroundColor: const Color(0xFF0E7490),
+                              onPressed: () {
+                                // Handle other functionalities
+                              },
+                              child: const Icon(Icons.mic, color: Colors.white),
+                            ),
+                          );
+                  },
+                )
+              : null,
+          bottomNavigationBar: CustomBottomNavBar(
+            onItemTapped: (index) {
+              switch (index) {
+                case 0:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                  );
+                  break;
+                case 1:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notifications()),
+                  );
+                  break;
+                case 2:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Chats()),
+                  );
+                  break;
+              }
+            },
+            context: context,
+          ),
         ),
-      ),
-    );
+      );
+
+    }else{
+      return SafeArea(
+        child: Scaffold(
+          appBar: CustomAppBar(
+            title: widget.receiver?.username ?? 'Chat',
+            avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+          ),
+          // Rest of the Scaffold remains the same
+          body:Chat(
+              messages: _messages.map((wm) => wm.message).toList(),
+              onAttachmentPressed: _handleAttachmentPressed,
+              onMessageTap: _handleMessageTap,
+              onPreviewDataFetched: _handlePreviewDataFetched,
+              onSendPressed: _handleSendPressed,
+              showUserAvatars: person,
+              showUserNames: true,
+              user: _user,
+              theme: personalChatTheme,
+              customBottomWidget: ValueListenableBuilder<bool>(
+                valueListenable: _isRecording,
+                builder: (context, isRecording, child) {
+                  return isRecording
+                      ? Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0E7490),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Recording...',
+                          style:
+                          TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  )
+                      : Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4.0, horizontal: 8.0),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFBFAFA),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _textController,
+                              decoration: InputDecoration(
+                                  hintText: 'Type a message...',
+                                  border: InputBorder.none,
+                                  hintStyle: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF888888),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  )),
+                              style: const TextStyle(color: Colors.black),
+                              onSubmitted: (value) {
+                                if (value.isNotEmpty) {
+                                  _handleSendPressed(
+                                      types.PartialText(text: value));
+                                }
+                              },
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.attach_file,
+                                color: Colors.black),
+                            onPressed: _handleAttachmentPressed,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              fileMessageBuilder: (message, {required int messageWidth}) {
+                if (message.mimeType?.startsWith('audio/') == true) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      color: message.author.id == _user.id
+                          ? Colors.blue
+                          : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: message.author.id == _user.id
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.audiotrack,
+                                color: message.author.id == _user.id
+                                    ? Colors.white
+                                    : Colors.black),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Text(
+                                'Voice Message',
+                                style: TextStyle(
+                                  color: message.author.id == _user.id
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.play_arrow,
+                                  color: message.author.id == _user.id
+                                      ? Colors.white
+                                      : Colors.black),
+                              onPressed: () {
+                                _playAudio(message.uri);
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4.0),
+                        Row(
+                          mainAxisAlignment: message.author.id == _user.id
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              DateFormat('hh:mm a').format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      message.createdAt!)),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 10.0),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // For other file messages
+                return _buildCustomMessage(message, messageWidth: messageWidth);
+              }),
+          floatingActionButton: _showFloatingButton
+              ? ValueListenableBuilder<bool>(
+            valueListenable: _isTyping,
+            builder: (context, isTyping, child) {
+              return isTyping
+                  ? FloatingActionButton(
+                backgroundColor: const Color(0xFF0E7490),
+                onPressed: () {
+                  final text = _textController.text.trim();
+                  if (text.isNotEmpty) {
+                    _handleSendPressed(types.PartialText(text: text));
+                  }
+                },
+                child: const Icon(Icons.send, color: Colors.white),
+              )
+                  : GestureDetector(
+                onLongPress: _startRecording,
+                onLongPressUp: _stopRecording,
+                child: FloatingActionButton(
+                  backgroundColor: const Color(0xFF0E7490),
+                  onPressed: () {
+                    // Handle other functionalities
+                  },
+                  child: const Icon(Icons.mic, color: Colors.white),
+                ),
+              );
+            },
+          )
+              : null,
+          bottomNavigationBar: CustomBottomNavBar(
+            onItemTapped: (index) {
+              switch (index) {
+                case 0:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                  );
+                  break;
+                case 1:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notifications()),
+                  );
+                  break;
+                case 2:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Chats()),
+                  );
+                  break;
+              }
+            },
+            context: context,
+          ),
+        ),
+      );
+    }
   }
+
   Widget _buildCustomMessage(types.Message message,
       {required int messageWidth}) {
     final messageTime = DateFormat('hh:mm a')
@@ -598,9 +888,9 @@ class _ChatPageState extends State<ChatPage> {
 
     // Define the colors based on whether the message is sent or received
     final messageColor =
-    message.author.id == _user.id ? Colors.blue : Colors.grey[300];
+        message.author.id == _user.id ? Colors.blue : Colors.grey[300];
     final textColor =
-    message.author.id == _user.id ? Colors.white : Colors.black;
+        message.author.id == _user.id ? Colors.white : Colors.black;
 
     Widget seenIndicator = const SizedBox.shrink(); // Default to no indicator
 
@@ -659,7 +949,7 @@ class _ChatPageState extends State<ChatPage> {
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         decoration: BoxDecoration(
           color:
-          messageColor, // Use the same color for image message background
+              messageColor, // Use the same color for image message background
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(

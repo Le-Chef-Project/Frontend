@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Models/Quiz.dart' as quizModel;
 import 'package:le_chef/Models/Video.dart';
+import 'package:le_chef/Models/direct_chat.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import '../Models/Notes.dart';
 import '../Models/Quiz.dart';
@@ -21,6 +22,7 @@ import 'apiendpoints.dart';
 
 class ApisMethods {
   static String? token = sharedPreferences.getString('token');
+
 //1-Login
   static Future<void> login(emailController, passwordController) async {
     var url = Uri.parse(
@@ -681,4 +683,49 @@ class ApisMethods {
       );
     }
   }
+
+  //17-send direct msg
+  static Future<void> sendDirectMsg(
+  String id,
+  List participants,
+  String sender,
+  String content,
+  List? images,
+  List? doc,
+  String? audio,
+  DateTime createdAt,
+) async {
+  var url = Uri.parse(
+      ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.sendDirectMsg + id);
+
+  var body = {
+    'participants': participants,
+    'sender': sender,
+    'content': content,
+    'images': images ?? [],
+    'documents': doc ?? [],
+    'audio': audio ?? "",
+    'createdAt': createdAt.toIso8601String(),
+  };
+
+  try {
+    http.Response response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('Error: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+    }
+  } catch (e) {
+    print('Error sending message: $e');
+  }
+}
 }
