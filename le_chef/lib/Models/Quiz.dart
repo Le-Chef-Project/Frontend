@@ -43,26 +43,6 @@ class Quiz {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    // Debug print
-    print(
-        'Converting to JSON with duration - hours: ${duration.inHours}, minutes: ${duration.inMinutes % 60}');
-
-    return {
-      '_id': id,
-      'title': title,
-      'questions': questions.map((q) => q.toJson()).toList(),
-      'duration': {
-        'hours': duration.inHours,
-        'minutes': duration.inMinutes % 60,
-      },
-      'educationLevel': level,
-      'Unit': unit,
-      'paid': isPaid,
-      'createdAt': createdAt.toIso8601String(),
-    };
-  }
-
   static List<Quiz> itemsFromSnapshot(List snapshot) {
     return snapshot.map((data) {
       print('Processing snapshot item: $data');

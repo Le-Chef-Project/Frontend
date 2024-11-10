@@ -88,9 +88,10 @@ class _ChatPageState extends State<ChatPage> {
 
     // Send message to database
     try {
-      await ApisMethods.sendDirectMsg(
+      if(person) {
+        await ApisMethods.sendDirectMsg(
         textMessage.id,
-        [_user.id, widget.receiver?.ID],
+        [_user.id, widget.receiver!.ID],
         _user.id,
         message.text,
         null,
@@ -101,6 +102,9 @@ class _ChatPageState extends State<ChatPage> {
         // audio
         DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
       );
+      }else{
+        await ApisMethods.sendGrpMsg(textMessage.id, textMessage.id, _user.id, message.text, null, null, null, DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),);
+      }
       print('Updated sending message');
     } catch (e) {
       print('Error sending message: $e');
@@ -136,9 +140,10 @@ class _ChatPageState extends State<ChatPage> {
 
       // Send to database
       try {
-        await ApisMethods.sendDirectMsg(
+        if(person) {
+          await ApisMethods.sendDirectMsg(
           message.id,
-          [_user.id, widget.receiver?.ID],
+          [_user.id, widget.receiver!.ID],
           _user.id,
           '',
           // No text content for image
@@ -148,6 +153,9 @@ class _ChatPageState extends State<ChatPage> {
           null,
           DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
         );
+        }else{
+          await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', [result.path], null, null, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+        }
       } catch (e) {
         print('Error sending image message: $e');
       }
@@ -175,9 +183,10 @@ class _ChatPageState extends State<ChatPage> {
 
       // Send to database
       try {
-        await ApisMethods.sendDirectMsg(
+        if(person) {
+          await ApisMethods.sendDirectMsg(
           message.id,
-          [_user.id, widget.receiver?.ID],
+          [_user.id, widget.receiver!.ID],
           _user.id,
           '',
           // No text content for file
@@ -187,6 +196,9 @@ class _ChatPageState extends State<ChatPage> {
           null,
           DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
         );
+        }else{
+          await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, [result.files.single.path], null, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+        }
       } catch (e) {
         print('Error sending file message: $e');
       }
@@ -213,9 +225,10 @@ class _ChatPageState extends State<ChatPage> {
 
       // Send to database
       try {
-        await ApisMethods.sendDirectMsg(
+        if(person) {
+          await ApisMethods.sendDirectMsg(
           message.id,
-          [_user.id, widget.receiver?.ID],
+          [_user.id, widget.receiver!.ID],
           _user.id,
           '',
           // No text content for audio
@@ -225,6 +238,9 @@ class _ChatPageState extends State<ChatPage> {
           // Audio path
           DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
         );
+        }else{
+          await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, null, _recordedFilePath, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+        }
       } catch (e) {
         print('Error sending audio message: $e');
       }

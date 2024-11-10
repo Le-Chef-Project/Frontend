@@ -38,4 +38,5 @@ class Content {
 
 class Chat{
   final sendDirectMsg = 'Chat/SendDirectMessage/';
+  final sendGrpMsg = 'Chat/SendGroupMessage/';
 }

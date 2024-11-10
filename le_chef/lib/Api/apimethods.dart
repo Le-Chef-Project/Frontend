@@ -696,10 +696,55 @@ class ApisMethods {
   DateTime createdAt,
 ) async {
   var url = Uri.parse(
-      ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.sendDirectMsg + id);
+      '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
 
   var body = {
     'participants': participants,
+    'sender': sender,
+    'content': content,
+    'images': images ?? [],
+    'documents': doc ?? [],
+    'audio': audio ?? "",
+    'createdAt': createdAt.toIso8601String(),
+  };
+
+  try {
+    http.Response response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('Error: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+    }
+  } catch (e) {
+    print('Error sending message: $e');
+  }
+}
+
+
+static Future<void> sendGrpMsg(
+  String id,
+  String group,
+  String sender,
+  String content,
+  List? images,
+  List? doc,
+  String? audio,
+  DateTime createdAt,
+) async {
+  var url = Uri.parse(
+      '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendGrpMsg}$id');
+
+  var body = {
+    'participants': group,
     'sender': sender,
     'content': content,
     'images': images ?? [],
