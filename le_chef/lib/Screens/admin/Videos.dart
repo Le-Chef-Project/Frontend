@@ -66,7 +66,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
                           builder: (context) =>
                               VideoPlayerScreen(url: video.url),
                         ),
-                      ),
+                      ), isLocked: false,
                     );
                   },
                 ),

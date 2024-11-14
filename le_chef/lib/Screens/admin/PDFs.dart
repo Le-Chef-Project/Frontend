@@ -70,7 +70,7 @@ class _AllPDFsState extends State<AllPDFs> {
                             pdfUrl: pdf.url,
                           ),
                         ),
-                      ),
+                      ), isLocked: false,
                     );
                   },
                 ),

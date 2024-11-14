@@ -140,7 +140,7 @@ class _AllVidState extends State<AllVid> {
                                 builder: (context) =>
                                     VideoPlayerScreen(url: video.url),
                               ),
-                            ),
+                            ), isLocked: video.isLocked,
                           );
                         },
                       ),

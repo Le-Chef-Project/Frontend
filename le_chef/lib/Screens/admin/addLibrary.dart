@@ -431,7 +431,7 @@ class _AddLibraryState extends State<AddLibrary> {
                     imageurl: selectedSection == 'Video' && _videoFile != null
                         ? 'assets/desk_book_apple.jpeg'
                         : 'assets/pdf.jpg',
-                    ontap: () => _handleNavigation(context),
+                    ontap: () => _handleNavigation(context), isLocked: false,
                   ),
                 )
               else

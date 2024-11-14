@@ -231,7 +231,7 @@ class _HomeState extends State<Home> {
                                 builder: (context) =>
                                     VideoPlayerScreen(url: video.url),
                               ),
-                            ),
+                            ), isLocked: video.isLocked,
                           );
                         },
                       ),
