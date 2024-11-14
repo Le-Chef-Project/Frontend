@@ -107,46 +107,35 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleImageSelection() async {
-    // Pick image from camera
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      try {
-        // Upload image to Cloudinary
-        final cloudinary = CloudinaryPublic('di31mcctd', 'image', cache: false);
-        final uploadResult = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(image.path, resourceType: CloudinaryResourceType.Image),
-        );
-
-        final String imageUrl = uploadResult.secureUrl;
-
         final message = types.ImageMessage(
           author: _user,
           createdAt: DateTime.now().millisecondsSinceEpoch,
           id: const Uuid().v4(),
           name: image.name ?? '',
           size: await image.length(),
-          uri: imageUrl,
+          uri: image.path,
         );
 
         _addMessage(message);
 
-        if (person) {
-          await ApisMethods.sendDirectMsg(
-            id: widget.receiver!.ID,
-            participants: [_user.id, widget.receiver!.ID],
-            sender: _user.id,
-            content: 'Image',
-            images: [imageUrl],
-            createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-          );
+        try {
+          if (person) {
+            await ApisMethods.sendDirectMsg(
+              id: widget.receiver!.ID,
+              participants: [_user.id, widget.receiver!.ID],
+              sender: _user.id,
+              content: 'Image',
+              images: [image.path],
+              createdAt: DateTime.fromMillisecondsSinceEpoch(
+                  message.createdAt!),
+            );
+          }
+        }catch(e){
+          print('Error sending image message: $e');
         }
-      } on CloudinaryException catch (e) {
-        print('Cloudinary exception: ${e.message}');
-        print('Cloudinary request: ${e.request}');
-      } catch (e) {
-        print('Error sending image message: $e');
-      }
     }
   }
 
@@ -156,10 +145,6 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     if (result != null && result.files.single.path != null) {
-      // Read file as bytes and convert to base64
-      final File file = File(result.files.single.path!);
-      final bytes = await file.readAsBytes();
-      final String base64File = base64Encode(bytes);
 
       final message = types.FileMessage(
         author: _user,
@@ -180,7 +165,7 @@ class _ChatPageState extends State<ChatPage> {
             participants: [_user.id, widget.receiver!.ID],
             sender: _user.id,
             content: 'Documents',
-            documents: [base64File], // Send base64 string instead of path
+            documents: [result.files.single.path!],
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
         }
@@ -197,7 +182,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return AudioData(
       data: base64Data,
-      contentType: 'audio/aac', // Adjust content type based on your audio format
+      contentType: 'audio/aac',
     );
   }
 

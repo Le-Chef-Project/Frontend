@@ -45,7 +45,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isLoading_Std = true;
   List<Student>? _Std;
   List<Quiz>? _exams;
-  bool _isLoading_Exams = true; // Add loading state for exams
+  bool _isLoading_Exams = true;
   List<Notes>? _notes;
   bool _isLoading_notes = true;
   List<PDF>? _pdfs;

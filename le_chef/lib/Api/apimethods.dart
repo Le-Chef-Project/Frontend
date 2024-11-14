@@ -41,6 +41,7 @@ class ApisMethods {
 
       if (response.statusCode == 200) {
         SharedPrefes.SaveToken(json['token']);
+        SharedPrefes.saveUserName(json['username']);
         SharedPrefes.SaveRole(json['role']);
         if (json['role'] == "admin") {
           Get.off(const THome(),

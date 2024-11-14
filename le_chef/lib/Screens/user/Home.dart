@@ -6,6 +6,9 @@ import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/login.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import '../../Api/apimethods.dart';
+import '../../Models/Notes.dart';
+import '../../Models/PDF.dart';
+import '../../Models/Quiz.dart';
 import '../../Models/Video.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_search_view.dart';
@@ -25,9 +28,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  TextEditingController searchController = TextEditingController();
   final int _selectedIndex = 0; // Initial index for Chats screen
   static int? level = sharedPreferences.getInt('educationLevel');
+  String? userName;
+  List<Quiz>? _exams;
+  bool _isLoading_Exams = true;
+  List<Notes>? _notes;
+  bool _isLoading_notes = true;
+  List<PDF>? _pdfs;
+  bool _isLoading_pdfs = true;
+
 
   Future<List<Video>>? _VideosFuture;
 
@@ -35,6 +45,34 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _VideosFuture = _fetchAndSortVideos();
+    userName = sharedPreferences.getString('userName') ?? 'Unknown Name';
+    getExams();
+    getNotes();
+    getPDFs();
+  }
+
+  Future<void> getExams() async {
+    _exams = await ApisMethods.getAllQuizzes();
+    print('apiii $_exams + ${_exams?.length}');
+    setState(() {
+      _isLoading_Exams = false;
+    });
+  }
+
+  Future<void> getNotes() async {
+    _notes = await ApisMethods.fetchAllNotes();
+    print('apiii $_notes + ${_notes?.length}');
+    setState(() {
+      _isLoading_notes = false;
+    });
+  }
+
+  Future<void> getPDFs() async {
+    _pdfs = await ApisMethods().fetchAllPDFs();
+    print('apiii $_pdfs + ${_pdfs?.length}');
+    setState(() {
+      _isLoading_pdfs = false;
+    });
   }
 
   Future<List<Video>> _fetchAndSortVideos() async {
@@ -95,7 +133,7 @@ class _HomeState extends State<Home> {
                       Container(
                         color: const Color(0x00565656),
                         child: Text(
-                          'Christine Gabrail',
+                          userName != null? userName! : 'Nulllll',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF164863),
                             fontSize: 22,
@@ -122,13 +160,6 @@ class _HomeState extends State<Home> {
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: CustomSearchView(
-                      onChanged: ((p0) {}),
-                      clear: () {},
-                      controller: searchController,
-                      hintText: "Search Text")),
               Container(
                 width: 400,
                 height: 48,
@@ -228,7 +259,9 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "Exams",
-                          Number: "15",
+                          Number: _isLoading_Exams
+                              ? "..."
+                              : "${_exams?.length ?? 0}",
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           //Todo go to exam for student
                           onTapCardRec: () => Get.to(
@@ -242,7 +275,7 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "Library",
-                          Number: "20",
+                          Number: _isLoading_pdfs ? '...' : '${_pdfs?.length ?? 0}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Get.to(
                               () => LibraryTabContainerScreen(
@@ -261,7 +294,9 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "Notes",
-                          Number: "10",
+                          Number:  _isLoading_notes
+                              ? '...'
+                              : '${_notes?.length ?? 0}',
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Get.to(
                               () => NotesScreen(
