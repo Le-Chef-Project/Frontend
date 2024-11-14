@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -19,6 +20,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
+import '../Models/direct_chat.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import 'user/Home.dart';
@@ -38,7 +40,6 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   List<WrappedMessage> _messages = [];
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   final _user = const types.User(
     id: '67085c58db26c90500708af9',
@@ -83,27 +84,19 @@ class _ChatPageState extends State<ChatPage> {
       text: message.text,
     );
 
-    // Add message to UI first for immediate feedback
     _addMessage(textMessage);
 
-    // Send message to database
     try {
       if(person) {
         await ApisMethods.sendDirectMsg(
-        textMessage.id,
-        [_user.id, widget.receiver!.ID],
-        _user.id,
-        message.text,
-        null,
-        // images
-        null,
-        // documents
-        null,
-        // audio
-        DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
+        id: widget.receiver!.ID,
+          participants: [_user.id, widget.receiver!.ID],
+          sender: _user.id,
+          content: message.text,
+          createdAt: DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
       );
       }else{
-        await ApisMethods.sendGrpMsg(textMessage.id, textMessage.id, _user.id, message.text, null, null, null, DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),);
+        // await ApisMethods.sendGrpMsg(textMessage.id, textMessage.id, _user.id, message.text, null, null, null, DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),);
       }
       print('Updated sending message');
     } catch (e) {
@@ -114,48 +107,43 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleImageSelection() async {
-    final result = await ImagePicker().pickImage(
-      imageQuality: 70,
-      maxWidth: 1440,
-      source: ImageSource.gallery,
-    );
+    // Pick image from camera
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (result != null) {
-      final bytes = await result.readAsBytes();
-      final image = await decodeImageFromList(bytes);
-
-      final message = types.ImageMessage(
-        author: _user,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        height: image.height.toDouble(),
-        id: const Uuid().v4(),
-        name: result.name ?? '',
-        size: bytes.length,
-        uri: result.path,
-        width: image.width.toDouble(),
-      );
-
-      // Add message to UI
-      _addMessage(message);
-
-      // Send to database
+    if (image != null) {
       try {
-        if(person) {
-          await ApisMethods.sendDirectMsg(
-          message.id,
-          [_user.id, widget.receiver!.ID],
-          _user.id,
-          '',
-          // No text content for image
-          [result.path],
-          // Image path
-          null,
-          null,
-          DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+        // Upload image to Cloudinary
+        final cloudinary = CloudinaryPublic('di31mcctd', 'image', cache: false);
+        final uploadResult = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(image.path, resourceType: CloudinaryResourceType.Image),
         );
-        }else{
-          await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', [result.path], null, null, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+
+        final String imageUrl = uploadResult.secureUrl;
+
+        final message = types.ImageMessage(
+          author: _user,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: const Uuid().v4(),
+          name: image.name ?? '',
+          size: await image.length(),
+          uri: imageUrl,
+        );
+
+        _addMessage(message);
+
+        if (person) {
+          await ApisMethods.sendDirectMsg(
+            id: widget.receiver!.ID,
+            participants: [_user.id, widget.receiver!.ID],
+            sender: _user.id,
+            content: 'Image',
+            images: [imageUrl],
+            createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+          );
         }
+      } on CloudinaryException catch (e) {
+        print('Cloudinary exception: ${e.message}');
+        print('Cloudinary request: ${e.request}');
       } catch (e) {
         print('Error sending image message: $e');
       }
@@ -168,6 +156,11 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     if (result != null && result.files.single.path != null) {
+      // Read file as bytes and convert to base64
+      final File file = File(result.files.single.path!);
+      final bytes = await file.readAsBytes();
+      final String base64File = base64Encode(bytes);
+
       final message = types.FileMessage(
         author: _user,
         createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -178,31 +171,34 @@ class _ChatPageState extends State<ChatPage> {
         uri: result.files.single.path!,
       );
 
-      // Add message to UI
       _addMessage(message);
 
-      // Send to database
       try {
         if(person) {
           await ApisMethods.sendDirectMsg(
-          message.id,
-          [_user.id, widget.receiver!.ID],
-          _user.id,
-          '',
-          // No text content for file
-          null,
-          [result.files.single.path!],
-          // Document path
-          null,
-          DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-        );
-        }else{
-          await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, [result.files.single.path], null, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+            id: widget.receiver!.ID,
+            participants: [_user.id, widget.receiver!.ID],
+            sender: _user.id,
+            content: 'Documents',
+            documents: [base64File], // Send base64 string instead of path
+            createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+          );
         }
       } catch (e) {
         print('Error sending file message: $e');
       }
     }
+  }
+
+  Future<AudioData> _createAudioData(String filePath) async {
+    final file = File(filePath);
+    final bytes = await file.readAsBytes();
+    final base64Data = base64Encode(bytes);
+
+    return AudioData(
+      data: base64Data,
+      contentType: 'audio/aac', // Adjust content type based on your audio format
+    );
   }
 
   void _stopRecording() async {
@@ -226,20 +222,18 @@ class _ChatPageState extends State<ChatPage> {
       // Send to database
       try {
         if(person) {
+          final audioData = await _createAudioData(_recordedFilePath!);
           await ApisMethods.sendDirectMsg(
-          message.id,
-          [_user.id, widget.receiver!.ID],
-          _user.id,
-          '',
-          // No text content for audio
-          null,
-          null,
-          _recordedFilePath,
+          id: widget.receiver!.ID,
+            participants: [_user.id, widget.receiver!.ID],
+          sender: _user.id,
+          content: 'Audio',
+            audio: audioData,
           // Audio path
-          DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+            createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
         );
         }else{
-          await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, null, _recordedFilePath, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+          // await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, null, _recordedFilePath, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
         }
       } catch (e) {
         print('Error sending audio message: $e');

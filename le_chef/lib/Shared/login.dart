@@ -53,8 +53,9 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                keyboardType: TextInputType.emailAddress,
                 controller: _userNameController,
-                decoration: textInputDecoration.copyWith(hintText: 'email'),
+                decoration: textInputDecoration.copyWith(hintText: 'Email'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Enter an email';

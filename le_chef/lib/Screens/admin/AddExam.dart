@@ -709,7 +709,7 @@ class _AddExamState extends State<AddExam> {
                             ScrollableTimeInput(
                               controller: _minuteOneController,
                               validator: _validateTime,
-                              maxValue: 9, // For first minute digit
+                              maxValue: 6, // For first minute digit
                             ),
 
                             SizedBox(
