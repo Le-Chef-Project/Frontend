@@ -12,8 +12,10 @@ import 'package:le_chef/Shared/custom_elevated_button.dart';
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
 import '../../Shared/customBottomNavBar.dart';
+import '../../Shared/login.dart';
 import '../../Shared/meeting/online_session_screen.dart';
 import '../../Shared/textInputDecoration.dart';
+import '../../main.dart';
 import '../../theme/custom_button_style.dart';
 import '../Notes.dart';
 import '../notification.dart';
@@ -74,7 +76,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     });
   }
 
-  Future<void> getNotes() async{
+  Future<void> getNotes() async {
     _notes = await ApisMethods.fetchAllNotes();
     print('apiii $_notes + ${_notes?.length}');
     setState(() {
@@ -82,7 +84,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     });
   }
 
-  Future<void> getPDFs() async{
+  Future<void> getPDFs() async {
     _pdfs = await ApisMethods().fetchAllPDFs();
     print('apiii $_pdfs + ${_pdfs?.length}');
     setState(() {
@@ -281,13 +283,19 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
           surfaceTintColor: Colors.white,
           leading: Image.asset('assets/Rectangle 4.png'),
           actions: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 23),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: 50,
+            GestureDetector(
+              onTap: () {
+                sharedPreferences.remove('token');
+                Get.to(Login());
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 23),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    'assets/logo.png',
+                    height: 50,
+                  ),
                 ),
               ),
             ),
@@ -367,7 +375,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Library",
-                          Number: _isLoading_pdfs? '...' : '${_pdfs?.length ?? 0}',
+                          Number:
+                              _isLoading_pdfs ? '...' : '${_pdfs?.length ?? 0}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Navigator.push(
                             context,
@@ -388,7 +397,9 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Notes",
-                          Number: _isLoading_notes ? '...' : '${_notes?.length ?? 0}',
+                          Number: _isLoading_notes
+                              ? '...'
+                              : '${_notes?.length ?? 0}',
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Navigator.push(
                             context,
@@ -417,7 +428,13 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                             ),
                           ),
                           child: GestureDetector(
-                            onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => OnlineSessionScreen()));},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          OnlineSessionScreen()));
+                            },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

@@ -808,9 +808,14 @@ class _AddExamState extends State<AddExam> {
           child: CustomElevatedButton(
             height: 55,
             onPressed: ()
-             => dialogWithButtons(context: context, icon: Icon(Icons.error_outline_rounded,
-               color: Color(0xFF164863),
-               size: 150,), title: 'Are you sure you finish putting Exam ?', button1Text: 'Finish Exam', button1Action: _submitQuiz, button2Text: 'Cancel', button2Action: () => Navigator.pop(context)),
+            => dialogWithButtons(context: context, icon: Icon(Icons.error_outline_rounded,
+              color: Color(0xFF164863),
+              size: 150,),
+              title: 'Are you sure you finish putting Exam ?', 
+              button1Text: 'Finish Exam', 
+              button1Action: _submitQuiz, 
+              button2Text: 'Cancel',
+              button2Action: () => Navigator.pop(context)),
             // Submit the form and add the quiz
             text: 'Submit',
             buttonStyle: ElevatedButton.styleFrom(

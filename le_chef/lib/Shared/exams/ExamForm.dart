@@ -30,8 +30,6 @@ class _QuizPageState extends State<QuizPage> {
   List<Map<String, dynamic>> answers =
       []; // This will store answers for submission
 
-  String result = '';
-
   final _formKey = GlobalKey<FormState>();
   final _hourOneController = TextEditingController();
   final _hourTwoController = TextEditingController();
@@ -226,15 +224,14 @@ class _QuizPageState extends State<QuizPage> {
       answers.add({
         'questionId': widget.quiz.questions[i].id,
         'selectedOption':
-            selectedAnswerIndex + 1, // Using the selected index directly
+            selectedAnswerIndex, // Using the selected index directly
       });
 
-      result = ApisMethods.submitQuiz(answers, widget.quiz.id) as String;
+      final response = ApisMethods.submitQuiz(answers, widget.quiz.id);
     }
 
     // At this point, all questions have been answered
     print(' showing answers' + '${answers}'); // For debugging
-    print(' result' + '${result}'); // For debugging
   }
 
   void _updateQuizTime() {

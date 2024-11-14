@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:le_chef/Shared/custom_app_bar.dart';
 import '../Api/apimethods.dart';
 import '../Models/Notes.dart';
 import '../main.dart';
@@ -48,8 +49,8 @@ class _NotesScreenState extends State<NotesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: role == "user"
-          ? AppBar(
-              title: Text('Notes'),
+          ? CustomAppBar(
+              title: 'Notes',
             )
           : null,
       body: FutureBuilder<List<Notes>>(

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
+import 'package:le_chef/Shared/login.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import '../../Api/apimethods.dart';
 import '../../Models/Video.dart';
@@ -63,15 +64,21 @@ class _HomeState extends State<Home> {
           leading:
               Image.asset('assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp'),
           actions: [
-            Container(
-                margin: const EdgeInsets.symmetric(horizontal: 23),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'assets/logo.png',
-                    height: 50,
-                  ),
-                )),
+            GestureDetector(
+              onTap: () {
+                sharedPreferences.remove('token');
+                Get.to(Login());
+              },
+              child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 23),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      'assets/logo.png',
+                      height: 50,
+                    ),
+                  )),
+            ),
           ],
         ),
         body: SingleChildScrollView(
