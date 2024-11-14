@@ -10,6 +10,7 @@ import 'package:le_chef/Models/Quiz.dart' as quizModel;
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Models/direct_chat.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
+import 'package:le_chef/Screens/user/examResultbyID.dart';
 import '../Models/Notes.dart';
 import '../Models/Quiz.dart';
 import '../Models/Student.dart';
@@ -628,7 +629,7 @@ class ApisMethods {
 
   //16- submit quiz
 
-  static Future<String> submitQuiz(
+  static Future<String> submitQuiz(quizModel.Quiz quiz,
     answers,
     String quizID,
   ) async {
@@ -640,6 +641,7 @@ class ApisMethods {
         body: jsonEncode({'answers': answers}));
 
     if (response.statusCode == 201) {
+      Get.to(ExamResult(quiz_result: jsonDecode(response.body) , quiz: quiz,));
       return jsonDecode(response.body);
     } else {
       throw Exception(
@@ -712,7 +714,8 @@ class ApisMethods {
       'images': images ?? [],
       'documents': documents ?? [],
       'audio': audioData,
-      'createdAt': createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
+      'createdAt':
+          createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
     };
 
     try {
@@ -738,7 +741,6 @@ class ApisMethods {
       throw Exception('Failed to send message: $e');
     }
   }
-
 
   //18-send grp msg
   static Future<void> sendGroupMsg({
@@ -772,7 +774,8 @@ class ApisMethods {
           'images': images ?? [],
           'documents': documents ?? [],
           'audio': audioData,
-          'createdAt': createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
+          'createdAt':
+              createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
         }
       ]
     };

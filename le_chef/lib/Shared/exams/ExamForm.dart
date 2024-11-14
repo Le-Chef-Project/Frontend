@@ -29,6 +29,7 @@ class _QuizPageState extends State<QuizPage> {
   List<TextEditingController> _answerControllers = [];
   List<Map<String, dynamic>> answers =
       []; // This will store answers for submission
+  bool isSubmitted = false;
 
   final _formKey = GlobalKey<FormState>();
   final _hourOneController = TextEditingController();
@@ -102,7 +103,9 @@ class _QuizPageState extends State<QuizPage> {
       if (_start == 0) {
         setState(() {
           _timer?.cancel();
-          _submitAnswers();
+          if (isSubmitted == false) {
+            _submitAnswers();
+          }
         });
       } else {
         setState(() {
@@ -227,7 +230,11 @@ class _QuizPageState extends State<QuizPage> {
             selectedAnswerIndex, // Using the selected index directly
       });
 
-      final response = ApisMethods.submitQuiz(answers, widget.quiz.id);
+      final response =
+          ApisMethods.submitQuiz(widget.quiz, answers, widget.quiz.id);
+      setState(() {
+        isSubmitted = true;
+      });
     }
 
     // At this point, all questions have been answered
