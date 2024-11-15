@@ -38,6 +38,7 @@ class ApisMethods {
       print('apiiii $emailController + $passwordController ');
       final json = jsonDecode(response.body);
       print('apiiii ${json['role']}');
+      print('apiiii ${json}');
 
       if (response.statusCode == 200) {
         SharedPrefes.SaveToken(json['token']);
@@ -630,7 +631,8 @@ class ApisMethods {
 
   //16- submit quiz
 
-  static Future<String> submitQuiz(quizModel.Quiz quiz,
+  static Future<Map<String, dynamic>> submitQuiz(
+    quizModel.Quiz quiz,
     answers,
     String quizID,
   ) async {
@@ -642,7 +644,10 @@ class ApisMethods {
         body: jsonEncode({'answers': answers}));
 
     if (response.statusCode == 201) {
-      Get.to(ExamResult(quiz_result: jsonDecode(response.body) , quiz: quiz,));
+      Get.to(ExamResult(
+        quiz_result: jsonDecode(response.body),
+        quiz: quiz,
+      ));
       return jsonDecode(response.body);
     } else {
       throw Exception(

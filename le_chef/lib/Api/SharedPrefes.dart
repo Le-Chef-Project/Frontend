@@ -16,8 +16,8 @@ class SharedPrefes {
     prefs.setInt('educationLevel', educationLevel);
   }
 
-  static Future<void> saveUserName(String name) async {
+  static Future saveUserName(String name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userName', name);
+    prefs.setString('userName', name);
   }
 }

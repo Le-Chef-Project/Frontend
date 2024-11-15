@@ -30,7 +30,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final int _selectedIndex = 0; // Initial index for Chats screen
   static int? level = sharedPreferences.getInt('educationLevel');
-  String? userName;
+  String? userName = sharedPreferences.getString('userName');
   List<Quiz>? _exams;
   bool _isLoading_Exams = true;
   List<Notes>? _notes;
@@ -38,14 +38,12 @@ class _HomeState extends State<Home> {
   List<PDF>? _pdfs;
   bool _isLoading_pdfs = true;
 
-
   Future<List<Video>>? _VideosFuture;
 
   @override
   void initState() {
     super.initState();
     _VideosFuture = _fetchAndSortVideos();
-    userName = sharedPreferences.getString('userName') ?? 'Unknown Name';
     getExams();
     getNotes();
     getPDFs();
@@ -133,7 +131,7 @@ class _HomeState extends State<Home> {
                       Container(
                         color: const Color(0x00565656),
                         child: Text(
-                          userName != null? userName! : 'Nulllll',
+                          userName != null ? userName! : 'Nulllll',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF164863),
                             fontSize: 22,
@@ -231,7 +229,8 @@ class _HomeState extends State<Home> {
                                 builder: (context) =>
                                     VideoPlayerScreen(url: video.url),
                               ),
-                            ), isLocked: video.isLocked,
+                            ),
+                            isLocked: video.isLocked,
                           );
                         },
                       ),
@@ -275,7 +274,8 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "Library",
-                          Number: _isLoading_pdfs ? '...' : '${_pdfs?.length ?? 0}',
+                          Number:
+                              _isLoading_pdfs ? '...' : '${_pdfs?.length ?? 0}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Get.to(
                               () => LibraryTabContainerScreen(
@@ -294,7 +294,7 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: _buildCardRec(context,
                           Title: "Notes",
-                          Number:  _isLoading_notes
+                          Number: _isLoading_notes
                               ? '...'
                               : '${_notes?.length ?? 0}',
                           ImagePath: 'assets/Wonder Learners Book.png',

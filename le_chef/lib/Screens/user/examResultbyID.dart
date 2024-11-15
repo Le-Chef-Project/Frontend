@@ -205,13 +205,14 @@ class _ExamResultState extends State<ExamResult> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         decoration: ShapeDecoration(
-                          color: unanswerQuestions.contains(
+                          color: Colors.grey[100],
+                          /* unanswerQuestions.contains(
                                   widget.quiz.questions[selectedQuestion].id)
                               ? Colors.yellow
                               : correctQuestions.contains(widget
                                       .quiz.questions[selectedQuestion].id)
                                   ? Colors.green
-                                  : Colors.red,
+                                  : Colors.red,*/
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -247,7 +248,25 @@ class _ExamResultState extends State<ExamResult> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
+                                    color: answerIndex ==
+                                            widget
+                                                .quiz
+                                                .questions[selectedQuestion]
+                                                .options
+                                                .indexOf(widget
+                                                    .quiz
+                                                    .questions[selectedQuestion]
+                                                    .answer)
+                                        ? unanswerQuestions.contains(widget.quiz
+                                                .questions[selectedQuestion].id)
+                                            ? Colors.yellow
+                                            : correctQuestions.contains(widget
+                                                    .quiz
+                                                    .questions[selectedQuestion]
+                                                    .id)
+                                                ? Colors.green
+                                                : Colors.red
+                                        : Colors.white,
                                   ),
                                   child: ListTile(
                                     leading: Container(
