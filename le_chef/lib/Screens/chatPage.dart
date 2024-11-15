@@ -32,7 +32,7 @@ class ChatPage extends StatefulWidget {
   final Student? receiver;
   final int? membersNumber;
 
-  ChatPage({Key? key, this.groupName, this.membersNumber, this.receiver})
+  const ChatPage({Key? key, this.groupName, this.membersNumber, this.receiver})
       : super(key: key);
 
   @override
@@ -42,19 +42,21 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<WrappedMessage> _messages = [];
 
-  final _user = const types.User(
-    id: '67085c58db26c90500708af9',
-  );
 
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
-  String? _userId = sharedPreferences.getString('_id');
+  final String? _userId = sharedPreferences.getString('_id');
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
   bool person = true;
   bool _showFloatingButton = true;
+
+  types.User get _user {
+    return types.User(id: _userId ?? '');
+  }
+
 
   @override
   void initState() {
@@ -90,6 +92,7 @@ class _ChatPageState extends State<ChatPage> {
 
     try {
       if(person) {
+        print('Sender id: ${_user.id} \nReciever Id: ${widget.receiver!.ID}');
         await ApisMethods.sendDirectMsg(
         id: widget.receiver!.ID,
           participants: [_user.id, widget.receiver!.ID],
@@ -125,6 +128,7 @@ class _ChatPageState extends State<ChatPage> {
 
         try {
           if (person) {
+            print('Image path: ${image.path} and Image file path: ${File(image.path)}');
             await ApisMethods.sendDirectMsg(
               id: widget.receiver!.ID,
               participants: [_user.id, widget.receiver!.ID],

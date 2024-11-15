@@ -672,18 +672,14 @@ class ApisMethods {
   }) async {
     final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
 
-    // Create multipart request
     var request = http.MultipartRequest('POST', url);
 
-    // Add headers
     request.headers['token'] = token!;
 
-    // Add text fields
     request.fields['sender'] = sender;
     request.fields['content'] = content;
     request.fields['createdAt'] = (createdAt ?? DateTime.now()).toIso8601String();
 
-    // Add audio data if present
     if (audio != null) {
       request.fields['audio'] = jsonEncode({
         'data': audio.data,
@@ -691,7 +687,6 @@ class ApisMethods {
       });
     }
 
-    // Handle images
     if (images != null && images.isNotEmpty) {
       for (var i = 0; i < images.length; i++) {
         final imageFile = await http.MultipartFile.fromPath(
@@ -703,7 +698,6 @@ class ApisMethods {
       }
     }
 
-    // Handle documents
     if (documents != null && documents.isNotEmpty) {
       for (var i = 0; i < documents.length; i++) {
         final documentFile = await http.MultipartFile.fromPath(
@@ -716,7 +710,6 @@ class ApisMethods {
     }
 
     try {
-      // Send the multipart request
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
@@ -734,6 +727,8 @@ class ApisMethods {
     }
   }
 
+
+
   //18-send grp msg
   static Future<void> sendGroupMsg({
     required String id,
@@ -748,7 +743,6 @@ class ApisMethods {
     final url = Uri.parse(
         '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendGrpMsg}$id');
 
-    // Convert audio data to base64 if present
     Map<String, dynamic>? audioData;
     if (audio != null) {
       audioData = {
