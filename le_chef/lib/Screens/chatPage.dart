@@ -57,6 +57,25 @@ class _ChatPageState extends State<ChatPage> {
     return types.User(id: _userId ?? '');
   }
 
+  Future<void> _fetchMessages() async {
+    try {
+      final rawMessages = await ApisMethods.getDirectMsgs('6735eae27b71a250d32cd2cd');
+
+      // Convert the raw data into a list of WrappedMessage objects
+      final messages = rawMessages.map<WrappedMessage>((message) {
+        return WrappedMessage(
+          message: types.Message.fromJson(message['message']), // Assuming types.Message has a fromJson method
+          seen: message['seen'] ?? false,
+        );
+      }).toList();
+
+      setState(() {
+        _messages = messages;
+      });
+    } catch (e) {
+      print('Failed to load messages: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -64,6 +83,7 @@ class _ChatPageState extends State<ChatPage> {
     _textController.addListener(_onTextChanged);
     _loadMessages();
     _initRecorder();
+    _fetchMessages();
   }
 
   @override
@@ -1041,4 +1061,11 @@ class WrappedMessage {
   final bool seen;
 
   WrappedMessage({required this.message, required this.seen});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'message': message.toJson(),
+      'seen': seen,
+    };
+  }
 }

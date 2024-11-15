@@ -727,9 +727,39 @@ class ApisMethods {
     }
   }
 
+  //18-get direct msgs
+  static Future<List<Map<String, dynamic>>> getDirectMsgs(String chatId) async {
+    final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.getDirectMsg}$chatId');
 
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token!,
+        },
+      );
 
-  //18-send grp msg
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['messages'] != null) {
+          return List<Map<String, dynamic>>.from(responseData['messages']);
+        } else {
+          throw Exception('No messages found');
+        }
+      } else {
+        print('Error: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+        throw Exception('Failed to retrieve messages');
+      }
+    } catch (e) {
+      print('Error retrieving messages: $e');
+      throw Exception('Error retrieving messages: $e');
+    }
+  }
+
+  //19-send grp msg
   static Future<void> sendGroupMsg({
     required String id,
     required String group,

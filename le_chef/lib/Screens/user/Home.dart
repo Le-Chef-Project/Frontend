@@ -52,6 +52,8 @@ class _HomeState extends State<Home> {
   Future<void> getExams() async {
     _exams = await ApisMethods.getAllQuizzes();
     print('apiii $_exams + ${_exams?.length}');
+
+    _exams = _exams?.where((exam) => exam.level == level).toList();
     setState(() {
       _isLoading_Exams = false;
     });
@@ -60,6 +62,8 @@ class _HomeState extends State<Home> {
   Future<void> getNotes() async {
     _notes = await ApisMethods.fetchAllNotes();
     print('apiii $_notes + ${_notes?.length}');
+
+    _notes = _notes?.where((note) => note.educationLevel == level).toList();
     setState(() {
       _isLoading_notes = false;
     });
@@ -68,6 +72,8 @@ class _HomeState extends State<Home> {
   Future<void> getPDFs() async {
     _pdfs = await ApisMethods().fetchAllPDFs();
     print('apiii $_pdfs + ${_pdfs?.length}');
+
+    _pdfs = _pdfs?.where((pdf) => pdf.educationLevel == level).toList();
     setState(() {
       _isLoading_pdfs = false;
     });
