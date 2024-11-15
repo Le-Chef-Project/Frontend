@@ -7,6 +7,7 @@ class Quiz {
   final int unit;
   final bool isPaid;
   final DateTime createdAt;
+  final double? amountToPay;
 
   Quiz({
     required this.id,
@@ -17,6 +18,7 @@ class Quiz {
     required this.unit,
     required this.isPaid,
     required this.createdAt,
+    this.amountToPay,
   });
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class Quiz {
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : DateTime.now(),
+      amountToPay: json['paid'] == true ? json['amountToPay']?.toDouble() : null,
     );
   }
 
