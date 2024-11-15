@@ -237,6 +237,7 @@ class _QuizPageState extends State<QuizPage> {
       });
     }
 
+
     // At this point, all questions have been answered
     print(' showing answers' + '${answers}'); // For debugging
   }

@@ -142,7 +142,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         child: Text(
-                          'Level ${level}',
+                          'Level $level',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF427D9D),
                             fontSize: 16,

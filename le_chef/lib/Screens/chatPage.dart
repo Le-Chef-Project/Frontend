@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/main.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,6 +49,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
+  String? _userId = sharedPreferences.getString('_id');
 
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
@@ -128,7 +130,7 @@ class _ChatPageState extends State<ChatPage> {
               participants: [_user.id, widget.receiver!.ID],
               sender: _user.id,
               content: 'Image',
-              images: [image.path],
+              images: [File(image.path)],
               createdAt: DateTime.fromMillisecondsSinceEpoch(
                   message.createdAt!),
             );
@@ -165,7 +167,7 @@ class _ChatPageState extends State<ChatPage> {
             participants: [_user.id, widget.receiver!.ID],
             sender: _user.id,
             content: 'Documents',
-            documents: [result.files.single.path!],
+            documents: [File(result.files.single.path!)],
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
         }
@@ -1036,32 +1038,3 @@ class WrappedMessage {
 
   WrappedMessage({required this.message, required this.seen});
 }
-
-// class CustomTextMessage extends types.TextMessage {
-//   final types.PreviewData? previewData;
-//
-//   CustomTextMessage({
-//     required String id,
-//     required types.User author,
-//     required int createdAt,
-//     required String text,
-//     this.previewData,
-//   }) : super(id: id, author: author, createdAt: createdAt, text: text);
-//
-//   @override
-//   CustomTextMessage copyWith({
-//     String? id,
-//     types.User? author,
-//     int createdAt,
-//     String? text,
-//     types.PreviewData? previewData,
-//   }) {
-//     return CustomTextMessage(
-//       id: id ?? this.id,
-//       author: author ?? this.author,
-//       createdAt: createdAt ?? this.createdAt,
-//       text: text ?? this.text,
-//       previewData: previewData ?? this.previewData,
-//     );
-//   }
-// }

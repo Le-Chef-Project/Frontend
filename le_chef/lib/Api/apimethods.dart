@@ -1,24 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Models/Quiz.dart' as quizModel;
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Models/direct_chat.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Screens/user/examResultbyID.dart';
+import 'package:path/path.dart'; // To get the file name
+
 import '../Models/Notes.dart';
 import '../Models/Quiz.dart';
 import '../Models/Student.dart';
-import '../Shared/exams/exams.dart';
 import '../Screens/user/Home.dart';
 import '../main.dart';
 import 'SharedPrefes.dart';
-import 'package:path/path.dart'; // To get the file name
 import 'apiendpoints.dart';
 
 class ApisMethods {
@@ -43,6 +43,7 @@ class ApisMethods {
       if (response.statusCode == 200) {
         SharedPrefes.SaveToken(json['token']);
         SharedPrefes.saveUserName(json['username']);
+        SharedPrefes.saveUserId(json['_id']);
         SharedPrefes.SaveRole(json['role']);
         if (json['role'] == "admin") {
           Get.off(const THome(),
@@ -80,13 +81,7 @@ class ApisMethods {
   }
 
   // 2-Add Student
-  static Future<String> AddStudent(
-      emailController,
-      passwordController,
-      phoneController,
-      usernameController,
-      firstnameController,
-      lastnameController) async {
+  static Future<String> AddStudent(emailController, passwordController, phoneController, usernameController, firstnameController, lastnameController) async {
     String? Mess;
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.AddStudent);
@@ -177,16 +172,7 @@ class ApisMethods {
   }
 
 //5- add quiz
-  static Future<void> addQuiz({
-    required String title,
-    required List<dynamic> questions,
-    required int hours,
-    required int minutes,
-    required int? level,
-    required int? unit,
-    required bool isPaid,
-    double? amountToPay,
-  }) async {
+  static Future<void> addQuiz({required String title, required List<dynamic> questions, required int hours, required int minutes, required int? level, required int? unit, required bool isPaid, double? amountToPay,}) async {
     if (questions.isEmpty) {
       throw Exception('Questions list cannot be empty');
     }
@@ -240,14 +226,7 @@ class ApisMethods {
   }
 
 //6- upload video
-  static Future<void> uploadVideo({
-    required File videoFile,
-    required String title,
-    required String description,
-    double? amountToPay,
-    required bool paid,
-    required int educationLevel,
-  }) async {
+  static Future<void> uploadVideo({required File videoFile, required String title, required String description, double? amountToPay, required bool paid, required int educationLevel,}) async {
     // Parse the upload URL
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
@@ -303,14 +282,7 @@ class ApisMethods {
   }
 
 //7- upload PDF
-  static Future<void> uploadPDF({
-    required String title,
-    required String description,
-    double? amountToPay,
-    required bool paid,
-    required int educationLevel,
-    required File PDF,
-  }) async {
+  static Future<void> uploadPDF({required String title, required String description, double? amountToPay, required bool paid, required int educationLevel, required File PDF,}) async {
     // Convert the Uri to a String
     String url = ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadPDF;
     // Create the multipart request
@@ -598,12 +570,7 @@ class ApisMethods {
   }
 
   //15-update quiz
-  static Future<void> updateQuiz({
-    required String id,
-    required List<dynamic> questions,
-    required int hours,
-    required int minutes,
-  }) async {
+  static Future<void> updateQuiz({required String id, required List<dynamic> questions, required int hours, required int minutes,}) async {
     final Map<String, dynamic> body = {
       'questions': questions
           .map((q) => {
@@ -698,41 +665,60 @@ class ApisMethods {
     required List<String> participants,
     required String sender,
     required String content,
-    List<String>? images,
-    List<String>? documents,
+    List<File>? images,
+    List<File>? documents,
     AudioData? audio,
     DateTime? createdAt,
   }) async {
-    final url = Uri.parse(
-        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
+    final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
 
-    Map<String, dynamic>? audioData;
+    // Create multipart request
+    var request = http.MultipartRequest('POST', url);
+
+    // Add headers
+    request.headers['token'] = token!;
+
+    // Add text fields
+    request.fields['sender'] = sender;
+    request.fields['content'] = content;
+    request.fields['createdAt'] = (createdAt ?? DateTime.now()).toIso8601String();
+
+    // Add audio data if present
     if (audio != null) {
-      audioData = {
+      request.fields['audio'] = jsonEncode({
         'data': audio.data,
         'contentType': audio.contentType,
-      };
+      });
     }
 
-    final body = {
-      'sender': sender,
-      'content': content,
-      'images': images ?? [],
-      'documents': documents ?? [],
-      'audio': audioData,
-      'createdAt':
-          createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
-    };
+    // Handle images
+    if (images != null && images.isNotEmpty) {
+      for (var i = 0; i < images.length; i++) {
+        final imageFile = await http.MultipartFile.fromPath(
+          'image',
+          images[i].path,
+          filename: basename(images[i].path),
+        );
+        request.files.add(imageFile);
+      }
+    }
+
+    // Handle documents
+    if (documents != null && documents.isNotEmpty) {
+      for (var i = 0; i < documents.length; i++) {
+        final documentFile = await http.MultipartFile.fromPath(
+          'documents',
+          documents[i].path,
+          filename: basename(documents[i].path),
+        );
+        request.files.add(documentFile);
+      }
+    }
 
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token!,
-        },
-        body: jsonEncode(body),
-      );
+      // Send the multipart request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);

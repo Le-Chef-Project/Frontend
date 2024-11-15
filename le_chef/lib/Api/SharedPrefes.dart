@@ -20,4 +20,9 @@ class SharedPrefes {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('userName', name);
   }
+
+  static Future saveUserId(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('Id', id);
+  }
 }
