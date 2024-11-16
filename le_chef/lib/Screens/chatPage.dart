@@ -21,7 +21,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
-import '../Models/direct_chat.dart';
+import '../Models/direct_chat.dart' as direct_chat;
 import '../Shared/customBottomNavBar.dart';
 import '../Shared/custom_app_bar.dart';
 import 'user/Home.dart';
@@ -40,14 +40,13 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+
   List<WrappedMessage> _messages = [];
-
-
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
   final String? _userId = sharedPreferences!.getString('_id');
-
+  bool _isLoading = true;
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
   bool person = true;
@@ -57,33 +56,91 @@ class _ChatPageState extends State<ChatPage> {
     return types.User(id: _userId ?? '');
   }
 
-  Future<void> _fetchMessages() async {
-    try {
-      final rawMessages = await ApisMethods.getDirectMsgs('6735eae27b71a250d32cd2cd');
-
-      // Convert the raw data into a list of WrappedMessage objects
-      final messages = rawMessages.map<WrappedMessage>((message) {
-        return WrappedMessage(
-          message: types.Message.fromJson(message['message']), // Assuming types.Message has a fromJson method
-          seen: message['seen'] ?? false,
-        );
-      }).toList();
-
-      setState(() {
-        _messages = messages;
-      });
-    } catch (e) {
-      print('Failed to load messages: $e');
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     _textController.addListener(_onTextChanged);
-    _loadMessages();
     _initRecorder();
     _fetchMessages();
+  }
+
+  Future<void> _fetchMessages() async {
+    try {
+      if (widget.receiver != null) {
+        setState(() => _isLoading = true);
+
+        // Create or get chatroom ID based on participants
+        final participants = [_user.id, widget.receiver!.ID];
+        participants.sort(); // Sort to ensure consistent ID generation
+        final chatRoomId = participants.join('_'); // Simple chat room ID generation
+
+        final direct_chat.DirectChat directChat = await ApisMethods.getDirectMessages(chatRoomId);
+
+        // Convert DirectChat messages to WrappedMessage format
+        final List<WrappedMessage> convertedMessages = directChat.messages.map((msg) {
+          return WrappedMessage(
+            message: types.Message.fromJson({
+              'author': {'id': msg.sender},
+              'createdAt': msg.createdAt,
+              'id': msg.id ?? const Uuid().v4(),
+              'type': _getMessageType(msg),
+              ...(_getMessageContent(msg)),
+            }), seen: false,
+            // seen: msg.seen ?? false,
+          );
+        }).toList();
+
+        // Sort messages by creation time (newest first)
+        convertedMessages.sort((a, b) =>
+            (b.message.createdAt ?? 0).compareTo(a.message.createdAt ?? 0));
+
+        setState(() {
+          _messages = convertedMessages;
+          _isLoading = false;
+        });
+
+        print('Msgs for chat room id: $chatRoomId with msgs: $_messages');
+      }
+    } catch (e) {
+      print('Error fetching messages: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
+  String _getMessageType(direct_chat.Message msg) {
+    if (msg.images != null && msg.images!.isNotEmpty) return 'image';
+    if (msg.documents != null && msg.documents!.isNotEmpty) return 'file';
+    if (msg.audio != null) return 'file';
+    return 'text';
+  }
+
+  Map<String, dynamic> _getMessageContent(direct_chat.Message msg) {
+    if (msg.images != null && msg.images!.isNotEmpty) {
+      return {
+        'name': 'Image',
+        'size': 0,
+        'uri': msg.images![0],
+      };
+    }
+    if (msg.documents != null && msg.documents!.isNotEmpty) {
+      return {
+        'name': 'Document',
+        'size': 0,
+        'uri': msg.documents![0],
+      };
+    }
+    if (msg.audio != null) {
+      return {
+        'name': 'Voice Message',
+        'size': 0,
+        'uri': msg.audio!.data,
+        'mimeType': 'audio/aac',
+      };
+    }
+    return {
+      'text': msg.content ?? '',
+    };
   }
 
   @override
@@ -201,12 +258,12 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  Future<AudioData> _createAudioData(String filePath) async {
+  Future<direct_chat.AudioData> _createAudioData(String filePath) async {
     final file = File(filePath);
     final bytes = await file.readAsBytes();
     final base64Data = base64Encode(bytes);
 
-    return AudioData(
+    return direct_chat.AudioData(
       data: base64Data,
       contentType: 'audio/aac',
     );

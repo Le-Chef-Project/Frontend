@@ -765,11 +765,12 @@ class ApisMethods {
   }
 
   //18-get direct msgs
-  static Future<List<Map<String, dynamic>>> getDirectMsgs(String chatId) async {
-    final url = Uri.parse(
-        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.getDirectMsg}$chatId');
-
+  static Future<DirectChat> getDirectMessages(String chatRoomId) async {
     try {
+      final url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.getDirectMsg}$chatRoomId',
+      );
+
       final response = await http.get(
         url,
         headers: {
@@ -779,21 +780,26 @@ class ApisMethods {
       );
 
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
+        final responseData = jsonDecode(response.body);
 
-        if (responseData['messages'] != null) {
-          return List<Map<String, dynamic>>.from(responseData['messages']);
-        } else {
-          throw Exception('No messages found');
-        }
+        // Convert the response data into a DirectChat object
+        final DirectChat directChat = DirectChat.fromJson({
+          '_id': chatRoomId,
+          'participants': responseData['participants'],
+          'messages': responseData['messages'],
+          'createdAt': responseData['createdAt'],
+          'updatedAt': responseData['updatedAt'],
+        });
+
+        return directChat;
       } else {
         print('Error: ${response.statusCode}');
         print('Response Body: ${response.body}');
-        throw Exception('Failed to retrieve messages');
+        throw Exception('Failed to fetch messages: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error retrieving messages: $e');
-      throw Exception('Error retrieving messages: $e');
+      print('Error fetching messages: $e');
+      throw Exception('Failed to fetch messages: $e');
     }
   }
 

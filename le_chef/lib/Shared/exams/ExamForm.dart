@@ -229,13 +229,13 @@ class _QuizPageState extends State<QuizPage> {
         'selectedOption':
             selectedAnswerIndex, // Using the selected index directly
       });
-
-      final response =
-          ApisMethods.submitQuiz(widget.quiz, answers, widget.quiz.id);
-      setState(() {
-        isSubmitted = true;
-      });
     }
+
+    final response =
+    ApisMethods.submitQuiz(widget.quiz, answers, widget.quiz.id);
+    setState(() {
+      isSubmitted = true;
+    });
 
     // At this point, all questions have been answered
     print(' showing answers' + '${answers}'); // For debugging

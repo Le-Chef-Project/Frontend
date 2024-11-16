@@ -40,36 +40,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      title: GestureDetector(
-        onTap: () {
-          if (!isPerson!) {
-            _navigateToStudentsPage(context);
-          }
-        },
-        child: Row(
-          children: [
-            if (avatarUrl != null)
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(avatarUrl!),
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kToolbarHeight),
+      child: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        title: GestureDetector(
+          onTap: () {
+            if (!isPerson!) {
+              _navigateToStudentsPage(context);
+            }
+          },
+          child: Row(
+            children: [
+              if (avatarUrl != null)
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(avatarUrl!),
+                ),
+              if (avatarUrl != null) const SizedBox(width: 10),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.black),
               ),
-            if (avatarUrl != null) const SizedBox(width: 10),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_rounded),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        color: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          color: Colors.black,
+        ),
       ),
     );
   }
