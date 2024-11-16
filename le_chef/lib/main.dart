@@ -9,15 +9,15 @@ import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:le_chef/Shared/login.dart';
 
-late SharedPreferences sharedPreferences;
+SharedPreferences? sharedPreferences;
 
 String? token;
 String? role;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await SharedPreferences.getInstance();
-  token = sharedPreferences.getString('token');
-  role = sharedPreferences.getString('role');
+  token = sharedPreferences!.getString('token');
+  role = sharedPreferences!.getString('role');
   runApp(const MyApp());
 }
 

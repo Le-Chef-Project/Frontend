@@ -24,7 +24,7 @@ class AllVid extends StatefulWidget {
 }
 
 class _AllVidState extends State<AllVid> {
-  static int? level = sharedPreferences.getInt('educationLevel');
+  static int? level = sharedPreferences!.getInt('educationLevel');
   Future<List<Video>>? _VideosFuture;
 
   @override

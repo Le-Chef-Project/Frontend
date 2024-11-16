@@ -285,7 +285,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
           actions: [
             GestureDetector(
               onTap: () {
-                sharedPreferences.remove('token');
+                sharedPreferences!.remove('token');
                 Get.to(Login());
               },
               child: Container(

@@ -29,8 +29,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final int _selectedIndex = 0; // Initial index for Chats screen
-  static int? level = sharedPreferences.getInt('educationLevel');
-  String? userName = sharedPreferences.getString('userName');
+  static int? level = sharedPreferences!.getInt('educationLevel');
+  static String? userName = sharedPreferences!.getString('userName');
   List<Quiz>? _exams;
   bool _isLoading_Exams = true;
   List<Notes>? _notes;
@@ -108,7 +108,7 @@ class _HomeState extends State<Home> {
           actions: [
             GestureDetector(
               onTap: () {
-                sharedPreferences.remove('token');
+                sharedPreferences!.remove('token');
                 Get.to(Login());
               },
               child: Container(

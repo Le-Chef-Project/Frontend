@@ -9,10 +9,12 @@ import '../../Widgets/score.dart';
 class ExamResult extends StatefulWidget {
   final Map<String, dynamic> quiz_result;
   final Quiz quiz;
+  final List<Map<String, dynamic>> answers;
   const ExamResult({
     super.key,
     required this.quiz_result,
     required this.quiz,
+    required this.answers,
   });
 
   @override
@@ -24,6 +26,8 @@ class _ExamResultState extends State<ExamResult> {
   List correctQuestions = [];
   List wrongQuestions = [];
   int selectedQuestion = 0;
+    Map<String, int> selectedAnswers = {}; // Use questionId as the key
+
   double boxSize = 30.0;
   void navigateToQuestion(int newIndex) {
     if (newIndex >= 0 && newIndex < widget.quiz.questions.length) {
@@ -61,6 +65,11 @@ class _ExamResultState extends State<ExamResult> {
     addunanswerQuestions();
     addcorrectQuestions();
     addwrongQuestions();
+        // Initialize selected answers from the answers list
+    widget.answers.forEach((answer) {
+      selectedAnswers[answer['questionId']] = answer['selectedOption'];
+    });
+
   }
 
   @override
@@ -243,63 +252,73 @@ class _ExamResultState extends State<ExamResult> {
                               // Using numeric index (1-based) instead of letters
                               String indexNumber = (answerIndex + 1).toString();
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: answerIndex ==
-                                            widget
-                                                .quiz
-                                                .questions[selectedQuestion]
-                                                .options
-                                                .indexOf(widget
-                                                    .quiz
-                                                    .questions[selectedQuestion]
-                                                    .answer)
-                                        ? unanswerQuestions.contains(widget.quiz
-                                                .questions[selectedQuestion].id)
-                                            ? Colors.yellow
-                                            : correctQuestions.contains(widget
-                                                    .quiz
-                                                    .questions[selectedQuestion]
-                                                    .id)
-                                                ? Colors.green
-                                                : Colors.red
-                                        : Colors.white,
-                                  ),
-                                  child: ListTile(
-                                    leading: Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                        color: Colors
-                                            .white, // const Color(0xFF164863),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          indexNumber,
-                                          style: GoogleFonts.ibmPlexMono(
-                                            color: const Color(0xFF164863),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      answerText,
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: const Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+  padding: const EdgeInsets.symmetric(vertical: 8.0),
+  child: Builder(
+    builder: (context) {
+      // Determine the background color based on the user's selection
+      Color backgroundColor;
+
+      // Get the selected option and correct answer index for the current question
+      String? questionId = widget.quiz.questions[selectedQuestion].id;
+      int selectedOption = selectedAnswers[questionId] ?? -1;
+      int correctAnswerIndex = widget.quiz.questions[selectedQuestion].options
+          .indexOf(widget.quiz.questions[selectedQuestion].answer);
+
+      // If the user selected this answer
+      if (selectedOption == answerIndex) {
+        // If it’s wrong, show red
+        backgroundColor = (answerIndex != correctAnswerIndex)
+            ? Colors.red
+            : Colors.green;
+      }
+      // For the correct answer, it should always be green
+      else if (answerIndex == correctAnswerIndex) {
+        backgroundColor = Colors.green;
+      }
+      // Default color for options the user did not select
+      else {
+        backgroundColor = Colors.white;
+      }
+
+      // Return the answer option container with the calculated background color
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: backgroundColor, // Set the calculated background color here
+        ),
+        child: ListTile(
+          leading: Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: Colors.white, // const Color(0xFF164863),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                (answerIndex + 1).toString(),
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF164863),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          title: Text(
+            answerText,
+            style: GoogleFonts.ibmPlexMono(
+              color: const Color(0xFF164863),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    },
+  ),
+);
+}).toList(),
                           ],
                         ),
                       ),

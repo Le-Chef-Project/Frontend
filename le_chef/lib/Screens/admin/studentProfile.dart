@@ -15,7 +15,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isObscure = true;
-  String? role = sharedPreferences.getString('role');
+  String? role = sharedPreferences!.getString('role');
 
   @override
   Widget build(BuildContext context) {

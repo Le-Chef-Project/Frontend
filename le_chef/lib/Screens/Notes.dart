@@ -14,7 +14,7 @@ class NotesScreen extends StatefulWidget {
 }
 
 class _NotesScreenState extends State<NotesScreen> {
-  String? role = sharedPreferences.getString('role');
+  String? role = sharedPreferences!.getString('role');
   Future<List<Notes>>? _notesFuture;
 
   @override

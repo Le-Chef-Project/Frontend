@@ -35,7 +35,7 @@ class LibraryTabContainerScreen extends StatefulWidget {
 class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
-  String? role = sharedPreferences.getString('role');
+  String? role = sharedPreferences!.getString('role');
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int currentIndex = 0; // Add this to track current tab index

@@ -12,7 +12,7 @@ class MembersScreen extends StatelessWidget {
   final int membersNumber;
   final String userImg = 'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp';
   final List usersName = ['Mhammed Ali', 'Jouna Moayyad', 'Hawraa Mahmoud', 'Ruqaya Layth', 'Aya Abd Alazyz', 'Ibrahem Abas'];
-  String? role = sharedPreferences.getString('role');
+  String? role = sharedPreferences!.getString('role');
 
   MembersScreen({super.key, required this.groupName, required this.membersNumber});
 

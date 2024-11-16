@@ -16,7 +16,7 @@ class OnlineSessionScreen extends StatefulWidget {
 }
 
 class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
-  final String? role = sharedPreferences.getString('role');
+  final String? role = sharedPreferences!.getString('role');
 
   final bool _isStartedMeeting = true;
 

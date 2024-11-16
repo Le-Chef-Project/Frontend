@@ -24,7 +24,7 @@ class Exams extends StatefulWidget {
 class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   late TabController _tabController;
   int selectedUnit = 1;
-  String? role = sharedPreferences.getString('role');
+  String? role = sharedPreferences!.getString('role');
   bool _isLoading = true;
   List<Quiz> _exams = [];
   List<Quiz> _filteredExams = [];

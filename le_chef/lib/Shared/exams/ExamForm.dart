@@ -24,7 +24,7 @@ class _QuizPageState extends State<QuizPage> {
   Timer? _timer;
   int _start = 0;
   double _progress = 1.0;
-  String? role = sharedPreferences.getString('role');
+  String? role = sharedPreferences!.getString('role');
   final TextEditingController _questionController = TextEditingController();
   List<TextEditingController> _answerControllers = [];
   List<Map<String, dynamic>> answers =
@@ -215,13 +215,13 @@ class _QuizPageState extends State<QuizPage> {
     // Check if all questions are answered
     for (int i = 0; i < widget.quiz.questions.length; i++) {
       final selectedAnswerIndex = _selectedAnswers[i];
-      if (selectedAnswerIndex == null) {
+      /*if (selectedAnswerIndex == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text('Please answer all questions before submitting')),
         );
         return;
-      }
+      }*/
 
       // Add each answer to the answers list
       answers.add({
@@ -236,7 +236,6 @@ class _QuizPageState extends State<QuizPage> {
         isSubmitted = true;
       });
     }
-
 
     // At this point, all questions have been answered
     print(' showing answers' + '${answers}'); // For debugging

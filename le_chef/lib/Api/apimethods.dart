@@ -22,7 +22,7 @@ import 'SharedPrefes.dart';
 import 'apiendpoints.dart';
 
 class ApisMethods {
-  static String? token = sharedPreferences.getString('token');
+  static String? token = sharedPreferences!.getString('token');
 
 //1-Login
   static Future<void> login(emailController, passwordController) async {
@@ -81,7 +81,13 @@ class ApisMethods {
   }
 
   // 2-Add Student
-  static Future<String> AddStudent(emailController, passwordController, phoneController, usernameController, firstnameController, lastnameController) async {
+  static Future<String> AddStudent(
+      emailController,
+      passwordController,
+      phoneController,
+      usernameController,
+      firstnameController,
+      lastnameController) async {
     String? Mess;
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.AddStudent);
@@ -172,7 +178,16 @@ class ApisMethods {
   }
 
 //5- add quiz
-  static Future<void> addQuiz({required String title, required List<dynamic> questions, required int hours, required int minutes, required int? level, required int? unit, required bool isPaid, double? amountToPay,}) async {
+  static Future<void> addQuiz({
+    required String title,
+    required List<dynamic> questions,
+    required int hours,
+    required int minutes,
+    required int? level,
+    required int? unit,
+    required bool isPaid,
+    double? amountToPay,
+  }) async {
     if (questions.isEmpty) {
       throw Exception('Questions list cannot be empty');
     }
@@ -226,7 +241,14 @@ class ApisMethods {
   }
 
 //6- upload video
-  static Future<void> uploadVideo({required File videoFile, required String title, required String description, double? amountToPay, required bool paid, required int educationLevel,}) async {
+  static Future<void> uploadVideo({
+    required File videoFile,
+    required String title,
+    required String description,
+    double? amountToPay,
+    required bool paid,
+    required int educationLevel,
+  }) async {
     // Parse the upload URL
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
@@ -282,7 +304,14 @@ class ApisMethods {
   }
 
 //7- upload PDF
-  static Future<void> uploadPDF({required String title, required String description, double? amountToPay, required bool paid, required int educationLevel, required File PDF,}) async {
+  static Future<void> uploadPDF({
+    required String title,
+    required String description,
+    double? amountToPay,
+    required bool paid,
+    required int educationLevel,
+    required File PDF,
+  }) async {
     // Convert the Uri to a String
     String url = ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadPDF;
     // Create the multipart request
@@ -570,7 +599,12 @@ class ApisMethods {
   }
 
   //15-update quiz
-  static Future<void> updateQuiz({required String id, required List<dynamic> questions, required int hours, required int minutes,}) async {
+  static Future<void> updateQuiz({
+    required String id,
+    required List<dynamic> questions,
+    required int hours,
+    required int minutes,
+  }) async {
     final Map<String, dynamic> body = {
       'questions': questions
           .map((q) => {
@@ -612,6 +646,7 @@ class ApisMethods {
 
     if (response.statusCode == 201) {
       Get.to(ExamResult(
+        answers: answers,
         quiz_result: jsonDecode(response.body),
         quiz: quiz,
       ));
@@ -670,7 +705,8 @@ class ApisMethods {
     AudioData? audio,
     DateTime? createdAt,
   }) async {
-    final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
+    final url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
 
     var request = http.MultipartRequest('POST', url);
 
@@ -678,7 +714,8 @@ class ApisMethods {
 
     request.fields['sender'] = sender;
     request.fields['content'] = content;
-    request.fields['createdAt'] = (createdAt ?? DateTime.now()).toIso8601String();
+    request.fields['createdAt'] =
+        (createdAt ?? DateTime.now()).toIso8601String();
 
     if (audio != null) {
       request.fields['audio'] = jsonEncode({
@@ -729,7 +766,8 @@ class ApisMethods {
 
   //18-get direct msgs
   static Future<List<Map<String, dynamic>>> getDirectMsgs(String chatId) async {
-    final url = Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.getDirectMsg}$chatId');
+    final url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.getDirectMsg}$chatId');
 
     try {
       final response = await http.get(
