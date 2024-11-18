@@ -18,6 +18,7 @@ class Smallcard extends StatelessWidget {
     required this.isLocked,
   });
 
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => {if (isLocked) {
@@ -158,7 +159,7 @@ class Smallcard extends StatelessWidget {
                 ],
               ),
             ),
-            if (isLocked) Positioned(bottom: 75, right: 10,child: Icon(Icons.lock_outline, color: Color(0xFF164863))),
+            if (isLocked) const Positioned(bottom: 75, right: 10,child: Icon(Icons.lock_outline, color: Color(0xFF164863))),
           ],
         ),
       ),

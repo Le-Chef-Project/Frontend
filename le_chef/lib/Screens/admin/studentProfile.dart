@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
@@ -9,6 +8,8 @@ import '../../main.dart';
 import '../../theme/custom_button_style.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -39,12 +40,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 40,
                 backgroundImage: AssetImage('assets/default_image_profile.jpg'),
               ),
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 'Danial Robert',
                 style: TextStyle(
                   color: Color(0xFF427D9D),
@@ -55,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               if (role != 'admin')
-                Text(
+                const Text(
                   'Level 2',
                   style: TextStyle(
                     color: Color(0xFF888888),
@@ -65,22 +66,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 1.2, // Adjust for better line height
                   ),
                 ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               buildDividerWithText("Personal info"),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               _textfeild('Username', 'Danial Robert', Icons.person),
               _buildPasswordField('Password', Icons.lock),
               _textfeild('Email', 'danialrobert123@gmail.com', Icons.email),
               _textfeild('Phone number', '81234567890', Icons.phone),
               if (role != 'admin')
                 _textfeild('Academic Stage', '2', Icons.school),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               CustomElevatedButton(
                 onPressed: () {},
                 text: 'Save Changes',
                 buttonStyle: CustomButtonStyles.fillPrimaryTL5,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -106,13 +107,13 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           TextFormField(
             decoration: textInputDecoration.copyWith(
               hintText: placeholder,
               prefixIcon: Icon(
                 icon,
-                color: Color(0xFF164863),
+                color: const Color(0xFF164863),
               ),
             ),
           ),
@@ -139,14 +140,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextFormField(
               obscureText: _isObscure,
               decoration: textInputDecoration.copyWith(
                 hintText: '*******',
                 prefixIcon: Icon(
                   icon,
-                  color: Color(0xFF164863),
+                  color: const Color(0xFF164863),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
@@ -168,14 +169,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildDividerWithText(String text) {
     return Row(
       children: [
-        Expanded(
+        const Expanded(
           child: Divider(thickness: 1, color: Color(0xFF164863)),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF164863),
               fontSize: 12,
               fontFamily: 'IBM Plex Mono',
@@ -184,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
-        Expanded(
+        const Expanded(
           child: Divider(thickness: 1, color: Color(0xFF164863)),
         ),
       ],

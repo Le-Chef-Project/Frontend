@@ -11,7 +11,6 @@ import '../../Models/PDF.dart';
 import '../../Models/Quiz.dart';
 import '../../Models/Video.dart';
 import '../../Shared/customBottomNavBar.dart';
-import '../../Shared/custom_search_view.dart';
 import '../../Shared/meeting/online_session_screen.dart';
 import '../../main.dart';
 import '../Notes.dart';
@@ -109,7 +108,7 @@ class _HomeState extends State<Home> {
             GestureDetector(
               onTap: () {
                 sharedPreferences!.remove('token');
-                Get.to(Login());
+                Get.to(const Login());
               },
               child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 23),
@@ -331,7 +330,7 @@ class _HomeState extends State<Home> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => OnlineSessionScreen(),
+                            Get.to(() => const OnlineSessionScreen(),
                                 transition: Transition.fade,
                                 duration: const Duration(seconds: 1));
                           },

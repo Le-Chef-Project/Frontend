@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Screens/chats.dart';
-import 'package:le_chef/Screens/user/payment.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../../Api/apimethods.dart';
 import '../../Shared/custom_app_bar.dart';
@@ -13,8 +11,6 @@ import '../../main.dart';
 import '../admin/viewVideo.dart';
 import '../notification.dart';
 import 'Home.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class AllVid extends StatefulWidget {
   const AllVid({Key? key}) : super(key: key);
@@ -108,7 +104,7 @@ class _AllVidState extends State<AllVid> {
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
                           dateText,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF164863),
                             fontSize: 20,
                             fontFamily: 'IBM Plex Mono',

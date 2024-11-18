@@ -23,21 +23,21 @@ class QuizScoreCard extends StatelessWidget {
         value: correctAnswers.toDouble(),
         color: Colors.green,
         title: correctAnswers > 0 ? correctAnswers.toString() : '0',
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
             fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
       ),
       PieChartSectionData(
         value: wrongAnswers.toDouble(),
         color: Colors.red,
         title: wrongAnswers > 0 ? wrongAnswers.toString() : '0',
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
             fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
       ),
       PieChartSectionData(
         value: unanswered.toDouble(),
         color: Colors.orange,
         title: unanswered > 0 ? unanswered.toString() : '0',
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
             fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
       ),
     ];
@@ -69,9 +69,9 @@ class QuizScoreCard extends StatelessWidget {
                     ),
                   ),
                   // Vertical Divider with a defined height
-                  SizedBox(
+                  const SizedBox(
                     height: 100, // Set height for the divider to display
-                    child: const VerticalDivider(
+                    child: VerticalDivider(
                       color: Color(0xFF888888),
                       thickness: 1,
                       width: 20,
@@ -93,8 +93,8 @@ class QuizScoreCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '${correctAnswers}/${totalQuestions}',
-                          style: TextStyle(
+                          '$correctAnswers/$totalQuestions',
+                          style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF0E7490)),
@@ -105,9 +105,9 @@ class QuizScoreCard extends StatelessWidget {
                 ],
               ),
               // Additional horizontal divider before the Legend Section
-              SizedBox(
+              const SizedBox(
                 width: 200,
-                child: const Divider(
+                child: Divider(
                   color: Color(0xFF888888),
                   thickness: 1,
                 ),

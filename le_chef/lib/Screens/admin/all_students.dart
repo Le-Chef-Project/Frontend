@@ -145,7 +145,7 @@ class _AllStudentsState extends State<AllStudents> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfilePage()),
+                                          builder: (context) => const ProfilePage()),
                                     );
                                   },
                                   child: ListTile(
@@ -183,7 +183,7 @@ class _AllStudentsState extends State<AllStudents> {
                                                   title:
                                                       'Student is removed successfully !');
                                               Future.delayed(
-                                                  Duration(seconds: 2), () {
+                                                  const Duration(seconds: 2), () {
                                                 Navigator.pop(context);
                                               });
                                             },
@@ -216,7 +216,7 @@ class _AllStudentsState extends State<AllStudents> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfilePage()),
+                                          builder: (context) => const ProfilePage()),
                                     );
                                   },
                                   child: ListTile(
@@ -254,7 +254,7 @@ class _AllStudentsState extends State<AllStudents> {
                                                   title:
                                                       'Student is removed successfully !');
                                               Future.delayed(
-                                                  Duration(seconds: 2), () {
+                                                  const Duration(seconds: 2), () {
                                                 Navigator.pop(context);
                                               });
                                             },

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -70,28 +69,26 @@ class _ChatPageState extends State<ChatPage> {
       if (widget.receiver != null) {
         setState(() => _isLoading = true);
 
-        // Create or get chatroom ID based on participants
-        final participants = [_user.id, widget.receiver!.ID];
-        participants.sort(); // Sort to ensure consistent ID generation
-        final chatRoomId = participants.join('_'); // Simple chat room ID generation
+        final direct_chat.DirectChat directChat = await ApisMethods.getDirectMessages('672f597ca198b521a71b82ad');
 
-        final direct_chat.DirectChat directChat = await ApisMethods.getDirectMessages(chatRoomId);
-
-        // Convert DirectChat messages to WrappedMessage format
         final List<WrappedMessage> convertedMessages = directChat.messages.map((msg) {
+          // Safely handle createdAt
+          final int createdAtMillis = _parseCreatedAt(msg.createdAt);
+
+          // Ensure sender has a default value if null
+          final Object senderId = msg.sender ?? 'unknown_sender';
+
           return WrappedMessage(
             message: types.Message.fromJson({
-              'author': {'id': msg.sender},
-              'createdAt': msg.createdAt,
+              'author': {'id': senderId},
+              'createdAt': createdAtMillis,
               'id': msg.id ?? const Uuid().v4(),
               'type': _getMessageType(msg),
               ...(_getMessageContent(msg)),
-            }), seen: false,
-            // seen: msg.seen ?? false,
+            }),
           );
         }).toList();
 
-        // Sort messages by creation time (newest first)
         convertedMessages.sort((a, b) =>
             (b.message.createdAt ?? 0).compareTo(a.message.createdAt ?? 0));
 
@@ -99,14 +96,33 @@ class _ChatPageState extends State<ChatPage> {
           _messages = convertedMessages;
           _isLoading = false;
         });
-
-        print('Msgs for chat room id: $chatRoomId with msgs: $_messages');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error fetching messages: $e');
+      print('Stack trace: $stackTrace'); // Add stack trace for better debugging
       setState(() => _isLoading = false);
     }
   }
+
+// Helper method to safely parse createdAt
+  int _parseCreatedAt(dynamic createdAt) {
+    if (createdAt == null) {
+      return DateTime.now().millisecondsSinceEpoch;
+    }
+
+    try {
+      if (createdAt is String) {
+        return DateTime.parse(createdAt).millisecondsSinceEpoch;
+      } else if (createdAt is Map<String, dynamic>) {
+        return createdAt['millisecondsSinceEpoch'] ?? DateTime.now().millisecondsSinceEpoch;
+      }
+    } catch (e) {
+      print('Error parsing createdAt: $e');
+    }
+
+    return DateTime.now().millisecondsSinceEpoch;
+  }
+
 
   String _getMessageType(direct_chat.Message msg) {
     if (msg.images != null && msg.images!.isNotEmpty) return 'image';
@@ -311,7 +327,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void _addMessage(types.Message message) {
     setState(() {
-      _messages.insert(0, WrappedMessage(message: message, seen: false));
+      _messages.insert(0, WrappedMessage(message: message));
     });
   }
 
@@ -369,7 +385,7 @@ class _ChatPageState extends State<ChatPage> {
           setState(() {
             _messages[index] = WrappedMessage(
               message: updatedMessage,
-              seen: true,
+              // seen: true,
             );
           });
         }
@@ -422,7 +438,7 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _messages[index] = WrappedMessage(
           message: updatedMessage,
-          seen: wrappedMessage.seen,
+          // seen: wrappedMessage.seen,
         );
       });
     }
@@ -432,7 +448,7 @@ class _ChatPageState extends State<ChatPage> {
     final response = await rootBundle.loadString('assets/messages.json');
     final messages = (jsonDecode(response) as List)
         .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-        .map((message) => WrappedMessage(message: message, seen: false))
+        .map((message) => WrappedMessage(message: message, ))
         .toList();
 
     setState(() {
@@ -1115,9 +1131,9 @@ class _ChatPageState extends State<ChatPage> {
 
 class WrappedMessage {
   final types.Message message;
-  final bool seen;
+  final bool seen = false;
 
-  WrappedMessage({required this.message, required this.seen});
+  WrappedMessage({required this.message});
 
   Map<String, dynamic> toJson() {
     return {

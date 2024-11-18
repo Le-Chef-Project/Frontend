@@ -6,6 +6,8 @@ import '../../Shared/custom_elevated_button.dart';
 import '../../theme/custom_button_style.dart';
 
 class addNotes extends StatefulWidget {
+  const addNotes({super.key});
+
   @override
   _addNotesState createState() => _addNotesState();
 }
@@ -19,7 +21,7 @@ class _addNotesState extends State<addNotes> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            appBar: CustomAppBar(
+            appBar: const CustomAppBar(
               title: 'Add Note',
             ),
             backgroundColor: Colors.grey[100],
@@ -31,9 +33,9 @@ class _addNotesState extends State<addNotes> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
+                    const SizedBox(height: 40),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
                       child: Text(
                         'Choose level',
                         style: TextStyle(
@@ -56,11 +58,11 @@ class _addNotesState extends State<addNotes> {
                       ),
                       child: DropdownButtonFormField<String>(
                         value: selectedlevel,
-                        hint: Text('Select Level'),
+                        hint: const Text('Select Level'),
                         items: ['Level 1', 'Level 2', 'Level 3']
                             .map((section) => DropdownMenuItem(
-                                  child: Text(section),
                                   value: section,
+                                  child: Text(section),
                                 ))
                             .toList(),
                         onChanged: (value) {
@@ -68,12 +70,12 @@ class _addNotesState extends State<addNotes> {
                             selectedlevel = value;
                           });
                         },
-                        decoration: InputDecoration(border: InputBorder.none),
+                        decoration: const InputDecoration(border: InputBorder.none),
                       ),
                     ),
-                    SizedBox(height: 40),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
+                    const SizedBox(height: 40),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
                       child: Text(
                         'Note Content',
                         style: TextStyle(
@@ -98,7 +100,7 @@ class _addNotesState extends State<addNotes> {
                         ),
                         child: TextField(
                           controller: noteContentController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Write your note here....',
                             border: InputBorder.none, // No border
                             focusedBorder:
@@ -114,8 +116,7 @@ class _addNotesState extends State<addNotes> {
               ),
             ),
             bottomNavigationBar: (selectedlevel == null ||
-                    (noteContentController == null ||
-                        noteContentController == ''))
+                    (noteContentController == ''))
                 ? Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: CustomElevatedButton(
@@ -128,9 +129,7 @@ class _addNotesState extends State<addNotes> {
                     padding: const EdgeInsets.all(24.0),
                     child: CustomElevatedButton(
                       onPressed: () async {
-                        print('from Uiiiiii ' +
-                            noteContentController.text.toString() +
-                            (int.tryParse(selectedlevel!)?.toString() ?? ''));
+                        print('from Uiiiiii ${noteContentController.text}${int.tryParse(selectedlevel!)?.toString() ?? ''}');
 
                         await ApisMethods.addNote(
                             noteContentController.text.toString(),

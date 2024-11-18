@@ -5,7 +5,7 @@ import 'package:video_player/video_player.dart';
 class VideoPlayerScreen extends StatefulWidget {
   final String url;
 
-  const VideoPlayerScreen({required this.url});
+  const VideoPlayerScreen({super.key, required this.url});
 
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
@@ -39,7 +39,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Video Player")),
+      appBar: AppBar(title: const Text("Video Player")),
       body: _flickManager != null
           ? Center(
               child: AspectRatio(
@@ -47,7 +47,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 child: FlickVideoPlayer(flickManager: _flickManager!),
               ),
             )
-          : Center(
+          : const Center(
               child: Text("Error initializing video player."),
             ),
     );

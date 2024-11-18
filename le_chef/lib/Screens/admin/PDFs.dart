@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../Models/PDF.dart';
 import 'viewPDF.dart';
 
@@ -45,11 +42,11 @@ class _AllPDFsState extends State<AllPDFs> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isloading
-          ? Center(
+          ? const Center(
               child:
                   CircularProgressIndicator()) // Show loading indicator while fetching
           : _filteredPDFs.isEmpty
-              ? Center(
+              ? const Center(
                   child: Text(
                       "No PDFs available")) // Show message if no PDFs match
               : GridView.builder(

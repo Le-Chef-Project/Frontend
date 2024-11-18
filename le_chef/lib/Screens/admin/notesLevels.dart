@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../Shared/custom_app_bar.dart';
@@ -48,7 +46,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(
+        appBar: const CustomAppBar(
           title: 'Notes',
         ),
         body: Column(
@@ -60,7 +58,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
               '150',
               ontap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => addNotes()),
+                MaterialPageRoute(builder: (context) => const addNotes()),
               ),
             ),
             Material(
@@ -79,7 +77,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                 ),
-                indicator: Circletabindicator(radius: 4.0),
+                indicator: const Circletabindicator(radius: 4.0),
                 tabs: const [
                   Tab(child: Text('Level 1')),
                   Tab(child: Text('Level 2')),
@@ -90,7 +88,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
             Expanded(
               child: TabBarView(
                 controller: tabviewController,
-                children: [NotesScreen(level :1), NotesScreen(level :2), NotesScreen(level :3)],
+                children: const [NotesScreen(level :1), NotesScreen(level :2), NotesScreen(level :3)],
               ),
             ),
             const SizedBox(height: 40),
@@ -105,7 +103,7 @@ class Circletabindicator extends Decoration {
   final Color color = const Color(0xFF427D9D);
   final double radius;
 
-  Circletabindicator({required this.radius});
+  const Circletabindicator({required this.radius});
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
@@ -115,9 +113,9 @@ class Circletabindicator extends Decoration {
 
 class _CirclePainter extends BoxPainter {
   final double radius;
-  final Color color;
+  final Color color = const Color(0xFF427D9D);
 
-  _CirclePainter({required this.radius, this.color = const Color(0xFF427D9D)});
+  _CirclePainter({required this.radius});
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration cfg) {

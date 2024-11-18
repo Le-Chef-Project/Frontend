@@ -6,7 +6,7 @@ import 'package:le_chef/Shared/custom_app_bar.dart';
 
 class ExamLibraryLevels extends StatefulWidget {
   final String title;
-  ExamLibraryLevels({super.key, required this.title});
+  const ExamLibraryLevels({super.key, required this.title});
 
   @override
   State<ExamLibraryLevels> createState() => _ExamLibraryLevelsState();

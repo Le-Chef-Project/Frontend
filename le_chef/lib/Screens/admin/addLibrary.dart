@@ -14,6 +14,8 @@ import 'viewPDF.dart';
 import 'viewVideo.dart';
 
 class AddLibrary extends StatefulWidget {
+  const AddLibrary({super.key});
+
   @override
   _AddLibraryState createState() => _AddLibraryState();
 }
@@ -159,8 +161,8 @@ class _AddLibraryState extends State<AddLibrary> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -181,7 +183,7 @@ class _AddLibraryState extends State<AddLibrary> {
 
     return SafeArea(
         child: Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Add Item to library',
       ),
       backgroundColor: Colors.grey[100],
@@ -200,7 +202,7 @@ class _AddLibraryState extends State<AddLibrary> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Paid',
                           style: TextStyle(
                             color: Color(0xFF164863),
@@ -226,7 +228,7 @@ class _AddLibraryState extends State<AddLibrary> {
                     ),
                     Container(
                       width: 400,
-                      decoration: ShapeDecoration(
+                      decoration: const ShapeDecoration(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
                             width: 0.50,
@@ -255,7 +257,7 @@ class _AddLibraryState extends State<AddLibrary> {
                     child: TextField(
                       controller: amountController,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Amount to pay',
                         border: InputBorder.none, // No border
                         focusedBorder:
@@ -266,9 +268,9 @@ class _AddLibraryState extends State<AddLibrary> {
                     ),
                   ),
                 ),
-              SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+              const SizedBox(height: 50),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   'Level Section',
                   style: TextStyle(
@@ -291,11 +293,11 @@ class _AddLibraryState extends State<AddLibrary> {
                 ),
                 child: DropdownButtonFormField<String>(
                   value: selectedlevel,
-                  hint: Text('Select Level Section'),
+                  hint: const Text('Select Level Section'),
                   items: ['Level 1', 'Level 2', 'Level 3']
                       .map((section) => DropdownMenuItem(
-                            child: Text(section),
                             value: section,
+                            child: Text(section),
                           ))
                       .toList(),
                   onChanged: (value) {
@@ -303,12 +305,12 @@ class _AddLibraryState extends State<AddLibrary> {
                       selectedlevel = value;
                     });
                   },
-                  decoration: InputDecoration(border: InputBorder.none),
+                  decoration: const InputDecoration(border: InputBorder.none),
                 ),
               ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   'Library Section',
                   style: TextStyle(
@@ -331,11 +333,11 @@ class _AddLibraryState extends State<AddLibrary> {
                 ),
                 child: DropdownButtonFormField<String>(
                   value: selectedSection,
-                  hint: Text('Select Library Section'),
+                  hint: const Text('Select Library Section'),
                   items: ['Video', 'Book', 'PDF']
                       .map((section) => DropdownMenuItem(
-                            child: Text(section),
                             value: section,
+                            child: Text(section),
                           ))
                       .toList(),
                   onChanged: (value) {
@@ -343,13 +345,13 @@ class _AddLibraryState extends State<AddLibrary> {
                       selectedSection = value;
                     });
                   },
-                  decoration: InputDecoration(border: InputBorder.none),
+                  decoration: const InputDecoration(border: InputBorder.none),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Item name input
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   'Item name',
                   style: TextStyle(
@@ -374,7 +376,7 @@ class _AddLibraryState extends State<AddLibrary> {
                   ),
                   child: TextField(
                     controller: itemNameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Item name',
                       border: InputBorder.none, // No border
                       focusedBorder: InputBorder.none, // No border when focused
@@ -384,12 +386,12 @@ class _AddLibraryState extends State<AddLibrary> {
                 ),
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Item description input
 
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   'Item description',
                   style: TextStyle(
@@ -414,7 +416,7 @@ class _AddLibraryState extends State<AddLibrary> {
                   ),
                   child: TextField(
                     controller: itemDescriptionController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Item description',
                       border: InputBorder.none, // No border
                       focusedBorder: InputBorder.none, // No border when focused
@@ -423,7 +425,7 @@ class _AddLibraryState extends State<AddLibrary> {
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               // Upload button
               if (hasFile)
                 Center(
@@ -457,9 +459,9 @@ class _AddLibraryState extends State<AddLibrary> {
                       child: Center(
                         child: DottedBorder(
                           borderType: BorderType.Circle,
-                          radius: Radius.circular(12),
-                          dashPattern: [6, 3],
-                          child: Container(
+                          radius: const Radius.circular(12),
+                          dashPattern: const [6, 3],
+                          child: SizedBox(
                             width: 157,
                             height: 157,
                             child: Center(
@@ -472,7 +474,7 @@ class _AddLibraryState extends State<AddLibrary> {
                                     pickFile();
                                   }
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.cloud_upload,
                                   size: 40,
                                   color: Color(0xFF427D9D),
@@ -486,7 +488,7 @@ class _AddLibraryState extends State<AddLibrary> {
                   ),
                 ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             ],
           ),
         ),

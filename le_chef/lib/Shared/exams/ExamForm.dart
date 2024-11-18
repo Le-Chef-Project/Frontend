@@ -8,7 +8,6 @@ import '../../Models/Quiz.dart';
 import '../../Widgets/quiz_time.dart';
 import '../custom_elevated_button.dart';
 import '../../main.dart';
-import 'exams.dart';
 
 class QuizPage extends StatefulWidget {
   final Quiz quiz;
@@ -191,12 +190,12 @@ class _QuizPageState extends State<QuizPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Error'),
+              title: const Text('Error'),
               content: Text('Failed to update quiz: ${e.toString()}'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -238,7 +237,7 @@ class _QuizPageState extends State<QuizPage> {
     });
 
     // At this point, all questions have been answered
-    print(' showing answers' + '${answers}'); // For debugging
+    print(' showing answers' '$answers'); // For debugging
   }
 
   void _updateQuizTime() {
@@ -561,12 +560,12 @@ class _QuizPageState extends State<QuizPage> {
                                               builder: (context) {
                                                 return AlertDialog(
                                                   backgroundColor: Colors.white,
-                                                  title: Center(
+                                                  title: const Center(
                                                       child: Text(
                                                           'Select new time')),
                                                   titleTextStyle:
                                                       GoogleFonts.ibmPlexMono(
-                                                    color: Color(0xFF164863),
+                                                    color: const Color(0xFF164863),
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,
                                                   ),
@@ -577,7 +576,7 @@ class _QuizPageState extends State<QuizPage> {
                                                         const EdgeInsets.all(
                                                             16),
                                                     decoration: ShapeDecoration(
-                                                      color: Color(0xFFFBFAFA),
+                                                      color: const Color(0xFFFBFAFA),
                                                       shape:
                                                           RoundedRectangleBorder(
                                                         borderRadius:
@@ -612,7 +611,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                   style:
                                                                       GoogleFonts
                                                                           .heebo(
-                                                                    color: Color(
+                                                                    color: const Color(
                                                                         0xFF888888),
                                                                     fontSize:
                                                                         12,
@@ -626,7 +625,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                   style:
                                                                       GoogleFonts
                                                                           .heebo(
-                                                                    color: Color(
+                                                                    color: const Color(
                                                                         0xFF888888),
                                                                     fontSize:
                                                                         12,
@@ -657,7 +656,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                       9, // For first minute digit
                                                                 ),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 width: 12,
                                                               ),
                                                               Expanded(
@@ -684,7 +683,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                             .center,
                                                                     style: GoogleFonts
                                                                         .inter(
-                                                                      color: Color(
+                                                                      color: const Color(
                                                                           0xFFCFD4DC),
                                                                       fontSize:
                                                                           60,
@@ -709,7 +708,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                       5, // For first minute digit
                                                                 ),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 width: 12,
                                                               ),
                                                               Expanded(
@@ -743,7 +742,7 @@ class _QuizPageState extends State<QuizPage> {
                                                           style: ElevatedButton
                                                               .styleFrom(
                                                                   backgroundColor:
-                                                                      Color(
+                                                                      const Color(
                                                                           0xFF427D9D),
                                                                   shape:
                                                                       RoundedRectangleBorder(
@@ -751,16 +750,16 @@ class _QuizPageState extends State<QuizPage> {
                                                                         BorderRadius.circular(
                                                                             12),
                                                                   ),
-                                                                  minimumSize: Size(
+                                                                  minimumSize: const Size(
                                                                       double
                                                                           .minPositive,
                                                                       48)),
-                                                          child: Text(
+                                                          child: const Text(
                                                             'Save Changes',
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style:
-                                                                const TextStyle(
+                                                                TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 16,
@@ -790,14 +789,14 @@ class _QuizPageState extends State<QuizPage> {
                                                           },
                                                           style: OutlinedButton
                                                               .styleFrom(
-                                                            side: BorderSide(
+                                                            side: const BorderSide(
                                                                 color: Color(
                                                                     0xFF427D9D)),
                                                             backgroundColor:
                                                                 Colors.white,
                                                             shape:
                                                                 RoundedRectangleBorder(
-                                                              side: BorderSide(
+                                                              side: const BorderSide(
                                                                   width: 1,
                                                                   color: Color(
                                                                       0xFF427D9D)),
@@ -807,7 +806,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                           12),
                                                             ),
                                                           ),
-                                                          child: Text(
+                                                          child: const Text(
                                                             'Cancel',
                                                             textAlign: TextAlign
                                                                 .center,
@@ -835,7 +834,7 @@ class _QuizPageState extends State<QuizPage> {
                                           borderRadius:
                                               BorderRadius.circular(12)),
                                       minimumSize:
-                                          Size(double.minPositive, 60)),
+                                          const Size(double.minPositive, 60)),
                                   // buttonStyle:
                                   //     CustomButtonStyles.fillPrimaryTL5,
                                 ),
@@ -1156,7 +1155,7 @@ class _QuizPageState extends State<QuizPage> {
                               ),
                             ),
                           )
-                        : SizedBox.shrink()
+                        : const SizedBox.shrink()
                   ],
                 ),
               ),

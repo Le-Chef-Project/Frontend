@@ -96,7 +96,7 @@ class MembersScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ) : SizedBox.shrink(),
+            ) : const SizedBox.shrink(),
             const SizedBox(height: 47),
             Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -151,7 +151,7 @@ class MembersScreen extends StatelessWidget {
                         onPressed: () {
                           //ToDo delete logic
                         },
-                      ) : SizedBox.shrink(),
+                      ) : const SizedBox.shrink(),
                     ),
                   );
                 },

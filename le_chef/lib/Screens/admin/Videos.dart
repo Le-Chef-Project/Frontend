@@ -42,11 +42,11 @@ class _VideoListScreenState extends State<VideoListScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isloading
-          ? Center(
+          ? const Center(
               child:
                   CircularProgressIndicator()) // Show loading indicator while fetching
           : _filteredvideos.isEmpty
-              ? Center(
+              ? const Center(
                   child: Text(
                       "No videos available")) // Show message if no videos match
               : GridView.builder(

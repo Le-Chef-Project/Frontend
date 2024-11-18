@@ -38,7 +38,7 @@ class ApisMethods {
       print('apiiii $emailController + $passwordController ');
       final json = jsonDecode(response.body);
       print('apiiii ${json['role']}');
-      print('apiiii ${json}');
+      print('apiiii $json');
 
       if (response.statusCode == 200) {
         SharedPrefes.SaveToken(json['token']);
@@ -378,7 +378,7 @@ class ApisMethods {
                 ),
               );
             });
-        print('Response: ${responseData}');
+        print('Response: $responseData');
       } else {
         print('Upload failed with status: ${response.statusCode}');
       }
@@ -525,7 +525,7 @@ class ApisMethods {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '${response.body}',
+                    response.body,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ibmPlexMono(
                       color: const Color(0xFF888888),
@@ -782,24 +782,24 @@ class ApisMethods {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
-        // Convert the response data into a DirectChat object
-        final DirectChat directChat = DirectChat.fromJson({
-          '_id': chatRoomId,
-          'participants': responseData['participants'],
-          'messages': responseData['messages'],
-          'createdAt': responseData['createdAt'],
-          'updatedAt': responseData['updatedAt'],
-        });
+        // Debugging: Print the response for verification
+        print('Response data: $responseData');
 
-        return directChat;
+        // Parse the response and return
+        return DirectChat.fromJson(responseData);
+      } else if (response.statusCode == 404) {
+        throw Exception('Chat room not found.');
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized request. Check your token.');
       } else {
-        print('Error: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-        throw Exception('Failed to fetch messages: ${response.statusCode}');
+        throw Exception('Failed to fetch messages. HTTP ${response.statusCode}');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error fetching messages: $e');
-      throw Exception('Failed to fetch messages: $e');
+      print('Stack trace: $stackTrace');
+
+      // Re-throw the exception with a custom message
+      throw Exception('An error occurred while fetching messages: $e');
     }
   }
 

@@ -9,7 +9,7 @@ import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
 
 class OnlineSessionScreen extends StatefulWidget {
-  OnlineSessionScreen({super.key});
+  const OnlineSessionScreen({super.key});
 
   @override
   State<OnlineSessionScreen> createState() => _OnlineSessionScreenState();
@@ -97,16 +97,16 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                             Text(
                               'Level ${index + 1}',
                               style: GoogleFonts.ibmPlexMono(
-                                color: Color(0xFF164863),
+                                color: const Color(0xFF164863),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             Switch(
                               value: isActive,
-                              activeColor: Color(0xFF00B84A),
+                              activeColor: const Color(0xFF00B84A),
                               thumbColor:
-                              WidgetStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                               onChanged: (bool value) {
                                 if (value) {  // Only handle activation, not deactivation
                                   setState(() {
@@ -116,8 +116,9 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                                     level3 = false;
 
                                     // Then activate only the selected level
-                                    if (index == 0) level1 = true;
-                                    else if (index == 1) level2 = true;
+                                    if (index == 0) {
+                                      level1 = true;
+                                    } else if (index == 1) level2 = true;
                                     else level3 = true;
                                   });
                                 }
@@ -126,16 +127,16 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: const Divider(color: Color(0xFFC6C6C8), thickness: 0.5,),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Divider(color: Color(0xFFC6C6C8), thickness: 0.5,),
                       ),
                     ],
                   );
                 }
             ),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           joinMeeting(context, role),
         ],
       );

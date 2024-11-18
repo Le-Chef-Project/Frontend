@@ -40,7 +40,7 @@ Widget joinMeeting(BuildContext context, String? role) {
                     child: ElevatedButton(
                       onPressed: () {
                         //Todo call the link
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MeetingPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),

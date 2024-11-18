@@ -1,4 +1,3 @@
-import 'package:le_chef/Models/direct_chat.dart';
 
 class ApiEndPoints {
   static const String baseUrl = "http://192.168.1.3:3000/";

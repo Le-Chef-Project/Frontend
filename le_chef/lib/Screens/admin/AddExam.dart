@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
-import 'package:le_chef/Shared/exams/ExamForm.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 import '../../Models/Quiz.dart';
 import '../../Widgets/quiz_time.dart';
-import '../../theme/custom_button_style.dart';
 import 'AddQuestion.dart';
 
 class AddExam extends StatefulWidget {
@@ -255,17 +253,17 @@ class _AddExamState extends State<AddExam> {
                               Text(
                                 'Paid',
                                 style: GoogleFonts.ibmPlexMono(
-                                  color: Color(0xFF164863),
+                                  color: const Color(0xFF164863),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(width: 50),
+                              const SizedBox(width: 50),
                               Switch(
                                 value: light,
-                                activeColor: Color(0xFF00B84A),
+                                activeColor: const Color(0xFF00B84A),
                                 thumbColor:
-                                    WidgetStatePropertyAll(Colors.white),
+                                    const WidgetStatePropertyAll(Colors.white),
                                 onChanged: (bool value) {
                                   setState(() {
                                     light = value;
@@ -275,12 +273,12 @@ class _AddExamState extends State<AddExam> {
                             ],
                           ),
                         ),
-                        SizedBox(width: 25),
+                        const SizedBox(width: 25),
                         Expanded(
                           child: Text(
                             'Exam name',
                             style: GoogleFonts.ibmPlexMono(
-                              color: Color(0xFF164863),
+                              color: const Color(0xFF164863),
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -288,14 +286,14 @@ class _AddExamState extends State<AddExam> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
                           child: Container(
                             decoration: ShapeDecoration(
-                              color: Color(0xFFFBFAFA),
+                              color: const Color(0xFFFBFAFA),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -304,7 +302,7 @@ class _AddExamState extends State<AddExam> {
                               controller: quizFees,
                               enabled: light,
                               style: GoogleFonts.ibmPlexMono(
-                                color: light ? Color(0xFF164863) : Colors.grey,
+                                color: light ? const Color(0xFF164863) : Colors.grey,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -312,11 +310,11 @@ class _AddExamState extends State<AddExam> {
                                 hintText: 'amount to pay',
                                 hintStyle: GoogleFonts.ibmPlexMono(
                                   color:
-                                      light ? Color(0xFF164863) : Colors.grey,
+                                      light ? const Color(0xFF164863) : Colors.grey,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 25, horizontal: 25),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -335,16 +333,16 @@ class _AddExamState extends State<AddExam> {
                                   borderSide: BorderSide.none,
                                 ),
                                 filled: true,
-                                fillColor: Color(0xFFFBFAFA),
+                                fillColor: const Color(0xFFFBFAFA),
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Container(
                             decoration: ShapeDecoration(
-                              color: Color(0xFFFBFAFA),
+                              color: const Color(0xFFFBFAFA),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -353,7 +351,7 @@ class _AddExamState extends State<AddExam> {
                               controller: titleController,
                               enabled: true,
                               style: GoogleFonts.ibmPlexMono(
-                                color: Color(0xFF164863),
+                                color: const Color(0xFF164863),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -361,11 +359,11 @@ class _AddExamState extends State<AddExam> {
                                 hintText: 'write exam name',
                                 hintMaxLines: 2,
                                 hintStyle: GoogleFonts.ibmPlexMono(
-                                  color: Color(0xFF164863),
+                                  color: const Color(0xFF164863),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 16, horizontal: 25),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -384,7 +382,7 @@ class _AddExamState extends State<AddExam> {
                                   borderSide: BorderSide.none,
                                 ),
                                 filled: true,
-                                fillColor: Color(0xFFFBFAFA),
+                                fillColor: const Color(0xFFFBFAFA),
                               ),
                             ),
                           ),
@@ -406,7 +404,7 @@ class _AddExamState extends State<AddExam> {
                             child: Text(
                           'Choose Level',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -415,14 +413,14 @@ class _AddExamState extends State<AddExam> {
                             child: Text(
                           'Choose Unit',
                           style: GoogleFonts.ibmPlexMono(
-                            color: Color(0xFF164863),
+                            color: const Color(0xFF164863),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ))
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     Row(
@@ -431,7 +429,7 @@ class _AddExamState extends State<AddExam> {
                         Expanded(
                             child: DropdownMenu(
                           hintText: 'Select Level',
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             color: Color(0xFF667084),
                             fontSize: 12,
                             fontFamily: 'IBM Plex Mono',
@@ -439,7 +437,7 @@ class _AddExamState extends State<AddExam> {
                           ),
                           menuStyle: MenuStyle(
                             backgroundColor:
-                                WidgetStatePropertyAll(Colors.white),
+                                const WidgetStatePropertyAll(Colors.white),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -459,11 +457,11 @@ class _AddExamState extends State<AddExam> {
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Color(0xFFD0D5DD)),
+                              borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Color(0xFF164863)),
+                              borderSide: const BorderSide(color: Color(0xFF164863)),
                             ),
                           ),
                           dropdownMenuEntries: levels
@@ -473,7 +471,7 @@ class _AddExamState extends State<AddExam> {
                                 label: value,
                                 style: MenuItemButton.styleFrom(
                                     textStyle: GoogleFonts.ibmPlexMono(
-                                  color: Color(0xFF0F1728),
+                                  color: const Color(0xFF0F1728),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
                                 )));
@@ -482,7 +480,7 @@ class _AddExamState extends State<AddExam> {
                         Expanded(
                             child: DropdownMenu(
                           hintText: 'Select unit',
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             color: Color(0xFF667084),
                             fontSize: 12,
                             fontFamily: 'IBM Plex Mono',
@@ -490,7 +488,7 @@ class _AddExamState extends State<AddExam> {
                           ),
                           menuStyle: MenuStyle(
                             backgroundColor:
-                                WidgetStatePropertyAll(Colors.white),
+                                const WidgetStatePropertyAll(Colors.white),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -510,11 +508,11 @@ class _AddExamState extends State<AddExam> {
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Color(0xFFD0D5DD)),
+                              borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Color(0xFF164863)),
+                              borderSide: const BorderSide(color: Color(0xFF164863)),
                             ),
                           ),
                           dropdownMenuEntries: [
@@ -525,7 +523,7 @@ class _AddExamState extends State<AddExam> {
                                   label: value,
                                   style: MenuItemButton.styleFrom(
                                       textStyle: GoogleFonts.ibmPlexMono(
-                                    color: Color(0xFF0F1728),
+                                    color: const Color(0xFF0F1728),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                   )));
@@ -535,13 +533,13 @@ class _AddExamState extends State<AddExam> {
                               label: 'Add Unit',
                               enabled: false,
                               style: MenuItemButton.styleFrom(
-                                  backgroundColor: Color(0xFFDDF2FD),
-                                  padding: EdgeInsets.all(8),
+                                  backgroundColor: const Color(0xFFDDF2FD),
+                                  padding: const EdgeInsets.all(8),
                                   textStyle: GoogleFonts.ibmPlexMono(
                                     color: Colors.transparent,
                                     fontSize: 0,
                                   )),
-                              leadingIcon: Container(
+                              leadingIcon: SizedBox(
                                 width: 100,
                                 height: 40,
                                 child: Row(
@@ -552,14 +550,14 @@ class _AddExamState extends State<AddExam> {
                                         decoration: InputDecoration(
                                           hintText: 'Add Unit',
                                           hintStyle: GoogleFonts.ibmPlexMono(
-                                            color: Color(0xFF164863),
+                                            color: const Color(0xFF164863),
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
                                           ),
                                           border: InputBorder.none,
                                         ),
                                         style: GoogleFonts.ibmPlexMono(
-                                          color: Color(0xFF0F1728),
+                                          color: const Color(0xFF0F1728),
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
                                         ),
@@ -581,7 +579,7 @@ class _AddExamState extends State<AddExam> {
                                 value: 'add_button',
                                 label: 'Add Unit',
                                 style: MenuItemButton.styleFrom(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     textStyle: GoogleFonts.ibmPlexMono(
                                       color: Colors.transparent,
                                       fontSize: 0,
@@ -599,10 +597,6 @@ class _AddExamState extends State<AddExam> {
                                         });
                                       }
                                     },
-                                    child: Text(
-                                      'Add Unit',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF427D9D),
                                       padding: const EdgeInsets.symmetric(
@@ -610,6 +604,10 @@ class _AddExamState extends State<AddExam> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
+                                    ),
+                                    child: const Text(
+                                      'Add Unit',
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                   ),
                                 ))
@@ -627,7 +625,7 @@ class _AddExamState extends State<AddExam> {
                   height: 180,
                   padding: const EdgeInsets.all(16),
                   decoration: ShapeDecoration(
-                    color: Color(0xFFFBFAFA),
+                    color: const Color(0xFFFBFAFA),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -657,7 +655,7 @@ class _AddExamState extends State<AddExam> {
                               Text(
                                 'Hours',
                                 style: GoogleFonts.heebo(
-                                  color: Color(0xFF888888),
+                                  color: const Color(0xFF888888),
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -665,7 +663,7 @@ class _AddExamState extends State<AddExam> {
                               Text(
                                 'Minutes',
                                 style: GoogleFonts.heebo(
-                                  color: Color(0xFF888888),
+                                  color: const Color(0xFF888888),
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -683,7 +681,7 @@ class _AddExamState extends State<AddExam> {
                               validator: _validateTime,
                               maxValue: 9, // For first minute digit
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 12,
                             ),
                             ScrollableTimeInput(
@@ -698,7 +696,7 @@ class _AddExamState extends State<AddExam> {
                                 '-',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
-                                  color: Color(0xFFCFD4DC),
+                                  color: const Color(0xFFCFD4DC),
                                   fontSize: 60,
                                   fontWeight: FontWeight.w500,
                                   height: 0.02,
@@ -712,7 +710,7 @@ class _AddExamState extends State<AddExam> {
                               maxValue: 6, // For first minute digit
                             ),
 
-                            SizedBox(
+                            const SizedBox(
                               width: 12,
                             ),
                             ScrollableTimeInput(
@@ -780,7 +778,7 @@ class _AddExamState extends State<AddExam> {
                                       200, // Set a fixed height for the inner ListView
                                   child: ListView.builder(
                                     shrinkWrap: true, // Add this line as well
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     itemCount: quizList[index].options.length,
                                     itemBuilder: (context, innerIndex) {
                                       return _buildListItem(
@@ -808,7 +806,7 @@ class _AddExamState extends State<AddExam> {
           child: CustomElevatedButton(
             height: 55,
             onPressed: ()
-            => dialogWithButtons(context: context, icon: Icon(Icons.error_outline_rounded,
+            => dialogWithButtons(context: context, icon: const Icon(Icons.error_outline_rounded,
               color: Color(0xFF164863),
               size: 150,),
               title: 'Are you sure you finish putting Exam ?', 

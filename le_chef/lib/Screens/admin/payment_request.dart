@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 class PaymentRequest extends StatelessWidget {
-  PaymentRequest({super.key});
+  const PaymentRequest({super.key});
 
   final bool isView = true;
 
@@ -102,7 +102,7 @@ class PaymentRequest extends StatelessWidget {
                                   onPressed: () {},
                                   icon: const Icon(Icons.close, size: 10),
                                   label: Text('Reject', style: GoogleFonts.ibmPlexMono(
-                                    color: Color(0xFF0E7490),
+                                    color: const Color(0xFF0E7490),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w500,
                                   ),),
@@ -123,18 +123,18 @@ class PaymentRequest extends StatelessWidget {
                                   height: 32,
                                   child: ElevatedButton(
                                     onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF427D9D),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
                                     child: Text(
                                       'View Item',
                                       style: GoogleFonts.ibmPlexMono(
                                         color: Colors.white,
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF427D9D),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
                                   ),

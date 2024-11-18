@@ -7,7 +7,7 @@ import '../main.dart';
 
 class NotesScreen extends StatefulWidget {
   final int level;
-  NotesScreen({super.key, required this.level});
+  const NotesScreen({super.key, required this.level});
 
   @override
   State<NotesScreen> createState() => _NotesScreenState();
@@ -49,7 +49,7 @@ class _NotesScreenState extends State<NotesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: role == "user"
-          ? CustomAppBar(
+          ? const CustomAppBar(
               title: 'Notes',
             )
           : null,
@@ -57,11 +57,11 @@ class _NotesScreenState extends State<NotesScreen> {
           future: _notesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text("No notes available"));
+              return const Center(child: Text("No notes available"));
             }
 
             final notes = snapshot.data!;
@@ -84,7 +84,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
                           dateText,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF164863),
                             fontSize: 20,
                             fontFamily: 'IBM Plex Mono',
@@ -128,7 +128,7 @@ class NoteCard extends StatelessWidget {
   final String content;
   final String createdAt;
 
-  const NoteCard({
+  const NoteCard({super.key, 
     required this.content,
     required this.createdAt,
   });
@@ -144,7 +144,7 @@ class NoteCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        color: Color(0xFFF9F9F9),
+        color: const Color(0xFFF9F9F9),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -152,7 +152,7 @@ class NoteCard extends StatelessWidget {
             children: [
               Text(
                 displayDate,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xFF888888),
                   fontSize: 12,
                   fontFamily: 'IBM Plex Mono',
@@ -163,7 +163,7 @@ class NoteCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 content,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xFF164863),
                   fontSize: 14,
                   fontFamily: 'IBM Plex Mono',
@@ -171,7 +171,7 @@ class NoteCard extends StatelessWidget {
                   height: 0,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -187,7 +187,7 @@ class NoteCard extends StatelessWidget {
     if (dateTime.year == now.year &&
         dateTime.month == now.month &&
         dateTime.day == now.day) {
-      return "${DateFormat.jm().format(dateTime)}";
+      return DateFormat.jm().format(dateTime);
     } else if (dateTime.year == now.year &&
         dateTime.month == now.month &&
         dateTime.day == now.day - 1) {

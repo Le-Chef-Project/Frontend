@@ -65,13 +65,13 @@ class _ScrollableTimeInputState extends State<ScrollableTimeInput> {
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(
+            side: const BorderSide(
               width: 1,
               color: Color(0xFFCFD4DC),
             ),
             borderRadius: BorderRadius.circular(8),
           ),
-          shadows: [
+          shadows: const [
             BoxShadow(
               color: Color(0x0C101828),
               blurRadius: 2,
@@ -92,7 +92,7 @@ class _ScrollableTimeInputState extends State<ScrollableTimeInput> {
           child: ListWheelScrollView(
             controller: _scrollController,
             itemExtent: 55,
-            physics: FixedExtentScrollPhysics(),
+            physics: const FixedExtentScrollPhysics(),
             onSelectedItemChanged: _updateValue,
             children: List.generate(
               widget.maxValue + 1,
@@ -102,8 +102,8 @@ class _ScrollableTimeInputState extends State<ScrollableTimeInput> {
                   index.toString(),
                   style: GoogleFonts.heebo(
                     color: _isScrolling || index.toString() == currentValue
-                        ? Color(0xFF101828)
-                        : Color(0xFFCFD4DC),
+                        ? const Color(0xFF101828)
+                        : const Color(0xFFCFD4DC),
                     fontSize: 32,
                     fontWeight: FontWeight.w500,
                   ),
@@ -119,6 +119,8 @@ class _ScrollableTimeInputState extends State<ScrollableTimeInput> {
 
 // Example usage in a time picker widget:
 class TimePicker extends StatefulWidget {
+  const TimePicker({super.key});
+
   @override
   State<TimePicker> createState() => _TimePickerState();
 }
@@ -151,7 +153,7 @@ class _TimePickerState extends State<TimePicker> {
           maxValue: 2,
           isHour: true,
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         ScrollableTimeInput(
           controller: _hourTwoController,
           validator: _validateTime,
@@ -159,7 +161,7 @@ class _TimePickerState extends State<TimePicker> {
           isHour: true,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
             ':',
             style: GoogleFonts.heebo(
@@ -173,7 +175,7 @@ class _TimePickerState extends State<TimePicker> {
           validator: _validateTime,
           maxValue: 5,
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         ScrollableTimeInput(
           controller: _minuteTwoController,
           validator: _validateTime,

@@ -102,7 +102,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(' tryyyyyyyyyy quizeeeeeee ${_filteredExams}');
+    print(' tryyyyyyyyyy quizeeeeeee $_filteredExams');
 
     return SafeArea(
       child: Scaffold(
@@ -115,7 +115,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                 ? totalStudent(context, 'Total Exams', '${_exams.length}',
                     buttonText: 'Add Exam', ontap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddExam()));
+                        MaterialPageRoute(builder: (context) => const AddExam()));
                   })
                 : Center(
                     child: Image.asset(
@@ -146,7 +146,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                       fontSize: 12,
                       height: 1,
                     ),
-                    indicator: CircleTabIndicator(radius: 4.0),
+                    indicator: const CircleTabIndicator(radius: 4.0),
                     tabs: List.generate(
                       _units.length,
                       (index) => Tab(
@@ -232,7 +232,7 @@ class CircleTabIndicator extends Decoration {
   final double radius;
   final Color color;
 
-  CircleTabIndicator({
+  const CircleTabIndicator({
     required this.radius,
     this.color = const Color(0xFF427D9D),
   });

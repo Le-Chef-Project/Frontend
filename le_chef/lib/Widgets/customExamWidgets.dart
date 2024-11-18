@@ -181,15 +181,15 @@ Widget customExamListTile(
             Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (isLocked) Icon(Icons.lock_outline, color: Color(0xFF164863)),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward_ios, color: Color(0xFF164863)),
+                  if (isLocked) const Icon(Icons.lock_outline, color: Color(0xFF164863)),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_forward_ios, color: Color(0xFF164863)),
                 ],
               ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             if (isLocked) Text(
                   '${exam.amountToPay.toString()} EGP', style: GoogleFonts.ibmPlexMono(
-              color: Color(0xFF427D9D),
+              color: const Color(0xFF427D9D),
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),)

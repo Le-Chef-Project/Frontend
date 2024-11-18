@@ -45,7 +45,7 @@ class EndMeeting extends StatelessWidget {
                         //     context,
                         //     MaterialPageRoute(
                         //         builder: (context) => const OnlineSessionScreen()));
-                        Get.to(() => OnlineSessionScreen(), transition: Transition.fadeIn, duration: const Duration(milliseconds: 1000));
+                        Get.to(() => const OnlineSessionScreen(), transition: Transition.fadeIn, duration: const Duration(milliseconds: 1000));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),

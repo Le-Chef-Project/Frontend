@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:le_chef/Shared/login.dart';
 
 SharedPreferences? sharedPreferences;
 
@@ -41,14 +39,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Le Chef',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF164863)),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF164863)),
           useMaterial3: true,
         ),
         home: token == null || token == ""
             ? const SplashOne()
             : role == "admin"
-                ? THome()
-                : Home(),
+                ? const THome()
+                : const Home(),
       ),
     );
   }

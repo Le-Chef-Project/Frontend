@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
-import 'package:le_chef/Screens/admin/all_students.dart';
-import 'package:le_chef/Screens/chats.dart';
 import 'package:le_chef/Screens/user/examsResults.dart';
-import 'package:le_chef/Shared/exams/exams.dart';
-import 'package:le_chef/Shared/custom_elevated_button.dart';
-import '../../Models/Student.dart';
-import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_app_bar.dart';
-import '../../Shared/textInputDecoration.dart';
 import '../../Widgets/total_exams-students_card.dart';
 import '../../main.dart';
-import '../../theme/custom_button_style.dart';
-import '../../theme/theme_helper.dart';
-import '../Notes.dart';
-import '../notification.dart';
 import 'PDFs.dart';
 import 'Videos.dart';
 import 'addLibrary.dart';
@@ -62,7 +48,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(
+        appBar: const CustomAppBar(
           title: 'Library',
         ),
         body: Column(
@@ -76,7 +62,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                     isLibrary: true,
                     ontap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddLibrary()),
+                      MaterialPageRoute(builder: (context) => const AddLibrary()),
                     ),
                   )
                 : Center(
@@ -89,10 +75,10 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
             Material(
               color: Colors.white,
               child: TabBar(
-                labelColor: Color(0xFF427D9D),
-                unselectedLabelColor: Color(0xFF427D9D),
+                labelColor: const Color(0xFF427D9D),
+                unselectedLabelColor: const Color(0xFF427D9D),
                 controller: tabviewController,
-                indicatorColor: Color(0xFF427D9D),
+                indicatorColor: const Color(0xFF427D9D),
                 dividerColor: Colors.transparent,
                 labelStyle: GoogleFonts.ibmPlexMono(
                   fontWeight: FontWeight.w600,
@@ -105,35 +91,35 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                 indicator: Circletabindicator(radius: 4.0),
                 tabs: role == 'admin'
                     ? [
-                        Tab(child: Text('Videos')),
-                        Tab(child: Text('Books')),
-                        Tab(child: Text('PDFs')),
+                        const Tab(child: Text('Videos')),
+                        const Tab(child: Text('Books')),
+                        const Tab(child: Text('PDFs')),
                       ]
                     : [
-                        Tab(child: Text('Videos')),
-                        Tab(child: Text('Books')),
-                        Tab(child: Text('PDFs')),
-                        Tab(
+                        const Tab(child: Text('Videos')),
+                        const Tab(child: Text('Books')),
+                        const Tab(child: Text('PDFs')),
+                        const Tab(
                           child: Text('Exams Results'),
                         )
                       ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: TabBarView(
                 controller: tabviewController,
                 children: role == 'admin'
                     ? [
                         VideoListScreen(selectedLevel: widget.selectedLevel),
-                        Text('hello'),
+                        const Text('hello'),
                         AllPDFs(selectedLevel: widget.selectedLevel),
                       ]
                     : [
                         VideoListScreen(selectedLevel: widget.selectedLevel),
-                        Text('hello'),
+                        const Text('hello'),
                         AllPDFs(selectedLevel: widget.selectedLevel),
-                        ExamsResults(),
+                        const ExamsResults(),
                       ],
               ),
             ),
@@ -145,7 +131,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
 }
 
 class Circletabindicator extends Decoration {
-  final Color color = Color(0xFF427D9D);
+  final Color color = const Color(0xFF427D9D);
   double radius;
   Circletabindicator({required this.radius});
   @override
@@ -156,18 +142,18 @@ class Circletabindicator extends Decoration {
 
 class _CirclePainter extends BoxPainter {
   final double radius;
-  final Color color;
+  final Color color = const Color(0xFF427D9D);
 
-  _CirclePainter({required this.radius, this.color = const Color(0xFF427D9D)});
+  _CirclePainter({required this.radius});
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration cfg) {
-    final Paint _paint = Paint()
+    final Paint paint = Paint()
       ..color = color
       ..isAntiAlias = true;
 
     final Offset circleOffset =
         offset + Offset(cfg.size!.width / 2, cfg.size!.height - radius);
-    canvas.drawCircle(circleOffset, radius, _paint);
+    canvas.drawCircle(circleOffset, radius, paint);
   }
 }

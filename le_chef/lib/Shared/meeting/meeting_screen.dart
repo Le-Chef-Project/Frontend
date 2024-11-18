@@ -116,7 +116,7 @@ class _MeetingPageState extends State<MeetingPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xFF3D3D3D),
+        backgroundColor: const Color(0xFF3D3D3D),
         body: OrientationBuilder(
           builder: (context, orientation) {
             return Column(
