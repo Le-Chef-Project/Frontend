@@ -4,7 +4,7 @@ import 'package:le_chef/main.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import 'user/Home.dart';
-import 'chats.dart';
+import 'chats/chats.dart';
 import 'notification.dart';
 
 class MembersScreen extends StatelessWidget {

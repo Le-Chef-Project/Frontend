@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../Shared/customBottomNavBar.dart';
-import '../../Screens/chats.dart';
+import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
 import 'online_session_screen.dart';

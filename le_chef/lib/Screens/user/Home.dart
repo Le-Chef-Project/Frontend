@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/login.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';

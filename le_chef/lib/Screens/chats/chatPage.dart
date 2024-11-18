@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -13,18 +14,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Student.dart';
-import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/main.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
-import '../Models/direct_chat.dart' as direct_chat;
-import '../Shared/customBottomNavBar.dart';
-import '../Shared/custom_app_bar.dart';
-import 'user/Home.dart';
-import 'notification.dart';
+import '../../Models/direct_chat.dart' as direct_chat;
+import '../../Shared/customBottomNavBar.dart';
+import '../../Shared/custom_app_bar.dart';
+import '../user/Home.dart';
+import '../notification.dart';
 
 class ChatPage extends StatefulWidget {
   final String? groupName;
@@ -69,18 +71,17 @@ class _ChatPageState extends State<ChatPage> {
       if (widget.receiver != null) {
         setState(() => _isLoading = true);
 
-        final direct_chat.DirectChat directChat = await ApisMethods.getDirectMessages('672f597ca198b521a71b82ad');
+        final direct_chat.DirectChat directChat = await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
 
         final List<WrappedMessage> convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
-          // Ensure sender has a default value if null
-          final Object senderId = msg.sender ?? 'unknown_sender';
-
           return WrappedMessage(
             message: types.Message.fromJson({
-              'author': {'id': senderId},
+              'author': {
+                'id': msg.sender != widget.receiver?.ID ? _user.id : widget.receiver?.ID
+              },
               'createdAt': createdAtMillis,
               'id': msg.id ?? const Uuid().v4(),
               'type': _getMessageType(msg),
@@ -89,7 +90,7 @@ class _ChatPageState extends State<ChatPage> {
           );
         }).toList();
 
-        convertedMessages.sort((a, b) =>
+        convertedMessages.sort((b, a) =>
             (b.message.createdAt ?? 0).compareTo(a.message.createdAt ?? 0));
 
         setState(() {
@@ -140,6 +141,7 @@ class _ChatPageState extends State<ChatPage> {
       };
     }
     if (msg.documents != null && msg.documents!.isNotEmpty) {
+      print('Document URI: ${msg.documents![0]}'); // Log the URI
       return {
         'name': 'Document',
         'size': 0,
@@ -285,6 +287,29 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  Future<void> _downloadAndOpenDocument(String url) async {
+    try {
+      // Step 1: Get the document name and extension
+      String fileName = url.split('/').last;
+
+      // Step 2: Get the app's document directory to save the file
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String savePath = '${appDocDir.path}/$fileName';
+
+      // Step 3: Download the file
+      Dio dio = Dio();
+      await dio.download(url, savePath);
+
+      print('File downloaded to: $savePath');
+
+      // Step 4: Open the downloaded file
+      final result = await OpenFilex.open(savePath);
+      print('File open result: ${result.message}');
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   void _stopRecording() async {
     await _recorder!.stopRecorder();
     _isRecording.value = false;
@@ -416,8 +441,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _handlePreviewDataFetched(
-      types.Message message, types.PreviewData previewData) {
+  void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
     // Find the index of the message in _messages list
     final index =
         _messages.indexWhere((element) => element.message.id == message.id);
@@ -442,18 +466,6 @@ class _ChatPageState extends State<ChatPage> {
         );
       });
     }
-  }
-
-  void _loadMessages() async {
-    final response = await rootBundle.loadString('assets/messages.json');
-    final messages = (jsonDecode(response) as List)
-        .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-        .map((message) => WrappedMessage(message: message, ))
-        .toList();
-
-    setState(() {
-      _messages = messages;
-    });
   }
 
   Future<void> _initRecorder() async {
@@ -642,13 +654,11 @@ class _ChatPageState extends State<ChatPage> {
               ),
               fileMessageBuilder: (message, {required int messageWidth}) {
                 if (message.mimeType?.startsWith('audio/') == true) {
+                  // Existing audio message handling code
                   return Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                     decoration: BoxDecoration(
-                      color: message.author.id == _user.id
-                          ? Colors.blue
-                          : Colors.grey[300],
+                      color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Column(
@@ -693,8 +703,7 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Text(
                               DateFormat('hh:mm a').format(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      message.createdAt!)),
+                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 10.0),
                             ),
@@ -705,9 +714,57 @@ class _ChatPageState extends State<ChatPage> {
                   );
                 }
 
-                // For other file messages
+                // Handle images
+                if (message.mimeType?.startsWith('image/') == true) {
+                  return Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.grey[200],
+                    ),
+                    child: Image.network(
+                      message.uri,
+                      fit: BoxFit.cover,
+                      width: messageWidth.toDouble(),
+                    ),
+                  );
+                }
+
+                // Handle documents
+                if (message.mimeType?.startsWith('application/') == true) {
+                  return GestureDetector(
+                    onTap: () {
+                      _downloadAndOpenDocument(message.uri); // Open the document on tap
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.grey[300],
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.insert_drive_file, color: Colors.black),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              message.name ?? 'Document',
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                // Default case
                 return _buildCustomMessage(message, messageWidth: messageWidth);
-              }),
+              }
+          ),
           floatingActionButton: _showFloatingButton
               ? ValueListenableBuilder<bool>(
                   valueListenable: _isTyping,
@@ -848,74 +905,105 @@ class _ChatPageState extends State<ChatPage> {
                   );
                 },
               ),
-              fileMessageBuilder: (message, {required int messageWidth}) {
-                if (message.mimeType?.startsWith('audio/') == true) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12.0, horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      color: message.author.id == _user.id
-                          ? Colors.blue
-                          : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: message.author.id == _user.id
-                          ? CrossAxisAlignment.end
-                          : CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.audiotrack,
+            fileMessageBuilder: (message, {required int messageWidth}) {
+              if (message.mimeType?.startsWith('audio/') == true) {
+                // Existing audio message code...
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: message.author.id == _user.id
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.audiotrack,
+                              color: message.author.id == _user.id
+                                  ? Colors.white
+                                  : Colors.black),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              'Voice Message',
+                              style: TextStyle(
+                                color: message.author.id == _user.id
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.play_arrow,
                                 color: message.author.id == _user.id
                                     ? Colors.white
                                     : Colors.black),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: Text(
-                                'Voice Message',
-                                style: TextStyle(
-                                  color: message.author.id == _user.id
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                            onPressed: () {
+                              _playAudio(message.uri);
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4.0),
+                      Row(
+                        mainAxisAlignment: message.author.id == _user.id
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('hh:mm a').format(
+                                DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
+                            style: const TextStyle(color: Colors.white, fontSize: 10.0),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              } else if (message.mimeType?.startsWith('application/') == true) {
+                // For document files (PDF, Word, etc.)
+                return GestureDetector(
+                  onTap: () {
+                    _downloadAndOpenDocument(message.uri);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      color: message.author.id == _user.id ? Colors.green : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.insert_drive_file,
+                            color: message.author.id == _user.id
+                                ? Colors.white
+                                : Colors.black),
+                        const SizedBox(width: 8.0),
+                        Expanded(
+                          child: Text(
+                            'Document',
+                            style: TextStyle(
+                              color: message.author.id == _user.id
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
-                            IconButton(
-                              icon: Icon(Icons.play_arrow,
-                                  color: message.author.id == _user.id
-                                      ? Colors.white
-                                      : Colors.black),
-                              onPressed: () {
-                                _playAudio(message.uri);
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4.0),
-                        Row(
-                          mainAxisAlignment: message.author.id == _user.id
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              DateFormat('hh:mm a').format(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      message.createdAt!)),
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 10.0),
-                            ),
-                          ],
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
-                  );
-                }
+                  ),
+                );
+              }
 
-                // For other file messages
-                return _buildCustomMessage(message, messageWidth: messageWidth);
-              }),
+              // For other file messages
+              return _buildCustomMessage(message, messageWidth: messageWidth);
+            },
+          ),
           floatingActionButton: _showFloatingButton
               ? ValueListenableBuilder<bool>(
             valueListenable: _isTyping,

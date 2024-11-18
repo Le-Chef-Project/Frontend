@@ -4,7 +4,7 @@ import 'package:le_chef/Widgets/exams/join_meeting.dart';
 import 'package:le_chef/Widgets/exams/meeting_not_started.dart';
 import 'package:le_chef/main.dart';
 import '../../../Shared/customBottomNavBar.dart';
-import '../../Screens/chats.dart';
+import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
 

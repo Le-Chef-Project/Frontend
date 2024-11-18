@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Models/Video.dart';
-import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import '../../Api/apimethods.dart';
 import '../../Shared/custom_app_bar.dart';

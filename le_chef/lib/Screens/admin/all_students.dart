@@ -10,7 +10,7 @@ import '../../Api/apimethods.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Widgets/total_exams-students_card.dart';
 import '../user/Home.dart';
-import '../chats.dart';
+import '../chats/chats.dart';
 import '../notification.dart';
 import 'AddExam.dart';
 

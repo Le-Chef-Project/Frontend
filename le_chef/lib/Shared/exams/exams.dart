@@ -10,7 +10,7 @@ import '../customBottomNavBar.dart';
 import '../../Widgets/customExamWidgets.dart';
 import '../../main.dart';
 import '../../Screens/user/Home.dart';
-import '../../Screens/chats.dart';
+import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 
 class Exams extends StatefulWidget {

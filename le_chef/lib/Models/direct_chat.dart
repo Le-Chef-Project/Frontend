@@ -56,19 +56,21 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      id: json['_id'] as String?, // Allow nullable ID
-      sender: json['sender'] ?? '', // Default to an empty string if null
-      createdAt: json['createdAt'], // Keep as is (dynamic type)
-      content: json['content'] as String?, // Allow nullable content
+      id: json['_id'] as String?,
+      sender: json['sender'] is Map
+          ? json['sender']['_id'] ?? '' // Extract ID if sender is a Map
+          : json['sender'] ?? '', // Use as-is if it's already a String
+      createdAt: json['createdAt'],
+      content: json['content'] as String?,
       images: json['images'] != null
           ? List<String>.from(json['images'] as List)
-          : [], // Default to empty list
+          : [],
       documents: json['documents'] != null
           ? List<String>.from(json['documents'] as List)
-          : [], // Default to empty list
+          : [],
       audio: json['audio'] != null
           ? AudioData.fromJson(json['audio'] as Map<String, dynamic>)
-          : null, // Allow nullable audio
+          : null,
     );
   }
 

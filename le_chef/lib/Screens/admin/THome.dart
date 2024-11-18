@@ -6,7 +6,7 @@ import 'package:le_chef/Models/Notes.dart';
 import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/admin/notesLevels.dart';
-import 'package:le_chef/Screens/chats.dart';
+import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';

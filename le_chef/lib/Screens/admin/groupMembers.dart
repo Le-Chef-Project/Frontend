@@ -3,7 +3,7 @@ import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../../Shared/customBottomNavBar.dart';
 import '../user/Home.dart';
-import '../chats.dart';
+import '../chats/chats.dart';
 import '../notification.dart';
 
 class GroupMembers extends StatelessWidget {

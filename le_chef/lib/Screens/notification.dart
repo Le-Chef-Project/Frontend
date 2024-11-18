@@ -4,7 +4,7 @@ import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../Shared/customBottomNavBar.dart';
-import 'chats.dart';
+import 'chats/chats.dart';
 
 class Notifications extends StatelessWidget {
   String day = "Today";
