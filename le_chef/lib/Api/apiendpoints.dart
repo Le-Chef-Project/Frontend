@@ -39,4 +39,5 @@ class Chat {
   final sendDirectMsg = 'Chat/SendDirectMessage/';
   final getDirectMsg = 'Chat/getDirectMessages/';
   final sendGrpMsg = 'Chat/SendGroupMessage/';
+  final createGrp = '/CreateGroup';
 }

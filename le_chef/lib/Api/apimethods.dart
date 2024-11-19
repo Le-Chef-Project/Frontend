@@ -599,12 +599,7 @@ class ApisMethods {
   }
 
   //15-update quiz
-  static Future<void> updateQuiz({
-    required String id,
-    required List<dynamic> questions,
-    required int hours,
-    required int minutes,
-  }) async {
+  static Future<void> updateQuiz({required String id, required List<dynamic> questions, required int hours, required int minutes,}) async {
     final Map<String, dynamic> body = {
       'questions': questions
           .map((q) => {
@@ -632,11 +627,7 @@ class ApisMethods {
 
   //16- submit quiz
 
-  static Future<Map<String, dynamic>> submitQuiz(
-    quizModel.Quiz quiz,
-    answers,
-    String quizID,
-  ) async {
+  static Future<Map<String, dynamic>> submitQuiz(quizModel.Quiz quiz, answers, String quizID,) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.submitQuiz + quizID);
 
@@ -695,16 +686,7 @@ class ApisMethods {
   }
 
   //17-send direct msg
-  static Future<void> sendDirectMsg({
-    required String id,
-    required List<String> participants,
-    required String sender,
-    required String content,
-    List<File>? images,
-    List<File>? documents,
-    AudioData? audio,
-    DateTime? createdAt,
-  }) async {
+  static Future<void> sendDirectMsg({required String id, required List<String> participants, required String sender, required String content, List<File>? images, List<File>? documents, AudioData? audio, DateTime? createdAt,}) async {
     final url = Uri.parse(
         '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
 
@@ -803,64 +785,93 @@ class ApisMethods {
     }
   }
 
-  //19-send grp msg
-  static Future<void> sendGroupMsg({
-    required String id,
-    required String group,
-    required String sender,
-    required String content,
-    List<String>? images,
-    List<String>? documents,
-    AudioData? audio,
-    DateTime? createdAt,
-  }) async {
-    final url = Uri.parse(
-        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendGrpMsg}$id');
+  //19- create grp
+  static Future<void> createGrp(String title, int desc, List<String> members) async {
+    var url =
+    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.createGrp);
 
-    Map<String, dynamic>? audioData;
-    if (audio != null) {
-      audioData = {
-        'data': audio.data,
-        'contentType': audio.contentType,
-      };
+    http.Response response = await http.post(url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+        body:
+        jsonEncode({'title': title, 'description': desc, 'members': members}));
+
+    if (response.statusCode == 201) {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/correct sign.png',
+                    width: 117,
+                    height: 117,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Success!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Group Added Successfully',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF888888),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+                backgroundColor: Colors.white,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/error-16_svgrepo.com.jpg',
+                      width: 117,
+                      height: 117,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Warning!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF164863),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      response.body,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF888888),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+
+                )
+            );
+          });
     }
-
-    final body = {
-      'group': group,
-      'messages': [
-        {
-          'sender': sender,
-          'content': content,
-          'images': images ?? [],
-          'documents': documents ?? [],
-          'audio': audioData,
-          'createdAt':
-              createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
-        }
-      ]
-    };
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token!,
-        },
-        body: jsonEncode(body),
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        print('Message sent successfully: ${responseData['message']}');
-      } else {
-        print('Error: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-        throw Exception('Failed to send message: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error sending message: $e');
-      throw Exception('Failed to send message: $e');
     }
-  }
 }

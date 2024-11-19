@@ -27,6 +27,7 @@ import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../user/Home.dart';
 import '../notification.dart';
+import 'image_viewer.dart';
 
 class ChatPage extends StatefulWidget {
   final String? groupName;
@@ -287,28 +288,317 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Future<void> _downloadAndOpenDocument(String url) async {
-    try {
-      // Step 1: Get the document name and extension
-      String fileName = url.split('/').last;
+  void _handleMessageTap(BuildContext context, types.Message message) async {
+    final index = _messages.indexWhere((element) => element.message.id == message.id);
+    if (index != -1) {
+      final wrappedMessage = _messages[index];
 
-      // Step 2: Get the app's document directory to save the file
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      String savePath = '${appDocDir.path}/$fileName';
+      // Handle file messages
+      if (wrappedMessage.message is types.FileMessage) {
+        final fileMessage = wrappedMessage.message as types.FileMessage;
 
-      // Step 3: Download the file
-      Dio dio = Dio();
-      await dio.download(url, savePath);
+        // Handle images
+        if (fileMessage.mimeType?.startsWith('image/') == true) {
+          setState(() {
+            _showFloatingButton = false;
+          });
 
-      print('File downloaded to: $savePath');
+          // Show image in custom viewer
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (context) => ImageViewerDialog(imageUrl: fileMessage.uri),
+            ),
+          );
 
-      // Step 4: Open the downloaded file
-      final result = await OpenFilex.open(savePath);
-      print('File open result: ${result.message}');
-    } catch (e) {
-      print('Error: $e');
+          setState(() {
+            _showFloatingButton = true;
+          });
+        }
+        // Handle documents
+        else {
+          await _downloadAndOpenDocument(fileMessage.uri, fileMessage.name ?? 'document');
+        }
+      }
+
+      // Update message seen status if needed
+      if (wrappedMessage.message is CustomMessage && !wrappedMessage.seen) {
+        setState(() {
+          _messages[index] = WrappedMessage(
+            message: wrappedMessage.message,
+            // seen: true,
+          );
+        });
+      }
     }
   }
+
+// Improved document download and open function
+  Future<void> _downloadAndOpenDocument(String url, String fileName) async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+
+      final Directory? directory = await getExternalStorageDirectory();
+      if (directory == null) {
+        throw Exception('Unable to access external storage');
+      }
+
+      final Dio dio = Dio();
+
+      // Check content type first
+      final headResponse = await dio.head(
+        url,
+        options: Options(
+          followRedirects: true,
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      final contentType = headResponse.headers['content-type']?.first ?? '';
+      final String fileExtension = _getFileExtension(contentType, url);
+
+      // Update filename with correct extension
+      final String processedFileName = _updateFileName(fileName, fileExtension);
+
+      // Create appropriate directory based on file type
+      final String fileDirectory = '${directory.path}/${fileExtension.toUpperCase()}s';
+      await Directory(fileDirectory).create(recursive: true);
+
+      final String filePath = '$fileDirectory/$processedFileName';
+
+      // Download the file
+      final response = await dio.get(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          headers: {
+            'Accept': '*/*',
+          },
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to download file: Status ${response.statusCode}');
+      }
+
+      final List<int> bytes = response.data;
+
+      // Verify file type from actual content
+      final String? detectedType = _detectFileType(bytes);
+      if (detectedType == null) {
+        throw Exception('Unable to determine file type');
+      }
+
+      // Save the file
+      final File file = File(filePath);
+      await file.writeAsBytes(bytes, flush: true);
+
+      // Close loading indicator
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      // Open file with appropriate handler
+      await _openFile(filePath, detectedType);
+
+    } catch (e) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Error handling file:'),
+              Text(
+                e.toString(),
+                style: TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    }
+  }
+
+  String _getFileExtension(String contentType, String url) {
+    // First try to get extension from content type
+    switch (contentType.toLowerCase()) {
+      case 'application/pdf':
+        return 'pdf';
+      case 'image/jpeg':
+        return 'jpg';
+      case 'image/png':
+        return 'png';
+      default:
+      // If content type is not specific, try to get from URL
+        final uri = Uri.parse(url);
+        final path = uri.path;
+        final lastDot = path.lastIndexOf('.');
+        if (lastDot != -1) {
+          return path.substring(lastDot + 1).toLowerCase();
+        }
+        return 'unknown';
+    }
+  }
+
+  String _updateFileName(String originalName, String extension) {
+    // Remove any existing extension
+    String baseName = originalName.contains('.')
+        ? originalName.substring(0, originalName.lastIndexOf('.'))
+        : originalName;
+
+    return '$baseName.$extension';
+  }
+
+  Future<void> _openFile(String filePath, String fileType) async {
+    String mimeType;
+    String uti = '';
+
+    switch (fileType.toUpperCase()) {
+      case 'PDF':
+        mimeType = 'application/pdf';
+        uti = 'com.adobe.pdf';
+        break;
+      case 'JPEG':
+        mimeType = 'image/jpeg';
+        uti = 'public.jpeg';
+        break;
+      case 'PNG':
+        mimeType = 'image/png';
+        uti = 'public.png';
+        break;
+      default:
+        mimeType = 'application/octet-stream';
+    }
+
+    final result = await OpenFilex.open(
+      filePath,
+      type: mimeType,
+      uti: uti,
+    );
+
+    if (result.type != ResultType.done) {
+      throw Exception('Failed to open file: ${result.message}');
+    }
+  }
+
+// Helper function to detect file type based on magic numbers
+  String? _detectFileType(List<int> bytes) {
+    if (bytes.length < 8) return null;
+
+    // Check for common file signatures
+    if (_isPDF(bytes)) return 'PDF';
+
+    // ZIP, DOCX, XLSX, etc.
+    if (bytes[0] == 0x50 && bytes[1] == 0x4B) return 'ZIP-based';
+
+    // JPEG
+    if (bytes[0] == 0xFF && bytes[1] == 0xD8) return 'JPEG';
+
+    // PNG
+    if (bytes[0] == 0x89 && bytes[1] == 0x50 &&
+        bytes[2] == 0x4E && bytes[3] == 0x47) return 'PNG';
+
+    return null;
+  }
+
+  bool _isPDF(List<int> bytes) {
+    if (bytes.length < 4) return false;
+    // Check for PDF magic number '%PDF'
+    return bytes[0] == 0x25 && // %
+        bytes[1] == 0x50 && // P
+        bytes[2] == 0x44 && // D
+        bytes[3] == 0x46;   // F
+  }
+//
+// // Helper function to check if extension is valid
+//   bool _isValidExtension(String extension) {
+//     return [
+//       'pdf', 'doc', 'docx', 'xls', 'xlsx',
+//       'txt', 'jpg', 'jpeg', 'png', 'gif',
+//       'mp4', 'mp3', 'wav', 'zip', 'rar'
+//     ].contains(extension.toLowerCase());
+//   }
+//
+// // Helper function to get extension from MIME type
+//   String _getExtensionFromMimeType(String mimeType) {
+//     final mimeToExt = {
+//       'application/pdf': 'pdf',
+//       'application/msword': 'doc',
+//       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+//       'application/vnd.ms-excel': 'xls',
+//       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+//       'text/plain': 'txt',
+//       'image/jpeg': 'jpg',
+//       'image/png': 'png',
+//       'image/gif': 'gif',
+//       'video/mp4': 'mp4',
+//       'audio/mpeg': 'mp3',
+//       'audio/wav': 'wav',
+//       'application/zip': 'zip',
+//       'application/x-rar-compressed': 'rar',
+//     };
+//
+//     return mimeToExt[mimeType.split(';')[0]] ?? '';
+//   }
+//
+//   String? _getMimeType(String extension) {
+//     final mimeTypes = {
+//       'pdf': 'application/pdf',
+//       'doc': 'application/msword',
+//       'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+//       'xls': 'application/vnd.ms-excel',
+//       'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+//       'txt': 'text/plain',
+//       'jpg': 'image/jpeg',
+//       'jpeg': 'image/jpeg',
+//       'png': 'image/png',
+//       'gif': 'image/gif',
+//       'mp4': 'video/mp4',
+//       'mp3': 'audio/mpeg',
+//       'wav': 'audio/wav',
+//       'zip': 'application/zip',
+//       'rar': 'application/x-rar-compressed',
+//     };
+//     return mimeTypes[extension.toLowerCase()];
+//   }
+//
+//   String? _getUTI(String extension) {
+//     final utiTypes = {
+//       'pdf': 'com.adobe.pdf',
+//       'doc': 'com.microsoft.word.doc',
+//       'docx': 'org.openxmlformats.wordprocessingml.document',
+//       'xls': 'com.microsoft.excel.xls',
+//       'xlsx': 'org.openxmlformats.spreadsheetml.sheet',
+//       'txt': 'public.plain-text',
+//       'jpg': 'public.jpeg',
+//       'jpeg': 'public.jpeg',
+//       'png': 'public.png',
+//       'gif': 'public.gif',
+//       'mp4': 'public.mpeg-4',
+//       'mp3': 'public.mp3',
+//       'wav': 'public.wav',
+//       'zip': 'public.zip-archive',
+//       'rar': 'public.rar-archive',
+//     };
+//     return utiTypes[extension.toLowerCase()];
+//   }
 
   void _stopRecording() async {
     await _recorder!.stopRecorder();
@@ -363,7 +653,7 @@ class _ChatPageState extends State<ChatPage> {
         child: SizedBox(
           height: 144,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               TextButton(
                 onPressed: () {
@@ -371,8 +661,14 @@ class _ChatPageState extends State<ChatPage> {
                   _handleImageSelection();
                 },
                 child: const Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text('Photo'),
+                  alignment: AlignmentDirectional.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.image_outlined),
+                      Text('Photo'),
+                    ],
+                  ),
                 ),
               ),
               TextButton(
@@ -381,15 +677,27 @@ class _ChatPageState extends State<ChatPage> {
                   _handleFileSelection();
                 },
                 child: const Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text('File'),
+                  alignment: AlignmentDirectional.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.file_copy),
+                      Text('File'),
+                    ],
+                  ),
                 ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text('Cancel'),
+                  alignment: AlignmentDirectional.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.close),
+                      Text('Cancel'),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -397,48 +705,6 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
     );
-  }
-
-  void _handleMessageTap(BuildContext _, types.Message message) async {
-    final index =
-        _messages.indexWhere((element) => element.message.id == message.id);
-    if (index != -1) {
-      final wrappedMessage = _messages[index];
-      if (wrappedMessage.message is CustomMessage) {
-        final updatedMessage = wrappedMessage.message as CustomMessage;
-        if (!wrappedMessage.seen) {
-          setState(() {
-            _messages[index] = WrappedMessage(
-              message: updatedMessage,
-              // seen: true,
-            );
-          });
-        }
-      }
-
-      // Handle file opening logic
-      if (wrappedMessage.message is types.FileMessage) {
-        final fileMessage = wrappedMessage.message as types.FileMessage;
-
-        // Check if the file is an image
-        if (fileMessage.mimeType?.startsWith('image/') == true) {
-          setState(() {
-            _showFloatingButton = false;
-          });
-
-          // Open the image file
-          await OpenFilex.open(fileMessage.uri);
-
-          // Optionally, reset the button visibility here if you want it to reappear
-          // after closing the image viewer.
-          setState(() {
-            _showFloatingButton = true;
-          });
-        } else {
-          await OpenFilex.open(fileMessage.uri);
-        }
-      }
-    }
   }
 
   void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
@@ -658,7 +924,7 @@ class _ChatPageState extends State<ChatPage> {
                   return Container(
                     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                     decoration: BoxDecoration(
-                      color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
+                      color: message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Column(
@@ -734,7 +1000,7 @@ class _ChatPageState extends State<ChatPage> {
                 if (message.mimeType?.startsWith('application/') == true) {
                   return GestureDetector(
                     onTap: () {
-                      _downloadAndOpenDocument(message.uri); // Open the document on tap
+                      _downloadAndOpenDocument(message.uri, message.name); // Open the document on tap
                     },
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
@@ -911,7 +1177,7 @@ class _ChatPageState extends State<ChatPage> {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: message.author.id == _user.id ? Colors.blue : Colors.grey[300],
+                    color: message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300],
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Column(
@@ -968,7 +1234,7 @@ class _ChatPageState extends State<ChatPage> {
                 // For document files (PDF, Word, etc.)
                 return GestureDetector(
                   onTap: () {
-                    _downloadAndOpenDocument(message.uri);
+                    _downloadAndOpenDocument(message.uri, message.name);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
@@ -1070,7 +1336,7 @@ class _ChatPageState extends State<ChatPage> {
 
     // Define the colors based on whether the message is sent or received
     final messageColor =
-        message.author.id == _user.id ? Colors.blue : Colors.grey[300];
+        message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300];
     final textColor =
         message.author.id == _user.id ? Colors.white : Colors.black;
 
@@ -1082,9 +1348,9 @@ class _ChatPageState extends State<ChatPage> {
         seenIndicator = const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check, color: Colors.blue, size: 16.0),
+            Icon(Icons.check, color: Color(0xFF0E7490), size: 16.0),
             SizedBox(width: 2.0),
-            Icon(Icons.check, color: Colors.blue, size: 16.0),
+            Icon(Icons.check, color: Color(0xFF0E7490), size: 16.0),
           ],
         );
       }

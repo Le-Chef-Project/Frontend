@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:le_chef/Models/Student.dart';
+import 'package:le_chef/Models/group_chat.dart';
 import 'package:le_chef/Screens/chats/chatPage.dart';
 import 'package:le_chef/Screens/members_screen.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
@@ -56,6 +57,11 @@ class Chats extends StatelessWidget {
                 PersonalChat(context),
               ],
             ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color(0xFF0E7490),
+            onPressed: () {},
+            child: const Icon(Icons.add, color: Colors.white),
           ),
           bottomNavigationBar: CustomBottomNavBar(
             onItemTapped: (index) {
@@ -133,6 +139,7 @@ Widget PersonalChat(BuildContext context) {
 }
 
 Widget groupChat(BuildContext context) {
+  GroupChat? group;
   return SingleChildScrollView(
     child: Column(
       children: [
@@ -144,7 +151,7 @@ Widget groupChat(BuildContext context) {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(groupName: "Group ${index + 1}", membersNumber: 34,)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
               },
               child: Container(
                 color: Colors.transparent,
