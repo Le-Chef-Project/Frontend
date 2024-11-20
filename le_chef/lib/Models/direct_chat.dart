@@ -87,8 +87,8 @@ class AudioData {
 
   factory AudioData.fromJson(Map<String, dynamic> json) {
     return AudioData(
-      data: json['data'] ?? '',
-      contentType: json['contentType'] ?? '',
+      data: json['data'] as String ?? '',
+      contentType: json['contentType'] as String ?? '',
     );
   }
 }

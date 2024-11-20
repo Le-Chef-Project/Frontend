@@ -704,7 +704,7 @@ class ApisMethods {
     required String content,
     List<File>? images,
     List<File>? documents,
-    AudioData? audio,
+    List<int>? audio,
     DateTime? createdAt,
   }) async {
     final url = Uri.parse(
@@ -720,10 +720,8 @@ class ApisMethods {
         (createdAt ?? DateTime.now()).toIso8601String();
 
     if (audio != null) {
-      request.fields['audio'] = jsonEncode({
-        'data': audio.data,
-        'contentType': audio.contentType,
-      });
+      String base64Audio = base64Encode(audio);
+      request.fields['audio'] = base64Audio;
     }
 
     if (images != null && images.isNotEmpty) {

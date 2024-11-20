@@ -7,7 +7,7 @@ import '../../Shared/textInputDecoration.dart';
 
 class StudentSelectionScreen extends StatefulWidget {
   final bool is_exist;
-  StudentSelectionScreen({super.key, required this.is_exist});
+  const StudentSelectionScreen({super.key, required this.is_exist});
 
   @override
   _StudentSelectionScreenState createState() => _StudentSelectionScreenState();
@@ -147,7 +147,7 @@ class _StudentSelectionScreenState extends State<StudentSelectionScreen> {
                                         _DescriptionController.text.isEmpty) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        SnackBar(
+                                        const SnackBar(
                                             content: Text(
                                                 'Please fill in all fields')),
                                       );
@@ -244,8 +244,8 @@ class _StudentSelectionScreenState extends State<StudentSelectionScreen> {
                     ),
                     child: ListTile(
                       title: Text(
-                        _Std![index].firstname + ' ' + _Std![index].Lastname,
-                        style: TextStyle(
+                        '${_Std![index].firstname} ${_Std![index].Lastname}',
+                        style: const TextStyle(
                           color: Color(0xFF164863),
                           fontSize: 16,
                           fontFamily: 'Heebo',

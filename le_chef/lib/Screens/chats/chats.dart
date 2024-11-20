@@ -70,12 +70,12 @@ class _ChatsState extends State<Chats> {
                   height: 10,
                 ),
                 _isLoading_grp
-                    ? Center(
+                    ? const Center(
                         child: CircularProgressIndicator(),
                       )
                     : groups!.isNotEmpty
                         ? groupChat(context)
-                        : Center(
+                        : const Center(
                             child: Text('no groups yet '),
                           ),
                 const SizedBox(height: 20),
@@ -102,7 +102,7 @@ class _ChatsState extends State<Chats> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => StudentSelectionScreen(
+                          builder: (context) => const StudentSelectionScreen(
                                 is_exist: false,
                               )),
                     );
@@ -225,7 +225,7 @@ class _ChatsState extends State<Chats> {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatPage()));
+                      MaterialPageRoute(builder: (context) => const ChatPage()));
                 },
                 onLongPress: () async {
                   showModalBottomSheet(

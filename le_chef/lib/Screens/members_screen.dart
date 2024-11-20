@@ -14,7 +14,7 @@ class MembersScreen extends StatefulWidget {
   final String groupName;
   final String groupId;
 
-  MembersScreen({super.key, required this.groupName, required this.groupId});
+  const MembersScreen({super.key, required this.groupName, required this.groupId});
 
   @override
   State<MembersScreen> createState() => _MembersScreenState();
@@ -135,7 +135,7 @@ class _MembersScreenState extends State<MembersScreen> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  StudentSelectionScreen(
+                                                  const StudentSelectionScreen(
                                                     is_exist: true,
                                                   )),
                                         );
