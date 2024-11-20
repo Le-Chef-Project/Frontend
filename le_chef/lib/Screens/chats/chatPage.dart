@@ -42,7 +42,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-
   List<WrappedMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
@@ -58,7 +57,6 @@ class _ChatPageState extends State<ChatPage> {
     return types.User(id: _userId ?? '');
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -72,16 +70,20 @@ class _ChatPageState extends State<ChatPage> {
       if (widget.receiver != null) {
         setState(() => _isLoading = true);
 
-        final direct_chat.DirectChat directChat = await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
+        final direct_chat.DirectChat directChat =
+            await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
 
-        final List<WrappedMessage> convertedMessages = directChat.messages.map((msg) {
+        final List<WrappedMessage> convertedMessages =
+            directChat.messages.map((msg) {
           // Safely handle createdAt
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
           return WrappedMessage(
             message: types.Message.fromJson({
               'author': {
-                'id': msg.sender != widget.receiver?.ID ? _user.id : widget.receiver?.ID
+                'id': msg.sender != widget.receiver?.ID
+                    ? _user.id
+                    : widget.receiver?.ID
               },
               'createdAt': createdAtMillis,
               'id': msg.id ?? const Uuid().v4(),
@@ -116,7 +118,8 @@ class _ChatPageState extends State<ChatPage> {
       if (createdAt is String) {
         return DateTime.parse(createdAt).millisecondsSinceEpoch;
       } else if (createdAt is Map<String, dynamic>) {
-        return createdAt['millisecondsSinceEpoch'] ?? DateTime.now().millisecondsSinceEpoch;
+        return createdAt['millisecondsSinceEpoch'] ??
+            DateTime.now().millisecondsSinceEpoch;
       }
     } catch (e) {
       print('Error parsing createdAt: $e');
@@ -124,7 +127,6 @@ class _ChatPageState extends State<ChatPage> {
 
     return DateTime.now().millisecondsSinceEpoch;
   }
-
 
   String _getMessageType(direct_chat.Message msg) {
     if (msg.images != null && msg.images!.isNotEmpty) return 'image';
@@ -187,16 +189,17 @@ class _ChatPageState extends State<ChatPage> {
     _addMessage(textMessage);
 
     try {
-      if(person) {
+      if (person) {
         print('Sender id: ${_user.id} \nReciever Id: ${widget.receiver!.ID}');
         await ApisMethods.sendDirectMsg(
-        id: widget.receiver!.ID,
+          id: widget.receiver!.ID,
           participants: [_user.id, widget.receiver!.ID],
           sender: _user.id,
           content: message.text,
-          createdAt: DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
-      );
-      }else{
+          createdAt:
+              DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
+        );
+      } else {
         // await ApisMethods.sendGrpMsg(textMessage.id, textMessage.id, _user.id, message.text, null, null, null, DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),);
       }
       print('Updated sending message');
@@ -211,33 +214,33 @@ class _ChatPageState extends State<ChatPage> {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-        final message = types.ImageMessage(
-          author: _user,
-          createdAt: DateTime.now().millisecondsSinceEpoch,
-          id: const Uuid().v4(),
-          name: image.name ?? '',
-          size: await image.length(),
-          uri: image.path,
-        );
+      final message = types.ImageMessage(
+        author: _user,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: const Uuid().v4(),
+        name: image.name ?? '',
+        size: await image.length(),
+        uri: image.path,
+      );
 
-        _addMessage(message);
+      _addMessage(message);
 
-        try {
-          if (person) {
-            print('Image path: ${image.path} and Image file path: ${File(image.path)}');
-            await ApisMethods.sendDirectMsg(
-              id: widget.receiver!.ID,
-              participants: [_user.id, widget.receiver!.ID],
-              sender: _user.id,
-              content: 'Image',
-              images: [File(image.path)],
-              createdAt: DateTime.fromMillisecondsSinceEpoch(
-                  message.createdAt!),
-            );
-          }
-        }catch(e){
-          print('Error sending image message: $e');
+      try {
+        if (person) {
+          print(
+              'Image path: ${image.path} and Image file path: ${File(image.path)}');
+          await ApisMethods.sendDirectMsg(
+            id: widget.receiver!.ID,
+            participants: [_user.id, widget.receiver!.ID],
+            sender: _user.id,
+            content: 'Image',
+            images: [File(image.path)],
+            createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+          );
         }
+      } catch (e) {
+        print('Error sending image message: $e');
+      }
     }
   }
 
@@ -247,7 +250,6 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     if (result != null && result.files.single.path != null) {
-
       final message = types.FileMessage(
         author: _user,
         createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -261,7 +263,7 @@ class _ChatPageState extends State<ChatPage> {
       _addMessage(message);
 
       try {
-        if(person) {
+        if (person) {
           await ApisMethods.sendDirectMsg(
             id: widget.receiver!.ID,
             participants: [_user.id, widget.receiver!.ID],
@@ -289,7 +291,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleMessageTap(BuildContext context, types.Message message) async {
-    final index = _messages.indexWhere((element) => element.message.id == message.id);
+    final index =
+        _messages.indexWhere((element) => element.message.id == message.id);
     if (index != -1) {
       final wrappedMessage = _messages[index];
 
@@ -307,7 +310,8 @@ class _ChatPageState extends State<ChatPage> {
           await Navigator.of(context).push(
             MaterialPageRoute(
               fullscreenDialog: true,
-              builder: (context) => ImageViewerDialog(imageUrl: fileMessage.uri),
+              builder: (context) =>
+                  ImageViewerDialog(imageUrl: fileMessage.uri),
             ),
           );
 
@@ -317,7 +321,8 @@ class _ChatPageState extends State<ChatPage> {
         }
         // Handle documents
         else {
-          await _downloadAndOpenDocument(fileMessage.uri, fileMessage.name ?? 'document');
+          await _downloadAndOpenDocument(
+              fileMessage.uri, fileMessage.name ?? 'document');
         }
       }
 
@@ -369,7 +374,8 @@ class _ChatPageState extends State<ChatPage> {
       final String processedFileName = _updateFileName(fileName, fileExtension);
 
       // Create appropriate directory based on file type
-      final String fileDirectory = '${directory.path}/${fileExtension.toUpperCase()}s';
+      final String fileDirectory =
+          '${directory.path}/${fileExtension.toUpperCase()}s';
       await Directory(fileDirectory).create(recursive: true);
 
       final String filePath = '$fileDirectory/$processedFileName';
@@ -388,7 +394,8 @@ class _ChatPageState extends State<ChatPage> {
       );
 
       if (response.statusCode != 200) {
-        throw Exception('Failed to download file: Status ${response.statusCode}');
+        throw Exception(
+            'Failed to download file: Status ${response.statusCode}');
       }
 
       final List<int> bytes = response.data;
@@ -410,7 +417,6 @@ class _ChatPageState extends State<ChatPage> {
 
       // Open file with appropriate handler
       await _openFile(filePath, detectedType);
-
     } catch (e) {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
@@ -446,7 +452,7 @@ class _ChatPageState extends State<ChatPage> {
       case 'image/png':
         return 'png';
       default:
-      // If content type is not specific, try to get from URL
+        // If content type is not specific, try to get from URL
         final uri = Uri.parse(url);
         final path = uri.path;
         final lastDot = path.lastIndexOf('.');
@@ -512,8 +518,10 @@ class _ChatPageState extends State<ChatPage> {
     if (bytes[0] == 0xFF && bytes[1] == 0xD8) return 'JPEG';
 
     // PNG
-    if (bytes[0] == 0x89 && bytes[1] == 0x50 &&
-        bytes[2] == 0x4E && bytes[3] == 0x47) return 'PNG';
+    if (bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E &&
+        bytes[3] == 0x47) return 'PNG';
 
     return null;
   }
@@ -524,7 +532,7 @@ class _ChatPageState extends State<ChatPage> {
     return bytes[0] == 0x25 && // %
         bytes[1] == 0x50 && // P
         bytes[2] == 0x44 && // D
-        bytes[3] == 0x46;   // F
+        bytes[3] == 0x46; // F
   }
 //
 // // Helper function to check if extension is valid
@@ -620,18 +628,18 @@ class _ChatPageState extends State<ChatPage> {
 
       // Send to database
       try {
-        if(person) {
+        if (person) {
           final audioData = await _createAudioData(_recordedFilePath!);
           await ApisMethods.sendDirectMsg(
-          id: widget.receiver!.ID,
+            id: widget.receiver!.ID,
             participants: [_user.id, widget.receiver!.ID],
-          sender: _user.id,
-          content: 'Audio',
+            sender: _user.id,
+            content: 'Audio',
             audio: audioData,
-          // Audio path
+            // Audio path
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-        );
-        }else{
+          );
+        } else {
           // await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, null, _recordedFilePath, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
         }
       } catch (e) {
@@ -707,7 +715,8 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
+  void _handlePreviewDataFetched(
+      types.Message message, types.PreviewData previewData) {
     // Find the index of the message in _messages list
     final index =
         _messages.indexWhere((element) => element.message.id == message.id);
@@ -922,9 +931,12 @@ class _ChatPageState extends State<ChatPage> {
                 if (message.mimeType?.startsWith('audio/') == true) {
                   // Existing audio message handling code
                   return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
                     decoration: BoxDecoration(
-                      color: message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300],
+                      color: message.author.id == _user.id
+                          ? Color(0xFF0E7490)
+                          : Colors.grey[300],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Column(
@@ -969,7 +981,8 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Text(
                               DateFormat('hh:mm a').format(
-                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      message.createdAt!)),
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 10.0),
                             ),
@@ -1000,7 +1013,8 @@ class _ChatPageState extends State<ChatPage> {
                 if (message.mimeType?.startsWith('application/') == true) {
                   return GestureDetector(
                     onTap: () {
-                      _downloadAndOpenDocument(message.uri, message.name); // Open the document on tap
+                      _downloadAndOpenDocument(message.uri,
+                          message.name); // Open the document on tap
                     },
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
@@ -1029,8 +1043,7 @@ class _ChatPageState extends State<ChatPage> {
 
                 // Default case
                 return _buildCustomMessage(message, messageWidth: messageWidth);
-              }
-          ),
+              }),
           floatingActionButton: _showFloatingButton
               ? ValueListenableBuilder<bool>(
                   valueListenable: _isTyping,
@@ -1088,96 +1101,99 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
       );
-
-    }else{
+    } else {
       return SafeArea(
         child: Scaffold(
           appBar: CustomAppBar(
             title: widget.receiver?.username ?? 'Chat',
-            avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+            avatarUrl:
+                'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
           ),
           // Rest of the Scaffold remains the same
-          body:Chat(
-              messages: _messages.map((wm) => wm.message).toList(),
-              onAttachmentPressed: _handleAttachmentPressed,
-              onMessageTap: _handleMessageTap,
-              onPreviewDataFetched: _handlePreviewDataFetched,
-              onSendPressed: _handleSendPressed,
-              showUserAvatars: person,
-              showUserNames: true,
-              user: _user,
-              theme: personalChatTheme,
-              customBottomWidget: ValueListenableBuilder<bool>(
-                valueListenable: _isRecording,
-                builder: (context, isRecording, child) {
-                  return isRecording
-                      ? Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0E7490),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Recording...',
-                          style:
-                          TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  )
-                      : Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFBFAFA),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _textController,
-                              decoration: InputDecoration(
-                                  hintText: 'Type a message...',
-                                  border: InputBorder.none,
-                                  hintStyle: GoogleFonts.ibmPlexMono(
-                                    color: const Color(0xFF888888),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  )),
-                              style: const TextStyle(color: Colors.black),
-                              onSubmitted: (value) {
-                                if (value.isNotEmpty) {
-                                  _handleSendPressed(
-                                      types.PartialText(text: value));
-                                }
-                              },
+          body: Chat(
+            messages: _messages.map((wm) => wm.message).toList(),
+            onAttachmentPressed: _handleAttachmentPressed,
+            onMessageTap: _handleMessageTap,
+            onPreviewDataFetched: _handlePreviewDataFetched,
+            onSendPressed: _handleSendPressed,
+            showUserAvatars: person,
+            showUserNames: true,
+            user: _user,
+            theme: personalChatTheme,
+            customBottomWidget: ValueListenableBuilder<bool>(
+              valueListenable: _isRecording,
+              builder: (context, isRecording, child) {
+                return isRecording
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0E7490),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Recording...',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.attach_file,
-                                color: Colors.black),
-                            onPressed: _handleAttachmentPressed,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 85, 16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFBFAFA),
+                            borderRadius: BorderRadius.circular(16.0),
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _textController,
+                                  decoration: InputDecoration(
+                                      hintText: 'Type a message...',
+                                      border: InputBorder.none,
+                                      hintStyle: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF888888),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      )),
+                                  style: const TextStyle(color: Colors.black),
+                                  onSubmitted: (value) {
+                                    if (value.isNotEmpty) {
+                                      _handleSendPressed(
+                                          types.PartialText(text: value));
+                                    }
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.attach_file,
+                                    color: Colors.black),
+                                onPressed: _handleAttachmentPressed,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+              },
+            ),
             fileMessageBuilder: (message, {required int messageWidth}) {
               if (message.mimeType?.startsWith('audio/') == true) {
                 // Existing audio message code...
                 return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: message.author.id == _user.id ? Color(0xFF0E7490) : Colors.grey[300],
+                    color: message.author.id == _user.id
+                        ? Color(0xFF0E7490)
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Column(
@@ -1222,8 +1238,10 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           Text(
                             DateFormat('hh:mm a').format(
-                                DateTime.fromMillisecondsSinceEpoch(message.createdAt!)),
-                            style: const TextStyle(color: Colors.white, fontSize: 10.0),
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    message.createdAt!)),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10.0),
                           ),
                         ],
                       ),
@@ -1237,9 +1255,12 @@ class _ChatPageState extends State<ChatPage> {
                     _downloadAndOpenDocument(message.uri, message.name);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
                     decoration: BoxDecoration(
-                      color: message.author.id == _user.id ? Colors.green : Colors.grey[300],
+                      color: message.author.id == _user.id
+                          ? Colors.green
+                          : Colors.grey[300],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Row(
@@ -1272,58 +1293,34 @@ class _ChatPageState extends State<ChatPage> {
           ),
           floatingActionButton: _showFloatingButton
               ? ValueListenableBuilder<bool>(
-            valueListenable: _isTyping,
-            builder: (context, isTyping, child) {
-              return isTyping
-                  ? FloatingActionButton(
-                backgroundColor: const Color(0xFF0E7490),
-                onPressed: () {
-                  final text = _textController.text.trim();
-                  if (text.isNotEmpty) {
-                    _handleSendPressed(types.PartialText(text: text));
-                  }
-                },
-                child: const Icon(Icons.send, color: Colors.white),
-              )
-                  : GestureDetector(
-                onLongPress: _startRecording,
-                onLongPressUp: _stopRecording,
-                child: FloatingActionButton(
-                  backgroundColor: const Color(0xFF0E7490),
-                  onPressed: () {
-                    // Handle other functionalities
+                  valueListenable: _isTyping,
+                  builder: (context, isTyping, child) {
+                    return isTyping
+                        ? FloatingActionButton(
+                            backgroundColor: const Color(0xFF0E7490),
+                            onPressed: () {
+                              final text = _textController.text.trim();
+                              if (text.isNotEmpty) {
+                                _handleSendPressed(
+                                    types.PartialText(text: text));
+                              }
+                            },
+                            child: const Icon(Icons.send, color: Colors.white),
+                          )
+                        : GestureDetector(
+                            onLongPress: _startRecording,
+                            onLongPressUp: _stopRecording,
+                            child: FloatingActionButton(
+                              backgroundColor: const Color(0xFF0E7490),
+                              onPressed: () {
+                                // Handle other functionalities
+                              },
+                              child: const Icon(Icons.mic, color: Colors.white),
+                            ),
+                          );
                   },
-                  child: const Icon(Icons.mic, color: Colors.white),
-                ),
-              );
-            },
-          )
+                )
               : null,
-          bottomNavigationBar: CustomBottomNavBar(
-            onItemTapped: (index) {
-              switch (index) {
-                case 0:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                  break;
-                case 1:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Notifications()),
-                  );
-                  break;
-                case 2:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Chats()),
-                  );
-                  break;
-              }
-            },
-            context: context,
-          ),
         ),
       );
     }

@@ -16,6 +16,7 @@ import 'package:path/path.dart'; // To get the file name
 import '../Models/Notes.dart';
 import '../Models/Quiz.dart';
 import '../Models/Student.dart';
+import '../Models/group.dart';
 import '../Screens/user/Home.dart';
 import '../main.dart';
 import 'SharedPrefes.dart';
@@ -23,6 +24,7 @@ import 'apiendpoints.dart';
 
 class ApisMethods {
   static String? token = sharedPreferences!.getString('token');
+  static String? role = sharedPreferences!.getString('role');
 
 //1-Login
   static Future<void> login(emailController, passwordController) async {
@@ -599,7 +601,12 @@ class ApisMethods {
   }
 
   //15-update quiz
-  static Future<void> updateQuiz({required String id, required List<dynamic> questions, required int hours, required int minutes,}) async {
+  static Future<void> updateQuiz({
+    required String id,
+    required List<dynamic> questions,
+    required int hours,
+    required int minutes,
+  }) async {
     final Map<String, dynamic> body = {
       'questions': questions
           .map((q) => {
@@ -627,7 +634,11 @@ class ApisMethods {
 
   //16- submit quiz
 
-  static Future<Map<String, dynamic>> submitQuiz(quizModel.Quiz quiz, answers, String quizID,) async {
+  static Future<Map<String, dynamic>> submitQuiz(
+    quizModel.Quiz quiz,
+    answers,
+    String quizID,
+  ) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.submitQuiz + quizID);
 
@@ -686,7 +697,16 @@ class ApisMethods {
   }
 
   //17-send direct msg
-  static Future<void> sendDirectMsg({required String id, required List<String> participants, required String sender, required String content, List<File>? images, List<File>? documents, AudioData? audio, DateTime? createdAt,}) async {
+  static Future<void> sendDirectMsg({
+    required String id,
+    required List<String> participants,
+    required String sender,
+    required String content,
+    List<File>? images,
+    List<File>? documents,
+    AudioData? audio,
+    DateTime? createdAt,
+  }) async {
     final url = Uri.parse(
         '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.sendDirectMsg}$id');
 
@@ -774,7 +794,8 @@ class ApisMethods {
       } else if (response.statusCode == 401) {
         throw Exception('Unauthorized request. Check your token.');
       } else {
-        throw Exception('Failed to fetch messages. HTTP ${response.statusCode}');
+        throw Exception(
+            'Failed to fetch messages. HTTP ${response.statusCode}');
       }
     } catch (e, stackTrace) {
       print('Error fetching messages: $e');
@@ -786,14 +807,15 @@ class ApisMethods {
   }
 
   //19- create grp
-  static Future<void> createGrp(String title, int desc, List<String> members) async {
+  static Future<void> createGrp(
+      String title, String desc, List<String> members) async {
     var url =
-    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.createGrp);
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.createGrp);
 
     http.Response response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'token': token!},
-        body:
-        jsonEncode({'title': title, 'description': desc, 'members': members}));
+        body: jsonEncode(
+            {'title': title, 'description': desc, 'members': members}));
 
     if (response.statusCode == 201) {
       showDialog(
@@ -834,6 +856,7 @@ class ApisMethods {
             );
           });
     } else {
+      print('group  ${response.body}');
       showDialog(
           context: Get.context!,
           builder: (context) {
@@ -868,10 +891,91 @@ class ApisMethods {
                       ),
                     ),
                   ],
-
-                )
-            );
+                ));
           });
     }
+  }
+
+//20-get all admin & student groups
+  static Future<List<Group>> getAllGroups() async {
+    var url = role! == 'admin'
+        ? Uri.parse(
+            ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getAdminGroups)
+        : Uri.parse(
+            ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getStudentGroups);
+
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    List temp = [];
+    print('apiiii Get Groups ${data['groups']}');
+
+    for (var i in data['groups']) {
+      temp.add(i);
     }
+
+    return Group.itemsFromSnapshot(temp);
+  }
+
+  //21-Delete grp
+  static Future<void> DelGroup(String ID) async {
+    var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.deleteGroup}$ID');
+    http.Response response = await http.delete(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('${jsonDecode(response.body)['message']}');
+    }
+  }
+
+//22- get group members
+  static Future<List<dynamic>?> getGroupMembers(String groupId) async {
+    var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.getGroupMembers}$groupId');
+    http.Response response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['members'];
+    } else {
+      print('Error: ${response.statusCode} - ${response.body}');
+      return null; // Return null in case of an error
+    }
+  }
+
+//23- remove student from group
+  static Future<void> removeStudentFromGroup({
+    required String groupId,
+    required String studentId,
+  }) async {
+    var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.removeStudent}$groupId');
+
+    final response = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+      body: jsonEncode({
+        'studentId': studentId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Student removed successfully');
+    } else {
+      final responseData = jsonDecode(response.body);
+      throw Exception(
+          'erorrrrrr' + responseData['message'] ?? 'Failed to remove student');
+    }
+  }
 }

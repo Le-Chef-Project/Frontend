@@ -1,6 +1,5 @@
-
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.2:3000/";
+  static const String baseUrl = "http://192.168.1.13:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -39,5 +38,10 @@ class Chat {
   final sendDirectMsg = 'Chat/SendDirectMessage/';
   final getDirectMsg = 'Chat/getDirectMessages/';
   final sendGrpMsg = 'Chat/SendGroupMessage/';
-  final createGrp = '/CreateGroup';
+  final createGrp = 'Chat/CreateGroup';
+  final getAdminGroups = 'Chat/GetAdminGroups';
+  final getStudentGroups = 'Chat/GetStudentGroups';
+  final deleteGroup = 'Chat/DeleteGroup/';
+  final getGroupMembers = 'Chat/GetGroupMembers/';
+  final removeStudent = 'Chat/RemoveStudent/';
 }
