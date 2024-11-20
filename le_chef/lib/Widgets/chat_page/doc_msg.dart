@@ -28,6 +28,17 @@ class DocumentMessageBubble extends StatelessWidget {
         return 'jpg';
       case 'image/png':
         return 'png';
+      case 'audio/mpeg':
+      case 'audio/mp3':
+        return 'mp3';
+      case 'audio/wav':
+        return 'wav';
+      case 'audio/aac':
+        return 'aac';
+      case 'audio/ogg':
+        return 'ogg';
+      case 'audio/m4a':
+        return 'm4a';
       default:
       // If content type is not specific, try to get from URL
         final uri = Uri.parse(url);
@@ -66,6 +77,26 @@ class DocumentMessageBubble extends StatelessWidget {
         mimeType = 'image/png';
         uti = 'public.png';
         break;
+      case 'MP3':
+        mimeType = 'audio/mpeg';
+        uti = 'public.mp3';
+        break;
+      case 'WAV':
+        mimeType = 'audio/wav';
+        uti = 'public.wav';
+        break;
+      case 'AAC':
+        mimeType = 'audio/aac';
+        uti = 'public.aac-audio';
+        break;
+      case 'OGG':
+        mimeType = 'audio/ogg';
+        uti = 'org.xiph.ogg';
+        break;
+      case 'M4A':
+        mimeType = 'audio/m4a';
+        uti = 'public.mpeg-4-audio';
+        break;
       default:
         mimeType = 'application/octet-stream';
     }
@@ -99,6 +130,21 @@ class DocumentMessageBubble extends StatelessWidget {
         bytes[2] == 0x4E &&
         bytes[3] == 0x47) return 'PNG';
 
+    // MP3
+    if (bytes[0] == 0x49 && bytes[1] == 0x44 && bytes[2] == 0x33) return 'MP3';
+
+    // WAV
+    if (bytes[0] == 0x52 &&
+        bytes[1] == 0x49 &&
+        bytes[2] == 0x46 &&
+        bytes[3] == 0x46) return 'WAV';
+
+    // Check content type from message if available
+    final contentType = message?.mimeType?.toLowerCase() ?? '';
+    if (contentType.startsWith('audio/')) {
+      return contentType.split('/').last.toUpperCase();
+    }
+
     return null;
   }
 
@@ -111,7 +157,29 @@ class DocumentMessageBubble extends StatelessWidget {
         bytes[3] == 0x46; // F
   }
 
-  Future<void> downloadAndOpenDocument(String url, String? fileName, BuildContext context) async {
+  bool isAudioFile(String? mimeType, String fileName) {
+    if (mimeType?.startsWith('audio/') ?? false) return true;
+
+    final audioExtensions = [
+      '.mp3', '.wav', '.aac', '.ogg', '.m4a', '.wma', '.flac'
+    ];
+    return audioExtensions.any((ext) => fileName.toLowerCase().endsWith(ext));
+  }
+
+  Widget _getFileIcon() {
+    final fileName = message?.name ?? '';
+    final mimeType = message?.mimeType;
+
+    if (isAudioFile(mimeType, fileName)) {
+      return const Icon(Icons.audio_file, color: Colors.white);
+    }
+
+    // Default document icon for other file types
+    return const Icon(Icons.insert_drive_file, color: Colors.white);
+  }
+
+  Future<void> downloadAndOpenDocument(
+      String url, String? fileName, BuildContext context) async {
     try {
       showDialog(
         context: context,
@@ -214,8 +282,8 @@ class DocumentMessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        downloadAndOpenDocument(message!.uri,
-            message?.name, context); // Open the document on tap
+        downloadAndOpenDocument(
+            message!.uri, message?.name, context); // Open the document on tap
       },
       child: Container(
         height: 65,
@@ -226,15 +294,15 @@ class DocumentMessageBubble extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.insert_drive_file, color: Colors.white),
+            _getFileIcon(), // Dynamic icon based on file type
             const SizedBox(width: 8.0),
             Expanded(
               child: Text(
                 message?.name ?? 'Document',
                 style: GoogleFonts.ibmPlexMono(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

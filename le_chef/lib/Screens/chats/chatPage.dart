@@ -399,17 +399,13 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  Future<List<int>> _createAudioData(String filePath) async {
+  Future<String> _createAudioData(String filePath) async {
     final file = File(filePath);
-    print("File Path: $filePath");
-
     if (await file.exists()) {
-      print("File exists, reading bytes...");
-      return await file.readAsBytes();
-    } else {
-      print('Audio file not found at: $filePath');
-      return [];
+      final bytes = await file.readAsBytes();
+      return base64Encode(bytes); // Convert bytes to Base64 string
     }
+    return '';
   }
 
   void _playAudio(String? uri) async {
