@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
+import '../../Shared/customBottomNavBar.dart';
+import '../../main.dart';
+import '../chats/chats.dart';
+import '../notification.dart';
+import 'THome.dart';
+
 class PaymentRequest extends StatelessWidget {
   const PaymentRequest({super.key});
 
   final bool isView = true;
+  final int _selectedIndex = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +157,33 @@ class PaymentRequest extends StatelessWidget {
             ),
           );
         },
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) {
+          switch (index) {
+            case 0:
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => THome()),
+                );
+              break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Notifications()),
+                );
+                break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+          }
+        },
+        context: context,
+        selectedIndex: _selectedIndex,
       ),
     );
   }

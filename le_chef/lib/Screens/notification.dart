@@ -6,6 +6,7 @@ import 'package:le_chef/Shared/custom_app_bar.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../main.dart';
 import 'admin/THome.dart';
+import 'admin/payment_request.dart';
 import 'chats/chats.dart';
 
 class Notifications extends StatefulWidget {
@@ -111,6 +112,10 @@ class _NotificationsState extends State<Notifications> {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
           context: context,

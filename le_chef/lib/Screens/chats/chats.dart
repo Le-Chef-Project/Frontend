@@ -4,6 +4,7 @@ import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Models/direct_chat.dart';
 import 'package:le_chef/Models/group_chat.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
+import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/admin/selectStudent.dart';
 import 'package:le_chef/Screens/chats/chatPage.dart';
 import 'package:le_chef/Screens/members_screen.dart';
@@ -28,7 +29,7 @@ class Chats extends StatefulWidget {
 }
 
 class _ChatsState extends State<Chats> {
-  final int _selectedIndex = 2;
+  int _selectedIndex = 2;
 
   String? role = sharedPreferences!.getString('role');
   final TextEditingController _TitleController = TextEditingController();
@@ -64,11 +65,23 @@ class _ChatsState extends State<Chats> {
   }
 
   String _getParticipantName(DirectChat chat) {
+    print('User ID: $_userId');
+    print('Participants: ${chat.participants.map((p) => p.id).toList()}');
     final participant = chat.participants.firstWhere(
           (p) => p.id != _userId,
       orElse: () => Participant(id: '', username: 'Unknown', email: ''),
     );
     return participant.username;
+  }
+
+  String _getParticipantId(DirectChat chat) {
+    print('User ID: $_userId');
+    print('Participants: ${chat.participants.map((p) => p.id).toList()}');
+    final participant = chat.participants.firstWhere(
+          (p) => p.id != _userId,
+      orElse: () => Participant(id: '', username: 'Unknown', email: ''),
+    );
+    return participant.id;
   }
 
   // Initial index for Chats screen
@@ -123,7 +136,7 @@ class _ChatsState extends State<Chats> {
                   child: CircularProgressIndicator(),
                 )
                     : chats!.isNotEmpty
-                    ? PersonalChat(context)
+                    ? personalChat(context)
                     : const Center(
                   child: Text('no Chats yet'),
                 ),
@@ -309,6 +322,11 @@ class _ChatsState extends State<Chats> {
           // No button for non-admin roles
           bottomNavigationBar: CustomBottomNavBar(
             onItemTapped: (index) {
+
+              setState(() {
+                _selectedIndex = index;
+              });
+
               switch (index) {
                 case 0:
                   if (role == 'admin') {
@@ -329,6 +347,10 @@ class _ChatsState extends State<Chats> {
                     MaterialPageRoute(builder: (context) => Notifications()),
                   );
                   break;
+                case 3:
+                  if (role == 'admin') {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  }
               }
             },
             context: context,
@@ -339,14 +361,7 @@ class _ChatsState extends State<Chats> {
     );
   }
 
-  Widget PersonalChat(BuildContext context) {
-    Student std = Student(
-        username: 'saso',
-        Lastname: 'Saiid',
-        firstname: 'thaowpsta',
-        email: 'thaowpsta@gmail.com',
-        phone: '01211024432',
-        ID: '671bb7965c2d72826a977b76');
+  Widget personalChat(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -371,7 +386,9 @@ class _ChatsState extends State<Chats> {
                       MaterialPageRoute(
                           builder: (context) =>
                               ChatPage(
-                                receiver: std,
+                                chatRoom: chats![index].id,
+                                receiverId: _getParticipantId(chats![index]),
+                                receiverName: _getParticipantName(chats![index]),
                                 person: true,
                               )));
                 },
@@ -380,12 +397,10 @@ class _ChatsState extends State<Chats> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircleAvatar(
-                        radius: 25,
+                        radius: 20,
                         backgroundImage: Image
                             .asset(
-                          'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-                          height: 50,
-                          width: 49,
+                          'assets/default_image_profile.jpg',
                         )
                             .image,
                       ),
@@ -603,7 +618,7 @@ class _ChatsState extends State<Chats> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         CircleAvatar(
-                          radius: 25,
+                          radius: 24,
                           backgroundColor:
                           const Color.fromRGBO(14, 116, 144, 1),
                           child: Text(

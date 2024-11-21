@@ -2,25 +2,28 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DocumentMessageBubble extends StatelessWidget {
-  final FileMessage? message;
-  final User currentUser;
+  final types.FileMessage? message;
+  final types.User currentUser;
   final Function(String, String?) onOpen;
+  final DefaultChatTheme theme;
 
   const DocumentMessageBubble({
     this.message,
     required this.currentUser,
     required this.onOpen,
+    required this.theme,
     super.key,
   });
 
+  bool get isCurrentUser => message?.author.id == currentUser.id;
+
   String getFileExtension(String contentType, String url) {
-    // First try to get extension from content type
     switch (contentType.toLowerCase()) {
       case 'application/pdf':
         return 'pdf';
@@ -40,7 +43,6 @@ class DocumentMessageBubble extends StatelessWidget {
       case 'audio/m4a':
         return 'm4a';
       default:
-      // If content type is not specific, try to get from URL
         final uri = Uri.parse(url);
         final path = uri.path;
         final lastDot = path.lastIndexOf('.');
@@ -52,7 +54,6 @@ class DocumentMessageBubble extends StatelessWidget {
   }
 
   String updateFileName(String originalName, String extension) {
-    // Remove any existing extension
     String baseName = originalName.contains('.')
         ? originalName.substring(0, originalName.lastIndexOf('.'))
         : originalName;
@@ -112,70 +113,16 @@ class DocumentMessageBubble extends StatelessWidget {
     }
   }
 
-  String? detectFileType(List<int> bytes) {
-    if (bytes.length < 8) return null;
-
-    // Check for common file signatures
-    if (isPDF(bytes)) return 'PDF';
-
-    // ZIP, DOCX, XLSX, etc.
-    if (bytes[0] == 0x50 && bytes[1] == 0x4B) return 'ZIP-based';
-
-    // JPEG
-    if (bytes[0] == 0xFF && bytes[1] == 0xD8) return 'JPEG';
-
-    // PNG
-    if (bytes[0] == 0x89 &&
-        bytes[1] == 0x50 &&
-        bytes[2] == 0x4E &&
-        bytes[3] == 0x47) return 'PNG';
-
-    // MP3
-    if (bytes[0] == 0x49 && bytes[1] == 0x44 && bytes[2] == 0x33) return 'MP3';
-
-    // WAV
-    if (bytes[0] == 0x52 &&
-        bytes[1] == 0x49 &&
-        bytes[2] == 0x46 &&
-        bytes[3] == 0x46) return 'WAV';
-
-    // Check content type from message if available
-    final contentType = message?.mimeType?.toLowerCase() ?? '';
-    if (contentType.startsWith('audio/')) {
-      return contentType.split('/').last.toUpperCase();
-    }
-
-    return null;
-  }
-
-  bool isPDF(List<int> bytes) {
-    if (bytes.length < 4) return false;
-    // Check for PDF magic number '%PDF'
-    return bytes[0] == 0x25 && // %
-        bytes[1] == 0x50 && // P
-        bytes[2] == 0x44 && // D
-        bytes[3] == 0x46; // F
-  }
-
-  bool isAudioFile(String? mimeType, String fileName) {
-    if (mimeType?.startsWith('audio/') ?? false) return true;
-
-    final audioExtensions = [
-      '.mp3', '.wav', '.aac', '.ogg', '.m4a', '.wma', '.flac'
-    ];
-    return audioExtensions.any((ext) => fileName.toLowerCase().endsWith(ext));
-  }
-
   Widget _getFileIcon() {
-    final fileName = message?.name ?? '';
     final mimeType = message?.mimeType;
+    final iconColor = isCurrentUser
+        ? theme.sentMessageBodyTextStyle.color
+        : theme.receivedMessageBodyTextStyle.color;
 
-    if (isAudioFile(mimeType, fileName)) {
-      return const Icon(Icons.audio_file, color: Colors.white);
+    if (mimeType?.startsWith('audio/') ?? false) {
+      return Icon(Icons.audio_file, color: iconColor);
     }
-
-    // Default document icon for other file types
-    return const Icon(Icons.insert_drive_file, color: Colors.white);
+    return Icon(Icons.insert_drive_file, color: iconColor);
   }
 
   Future<void> downloadAndOpenDocument(String url, String? fileName, BuildContext context) async {
@@ -184,8 +131,10 @@ class DocumentMessageBubble extends StatelessWidget {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: CircularProgressIndicator(
+              color: theme.primaryColor,
+            ),
           );
         },
       );
@@ -197,7 +146,6 @@ class DocumentMessageBubble extends StatelessWidget {
 
       final Dio dio = Dio();
 
-      // Check content type first
       final headResponse = await dio.head(
         url,
         options: Options(
@@ -209,15 +157,12 @@ class DocumentMessageBubble extends StatelessWidget {
       final contentType = headResponse.headers['content-type']?.first ?? '';
       final String fileExtension = getFileExtension(contentType, url);
 
-      // Update filename with correct extension
       final String processedFileName = updateFileName(fileName!, fileExtension);
-      final String fileDirectory =
-          '${directory.path}/${fileExtension.toUpperCase()}s';
+      final String fileDirectory = '${directory.path}/${fileExtension.toUpperCase()}s';
       await Directory(fileDirectory).create(recursive: true);
 
       final String filePath = '$fileDirectory/$processedFileName';
 
-      // Download the file
       final response = await dio.get(
         url,
         options: Options(
@@ -231,27 +176,18 @@ class DocumentMessageBubble extends StatelessWidget {
       );
 
       if (response.statusCode != 200) {
-        throw Exception(
-            'Failed to download file: Status ${response.statusCode}');
+        throw Exception('Failed to download file: Status ${response.statusCode}');
       }
 
       final List<int> bytes = response.data;
-
-      // Verify file type from actual content
-      final String? detectedType = detectFileType(bytes);
-      if (detectedType == null) {
-        throw Exception('Unable to determine file type');
-      }
       final File file = File(filePath);
       await file.writeAsBytes(bytes, flush: true);
 
-      // Close loading indicator
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
 
-      // Open file with appropriate handler
-      await openFile(filePath, detectedType);
+      await openFile(filePath, fileExtension);
     } catch (e) {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
@@ -259,84 +195,79 @@ class DocumentMessageBubble extends StatelessWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Error handling file:'),
-              Text(
-                e.toString(),
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
+          content: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
           ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 5),
+          backgroundColor: theme.errorColor ?? Colors.red,
         ),
       );
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final localTime = DateTime.fromMillisecondsSinceEpoch(message?.createdAt ?? 0).toLocal();
+    final hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
+    final minute = localTime.minute.toString().padLeft(2, '0');
+    final timePeriod = localTime.hour >= 12 ? 'PM' : 'AM';
 
-    if (message?.createdAt == null) {
-      print('Time not null: ${message?.createdAt}');
-    }else{
-      print('Time = nulllll');
-    }
-
-    String? isoTime = message?.createdAt.toString();
-
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(isoTime!));
-
-    DateTime localTime = dateTime.toLocal();
-
-    int hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
-
-
-    return GestureDetector(
-      onTap: () {
-        downloadAndOpenDocument(
-            message!.uri, message?.name, context); // Open the document on tap
-      },
-      child: Container(
-        height: 75,
-        width: 230,
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _getFileIcon(), // Dynamic icon based on file type
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    message?.name ?? 'Document',
-                    style: GoogleFonts.ibmPlexMono(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
+    return Container(
+      margin: EdgeInsets.only(
+        top: 4,
+        bottom: 4,
+        left: isCurrentUser ? 20 : 0,
+        right: isCurrentUser ? 0 : 20,
+      ),
+      child: GestureDetector(
+        onTap: () {
+          downloadAndOpenDocument(message!.uri, message?.name, context);
+        },
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
+          ),
+          padding: const EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: isCurrentUser ? theme.primaryColor : theme.secondaryColor,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(20),
+              topRight: const Radius.circular(20),
+              bottomLeft: Radius.circular(isCurrentUser ? 20 : 0),
+              bottomRight: Radius.circular(isCurrentUser ? 0 : 20),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _getFileIcon(),
+                  const SizedBox(width: 8.0),
+                  Expanded(
+                    child: Text(
+                      message?.name ?? 'Document',
+                      style: isCurrentUser
+                          ? theme.sentMessageBodyTextStyle
+                          : theme.receivedMessageBodyTextStyle,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: AlignmentDirectional.bottomEnd,
+                child: Text(
+                  '$hour:$minute $timePeriod',
+                  style: (isCurrentUser
+                      ? theme.sentMessageBodyTextStyle
+                      : theme.receivedMessageBodyTextStyle
+                  ).copyWith(fontSize: 12),
                 ),
-              ],
-            ),
-            SizedBox(height: 10,),
-            Align(
-              alignment: AlignmentDirectional.bottomEnd,
-              child: Text("${hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}${localTime.hour >= 12 ? 'PM' : 'AM'}", style: GoogleFonts.ibmPlexMono(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),),
-            ),
-          ]
+              ),
+            ],
+          ),
         ),
       ),
     );

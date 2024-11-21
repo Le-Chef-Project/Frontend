@@ -35,10 +35,12 @@ import 'image_viewer.dart';
 
 class ChatPage extends StatefulWidget {
   final Group? group;
-  final Student? receiver;
+  final String? receiverId;
+  final String? receiverName;
+  final String? chatRoom;
   final bool person;
 
-  const ChatPage({Key? key, this.group, this.receiver, required this.person})
+  const ChatPage({Key? key, this.group, this.receiverId, required this.person, this.receiverName, this.chatRoom})
       : super(key: key);
 
   @override
@@ -61,6 +63,7 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     _fetchMessages();
     _documentMessageBubble = DocumentMessageBubble(
+      theme: widget.person ? ChatThemes.personalChat : ChatThemes.groupChat,
       currentUser: _user,
       onOpen: (String, str) {},
     );
@@ -96,8 +99,8 @@ class _ChatPageState extends State<ChatPage> {
           print(
               'Image path: ${image.path} and Image file path: ${File(image.path)}');
           await ApisMethods.sendDirectMsg(
-            id: widget.receiver!.ID,
-            participants: [_user.id, widget.receiver!.ID],
+            id: widget.receiverId!,
+            participants: [_user.id, widget.receiverId!],
             sender: _user.id,
             content: 'Image',
             images: [File(image.path)],
@@ -133,8 +136,8 @@ class _ChatPageState extends State<ChatPage> {
       try {
         if (widget.person) {
           await ApisMethods.sendDirectMsg(
-            id: widget.receiver!.ID,
-            participants: [_user.id, widget.receiver!.ID],
+            id: widget.receiverId!,
+            participants: [_user.id, widget.receiverId!],
             sender: _user.id,
             content: 'Documents',
             documents: [File(result.files.single.path!)],
@@ -333,11 +336,11 @@ class _ChatPageState extends State<ChatPage> {
     try {
       List<types.Message> convertedMessages;
 
-      if (widget.person && widget.receiver != null) {
+      if (widget.person && widget.receiverId != null) {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-        await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
+        await ApisMethods.getDirectMessages(widget.chatRoom!);
 
         convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
@@ -345,9 +348,9 @@ class _ChatPageState extends State<ChatPage> {
 
           return types.Message.fromJson({
             'author': {
-              'id': msg.sender != widget.receiver?.ID
+              'id': msg.sender != widget.receiverId
                   ? _user.id
-                  : widget.receiver?.ID
+                  : widget.receiverId
             },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
@@ -482,8 +485,8 @@ class _ChatPageState extends State<ChatPage> {
             print("Audio Data Length: ${audioData.length}");
 
             await ApisMethods.sendDirectMsg(
-              id: widget.receiver!.ID,
-              participants: [_user.id, widget.receiver!.ID],
+              id: widget.receiverId!,
+              participants: [_user.id, widget.receiverId!],
               sender: _user.id,
               content: 'Audio',
               audio: audioData, // Send the raw audio data here
@@ -571,10 +574,10 @@ class _ChatPageState extends State<ChatPage> {
 
     try {
       if (widget.person) {
-        print('Sender id: ${_user.id} \nReciever Id: ${widget.receiver!.ID}');
+        print('Sender id: ${_user.id} \nReciever Id: ${widget.receiverId!}');
         await ApisMethods.sendDirectMsg(
-          id: widget.receiver!.ID,
-          participants: [_user.id, widget.receiver!.ID],
+          id: widget.receiverId!,
+          participants: [_user.id, widget.receiverId!],
           sender: _user.id,
           content: message.text,
           createdAt:
@@ -634,9 +637,9 @@ class _ChatPageState extends State<ChatPage> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     if (widget.person) {
       return PersonalChatAppBar(
-        username: widget.receiver?.username ?? 'Chat',
+        username: widget.receiverName ?? 'Chat',
         avatarUrl:
-        'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+        'assets/default_image_profile.png',
         onBackPressed: () => Navigator.pop(context),
       );
     }
@@ -665,6 +668,7 @@ class _ChatPageState extends State<ChatPage> {
         onSendPressed: _handleSendPressed,
       ),
       fileMessageBuilder: FileMessageBuilder(
+        person: widget.person,
         currentUser: _user,
         onPlayAudio: _playAudio,
         onOpenDocument: (url, fileName) => _documentMessageBubble
@@ -693,11 +697,13 @@ class FileMessageBuilder {
   final types.User currentUser;
   final Function(String) onPlayAudio;
   final Function(String, String?) onOpenDocument;
+  final bool person;
 
   const FileMessageBuilder({
     required this.currentUser,
     required this.onPlayAudio,
     required this.onOpenDocument,
+    required  this.person,
   });
 
   Widget build(types.Message message, {required int messageWidth}) {
@@ -717,7 +723,7 @@ class FileMessageBuilder {
       return DocumentMessageBubble(
         message: fileMessage,
         currentUser: currentUser,
-        onOpen: onOpenDocument,
+        onOpen: onOpenDocument, theme: person ? ChatThemes.personalChat : ChatThemes.groupChat,
       );
     }
 

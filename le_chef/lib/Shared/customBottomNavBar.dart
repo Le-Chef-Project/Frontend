@@ -95,6 +95,25 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               ),
               label: 'Messages',
             ),
+            BottomNavigationBarItem(
+              icon: Container(
+                decoration: BoxDecoration(
+                  color: widget.selectedIndex == 3
+                      ? defaultIconColor
+                      : defaultBackgroundColor,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child: Transform.rotate(
+                  angle: -0.9,
+                  child: Icon(Icons.send_rounded,
+                      color: widget.selectedIndex == 3
+                          ? defaultBackgroundColor
+                          : defaultIconColor),
+                ),
+              ),
+              label: 'Requests',
+            ),
           ],
           currentIndex: widget.selectedIndex ?? 0,
           selectedItemColor: defaultIconColor,
