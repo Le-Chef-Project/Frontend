@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Screens/user/payment_way.dart';
 
 import '../Screens/user/payment.dart';
 
@@ -55,7 +56,7 @@ class CustomCardWithText extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const PaymentScreen(),
+                                    builder: (context) => const PaymentWay(),
                                   ),
                                 );
                               },

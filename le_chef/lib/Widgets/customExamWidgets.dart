@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Quiz.dart';
+import 'package:le_chef/Screens/user/payment_way.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 
 import '../Shared/exams/ExamForm.dart';
@@ -177,24 +178,30 @@ Widget customExamListTile(
               Icons.more_horiz,
             ))
         : Column(
-          children: [
-            Row(
+            children: [
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (isLocked) const Icon(Icons.lock_outline, color: Color(0xFF164863)),
+                  if (isLocked)
+                    const Icon(Icons.lock_outline, color: Color(0xFF164863)),
                   const SizedBox(width: 8),
                   const Icon(Icons.arrow_forward_ios, color: Color(0xFF164863)),
                 ],
               ),
-            const SizedBox(height: 10,),
-            if (isLocked) Text(
-                  '${exam.amountToPay.toString()} EGP', style: GoogleFonts.ibmPlexMono(
-              color: const Color(0xFF427D9D),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),)
-          ],
-        ),
+              const SizedBox(
+                height: 10,
+              ),
+              if (isLocked)
+                Text(
+                  '${exam.amountToPay.toString()} EGP',
+                  style: GoogleFonts.ibmPlexMono(
+                    color: const Color(0xFF427D9D),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )
+            ],
+          ),
     onTap: () {
       if (role != 'admin') {
         if (isLocked) {
@@ -233,7 +240,7 @@ Widget customExamListTile(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const PaymentScreen()));
+                                            const PaymentWay()));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF427D9D),

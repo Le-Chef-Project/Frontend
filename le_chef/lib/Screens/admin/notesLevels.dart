@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Widgets/total_exams-students_card.dart';
+import '../../main.dart';
 import '../Notes.dart';
+import '../chats/chats.dart';
+import '../notification.dart';
+import '../user/Home.dart';
+import 'THome.dart';
 import 'addNotes.dart';
 // ... other imports remain the same
 
@@ -19,6 +25,9 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
   late final TabController tabviewController; // Make this late final
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int currentIndex = 0;
+  List<dynamic> members = [];
+
+  String? role = sharedPreferences!.getString('role');
 
   @override
   void initState() {
@@ -88,11 +97,47 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
             Expanded(
               child: TabBarView(
                 controller: tabviewController,
-                children: const [NotesScreen(level :1), NotesScreen(level :2), NotesScreen(level :3)],
+                children: const [
+                  NotesScreen(level: 1),
+                  NotesScreen(level: 2),
+                  NotesScreen(level: 3)
+                ],
               ),
             ),
             const SizedBox(height: 40),
           ],
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          onItemTapped: (index) async {
+            switch (index) {
+              case 0:
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                }
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Notifications()),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Chats()),
+                );
+                break;
+            }
+          },
+          context: context,
         ),
       ),
     );

@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.2:3000/";
+  static const String baseUrl = "http://192.168.1.13:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -14,7 +14,7 @@ class AuthEndPoint {
 class UserManage {
   final String AddStudent = "userManage/AddStudents";
   final String GetStudents = "userManage/ShowAllStudents";
-  final String DelStudent = "userManage/DeleteStudent/";
+  final String DelStudent = "userManage/DeleteSctudent/";
 }
 
 class Quiz {
@@ -40,6 +40,7 @@ class Chat {
   final sendGrpMsg = 'Chat/SendGroupMessage/';
   final createGrp = 'Chat/CreateGroup';
   final getAdminGroups = 'Chat/GetAdminGroups';
+  final addStudentstoGroup = 'Chat/AddStudentToGroup/';
   final getStudentGroups = 'Chat/GetStudentGroups';
   final deleteGroup = 'Chat/DeleteGroup/';
   final getGroupMembers = 'Chat/GetGroupMembers/';

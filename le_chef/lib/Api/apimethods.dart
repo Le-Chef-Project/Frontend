@@ -720,7 +720,7 @@ class ApisMethods {
         (createdAt ?? DateTime.now()).toIso8601String();
 
     if (audio != null) {
-    request.files.add(await http.MultipartFile.fromPath('audio', audio));
+      request.files.add(await http.MultipartFile.fromPath('audio', audio));
     }
 
     if (images != null && images.isNotEmpty) {
@@ -804,15 +804,13 @@ class ApisMethods {
   }
 
   //19- create grp
-  static Future<void> createGrp(
-      String title, String desc, List<String> members) async {
+  static Future<void> createGrp(String title, String desc) async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.createGrp);
 
     http.Response response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'token': token!},
-        body: jsonEncode(
-            {'title': title, 'description': desc, 'members': members}));
+        body: jsonEncode({'title': title, 'description': desc}));
 
     if (response.statusCode == 201) {
       showDialog(
@@ -963,7 +961,7 @@ class ApisMethods {
         'token': token!,
       },
       body: jsonEncode({
-        'studentId': studentId,
+        'studentIds': [studentId],
       }),
     );
 
@@ -973,6 +971,106 @@ class ApisMethods {
       final responseData = jsonDecode(response.body);
       throw Exception(
           'erorrrrrr' + responseData['message'] ?? 'Failed to remove student');
+    }
+  }
+
+// 24- add students to group
+  static Future<void> addStudentstoGroup({
+    required String groupId,
+    required List<String> studentIds,
+  }) async {
+    var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.addStudentstoGroup}$groupId');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+      body: jsonEncode({
+        'studentIds': studentIds, // Send the list of student IDs
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/correct sign.png',
+                    width: 117,
+                    height: 117,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Success!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Students Added Successfully',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF888888),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      final errorData = jsonDecode(response.body);
+
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+                backgroundColor: Colors.white,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/error-16_svgrepo.com.jpg',
+                      width: 117,
+                      height: 117,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Warning!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF164863),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      errorData['message'],
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF888888),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ));
+          });
     }
   }
 }

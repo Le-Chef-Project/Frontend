@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/user/examsResults.dart';
+import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Widgets/total_exams-students_card.dart';
 import '../../main.dart';
+import '../chats/chats.dart';
+import '../notification.dart';
+import '../user/Home.dart';
 import 'PDFs.dart';
+import 'THome.dart';
 import 'Videos.dart';
 import 'addLibrary.dart';
 
@@ -62,7 +67,8 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                     isLibrary: true,
                     ontap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const AddLibrary()),
+                      MaterialPageRoute(
+                          builder: (context) => const AddLibrary()),
                     ),
                   )
                 : Center(
@@ -124,6 +130,38 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
               ),
             ),
           ],
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          onItemTapped: (index) async {
+            switch (index) {
+              case 0:
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                }
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Notifications()),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Chats()),
+                );
+                break;
+            }
+          },
+          context: context,
         ),
       ),
     );

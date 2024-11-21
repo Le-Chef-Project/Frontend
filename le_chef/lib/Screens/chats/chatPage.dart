@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +15,6 @@ import 'package:le_chef/Models/direct_chat.dart' as direct_chat;
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Api/apimethods.dart';
@@ -42,13 +39,11 @@ class ChatPage extends StatefulWidget {
   const ChatPage({Key? key, this.groupName, this.membersNumber, this.receiver})
       : super(key: key);
 
-
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-
   List<types.Message> _messages = [];
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
@@ -66,7 +61,7 @@ class _ChatPageState extends State<ChatPage> {
     _fetchMessages();
     _documentMessageBubble = DocumentMessageBubble(
       currentUser: _user,
-      onOpen: (String, str){},
+      onOpen: (String, str) {},
     );
   }
 
@@ -151,62 +146,62 @@ class _ChatPageState extends State<ChatPage> {
 
   void _handleAttachmentPressed() {
     showModalBottomSheet<void>(
-        context: context,
-        builder: (BuildContext context) => SafeArea(
+      context: context,
+      builder: (BuildContext context) => SafeArea(
         child: SizedBox(
           height: 144,
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
               TextButton(
-              onPressed: () {
-        Navigator.pop(context);
-        _handleImageSelection();
-        },
-          child: const Align(
-            alignment: AlignmentDirectional.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.image_outlined),
-                Text('Photo'),
-              ],
-            ),
-          ),
-        ),
-        TextButton(
-        onPressed: () {
-      Navigator.pop(context);
-      _handleFileSelection();
-        },
-          child: const Align(
-            alignment: AlignmentDirectional.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.file_copy),
-                Text('File'),
-              ],
-            ),
-          ),
-        ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Align(
-                    alignment: AlignmentDirectional.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.close),
-                        Text('Cancel'),
-                      ],
-                    ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _handleImageSelection();
+                },
+                child: const Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.image_outlined),
+                      Text('Photo'),
+                    ],
                   ),
                 ),
-              ],
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _handleFileSelection();
+                },
+                child: const Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.file_copy),
+                      Text('File'),
+                    ],
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.close),
+                      Text('Cancel'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        ),
+      ),
     );
   }
 
@@ -252,28 +247,28 @@ class _ChatPageState extends State<ChatPage> {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-        await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
+            await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
 
         final List<types.Message> convertedMessages =
-        directChat.messages.map((msg) {
+            directChat.messages.map((msg) {
           // Safely handle createdAt
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
           return types.Message.fromJson({
-              'author': {
-                'id': msg.sender != widget.receiver?.ID
-                    ? _user.id
-                    : widget.receiver?.ID
-              },
-              'createdAt': createdAtMillis,
-              'id': msg.id ?? const Uuid().v4(),
-              'type': _getMessageType(msg),
-              ...(_getMessageContent(msg)),
-            });
+            'author': {
+              'id': msg.sender != widget.receiver?.ID
+                  ? _user.id
+                  : widget.receiver?.ID
+            },
+            'createdAt': createdAtMillis,
+            'id': msg.id ?? const Uuid().v4(),
+            'type': _getMessageType(msg),
+            ...(_getMessageContent(msg)),
+          });
         }).toList();
 
-        convertedMessages.sort((b, a) =>
-            (b.createdAt ?? 0).compareTo(a.createdAt ?? 0));
+        convertedMessages
+            .sort((b, a) => (b.createdAt ?? 0).compareTo(a.createdAt ?? 0));
 
         setState(() {
           _messages = convertedMessages;
@@ -306,9 +301,9 @@ class _ChatPageState extends State<ChatPage> {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  void _handlePreviewDataFetched(types.Message message, types.PreviewData previewData) {
-    final index =
-    _messages.indexWhere((element) => element.id == message.id);
+  void _handlePreviewDataFetched(
+      types.Message message, types.PreviewData previewData) {
+    final index = _messages.indexWhere((element) => element.id == message.id);
 
     if (index != -1 && message is types.TextMessage) {
       final wrappedMessage = _messages[index];
@@ -385,7 +380,8 @@ class _ChatPageState extends State<ChatPage> {
               sender: _user.id,
               content: 'Audio',
               audio: audioData, // Send the raw audio data here
-              createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+              createdAt:
+                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
             );
           } else {
             print("Error: Audio data is empty.");
@@ -419,9 +415,8 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-      void _handleMessageTap(BuildContext context, types.Message message) async {
-    final index =
-    _messages.indexWhere((element) => element.id == message.id);
+  void _handleMessageTap(BuildContext context, types.Message message) async {
+    final index = _messages.indexWhere((element) => element.id == message.id);
     if (index != -1) {
       final wrappedMessage = _messages[index];
 
@@ -476,7 +471,7 @@ class _ChatPageState extends State<ChatPage> {
           sender: _user.id,
           content: message.text,
           createdAt:
-          DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
+              DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
         );
       } else {
         // await ApisMethods.sendGrpMsg(textMessage.id, textMessage.id, _user.id, message.text, null, null, null, DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),);
@@ -489,17 +484,19 @@ class _ChatPageState extends State<ChatPage> {
     _textController.clear();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final bool isGroupChat = widget.groupName != null && widget.groupName!.contains(' ');
-    final chatTheme = isGroupChat ? ChatThemes.groupChat : ChatThemes.personalChat;
+    final bool isGroupChat =
+        widget.groupName != null && widget.groupName!.contains(' ');
+    final chatTheme =
+        isGroupChat ? ChatThemes.groupChat : ChatThemes.personalChat;
 
     return SafeArea(
       child: Scaffold(
         appBar: _buildAppBar(context),
         body: _buildChatBody(context, chatTheme),
-        floatingActionButton: _showFloatingButton ? _buildFloatingButton() : null,
+        floatingActionButton:
+            _showFloatingButton ? _buildFloatingButton() : null,
         bottomNavigationBar: CustomBottomNavBar(
           onItemTapped: (index) {
             switch (index) {
@@ -539,7 +536,8 @@ class _ChatPageState extends State<ChatPage> {
     }
     return PersonalChatAppBar(
       username: widget.receiver?.username ?? 'Chat',
-      avatarUrl: 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+      avatarUrl:
+          'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
       onBackPressed: () => Navigator.pop(context),
     );
   }
@@ -564,7 +562,8 @@ class _ChatPageState extends State<ChatPage> {
       fileMessageBuilder: FileMessageBuilder(
         currentUser: _user,
         onPlayAudio: _playAudio,
-        onOpenDocument: (url, fileName) => _documentMessageBubble.downloadAndOpenDocument(url, fileName, context),
+        onOpenDocument: (url, fileName) => _documentMessageBubble
+            .downloadAndOpenDocument(url, fileName, context),
       ).build,
     );
   }

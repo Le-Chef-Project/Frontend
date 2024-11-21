@@ -4,6 +4,13 @@ import 'package:le_chef/Screens/admin/library.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
+import '../../Shared/customBottomNavBar.dart';
+import '../../main.dart';
+import '../chats/chats.dart';
+import '../notification.dart';
+import '../user/Home.dart';
+import 'THome.dart';
+
 class ExamLibraryLevels extends StatefulWidget {
   final String title;
   const ExamLibraryLevels({super.key, required this.title});
@@ -13,6 +20,8 @@ class ExamLibraryLevels extends StatefulWidget {
 }
 
 class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
+  String? role = sharedPreferences!.getString('role');
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -73,6 +82,38 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
               ),
             ],
           ),
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          onItemTapped: (index) async {
+            switch (index) {
+              case 0:
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                }
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Notifications()),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Chats()),
+                );
+                break;
+            }
+          },
+          context: context,
         ),
       ),
     );

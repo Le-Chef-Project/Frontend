@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Screens/user/payment_way.dart';
 
 import '../Screens/user/payment.dart';
 
@@ -48,7 +49,7 @@ class CustomCard extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const PaymentScreen(),
+                                    builder: (context) => const PaymentWay(),
                                   ),
                                 );
                               },
@@ -191,7 +192,7 @@ class CustomCard extends StatelessWidget {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => const PaymentScreen(),
+                                                builder: (context) => const PaymentWay(),
                                               ),
                                             );
                                           },

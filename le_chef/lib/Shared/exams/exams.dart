@@ -6,6 +6,7 @@ import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Widgets/total_exams-students_card.dart';
 
+import '../../Screens/admin/THome.dart';
 import '../customBottomNavBar.dart';
 import '../../Widgets/customExamWidgets.dart';
 import '../../main.dart';
@@ -114,8 +115,10 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
             role == 'admin'
                 ? totalStudent(context, 'Total Exams', '${_exams.length}',
                     buttonText: 'Add Exam', ontap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const AddExam()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddExam()));
                   })
                 : Center(
                     child: Image.asset(
@@ -199,13 +202,20 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
           ],
         ),
         bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
+          onItemTapped: (index) async {
             switch (index) {
               case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                }
                 break;
               case 1:
                 Navigator.push(

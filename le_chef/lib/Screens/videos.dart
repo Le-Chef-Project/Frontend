@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/user/payment.dart';
+import 'package:le_chef/Screens/user/payment_way.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +30,7 @@ class _ExamsState extends State<Exams> {
     _loadRole();
   }
 
-  Future _loadRole() async{
+  Future _loadRole() async {
     final pref = await SharedPreferences.getInstance();
     setState(() {
       role = pref.getString('role');
@@ -44,7 +45,6 @@ class _ExamsState extends State<Exams> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         appBar: const CustomAppBar(title: 'Exams'),
@@ -52,15 +52,15 @@ class _ExamsState extends State<Exams> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            role == 'admin' ?
-            totalStudent(context) :
-            Center(
-              child: Image.asset(
-                'assets/Wonder Learners Graduating.png',
-                width: 300,
-                height: 300,
-              ),
-            ),
+            role == 'admin'
+                ? totalStudent(context)
+                : Center(
+                    child: Image.asset(
+                      'assets/Wonder Learners Graduating.png',
+                      width: 300,
+                      height: 300,
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -72,48 +72,45 @@ class _ExamsState extends State<Exams> {
                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: isSelected
                           ? ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedUnit = index + 1;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF427D9D),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
+                              onPressed: () {
+                                setState(() {
+                                  selectedUnit = index + 1;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF427D9D),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10))),
+                              child: Text(
+                                'Unit ${index + 1}',
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             )
-                        ),
-                        child: Text(
-                          'Unit ${index + 1}',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      )
                           : OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedUnit = index + 1;
-                          });
-                        },
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF427D9D)),
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
-                        ),
-                        child: Text(
-                          'Unit ${index + 1}',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: const Color(0xFF164863),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                              onPressed: () {
+                                setState(() {
+                                  selectedUnit = index + 1;
+                                });
+                              },
+                              style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      color: Color(0xFF427D9D)),
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10))),
+                              child: Text(
+                                'Unit ${index + 1}',
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF164863),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                     ),
                   );
                 }),
@@ -132,7 +129,7 @@ class _ExamsState extends State<Exams> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ListTile(
-                        tileColor:  const Color(0xFFFBFAFA),
+                        tileColor: const Color(0xFFFBFAFA),
                         title: Text(
                           'Unit $selectedUnit - lesson ${index + 1}',
                           style: GoogleFonts.ibmPlexMono(
@@ -141,19 +138,20 @@ class _ExamsState extends State<Exams> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        trailing:
-                        role == 'admin' ?
-                        IconButton(onPressed: _toggleContainer
-                            , icon: const Icon(Icons.more_horiz))
+                        trailing: role == 'admin'
+                            ? IconButton(
+                                onPressed: _toggleContainer,
+                                icon: const Icon(Icons.more_horiz))
                             : const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.arrow_forward_ios,
-                                color: Color(0xFF164863)),
-                            SizedBox(width: 8),
-                            Icon(Icons.lock_outline, color: Color(0xFF164863)),
-                          ],
-                        ),
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.arrow_forward_ios,
+                                      color: Color(0xFF164863)),
+                                  SizedBox(width: 8),
+                                  Icon(Icons.lock_outline,
+                                      color: Color(0xFF164863)),
+                                ],
+                              ),
                         onTap: () {
                           if (isLocked) {
                             showDialog(
@@ -179,9 +177,9 @@ class _ExamsState extends State<Exams> {
                                     Expanded(
                                       child: Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Expanded(
                                             child: SizedBox(
@@ -193,21 +191,22 @@ class _ExamsState extends State<Exams> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                          const PaymentScreen()));
+                                                              const PaymentWay()));
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor:
-                                                  const Color(0xFF427D9D),
+                                                      const Color(0xFF427D9D),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        12),
+                                                        BorderRadius.circular(
+                                                            12),
                                                   ),
                                                 ),
                                                 child: Text(
                                                   'Pay Fees',
                                                   textAlign: TextAlign.center,
-                                                  style: GoogleFonts.ibmPlexMono(
+                                                  style:
+                                                      GoogleFonts.ibmPlexMono(
                                                     color: Colors.white,
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,
@@ -234,10 +233,10 @@ class _ExamsState extends State<Exams> {
                                                     side: const BorderSide(
                                                         width: 1,
                                                         color:
-                                                        Color(0xFF427D9D)),
+                                                            Color(0xFF427D9D)),
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        12),
+                                                        BorderRadius.circular(
+                                                            12),
                                                   ),
                                                 ),
                                                 child: const Text(
@@ -277,22 +276,36 @@ class _ExamsState extends State<Exams> {
                               Container(
                                 decoration: ShapeDecoration(
                                   color: const Color(0xFFDDF2FD),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text('50 Question', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF2A324B),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,),),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                child: Text(
+                                  '50 Question',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF2A324B),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ),
                               Container(
                                 decoration: ShapeDecoration(
                                   color: const Color(0xFFDDF2FD),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text('60 Minutes', style: GoogleFonts.ibmPlexMono(color: const Color(0xFF2A324B),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,),),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                child: Text(
+                                  '60 Minutes',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF2A324B),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               )
                             ],
                           ),
@@ -303,7 +316,7 @@ class _ExamsState extends State<Exams> {
                 },
               ),
             ),
-            if(_showContainer)
+            if (_showContainer)
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.all(16),
@@ -365,7 +378,7 @@ class _ExamsState extends State<Exams> {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
-            // case 2: No need for navigation as we are already on Chats screen
+              // case 2: No need for navigation as we are already on Chats screen
             }
           },
           context: context,
@@ -439,29 +452,43 @@ class _ExamsState extends State<Exams> {
                 ),
               ],
             ),
-            const SizedBox(height: 16,),
+            const SizedBox(
+              height: 16,
+            ),
             Center(
-              child: ElevatedButton(onPressed: (){}, style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF427D9D),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)
-                  )
-              ), child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Add Exam ', style: GoogleFonts.ibmPlexMono(color: const Color(0xFFFBFAFA),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,),),
-                  const SizedBox(width: 2,),
-                  const Icon(Icons.add, color: Color(0xFFFBFAFA), size: 20,)
-                ],
-              )),
+              child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF427D9D),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Add Exam ',
+                        style: GoogleFonts.ibmPlexMono(
+                          color: const Color(0xFFFBFAFA),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 2,
+                      ),
+                      const Icon(
+                        Icons.add,
+                        color: Color(0xFFFBFAFA),
+                        size: 20,
+                      )
+                    ],
+                  )),
             )
           ],
         ),
       ),
     );
   }
-
 }

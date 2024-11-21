@@ -4,6 +4,7 @@ import 'package:le_chef/Widgets/exams/join_meeting.dart';
 import 'package:le_chef/Widgets/exams/meeting_not_started.dart';
 import 'package:le_chef/main.dart';
 import '../../../Shared/customBottomNavBar.dart';
+import '../../Screens/admin/THome.dart';
 import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
@@ -49,13 +50,20 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
       ),
       body: _buildBody(context),
       bottomNavigationBar: CustomBottomNavBar(
-        onItemTapped: (index) {
+        onItemTapped: (index) async {
           switch (index) {
             case 0:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Home()),
-              );
+              if (role == 'admin') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => THome()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              }
               break;
             case 1:
               Navigator.push(
@@ -84,8 +92,11 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
             child: ListView.builder(
                 itemCount: 3,
                 itemBuilder: (context, index) {
-                  bool isActive = index == 0 ? level1 :
-                  index == 1 ? level2 : level3;
+                  bool isActive = index == 0
+                      ? level1
+                      : index == 1
+                          ? level2
+                          : level3;
 
                   return Column(
                     children: [
@@ -106,9 +117,10 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                               value: isActive,
                               activeColor: const Color(0xFF00B84A),
                               thumbColor:
-                              const WidgetStatePropertyAll(Colors.white),
+                                  const WidgetStatePropertyAll(Colors.white),
                               onChanged: (bool value) {
-                                if (value) {  // Only handle activation, not deactivation
+                                if (value) {
+                                  // Only handle activation, not deactivation
                                   setState(() {
                                     // First, turn all levels off
                                     level1 = false;
@@ -118,8 +130,10 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                                     // Then activate only the selected level
                                     if (index == 0) {
                                       level1 = true;
-                                    } else if (index == 1) level2 = true;
-                                    else level3 = true;
+                                    } else if (index == 1)
+                                      level2 = true;
+                                    else
+                                      level3 = true;
                                   });
                                 }
                               },
@@ -129,14 +143,18 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                       ),
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        child: Divider(color: Color(0xFFC6C6C8), thickness: 0.5,),
+                        child: Divider(
+                          color: Color(0xFFC6C6C8),
+                          thickness: 0.5,
+                        ),
                       ),
                     ],
                   );
-                }
-            ),
+                }),
           ),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           joinMeeting(context, role),
         ],
       );

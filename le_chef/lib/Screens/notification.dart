@@ -4,20 +4,29 @@ import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../Shared/customBottomNavBar.dart';
+import '../main.dart';
+import 'admin/THome.dart';
 import 'chats/chats.dart';
 
-class Notifications extends StatelessWidget {
-  String day = "Today";
+class Notifications extends StatefulWidget {
   static const IconData pencil = IconData(0xf37e,
       fontFamily: "CupertinoIcons", fontPackage: 'cupertino_icons');
-  final int _selectedIndex = 1; // Initial index for Chats screen
 
+  Notifications({super.key});
+  @override
+  State<Notifications> createState() => _NotificationsState();
+}
+
+class _NotificationsState extends State<Notifications> {
+  String? role = sharedPreferences!.getString('role');
+
+  String day = "Today";
+
+  final int _selectedIndex = 1;
+  // Initial index for Chats screen
   final int itemCount = 2;
 
-  Notifications({super.key}); // Number of times to print the list
-
-  // Notifications({required this.itemCount});
-
+  // Number of times to print the list
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,7 +57,7 @@ class Notifications extends StatelessWidget {
                     height: 10,
                   ),
                   const NotificationItem(
-                    icon: pencil,
+                    icon: Notifications.pencil,
                     iconBackgroundColor: Color(0xFFEBF4FF),
                     iconColor: Color(0xFF2A324B), // Set unique icon color
                     title: 'New Note!',
@@ -84,10 +93,17 @@ class Notifications extends StatelessWidget {
           onItemTapped: (index) {
             switch (index) {
               case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                }
                 break;
               case 2:
                 Navigator.push(
@@ -112,7 +128,8 @@ class NotificationItem extends StatelessWidget {
   final String title;
   final String time;
 
-  const NotificationItem({super.key, 
+  const NotificationItem({
+    super.key,
     required this.icon,
     required this.iconBackgroundColor,
     required this.iconColor, // Add to constructor

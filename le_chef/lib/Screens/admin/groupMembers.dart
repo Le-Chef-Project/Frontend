@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../../Shared/customBottomNavBar.dart';
+import '../../main.dart';
 import '../user/Home.dart';
 import '../chats/chats.dart';
 import '../notification.dart';
+import 'THome.dart';
 
-class GroupMembers extends StatelessWidget {
+class GroupMembers extends StatefulWidget {
   final List<Map<String, String>> students;
 
   const GroupMembers({Key? key, required this.students}) : super(key: key);
+
+  @override
+  State<GroupMembers> createState() => _GroupMembersState();
+}
+
+class _GroupMembersState extends State<GroupMembers> {
+  String? role = sharedPreferences!.getString('role');
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +26,9 @@ class GroupMembers extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: const CustomAppBar(title: "Group1"),
       body: ListView.builder(
-        itemCount: students.length,
+        itemCount: widget.students.length,
         itemBuilder: (context, index) {
-          final student = students[index];
+          final student = widget.students[index];
           return ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(student['avatarUrl']!),
@@ -29,13 +38,20 @@ class GroupMembers extends StatelessWidget {
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        onItemTapped: (index) {
+        onItemTapped: (index) async {
           switch (index) {
             case 0:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Home()),
-              );
+              if (role == 'admin') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => THome()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              }
               break;
             case 1:
               Navigator.push(
