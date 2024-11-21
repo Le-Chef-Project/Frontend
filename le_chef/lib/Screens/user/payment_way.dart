@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Screens/user/payment.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
-class PaymentWay extends StatelessWidget {
-  const PaymentWay({super.key});
+import 'payment_creditCard.dart';
 
+class PaymentWay extends StatefulWidget {
+  final String contentId;
+
+  const PaymentWay({super.key, required this.contentId});
+
+  @override
+  State<PaymentWay> createState() => _PaymentWayState();
+}
+
+class _PaymentWayState extends State<PaymentWay> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +40,12 @@ class PaymentWay extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PaymentScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PaymentCreditCardScreen(
+                              contentId: widget.contentId,
+                            )));
               },
               child: ListTile(
                 shape: RoundedRectangleBorder(

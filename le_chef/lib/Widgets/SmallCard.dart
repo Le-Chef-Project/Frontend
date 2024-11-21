@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Screens/user/payment.dart';
 import '../Screens/user/payment_way.dart';
 
 class Smallcard extends StatelessWidget {
@@ -10,6 +9,7 @@ class Smallcard extends StatelessWidget {
   final String? description;
   final String imageurl;
   final bool isLocked;
+  final String? id;
   const Smallcard({
     super.key,
     this.Title,
@@ -17,6 +17,7 @@ class Smallcard extends StatelessWidget {
     required this.imageurl,
     required this.ontap,
     required this.isLocked,
+    this.id,
   });
 
   @override
@@ -58,7 +59,8 @@ class Smallcard extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const PaymentWay()),
+                                      builder: (context) =>
+                                          PaymentWay(contentId: id!)),
                                 );
                               },
                               style: ElevatedButton.styleFrom(

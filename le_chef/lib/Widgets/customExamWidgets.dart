@@ -6,7 +6,6 @@ import 'package:le_chef/Screens/user/payment_way.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 
 import '../Shared/exams/ExamForm.dart';
-import '../Screens/user/payment.dart';
 import '../Shared/exams/ExamInfo.dart';
 import '../main.dart';
 
@@ -239,8 +238,9 @@ Widget customExamListTile(
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PaymentWay()));
+                                        builder: (context) => PaymentWay(
+                                              contentId: exam.id,
+                                            )));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF427D9D),

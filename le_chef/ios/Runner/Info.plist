@@ -29,10 +29,6 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
-	<key>NSCameraUsageDescription</key>
-    <string>This app needs access to the camera for video calls.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app needs access to the microphone for video calls.</string>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
@@ -50,5 +46,17 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
+	<!-- Required for using `url_launcher` to open HTTP/HTTPS URLs -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>http</string>
+		<string>https</string>
+	</array>
+
+	<!-- Privacy Descriptions -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera for video calls.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to the microphone for video calls.</string>
 </dict>
 </plist>

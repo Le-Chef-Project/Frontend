@@ -225,6 +225,7 @@ class _HomeState extends State<Home> {
                         itemBuilder: (context, index) {
                           final video = Videos[index];
                           return Smallcard(
+                            id: video.id,
                             Title: video.title,
                             description: video.description,
                             imageurl: 'assets/desk_book_apple.jpeg',

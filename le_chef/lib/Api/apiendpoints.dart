@@ -1,10 +1,11 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.2:3000/";
+  static const String baseUrl = "http://192.168.1.13:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
   static Content content = Content();
   static Chat chat = Chat();
+  static Payment payment = Payment();
 }
 
 class AuthEndPoint {
@@ -47,4 +48,8 @@ class Chat {
   final removeStudent = 'Chat/RemoveStudent/';
   final getGroupMsg = 'Chat/getGroupMessages/';
   final getAdminChats = 'Chat/getAdminChats';
+}
+
+class Payment {
+  final credieCard = 'Pay/paymob/creditCard';
 }

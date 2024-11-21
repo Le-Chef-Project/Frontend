@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:le_chef/Screens/user/payment_way.dart';
 
-import '../Screens/user/payment.dart';
-
 class CustomCard extends StatelessWidget {
-  const CustomCard({super.key, required this.isLocked, required this.onTap});
+  const CustomCard({super.key, required this.isLocked, required this.onTap , required this.id});
 
   final bool isLocked;
   final VoidCallback onTap;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,7 @@ class CustomCard extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const PaymentWay(),
+                                    builder: (context) =>  PaymentWay(contentId: id,),
                                   ),
                                 );
                               },
@@ -192,7 +191,7 @@ class CustomCard extends StatelessWidget {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => const PaymentWay(),
+                                                builder: (context) =>  PaymentWay(contentId:  id,),
                                               ),
                                             );
                                           },

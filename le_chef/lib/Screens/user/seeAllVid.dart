@@ -127,6 +127,7 @@ class _AllVidState extends State<AllVid> {
                         itemBuilder: (context, index) {
                           final video = videos[index];
                           return Smallcard(
+                            id: video.id,
                             Title: video.title,
                             description: video.description,
                             imageurl: 'assets/desk_book_apple.jpeg',
@@ -136,7 +137,8 @@ class _AllVidState extends State<AllVid> {
                                 builder: (context) =>
                                     VideoPlayerScreen(url: video.url),
                               ),
-                            ), isLocked: video.isLocked,
+                            ),
+                            isLocked: video.isLocked,
                           );
                         },
                       ),

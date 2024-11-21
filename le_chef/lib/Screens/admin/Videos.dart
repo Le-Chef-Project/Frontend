@@ -57,6 +57,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
                   itemBuilder: (context, index) {
                     final video = _filteredvideos[index];
                     return Smallcard(
+                      id: video.id,
                       Title: video.title,
                       description: video.description,
                       imageurl: 'assets/desk_book_apple.jpeg',

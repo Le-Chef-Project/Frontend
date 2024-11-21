@@ -57,6 +57,7 @@ class _AllPDFsState extends State<AllPDFs> {
                   itemBuilder: (context, index) {
                     final pdf = _filteredPDFs[index];
                     return Smallcard(
+                      id: pdf.id,
                       Title: pdf.title,
                       imageurl: 'assets/pdf.jpg',
                       description: pdf.description,

@@ -948,7 +948,10 @@ class ApisMethods {
   }
 
 //23- remove student from group
-  static Future<void> removeStudentFromGroup({required String groupId, required String studentId,}) async {
+  static Future<void> removeStudentFromGroup({
+    required String groupId,
+    required String studentId,
+  }) async {
     var url = Uri.parse(
         '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.removeStudent}$groupId');
 
@@ -973,7 +976,10 @@ class ApisMethods {
   }
 
 // 24- add students to group
-  static Future<void> addStudentstoGroup({required String groupId, required List<String> studentIds,}) async {
+  static Future<void> addStudentstoGroup({
+    required String groupId,
+    required List<String> studentIds,
+  }) async {
     var url = Uri.parse(
         '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.chat.addStudentstoGroup}$groupId');
 
@@ -1177,7 +1183,7 @@ class ApisMethods {
 
   //27-get chats
   static Future<List<DirectChat>> getAllChats() async {
-    var url =  Uri.parse(
+    var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getAdminChats);
 
     http.Response response = await http.get(url,
@@ -1193,5 +1199,31 @@ class ApisMethods {
     }
 
     return DirectChat.itemsFromSnapshot(temp);
+  }
+
+  //28- paymeny by Credit card
+  static Future<Map<String, dynamic>> initiateCreditCardPayment({
+    required String contentId,
+  }) async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.credieCard);
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+      body: jsonEncode({
+        'contentId': contentId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(
+          'Failed to initiate payment: ${response.statusCode}, ${response.body}');
+    }
   }
 }

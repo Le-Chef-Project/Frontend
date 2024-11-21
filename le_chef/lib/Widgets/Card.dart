@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/user/payment_way.dart';
-
-import '../Screens/user/payment.dart';
-
 class CustomCardWithText extends StatelessWidget {
   final String title;
   final String subtitle;
   final String duration;
+  final String id;
   final bool isLocked; // Variable to control the visibility of the locked status
 
   const CustomCardWithText({super.key, 
@@ -15,6 +13,7 @@ class CustomCardWithText extends StatelessWidget {
     required this.subtitle,
     required this.duration,
     required this.isLocked,
+    required this.id,
   });
 
   @override
@@ -56,7 +55,7 @@ class CustomCardWithText extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const PaymentWay(),
+                                    builder: (context) =>  PaymentWay(contentId: id,),
                                   ),
                                 );
                               },
