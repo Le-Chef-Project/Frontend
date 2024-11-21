@@ -1,6 +1,6 @@
 class DirectChat {
   final String id;
-  final List<String> participants;
+  final List<Participant> participants;
   final List<Message> messages;
   final dynamic createdAt;
   final dynamic updatedAt;
@@ -17,9 +17,8 @@ class DirectChat {
     return DirectChat(
       id: json['_id'] ?? '', // Default to an empty string if null
       participants: (json['participants'] as List?)
-          ?.map((e) => e as String)
-          .toList() ??
-          [], // Default to an empty list
+          ?.map((e) => Participant.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
       messages: (json['messages'] as List?)
           ?.map((msgJson) =>
           Message.fromJson(msgJson as Map<String, dynamic>))
@@ -28,6 +27,12 @@ class DirectChat {
       createdAt: json['createdAt'], // Keep as is (dynamic type)
       updatedAt: json['updatedAt'], // Keep as is (dynamic type)
     );
+  }
+
+  static List<DirectChat> itemsFromSnapshot(List snapshot) {
+    return snapshot.map((data) {
+      return DirectChat.fromJson(data);
+    }).toList();
   }
 
 }
@@ -89,6 +94,26 @@ class AudioData {
     return AudioData(
       data: json['data'] as String ?? '',
       contentType: json['contentType'] as String ?? '',
+    );
+  }
+}
+
+class Participant {
+  final String id;
+  final String username;
+  final String email;
+
+  Participant({
+    required this.id,
+    required this.username,
+    required this.email,
+  });
+
+  factory Participant.fromJson(Map<String, dynamic> json) {
+    return Participant(
+      id: json['_id'] ?? '',
+      username: json['username'] ?? '',
+      email: json['email'] ?? '',
     );
   }
 }

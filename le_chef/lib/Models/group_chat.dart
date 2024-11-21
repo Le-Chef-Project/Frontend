@@ -1,3 +1,5 @@
+import 'package:flutter_chat_types/flutter_chat_types.dart';
+
 class GroupChat {
   final String id;
   final String group;
@@ -13,8 +15,9 @@ class GroupChat {
     return GroupChat(
       id: json['_id'] ?? '',
       group: json['group'] ?? '',
-      messages: (json['messages'] as List?)
-          ?.map((msgJson) => GroupChatMessage.fromJson(msgJson))
+      messages:(json['messages'] as List?)
+          ?.map((msgJson) =>
+          GroupChatMessage.fromJson(msgJson as Map<String, dynamic>))  // Change this to use GroupChatMessage
           .toList() ??
           [],
     );
@@ -47,7 +50,9 @@ class GroupChatMessage {
   factory GroupChatMessage.fromJson(Map<String, dynamic> json) {
     return GroupChatMessage(
       id: json['_id'] ?? '',
-      sender: json['sender'] ?? '',
+      sender: json['sender'] is Map
+          ? json['sender']['_id'] ?? '' // Extract ID if sender is a Map
+          : json['sender'] ?? '',
       content: json['content'] ?? '',
       images: (json['images'] as List?)?.map((e) => e.toString()).toList(),
       documents: (json['documents'] as List?)?.map((e) => e.toString()).toList(),

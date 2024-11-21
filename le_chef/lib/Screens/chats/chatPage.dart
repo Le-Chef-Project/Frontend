@@ -12,6 +12,8 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Models/direct_chat.dart' as direct_chat;
+import 'package:le_chef/Models/group.dart';
+import 'package:le_chef/Models/group_chat.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,11 +34,11 @@ import 'chats.dart';
 import 'image_viewer.dart';
 
 class ChatPage extends StatefulWidget {
-  final String? groupName;
+  final Group? group;
   final Student? receiver;
-  final int? membersNumber;
+  final bool person;
 
-  const ChatPage({Key? key, this.groupName, this.membersNumber, this.receiver})
+  const ChatPage({Key? key, this.group, this.receiver, required this.person})
       : super(key: key);
 
   @override
@@ -52,7 +54,6 @@ class _ChatPageState extends State<ChatPage> {
   bool _isLoading = true;
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;
-  bool person = true;
   bool _showFloatingButton = true;
   late DocumentMessageBubble _documentMessageBubble;
 
@@ -91,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
       _addMessage(message);
 
       try {
-        if (person) {
+        if (widget.person) {
           print(
               'Image path: ${image.path} and Image file path: ${File(image.path)}');
           await ApisMethods.sendDirectMsg(
@@ -102,6 +103,8 @@ class _ChatPageState extends State<ChatPage> {
             images: [File(image.path)],
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
+        }else{
+          await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Image', images: [File(image.path)],);
         }
       } catch (e) {
         print('Error sending image message: $e');
@@ -128,7 +131,7 @@ class _ChatPageState extends State<ChatPage> {
       _addMessage(message);
 
       try {
-        if (person) {
+        if (widget.person) {
           await ApisMethods.sendDirectMsg(
             id: widget.receiver!.ID,
             participants: [_user.id, widget.receiver!.ID],
@@ -137,6 +140,9 @@ class _ChatPageState extends State<ChatPage> {
             documents: [File(result.files.single.path!)],
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
+        }else{
+          await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Documents', documents: [File(result.files.single.path!)],);
+
         }
       } catch (e) {
         print('Error sending file message: $e');
@@ -205,52 +211,135 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  String _getMessageType(direct_chat.Message msg) {
-    if (msg.images != null && msg.images!.isNotEmpty) return 'image';
-    if (msg.documents != null && msg.documents!.isNotEmpty) return 'file';
-    if (msg.audio != null) return 'file';
+  String _getMessageType(dynamic msg) {
+    // For direct chat messages
+    if (msg is direct_chat.Message) {
+      if (msg.images != null && msg.images!.isNotEmpty) return 'image';
+      if (msg.documents != null && msg.documents!.isNotEmpty) return 'file';
+      if (msg.audio != null) return 'file';
+      return 'text';
+    }
+
+    // For group chat messages
+    if (msg is GroupChatMessage) {
+      if (msg.images != null && msg.images!.isNotEmpty) return 'image';
+      if (msg.documents != null && msg.documents!.isNotEmpty) return 'file';
+      if (msg.audio != null && msg.audio!.isNotEmpty) return 'file';
+      return 'text';
+    }
+
+    // Default case
     return 'text';
   }
 
-  Map<String, dynamic> _getMessageContent(direct_chat.Message msg) {
-    if (msg.images != null && msg.images!.isNotEmpty) {
+  Map<String, dynamic> _getMessageContent(dynamic msg) {
+    // For direct chat messages
+    if (msg is direct_chat.Message) {
+      if (msg.images != null && msg.images!.isNotEmpty) {
+        return {
+          'name': 'Image',
+          'size': 0,
+          'uri': msg.images![0],
+        };
+      }
+      if (msg.documents != null && msg.documents!.isNotEmpty) {
+        // Extract filename from the URI
+        String documentUri = msg.documents![0];
+        String fileName = _extractFileName(documentUri);
+
+        return {
+          'name': fileName,
+          'size': 0,
+          'uri': documentUri,
+        };
+      }
+      if (msg.audio != null) {
+        return {
+          'name': 'Voice Message',
+          'size': 0,
+          'uri': msg.audio!.data,
+          'mimeType': 'audio/aac',
+        };
+      }
       return {
-        'name': 'Image',
-        'size': 0,
-        'uri': msg.images![0],
+        'text': msg.content ?? '',
       };
     }
-    if (msg.documents != null && msg.documents!.isNotEmpty) {
-      print('Document URI: ${msg.documents![0]}'); // Log the URI
+
+    // For group chat messages (similar modification)
+    if (msg is GroupChatMessage) {
+      if (msg.images != null && msg.images!.isNotEmpty) {
+        return {
+          'name': 'Image',
+          'size': 0,
+          'uri': msg.images![0],
+        };
+      }
+      if (msg.documents != null && msg.documents!.isNotEmpty) {
+        // Extract filename from the URI
+        String documentUri = msg.documents![0];
+        String fileName = _extractFileName(documentUri);
+
+        return {
+          'name': fileName,
+          'size': 0,
+          'uri': documentUri,
+        };
+      }
+      if (msg.audio != null && msg.audio!.isNotEmpty) {
+        return {
+          'name': 'Voice Message',
+          'size': 0,
+          'uri': msg.audio![0],
+          'mimeType': 'audio/aac',
+        };
+      }
       return {
-        'name': 'Document',
-        'size': 0,
-        'uri': msg.documents![0],
+        'text': msg.content,
       };
     }
-    if (msg.audio != null) {
-      return {
-        'name': 'Voice Message',
-        'size': 0,
-        'uri': msg.audio!.data,
-        'mimeType': 'audio/aac',
-      };
-    }
+
+    // Fallback for unknown message type
     return {
-      'text': msg.content ?? '',
+      'text': '',
     };
+  }
+
+// Add this method to the _ChatPageState class
+  String _extractFileName(String uri) {
+    try {
+      // Try to parse the URI and get the last segment
+      Uri parsedUri = Uri.parse(uri);
+      String? lastSegment = parsedUri.pathSegments.lastOrNull;
+
+      if (lastSegment != null && lastSegment.isNotEmpty) {
+        return lastSegment;
+      }
+
+      // If parsing fails or no segment found, extract from the end of the string
+      int lastSlashIndex = uri.lastIndexOf('/');
+      if (lastSlashIndex != -1 && lastSlashIndex < uri.length - 1) {
+        return uri.substring(lastSlashIndex + 1);
+      }
+    } catch (e) {
+      print('Error extracting filename: $e');
+    }
+
+    // Fallback to a generic name if all else fails
+    return 'Document';
   }
 
   Future<void> _fetchMessages() async {
     try {
-      if (widget.receiver != null) {
+      List<types.Message> convertedMessages;
+
+      if (widget.person && widget.receiver != null) {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-            await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
+        await ApisMethods.getDirectMessages('673b769659474de61ff3c7a8');
 
-        final List<types.Message> convertedMessages =
-            directChat.messages.map((msg) {
+        convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
@@ -266,18 +355,35 @@ class _ChatPageState extends State<ChatPage> {
             ...(_getMessageContent(msg)),
           });
         }).toList();
+      } else {
+        print('Group id: ${widget.group!.id}');
+        final GroupChat groupChat = await ApisMethods.getGrpMessages(widget.group!.id);
 
-        convertedMessages
-            .sort((b, a) => (b.createdAt ?? 0).compareTo(a.createdAt ?? 0));
+        convertedMessages = groupChat.messages.map((msg) {
+          final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
-        setState(() {
-          _messages = convertedMessages;
-          _isLoading = false;
-        });
+          return types.Message.fromJson({
+            'author': {
+              'id': _user.id
+            },
+            'createdAt': createdAtMillis,
+            'id': msg.id ?? const Uuid().v4(),
+            'type': _getMessageType(msg),
+            ...(_getMessageContent(msg)),
+          });
+        }).toList();
       }
+
+      convertedMessages
+          .sort((b, a) => (b.createdAt ?? 0).compareTo(a.createdAt ?? 0));
+
+      setState(() {
+        _messages = convertedMessages;
+        _isLoading = false;
+      });
     } catch (e, stackTrace) {
       print('Error fetching messages: $e');
-      print('Stack trace: $stackTrace'); // Add stack trace for better debugging
+      print('Stack trace: $stackTrace');
       setState(() => _isLoading = false);
     }
   }
@@ -366,9 +472,10 @@ class _ChatPageState extends State<ChatPage> {
 
       // Send to database
       try {
-        if (person) {
+        final audioData = await _createAudioData(_recordedFilePath!);
+
+        if (widget.person) {
           // Convert audio to base64 string and send
-          final audioData = await _createAudioData(_recordedFilePath!);
 
           // Check if audio data is non-empty before sending
           if (audioData.isNotEmpty) {
@@ -387,7 +494,7 @@ class _ChatPageState extends State<ChatPage> {
             print("Error: Audio data is empty.");
           }
         } else {
-          // await ApisMethods.sendGrpMsg(message.id, message.id, _user.id, '', null, null, _recordedFilePath, DateTime.fromMillisecondsSinceEpoch(message.createdAt!),);
+          await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Audio', audio: audioData);
         }
       } catch (e) {
         print('Error sending audio message: $e');
@@ -463,7 +570,7 @@ class _ChatPageState extends State<ChatPage> {
     _addMessage(textMessage);
 
     try {
-      if (person) {
+      if (widget.person) {
         print('Sender id: ${_user.id} \nReciever Id: ${widget.receiver!.ID}');
         await ApisMethods.sendDirectMsg(
           id: widget.receiver!.ID,
@@ -474,7 +581,7 @@ class _ChatPageState extends State<ChatPage> {
               DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
         );
       } else {
-        // await ApisMethods.sendGrpMsg(textMessage.id, textMessage.id, _user.id, message.text, null, null, null, DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),);
+        await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: message.text);
       }
       print('Updated sending message');
     } catch (e) {
@@ -486,10 +593,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isGroupChat =
-        widget.groupName != null && widget.groupName!.contains(' ');
     final chatTheme =
-        isGroupChat ? ChatThemes.groupChat : ChatThemes.personalChat;
+        widget.person ? ChatThemes.personalChat : ChatThemes.groupChat;
 
     return SafeArea(
       child: Scaffold(
@@ -527,17 +632,17 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    if (widget.groupName != null && widget.groupName!.contains(' ')) {
-      return GroupChatAppBar(
-        groupName: widget.groupName!,
-        membersNumber: widget.membersNumber,
+    if (widget.person) {
+      return PersonalChatAppBar(
+        username: widget.receiver?.username ?? 'Chat',
+        avatarUrl:
+        'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
         onBackPressed: () => Navigator.pop(context),
       );
     }
-    return PersonalChatAppBar(
-      username: widget.receiver?.username ?? 'Chat',
-      avatarUrl:
-          'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+    return GroupChatAppBar(
+      groupName: widget.group!.title,
+      membersNumber: widget.group!.members.length,
       onBackPressed: () => Navigator.pop(context),
     );
   }
@@ -549,7 +654,7 @@ class _ChatPageState extends State<ChatPage> {
       onMessageTap: _handleMessageTap,
       onPreviewDataFetched: _handlePreviewDataFetched,
       onSendPressed: _handleSendPressed,
-      showUserAvatars: person,
+      showUserAvatars: widget.person,
       showUserNames: true,
       user: _user,
       theme: theme,
@@ -599,6 +704,7 @@ class FileMessageBuilder {
     if (message is types.FileMessage) {
       final types.FileMessage fileMessage = message;
 
+      // Check for audio messages first
       if (fileMessage.name == 'Audio') {
         return AudioMessageBubble(
           message: fileMessage,
@@ -607,15 +713,15 @@ class FileMessageBuilder {
         );
       }
 
-      if (fileMessage.name == 'Document') {
-        return DocumentMessageBubble(
-          message: fileMessage,
-          currentUser: currentUser,
-          onOpen: onOpenDocument,
-        );
-      }
+      // Handle document messages more robustly
+      return DocumentMessageBubble(
+        message: fileMessage,
+        currentUser: currentUser,
+        onOpen: onOpenDocument,
+      );
     }
 
+    // Fallback for non-file messages
     return Container(
       width: messageWidth.toDouble(),
       padding: const EdgeInsets.all(12),

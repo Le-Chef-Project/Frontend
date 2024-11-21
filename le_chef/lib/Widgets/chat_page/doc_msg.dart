@@ -178,8 +178,7 @@ class DocumentMessageBubble extends StatelessWidget {
     return const Icon(Icons.insert_drive_file, color: Colors.white);
   }
 
-  Future<void> downloadAndOpenDocument(
-      String url, String? fileName, BuildContext context) async {
+  Future<void> downloadAndOpenDocument(String url, String? fileName, BuildContext context) async {
     try {
       showDialog(
         context: context,
@@ -278,36 +277,66 @@ class DocumentMessageBubble extends StatelessWidget {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+    if (message?.createdAt == null) {
+      print('Time not null: ${message?.createdAt}');
+    }else{
+      print('Time = nulllll');
+    }
+
+    String? isoTime = message?.createdAt.toString();
+
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(isoTime!));
+
+    DateTime localTime = dateTime.toLocal();
+
+    int hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
+
+
     return GestureDetector(
       onTap: () {
         downloadAndOpenDocument(
             message!.uri, message?.name, context); // Open the document on tap
       },
       child: Container(
-        height: 65,
-        width: 190,
+        height: 75,
+        width: 230,
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Row(
+        child: Column(
           children: [
-            _getFileIcon(), // Dynamic icon based on file type
-            const SizedBox(width: 8.0),
-            Expanded(
-              child: Text(
-                message?.name ?? 'Document',
-                style: GoogleFonts.ibmPlexMono(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
+            Row(
+              children: [
+                _getFileIcon(), // Dynamic icon based on file type
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    message?.name ?? 'Document',
+                    style: GoogleFonts.ibmPlexMono(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
+              ],
             ),
-          ],
+            SizedBox(height: 10,),
+            Align(
+              alignment: AlignmentDirectional.bottomEnd,
+              child: Text("${hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}${localTime.hour >= 12 ? 'PM' : 'AM'}", style: GoogleFonts.ibmPlexMono(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),),
+            ),
+          ]
         ),
       ),
     );
