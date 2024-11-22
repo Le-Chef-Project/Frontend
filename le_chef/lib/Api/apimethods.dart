@@ -1226,4 +1226,200 @@ class ApisMethods {
           'Failed to initiate payment: ${response.statusCode}, ${response.body}');
     }
   }
+
+//29- e wallet payment
+
+  static Future<void> initiateEWalletPayment({
+    required String contentId,
+    required File paymentImage,
+  }) async {
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() +
+        ApiEndPoints.payment.E_Wallet +
+        contentId);
+
+    // Prepare the multipart request
+    final request = http.MultipartRequest('POST', url)
+      ..headers['token'] = token! // Attach token
+      ..files.add(await http.MultipartFile.fromPath(
+        'paymentImage',
+        paymentImage.path,
+      ));
+
+    // Send the request
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/correct sign.png',
+                    width: 117,
+                    height: 117,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Success!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    ' ${responseData['message']}',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF888888),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+                backgroundColor: Colors.white,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/error-16_svgrepo.com.jpg',
+                      width: 117,
+                      height: 117,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Warning!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF164863),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      response.body,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF888888),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ));
+          });
+    }
+  }
+
+//30- cash payment
+
+  static Future<void> initiateCashPayment({
+    required String contentId,
+  }) async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.Cash + contentId);
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
+    );
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/correct sign.png',
+                    width: 117,
+                    height: 117,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Success!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    ' ${responseData['message']}',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF888888),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      final errorData = jsonDecode(response.body);
+
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return AlertDialog(
+                backgroundColor: Colors.white,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/error-16_svgrepo.com.jpg',
+                      width: 117,
+                      height: 117,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Warning!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF164863),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      errorData['message'],
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF888888),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ));
+          });
+    }
+  }
 }
