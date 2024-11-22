@@ -28,6 +28,7 @@ import '../../Widgets/chat_page/doc_msg.dart';
 import '../../Widgets/chat_page/msg_input.dart';
 import '../../main.dart';
 import '../../theme/chat_theme.dart';
+import '../admin/payment_request.dart';
 import '../notification.dart';
 import '../user/Home.dart';
 import 'chats.dart';
@@ -626,9 +627,13 @@ class _ChatPageState extends State<ChatPage> {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );

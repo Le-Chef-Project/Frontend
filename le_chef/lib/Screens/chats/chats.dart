@@ -354,7 +354,7 @@ class _ChatsState extends State<Chats> {
               }
             },
             context: context,
-            selectedIndex: _selectedIndex,
+            selectedIndex: _selectedIndex, userRole: role!,
           ),
         ),
       ),

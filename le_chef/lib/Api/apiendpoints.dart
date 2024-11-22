@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.13:3000/";
+  static const String baseUrl = "http://192.168.1.2:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -54,4 +54,5 @@ class Payment {
   final credieCard = 'Pay/paymob/creditCard';
   final E_Wallet = 'Pay/WalletRequest/';
   final Cash = 'Pay/CashRequest/';
+  final getPaymentReq = 'Pay/PendingRequests';
 }

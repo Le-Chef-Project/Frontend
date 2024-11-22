@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Models/Student.dart';
+import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/admin/studentProfile.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_search_view.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
+import 'package:le_chef/main.dart';
 
 import '../../Api/apimethods.dart';
 import '../../Shared/customBottomNavBar.dart';
@@ -353,9 +355,13 @@ class _AllStudentsState extends State<AllStudents> {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );

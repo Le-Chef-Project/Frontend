@@ -5,6 +5,7 @@ import 'package:le_chef/Widgets/exams/meeting_not_started.dart';
 import 'package:le_chef/main.dart';
 import '../../../Shared/customBottomNavBar.dart';
 import '../../Screens/admin/THome.dart';
+import '../../Screens/admin/payment_request.dart';
 import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
@@ -77,9 +78,13 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                 MaterialPageRoute(builder: (context) => const Chats()),
               );
               break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+              }
           }
         },
-        context: context,
+        context: context, userRole: role!,
       ),
     );
   }

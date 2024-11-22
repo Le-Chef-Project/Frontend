@@ -22,6 +22,7 @@ import '../Screens/user/Home.dart';
 import '../main.dart';
 import 'SharedPrefes.dart';
 import 'apiendpoints.dart';
+import '../Models/payment.dart' as payment_model;
 
 class ApisMethods {
   static String? token = sharedPreferences!.getString('token');
@@ -1202,9 +1203,7 @@ class ApisMethods {
   }
 
   //28- paymeny by Credit card
-  static Future<Map<String, dynamic>> initiateCreditCardPayment({
-    required String contentId,
-  }) async {
+  static Future<Map<String, dynamic>> initiateCreditCardPayment({required String contentId,}) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.credieCard);
 
@@ -1229,10 +1228,7 @@ class ApisMethods {
 
 //29- e wallet payment
 
-  static Future<void> initiateEWalletPayment({
-    required String contentId,
-    required File paymentImage,
-  }) async {
+  static Future<void> initiateEWalletPayment({required String contentId, required File paymentImage,}) async {
     var url = Uri.parse(ApiEndPoints.baseUrl.trim() +
         ApiEndPoints.payment.E_Wallet +
         contentId);
@@ -1330,9 +1326,7 @@ class ApisMethods {
 
 //30- cash payment
 
-  static Future<void> initiateCashPayment({
-    required String contentId,
-  }) async {
+  static Future<void> initiateCashPayment({required String contentId,}) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.Cash + contentId);
     final response = await http.post(
@@ -1422,4 +1416,25 @@ class ApisMethods {
           });
     }
   }
+
+  //31- get payment requests
+  static Future<List<payment_model.Payment>> getAllRequest() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.getPaymentReq);
+
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    List temp = [];
+    print('apiiii Get Requests ${data['payments']}');
+
+    for (var i in data['payments']) {
+      temp.add(i);
+    }
+
+    return payment_model.Payment.itemsFromSnapshot(temp);
+  }
+
 }

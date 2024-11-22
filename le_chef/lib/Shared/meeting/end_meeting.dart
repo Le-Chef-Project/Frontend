@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../Shared/customBottomNavBar.dart';
+import '../../Screens/admin/payment_request.dart';
 import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
+import '../../main.dart';
 import 'online_session_screen.dart';
 
 class EndMeeting extends StatelessWidget {
@@ -123,9 +125,13 @@ class EndMeeting extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );

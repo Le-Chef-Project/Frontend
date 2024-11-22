@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../../Shared/customBottomNavBar.dart';
@@ -65,9 +66,13 @@ class _GroupMembersState extends State<GroupMembers> {
                 MaterialPageRoute(builder: (context) => const Chats()),
               );
               break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+              }
           }
         },
-        context: context,
+        context: context, userRole: role!,
       ),
     );
   }

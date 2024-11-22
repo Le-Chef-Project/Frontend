@@ -15,6 +15,7 @@ import '../../Shared/meeting/online_session_screen.dart';
 import '../../main.dart';
 import '../Notes.dart';
 import '../admin/library.dart';
+import '../admin/payment_request.dart';
 import '../admin/viewVideo.dart';
 import '../notification.dart';
 import 'seeAllVid.dart';
@@ -382,10 +383,14 @@ class _HomeState extends State<Home> {
                     duration: const Duration(seconds: 1));
 
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
           context: context,
-          selectedIndex: _selectedIndex,
+          selectedIndex: _selectedIndex, userRole: role!,
         ),
       ),
     );

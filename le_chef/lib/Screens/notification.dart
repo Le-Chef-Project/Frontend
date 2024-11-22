@@ -119,7 +119,7 @@ class _NotificationsState extends State<Notifications> {
             }
           },
           context: context,
-          selectedIndex: _selectedIndex,
+          selectedIndex: _selectedIndex, userRole: role!,
         ),
       ),
     );

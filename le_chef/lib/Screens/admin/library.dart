@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/user/examsResults.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/custom_app_bar.dart';
@@ -159,9 +160,13 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );

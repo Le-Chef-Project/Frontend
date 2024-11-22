@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/admin/library.dart';
+import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
@@ -111,9 +112,13 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );

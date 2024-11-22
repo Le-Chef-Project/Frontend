@@ -7,6 +7,7 @@ import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Widgets/total_exams-students_card.dart';
 
 import '../../Screens/admin/THome.dart';
+import '../../Screens/admin/payment_request.dart';
 import '../customBottomNavBar.dart';
 import '../../Widgets/customExamWidgets.dart';
 import '../../main.dart';
@@ -229,9 +230,13 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                   MaterialPageRoute(builder: (context) => const Chats()),
                 );
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );

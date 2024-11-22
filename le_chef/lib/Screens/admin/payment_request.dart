@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/payment.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../../Shared/customBottomNavBar.dart';
@@ -8,11 +10,37 @@ import '../chats/chats.dart';
 import '../notification.dart';
 import 'THome.dart';
 
-class PaymentRequest extends StatelessWidget {
+class PaymentRequest extends StatefulWidget {
   const PaymentRequest({super.key});
 
+  @override
+  State<PaymentRequest> createState() => _PaymentRequestState();
+}
+
+class _PaymentRequestState extends State<PaymentRequest> {
   final bool isView = true;
+  List<Payment> requests = [];
+
   final int _selectedIndex = 3;
+
+  @override
+  void initState(){
+    super.initState();
+    getRequests();
+  }
+
+  Future<void> getRequests() async {
+    try{
+      final _requests = await ApisMethods.getAllRequest();
+      setState(() {
+        requests = _requests;
+      });
+      print('Total requests loaded: ${requests.length}');
+  }catch(e){
+      print('Failed to load requests: ${e.toString()}');
+    }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +48,7 @@ class PaymentRequest extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: const CustomAppBar(title: 'Requests'),
       body: ListView.builder(
-        itemCount: 5,
+        itemCount: requests.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
@@ -41,7 +69,7 @@ class PaymentRequest extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const CircleAvatar(
-                      backgroundImage: AssetImage('assets/icon.png'),
+                      backgroundImage: AssetImage('assets/default_image_profile.jpg'),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -49,7 +77,7 @@ class PaymentRequest extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'David Skot',
+                            requests[index].username,
                             style: GoogleFonts.ibmPlexMono(
                               color: const Color(0xFF164863),
                               fontSize: 14,
@@ -73,7 +101,7 @@ class PaymentRequest extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '"Cash"',
+                            requests[index].method,
                             style: GoogleFonts.ibmPlexMono(
                               color: const Color(0xFF0E7490),
                               fontSize: 12,
@@ -125,11 +153,32 @@ class PaymentRequest extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (isView)
+                              if (requests[index].method == 'Mobile Wallet')
                                 SizedBox(
                                   height: 32,
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showDialog(context: context, builder: (context){
+                                        return Dialog(
+                                          child: Column(
+                                            children: [
+                                              if(requests[index].paymentImageUrl != null)
+                                                Image.network(requests[index].paymentImageUrl!, fit: BoxFit.contain,),
+                                              ElevatedButton(onPressed: (){}, child: Text('Ok', style: GoogleFonts.ibmPlexMono(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),), style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xFF2ED573),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                              ),),
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF427D9D),
                                       shape: RoundedRectangleBorder(
@@ -183,7 +232,7 @@ class PaymentRequest extends StatelessWidget {
           }
         },
         context: context,
-        selectedIndex: _selectedIndex,
+        selectedIndex: _selectedIndex, userRole: role!,
       ),
     );
   }

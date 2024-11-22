@@ -7,6 +7,7 @@ import 'package:le_chef/main.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Widgets/dialog_with_two_buttons.dart';
+import 'admin/payment_request.dart';
 import 'admin/selectStudent.dart';
 import 'user/Home.dart';
 import 'chats/chats.dart';
@@ -289,9 +290,13 @@ class _MembersScreenState extends State<MembersScreen> {
                 MaterialPageRoute(builder: (context) => const Chats()),
               );
               break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+              }
           }
         },
-        context: context,
+        context: context, userRole: role!,
       ),
     );
   }

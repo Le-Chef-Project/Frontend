@@ -8,6 +8,7 @@ import '../../Api/apimethods.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Widgets/SmallCard.dart';
 import '../../main.dart';
+import '../admin/payment_request.dart';
 import '../admin/viewVideo.dart';
 import '../notification.dart';
 import 'Home.dart';
@@ -165,9 +166,13 @@ class _AllVidState extends State<AllVid> {
                     transition: Transition.fade,
                     duration: const Duration(seconds: 1));
                 break;
+              case 3:
+                if (role == 'admin') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                }
             }
           },
-          context: context,
+          context: context, userRole: role!,
         ),
       ),
     );
