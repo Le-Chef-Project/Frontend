@@ -1437,4 +1437,47 @@ class ApisMethods {
     return payment_model.Payment.itemsFromSnapshot(temp);
   }
 
+  //32-accept payment request
+  static Future<void> acceptRequest(String paymentId) async{
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.requests + paymentId + ApiEndPoints.payment.accept);
+
+    http.Response response = await http.post(
+      url, headers: {
+      'Content-Type': 'application/json',
+      'token': token!,
+    },
+      body: jsonEncode({
+        'status': 'success',
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Updated status Successfully: ${jsonDecode(response.body)}');
+    } else {
+      throw Exception(
+          'Failed to Update payment status: ${response.statusCode}, ${response.body}');
+    }
+  }
+
+  //33-reject payment request
+  static Future<void> rejectRequest(String paymentId) async{
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.requests + paymentId + ApiEndPoints.payment.reject);
+
+    http.Response response = await http.post(
+      url, headers: {
+      'Content-Type': 'application/json',
+      'token': token!,
+    },
+      body: jsonEncode({
+        'status': 'failed',
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Updated status Successfully: ${jsonDecode(response.body)}');
+    } else {
+      throw Exception(
+          'Failed to Update payment status: ${response.statusCode}, ${response.body}');
+    }
+  }
 }

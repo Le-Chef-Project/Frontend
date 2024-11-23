@@ -10,6 +10,7 @@ class Payment {
   final String contentId;
   final String? paymentImageUrl;
   final bool success;
+  final String createdAt;
 
   Payment(
       {required this.id,
@@ -19,7 +20,7 @@ class Payment {
       required this.contentType,
       required this.contentId,
       required this.paymentImageUrl,
-      required this.success, required this.userId, required this.username, required this.email});
+      required this.success, required this.userId, required this.username, required this.email, required this.createdAt});
 
   factory Payment.fromJson(dynamic json) {
     return Payment(
@@ -34,6 +35,7 @@ class Payment {
       contentId: json['contentId'] ?? '',
       paymentImageUrl: json['paymentImageUrl'],
       success: json['success'] ?? false,
+      createdAt: json['created_at'] as String,
     );
   }
 

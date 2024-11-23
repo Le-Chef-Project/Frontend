@@ -55,4 +55,7 @@ class Payment {
   final E_Wallet = 'Pay/WalletRequest/';
   final Cash = 'Pay/CashRequest/';
   final getPaymentReq = 'Pay/PendingRequests';
+  final requests = 'Pay/Requests/';
+  final accept = '/accept';
+  final reject = '/reject';
 }
