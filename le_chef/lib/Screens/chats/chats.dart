@@ -38,7 +38,7 @@ class _ChatsState extends State<Chats> {
   bool _isLoading_grp = true;
   List<DirectChat>? chats;
   bool _isLoading_chat = true;
-  final String? _userId = sharedPreferences!.getString('_id');
+  final String? _userId = sharedPreferences!.getString('Id');
 
 
   Future<void> getStd() async {
@@ -641,8 +641,8 @@ class _ChatsState extends State<Chats> {
                                       ? 'PM'
                                       : 'AM'}"),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Hi!!',
+                              Text(
+                                groups?[index].lastMessage.content ?? 'No message yet',
                               )
                             ],
                           ),

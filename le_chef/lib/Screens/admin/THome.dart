@@ -7,8 +7,10 @@ import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
 import 'package:le_chef/Screens/admin/notesLevels.dart';
 import 'package:le_chef/Screens/admin/payment_request.dart';
+import 'package:le_chef/Screens/admin/studentProfile.dart';
 import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
+
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
 import '../../Shared/customBottomNavBar.dart';
@@ -279,7 +281,13 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
         appBar: AppBar(
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
-          leading: Image.asset('assets/Rectangle 4.png'),
+          leading: GestureDetector(
+              // onTap: () => Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) =>
+              //             ProfilePage(isStudent: false, student: ))),
+              child: Image.asset('assets/Rectangle 4.png')),
           actions: [
             GestureDetector(
               onTap: () {
@@ -483,12 +491,16 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PaymentRequest()));
                 }
             }
           },
           context: context,
-          selectedIndex: _selectedIndex, userRole: role!,
+          selectedIndex: _selectedIndex,
+          userRole: role!,
         ),
       ),
     );
