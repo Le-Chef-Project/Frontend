@@ -53,7 +53,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
   final ValueNotifier<bool> _isRecording = ValueNotifier(false);
-  final String? _userId = sharedPreferences!.getString('_id');
+  final String? _userId = sharedPreferences!.getString('Id');
   bool _isLoading = true;
   FlutterSoundRecorder? _recorder;
   String? _recordedFilePath;

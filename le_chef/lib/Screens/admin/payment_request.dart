@@ -46,6 +46,8 @@ class _PaymentRequestState extends State<PaymentRequest> {
   Map<String, List<Payment>> _groupReqByDate(){
     Map<String, List<Payment>> groups = {};
 
+    requests.sort((a, b) => DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+
     for(var req in requests){
       final date = _getDateText(req.createdAt);
       if(groups[date] == null){
@@ -124,16 +126,29 @@ class _PaymentRequestState extends State<PaymentRequest> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Text(
-                            'Request for',
-                            style: GoogleFonts.ibmPlexMono(
-                              color: const Color(0xFF888888),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                'Request for',
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF888888),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              SizedBox(width: 5,),
+                              Text(
+                                '"${request.contentType}"',
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF164863),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                           Text(
-                            '"Unit 1 - lesson 3"',
+                            '"${request.desc}"',
                             style: GoogleFonts.ibmPlexMono(
                               color: const Color(0xFF0E7490),
                               fontSize: 12,
@@ -141,7 +156,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                             ),
                           ),
                           Text(
-                            request.method,
+                            '"${request.method}"',
                             style: GoogleFonts.ibmPlexMono(
                               color: const Color(0xFF0E7490),
                               fontSize: 12,
@@ -285,6 +300,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                 ),
                             ],
                           ),
+                          SizedBox(height: 20,)
                         ],
                       ),
                     ),

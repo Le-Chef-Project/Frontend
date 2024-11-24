@@ -1480,4 +1480,33 @@ class ApisMethods {
           'Failed to Update payment status: ${response.statusCode}, ${response.body}');
     }
   }
+
+  //34- edit profile
+  static Future<void> editProfile(
+      String userId,
+      String username,
+      String email,
+      String phone,
+      int educationLevel,
+      ) async {
+    final Map<String, dynamic> body = {
+      'username': username,
+      'email': email,
+      'phone': phone,
+      'educationLevel': educationLevel,
+    };
+
+    var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.userManage.editProfile}$userId');
+
+    http.Response response = await http.put(url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+        body: jsonEncode(body));
+
+    if (response.statusCode == 200) {
+      print('${jsonDecode(response.body)['message']}');
+    } else {
+      print('${jsonDecode(response.body)['message']}');
+    }
+  }
 }

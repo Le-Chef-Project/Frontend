@@ -16,6 +16,7 @@ class UserManage {
   final String AddStudent = "userManage/AddStudents";
   final String GetStudents = "userManage/ShowAllStudents";
   final String DelStudent = "userManage/DeleteStudent/";
+  final String editProfile = 'userManage/editProfile/';
 }
 
 class Quiz {

@@ -147,7 +147,7 @@ class _AllStudentsState extends State<AllStudents> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const ProfilePage()),
+                                          builder: (context) => ProfilePage(isStudent: true, student: currentStudents[index],)),
                                     );
                                   },
                                   child: ListTile(
@@ -218,7 +218,7 @@ class _AllStudentsState extends State<AllStudents> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const ProfilePage()),
+                                          builder: (context) => ProfilePage(isStudent: true, student: currentStudents[index],)),
                                     );
                                   },
                                   child: ListTile(

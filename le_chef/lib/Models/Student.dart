@@ -1,9 +1,11 @@
 class Student {
-  final String username;
+  String username;
   final String Lastname;
   final String firstname;
-  final String email;
-  final String phone;
+  String email;
+  String phone;
+  String password;
+  int educationLevel;
   final String ID;
 
   Student({
@@ -12,6 +14,8 @@ class Student {
     required this.firstname,
     required this.email,
     required this.phone,
+    required this.password,
+    required this.educationLevel,
     required this.ID,
   });
 
@@ -23,6 +27,8 @@ class Student {
       firstname: json['firstName'] as String,
       email: json['email'] as String,
       phone: json['phone'] as String,
+      educationLevel: json['educationLevel'] ?? '',
+      password: json['password'] ?? '',
     );
   }
 
