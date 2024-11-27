@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/payment.dart';
-import 'package:le_chef/Screens/chats/image_viewer.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
 import '../../Shared/customBottomNavBar.dart';
@@ -33,9 +32,9 @@ class _PaymentRequestState extends State<PaymentRequest> {
 
   Future<void> getRequests() async {
     try {
-      final _requests = await ApisMethods.getAllRequest();
+      final request = await ApisMethods.getAllRequest();
       setState(() {
-        requests = _requests;
+        requests = request;
       });
       print('Total requests loaded: ${requests.length}');
     } catch (e) {
@@ -136,7 +135,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              SizedBox(width: 5,),
+                              const SizedBox(width: 5,),
                               Text(
                                 '"${request.contentType}"',
                                 style: GoogleFonts.ibmPlexMono(
@@ -258,6 +257,12 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                                       child: ElevatedButton(
                                                         onPressed: () =>
                                                             Navigator.pop(context),
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: const Color(0xFF427D9D),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                        ),
                                                         child: Text(
                                                           'Ok',
                                                           style: GoogleFonts
@@ -266,12 +271,6 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                                             fontSize: 16,
                                                             fontWeight:
                                                             FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        style: ElevatedButton.styleFrom(
-                                                          backgroundColor: const Color(0xFF427D9D),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(8),
                                                           ),
                                                         ),
                                                       ),
@@ -300,7 +299,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                 ),
                             ],
                           ),
-                          SizedBox(height: 20,)
+                          const SizedBox(height: 20,)
                         ],
                       ),
                     ),
@@ -318,13 +317,13 @@ class _PaymentRequestState extends State<PaymentRequest> {
             case 0:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => THome()),
+                MaterialPageRoute(builder: (context) => const THome()),
               );
               break;
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Notifications()),
+                MaterialPageRoute(builder: (context) => const Notifications()),
               );
               break;
             case 2:

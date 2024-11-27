@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 
@@ -10,7 +11,7 @@ import '../notification.dart';
 import 'THome.dart';
 
 class GroupMembers extends StatefulWidget {
-  final List<Map<String, String>> students;
+  final List<Student> students;
 
   const GroupMembers({Key? key, required this.students}) : super(key: key);
 
@@ -32,32 +33,32 @@ class _GroupMembersState extends State<GroupMembers> {
           final student = widget.students[index];
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(student['avatarUrl']!),
+              backgroundImage: NetworkImage(student.imageUrl!),
             ),
-            title: Text(student['name']!),
+            title: Text(student.username),
           );
         },
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar:  CustomBottomNavBar(
         onItemTapped: (index) async {
           switch (index) {
             case 0:
               if (role == 'admin') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => THome()),
+                  MaterialPageRoute(builder: (context) => const THome()),
                 );
               } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
               }
               break;
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Notifications()),
+                MaterialPageRoute(builder: (context) => const Notifications()),
               );
               break;
             case 2:
@@ -68,7 +69,7 @@ class _GroupMembersState extends State<GroupMembers> {
               break;
             case 3:
               if (role == 'admin') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
               }
           }
         },

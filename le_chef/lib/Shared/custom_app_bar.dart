@@ -13,30 +13,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isPerson,
   }) : super(key: key);
 
-  void _navigateToStudentsPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const GroupMembers(
-          students: [
-            {
-              'name': 'Student 1',
-              'avatarUrl': 'https://example.com/avatar1.png'
-            },
-            {
-              'name': 'Student 2',
-              'avatarUrl': 'https://example.com/avatar2.png'
-            },
-            {
-              'name': 'Student 3',
-              'avatarUrl': 'https://example.com/avatar3.png'
-            },
-            // Add more students here
-          ],
-        ),
-      ),
-    );
-  }
+  // void _navigateToStudentsPage(BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => const GroupMembers(
+  //         students: [
+  //           {
+  //             'name': 'Student 1',
+  //             'avatarUrl': 'https://example.com/avatar1.png'
+  //           },
+  //           {
+  //             'name': 'Student 2',
+  //             'avatarUrl': 'https://example.com/avatar2.png'
+  //           },
+  //           {
+  //             'name': 'Student 3',
+  //             'avatarUrl': 'https://example.com/avatar3.png'
+  //           },
+  //           // Add more students here
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +46,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: GestureDetector(
-          onTap: () {
-            if (!isPerson!) {
-              _navigateToStudentsPage(context);
-            }
-          },
+          // onTap: () {
+          //   if (!isPerson!) {
+          //     _navigateToStudentsPage(context);
+          //   }
+          // },
           child: Row(
             children: [
               if (avatarUrl != null)

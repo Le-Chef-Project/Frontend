@@ -116,7 +116,7 @@ class EndMeeting extends StatelessWidget {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
+                  MaterialPageRoute(builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -127,7 +127,7 @@ class EndMeeting extends StatelessWidget {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },

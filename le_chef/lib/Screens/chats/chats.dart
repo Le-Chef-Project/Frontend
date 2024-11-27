@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Models/direct_chat.dart';
-import 'package:le_chef/Models/group_chat.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Screens/admin/payment_request.dart';
-import 'package:le_chef/Screens/admin/selectStudent.dart';
 import 'package:le_chef/Screens/chats/chatPage.dart';
 import 'package:le_chef/Screens/members_screen.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
@@ -51,7 +48,7 @@ class _ChatsState extends State<Chats> {
 
   Future<void> getChats() async {
     chats = await ApisMethods.getAllChats();
-    print('Chat infooooooooo ${chats}');
+    print('Chat infooooooooo $chats');
     setState(() {
       _isLoading_chat = false;
     });
@@ -332,24 +329,24 @@ class _ChatsState extends State<Chats> {
                   if (role == 'admin') {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => THome()),
+                      MaterialPageRoute(builder: (context) => const THome()),
                     );
                   } else {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Home()),
+                      MaterialPageRoute(builder: (context) => const Home()),
                     );
                   }
                   break;
                 case 1:
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Notifications()),
+                    MaterialPageRoute(builder: (context) => const Notifications()),
                   );
                   break;
                 case 3:
                   if (role == 'admin') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                   }
               }
             },

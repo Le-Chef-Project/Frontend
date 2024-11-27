@@ -32,6 +32,8 @@ class _AllStudentsState extends State<AllStudents> {
   double boxSize = 30.0;
   List<Student> searched_Student = [];
   final TextEditingController searchController = TextEditingController();
+  String? profilePic = sharedPreferences?.getString('img');
+
 
   Future<void> getStd() async {
     _Std = await ApisMethods.AllStudents();
@@ -153,7 +155,7 @@ class _AllStudentsState extends State<AllStudents> {
                                   child: ListTile(
                                     leading: CircleAvatar(
                                       radius: 25,
-                                      backgroundImage: AssetImage(StdImg),
+                                      backgroundImage: currentStudents[index].imageUrl != null ? NetworkImage(currentStudents[index].imageUrl!) : AssetImage('assets/default_image_profile.jpg') as ImageProvider ,
                                     ),
                                     title: Text(
                                       searched_Student[index].firstname,
@@ -224,7 +226,7 @@ class _AllStudentsState extends State<AllStudents> {
                                   child: ListTile(
                                     leading: CircleAvatar(
                                       radius: 25,
-                                      backgroundImage: AssetImage(StdImg),
+                                      backgroundImage:  currentStudents[index].imageUrl != null ? NetworkImage(currentStudents[index].imageUrl!) : AssetImage('assets/default_image_profile.jpg') as ImageProvider ,
                                     ),
                                     title: Text(
                                       currentStudents[index].firstname,
@@ -346,7 +348,7 @@ class _AllStudentsState extends State<AllStudents> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
+                  MaterialPageRoute(builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -357,7 +359,7 @@ class _AllStudentsState extends State<AllStudents> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },

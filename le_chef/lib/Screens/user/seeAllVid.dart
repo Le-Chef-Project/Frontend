@@ -157,7 +157,7 @@ class _AllVidState extends State<AllVid> {
                     duration: const Duration(seconds: 1));
                 break;
               case 1:
-                Get.to(() => Notifications(),
+                Get.to(() => const Notifications(),
                     transition: Transition.fade,
                     duration: const Duration(seconds: 1));
                 break;
@@ -168,7 +168,7 @@ class _AllVidState extends State<AllVid> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },

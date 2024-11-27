@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PaymentCreditCardScreen extends StatefulWidget {
   final String contentId;
-  PaymentCreditCardScreen({super.key, required this.contentId});
+  const PaymentCreditCardScreen({super.key, required this.contentId});
   @override
   _PaymentCreditCardScreenState createState() =>
       _PaymentCreditCardScreenState();
@@ -56,8 +56,8 @@ class _PaymentCreditCardScreenState extends State<PaymentCreditCardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Redirecting to Payment')),
-      body: Center(
+      appBar: AppBar(title: const Text('Redirecting to Payment')),
+      body: const Center(
         child: CircularProgressIndicator(), 
       ),
     );

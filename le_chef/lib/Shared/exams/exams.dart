@@ -57,7 +57,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
           .where((quiz) =>
               quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
           .toList();
-      print('Filtered exams for unit $selectedUnit: ${_filteredExams.length}');
+      print('Filtered meeting for unit $selectedUnit: ${_filteredExams.length}');
 
       for (var exam in _filteredExams) {
         print(
@@ -74,9 +74,9 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
         _isLoading = false;
         _filterExams();
       });
-      print('Total exams loaded: ${_exams.length}');
+      print('Total meeting loaded: ${_exams.length}');
     } catch (e) {
-      print('Error loading exams: $e');
+      print('Error loading meeting: $e');
       setState(() {
         _isLoading = false;
       });
@@ -170,7 +170,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
               child: _filteredExams.isEmpty
                   ? Center(
                       child: Text(
-                        'No exams available for Unit $selectedUnit',
+                        'No meeting available for Unit $selectedUnit',
                         style: GoogleFonts.ibmPlexMono(
                           fontSize: 16,
                           color: Colors.grey[600],
@@ -209,19 +209,19 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                 if (role == 'admin') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => THome()),
+                    MaterialPageRoute(builder: (context) => const THome()),
                   );
                 } else {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                    MaterialPageRoute(builder: (context) => const Home()),
                   );
                 }
                 break;
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
+                  MaterialPageRoute(builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -232,7 +232,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },

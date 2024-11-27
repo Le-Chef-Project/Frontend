@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Widgets/exams/join_meeting.dart';
-import 'package:le_chef/Widgets/exams/meeting_not_started.dart';
 import 'package:le_chef/main.dart';
 import '../../../Shared/customBottomNavBar.dart';
+import '../../Api/apimethods.dart';
+import '../../Models/session.dart';
 import '../../Screens/admin/THome.dart';
 import '../../Screens/admin/payment_request.dart';
 import '../../Screens/chats/chats.dart';
 import '../../Screens/notification.dart';
 import '../../Screens/user/Home.dart';
+import '../../Widgets/meeting/join_meeting.dart';
+import '../../Widgets/meeting/meeting_not_started.dart';
 
 class OnlineSessionScreen extends StatefulWidget {
   const OnlineSessionScreen({super.key});
@@ -19,8 +21,17 @@ class OnlineSessionScreen extends StatefulWidget {
 
 class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
   final String? role = sharedPreferences!.getString('role');
+  List<Session> sessions = [];
 
-  final bool _isStartedMeeting = true;
+  Future<List<Session>> getSessions() async {
+    try{
+      sessions = await ApisMethods.getSessions();
+      print('Session Returnedddd: $sessions');
+      return sessions;
+    }catch(e){
+      throw('Error creating session: $e');
+    }
+  }
 
   bool level1 = true;
 
@@ -57,19 +68,19 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
               if (role == 'admin') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => THome()),
+                  MaterialPageRoute(builder: (context) => const THome()),
                 );
               } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
               }
               break;
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Notifications()),
+                MaterialPageRoute(builder: (context) => const Notifications()),
               );
               break;
             case 2:
@@ -80,7 +91,7 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
               break;
             case 3:
               if (role == 'admin') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
               }
           }
         },
@@ -125,14 +136,11 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
                                   const WidgetStatePropertyAll(Colors.white),
                               onChanged: (bool value) {
                                 if (value) {
-                                  // Only handle activation, not deactivation
                                   setState(() {
-                                    // First, turn all levels off
                                     level1 = false;
                                     level2 = false;
                                     level3 = false;
 
-                                    // Then activate only the selected level
                                     if (index == 0) {
                                       level1 = true;
                                     } else if (index == 1)
@@ -160,12 +168,16 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
           const SizedBox(
             height: 20,
           ),
-          joinMeeting(context, role),
+          joinMeeting(context, role, level1
+              ? 1
+              : level2
+              ? 2
+              : 3,),
         ],
       );
     } else {
-      if (_isStartedMeeting) {
-        return joinMeeting(context, role);
+      if (sessions.isNotEmpty) {
+        return joinMeeting(context, role, null);
       } else {
         return meetingNotStarted(context);
       }

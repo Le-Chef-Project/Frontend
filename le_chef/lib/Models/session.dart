@@ -5,6 +5,7 @@ class Session {
   final String startTime;
   final String endTime;
   final String hostUrl;
+  final String educationLevel;
   final String createdAt;
 
   Session(
@@ -14,9 +15,25 @@ class Session {
       required this.startTime,
       required this.endTime,
       required this.hostUrl,
-        required this.createdAt});
-  
-  factory Session.fromJon(dynamic json){
-    return Session(title: json['title'], desc: json['description'], date: json['date'], startTime: json['startTime'], endTime: json['endTime'], hostUrl: json['hostUrl'], createdAt: json['createdAt']);
+      required this.educationLevel,
+      required this.createdAt});
+
+  factory Session.fromJson(Map<String, dynamic> json) {
+    return Session(
+        title: json['title'],
+        desc: json['description'],
+        date: json['date'],
+        startTime: json['startTime'],
+        endTime: json['endTime'],
+        hostUrl: json['hostUrl'],
+        createdAt: json['createdAt'],
+        educationLevel: json['educationLevel']);
   }
+
+  static List<Session> itemsFromSnapshot(List snapshot) {
+    return snapshot.map((data) {
+      return Session.fromJson(data);
+    }).toList();
+  }
+
 }

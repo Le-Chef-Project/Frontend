@@ -339,13 +339,13 @@ class _MeetingPageState extends State<MeetingPage> {
         children: [
           ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(const Color(0xFFEA5B5B)),
-              shape: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(const Color(0xFFEA5B5B)),
+              shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
-              padding: MaterialStateProperty.all(
+              padding: WidgetStateProperty.all(
                 const EdgeInsets.symmetric(horizontal: 7, vertical: 12),
               ),
             ),
@@ -375,9 +375,9 @@ class _MeetingPageState extends State<MeetingPage> {
           const Spacer(),
           ElevatedButton(
             style: ButtonStyle(
-              elevation: MaterialStateProperty.all(0),
-              backgroundColor: MaterialStateProperty.all(const Color(0xFFFBFAFA)),
-              shape: MaterialStateProperty.all(const CircleBorder()),
+              elevation: WidgetStateProperty.all(0),
+              backgroundColor: WidgetStateProperty.all(const Color(0xFFFBFAFA)),
+              shape: WidgetStateProperty.all(const CircleBorder()),
             ),
             onPressed: _toggleCamera,
             child: Icon(
@@ -388,9 +388,9 @@ class _MeetingPageState extends State<MeetingPage> {
           ),
           ElevatedButton(
             style: ButtonStyle(
-              elevation: MaterialStateProperty.all(0),
-              backgroundColor: MaterialStateProperty.all(const Color(0xFFFBFAFA)),
-              shape: MaterialStateProperty.all(const CircleBorder()),
+              elevation: WidgetStateProperty.all(0),
+              backgroundColor: WidgetStateProperty.all(const Color(0xFFFBFAFA)),
+              shape: WidgetStateProperty.all(const CircleBorder()),
             ),
             onPressed: _toggleMic,
             child: Icon(

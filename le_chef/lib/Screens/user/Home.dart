@@ -372,7 +372,7 @@ class _HomeState extends State<Home> {
           onItemTapped: (index) {
             switch (index) {
               case 1:
-                Get.to(() => Notifications(),
+                Get.to(() => const Notifications(),
                     transition: Transition.fade,
                     duration: const Duration(seconds: 1));
 
@@ -385,7 +385,7 @@ class _HomeState extends State<Home> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },

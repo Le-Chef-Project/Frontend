@@ -7,6 +7,8 @@ class Student {
   String password;
   int educationLevel;
   final String ID;
+  String? imageUrl;
+  String? imagePublicId;
 
   Student({
     required this.username,
@@ -17,6 +19,8 @@ class Student {
     required this.password,
     required this.educationLevel,
     required this.ID,
+    this.imageUrl,
+    this.imagePublicId,
   });
 
   factory Student.fromjson(dynamic json) {
@@ -29,6 +33,8 @@ class Student {
       phone: json['phone'] as String,
       educationLevel: json['educationLevel'] ?? '',
       password: json['password'] ?? '',
+      imageUrl: json['image']?['url'] ?? '',
+      imagePublicId: json['image']?['public_id'] ?? '',
     );
   }
 

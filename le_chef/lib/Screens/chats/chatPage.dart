@@ -3,19 +3,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Models/direct_chat.dart' as direct_chat;
 import 'package:le_chef/Models/group.dart';
 import 'package:le_chef/Models/group_chat.dart';
 import 'package:mime/mime.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -60,6 +57,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _showFloatingButton = true;
   late DocumentMessageBubble _documentMessageBubble;
 
+  @override
   void initState() {
     super.initState();
     _fetchMessages();
@@ -618,7 +616,7 @@ class _ChatPageState extends State<ChatPage> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
+                  MaterialPageRoute(builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -629,7 +627,7 @@ class _ChatPageState extends State<ChatPage> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },

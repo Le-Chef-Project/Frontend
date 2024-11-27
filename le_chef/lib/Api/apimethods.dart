@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:le_chef/Models/Admin.dart';
 
+import '../Models/session.dart' as session;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,6 +51,7 @@ class ApisMethods {
         SharedPrefes.saveUserName(json['username']);
         SharedPrefes.saveUserId(json['_id']);
         SharedPrefes.SaveRole(json['role']);
+        SharedPrefes.saveImg(json['image']['url']);
         if (json['role'] == "admin") {
           Get.off(const THome(),
               transition: Transition.fade,
@@ -564,7 +567,7 @@ class ApisMethods {
     return quizModel.Quiz.itemsFromSnapshot(temp);
   }
 
-  //13-get all units used in exams
+  //13-get all units used in meeting
   static Future<List> getExamUnits() async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
@@ -1482,31 +1485,124 @@ class ApisMethods {
   }
 
   //34- edit profile
-  static Future<void> editProfile(
-      String userId,
-      String username,
-      String email,
-      String phone,
-      int educationLevel,
-      ) async {
-    final Map<String, dynamic> body = {
-      'username': username,
-      'email': email,
-      'phone': phone,
-      'educationLevel': educationLevel,
-    };
-
-    var url = Uri.parse(
+  static Future<void> editProfile({
+    String? userId,
+    String? username,
+    String? email,
+    String? phone,
+    String? password,
+    int? educationLevel,
+    File? imageFile,
+  }) async {
+    final url = Uri.parse(
         '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.userManage.editProfile}$userId');
+    print('Request URL: $url');
 
-    http.Response response = await http.put(url,
-        headers: {'Content-Type': 'application/json', 'token': token!},
-        body: jsonEncode(body));
+    var request = http.MultipartRequest('PUT', url)
+      ..headers['token'] = token!;
+
+    if (username != null) request.fields['username'] = username;
+    if (email != null) request.fields['email'] = email;
+    if (phone != null) request.fields['phone'] = phone;
+    if (password != null) request.fields['password'] = password;
+    if (educationLevel != null) {
+      request.fields['educationLevel'] = educationLevel.toString();
+    }
+
+    if (imageFile != null) {
+      var stream = http.ByteStream(imageFile.openRead());
+      var length = await imageFile.length();
+      var multipartFile = http.MultipartFile(
+        'image',
+        stream,
+        length,
+        filename: imageFile.path.split('/').last,
+      );
+      request.files.add(multipartFile);
+    }
+
+    print('Request Fields: ${request.fields}');
+    print('Request Files: ${request.files.map((file) => file.filename).toList()}');
+
+    try {
+      var response = await request.send();
+      var responseBody = await http.Response.fromStream(response);
+
+      if (response.statusCode == 200) {
+        print('Profile updated successfully.');
+        print('Response: ${jsonDecode(responseBody.body)['message']}');
+      } else {
+        print('Error: ${response.statusCode}');
+        print('Raw Response: ${responseBody.body}');
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+    }
+  }
+
+  //35-create session
+static Future<void> createSession(
+    int level
+) async{
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.createSession);
+
+    http.Response response = await http.post(
+      url, headers: {'Content-Type': 'application/json', 'token': token!}, body: jsonEncode({
+      'educationLevel' : level
+    })
+    );
 
     if (response.statusCode == 200) {
       print('${jsonDecode(response.body)['message']}');
     } else {
       print('${jsonDecode(response.body)['message']}');
     }
-  }
+}
+
+  //36- get sessions
+  static Future<List<session.Session>> getSessions() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.getSessions);
+
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+
+      List temp = [];
+      print('apiiii Sessions $data');
+
+      for (var i in data) {
+        temp.add(i);
+      }
+
+      return session.Session.itemsFromSnapshot(temp);
+    } else {
+      throw Exception(
+          'Failed to fetch messages. HTTP ${response.statusCode}\n ${response.body}');
+    }
+    }
+
+    //37-get admin
+  static Future<Admin> getAdmin() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.getAdmin);
+
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+
+      print('apiiii Admin ${data['admin']}');
+
+      return Admin.fromJson(data['admin']);
+    } else {
+      throw Exception(
+          'Failed to fetch messages. HTTP ${response.statusCode}\n ${response.body}');
+    }
+    }
 }

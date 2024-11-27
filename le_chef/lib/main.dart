@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
-import 'package:le_chef/Screens/user/payment_way.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +16,7 @@ Future<void> main() async {
   sharedPreferences = await SharedPreferences.getInstance();
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');
+
   runApp(const MyApp());
 }
 

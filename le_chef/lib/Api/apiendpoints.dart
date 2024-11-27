@@ -6,6 +6,7 @@ class ApiEndPoints {
   static Content content = Content();
   static Chat chat = Chat();
   static Payment payment = Payment();
+  static Session session = Session();
 }
 
 class AuthEndPoint {
@@ -17,6 +18,7 @@ class UserManage {
   final String GetStudents = "userManage/ShowAllStudents";
   final String DelStudent = "userManage/DeleteStudent/";
   final String editProfile = 'userManage/editProfile/';
+  final String getAdmin = 'userManage/AdminProfile';
 }
 
 class Quiz {
@@ -59,4 +61,9 @@ class Payment {
   final requests = 'Pay/Requests/';
   final accept = '/accept';
   final reject = '/reject';
+}
+
+class Session{
+  final createSession = 'Agora/CreateSession';
+  final getSessions = 'Agora/GetSession';
 }

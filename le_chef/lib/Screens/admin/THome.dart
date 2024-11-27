@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/Admin.dart';
 import 'package:le_chef/Models/Notes.dart';
 import 'package:le_chef/Models/PDF.dart';
 import 'package:le_chef/Screens/admin/all_students.dart';
@@ -41,6 +42,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isObscure = true;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  late Admin admin;
 
   bool _isLoading_Std = true;
   List<Student>? _Std;
@@ -66,6 +68,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     getExams();
     getNotes();
     getPDFs();
+    getAdmin();
   }
 
   Future<void> getExams() async {
@@ -90,6 +93,15 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     setState(() {
       _isLoading_pdfs = false;
     });
+  }
+
+  Future<void> getAdmin() async {
+    try {
+      admin = await ApisMethods.getAdmin();
+      print('Got Admin Successfully: ${admin.username}');
+    } catch(e) {
+      print('Error fetching admin: $e');
+    }
   }
 
   @override
@@ -282,11 +294,11 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
           leading: GestureDetector(
-              // onTap: () => Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) =>
-              //             ProfilePage(isStudent: false, student: ))),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ProfilePage(isStudent: false, admin: admin))),
               child: Image.asset('assets/Rectangle 4.png')),
           actions: [
             GestureDetector(
@@ -480,7 +492,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Notifications()),
+                  MaterialPageRoute(builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -494,7 +506,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PaymentRequest()));
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },

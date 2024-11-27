@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,7 +33,7 @@ class _PaymentWayState extends State<PaymentWay> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        File? _selectedImage; // Local variable for selected image
+        File? selectedImage; // Local variable for selected image
 
         return StatefulBuilder(
           // To update UI inside AlertDialog
@@ -43,11 +42,11 @@ class _PaymentWayState extends State<PaymentWay> {
               backgroundColor: Colors.white,
               title: Image.asset('assets/E_wallet.jpg'),
               content: Center(
-                child: _selectedImage != null
+                child: selectedImage != null
                     ? Center(
                         child: Container(
                         child: Image.file(
-                          _selectedImage!,
+                          selectedImage!,
                           fit: BoxFit.cover,
                         ),
                       ))
@@ -56,7 +55,7 @@ class _PaymentWayState extends State<PaymentWay> {
                           // Pick image asynchronously
                           final image = await pickImage();
                           setState(() {
-                            _selectedImage = image;
+                            selectedImage = image;
                           });
                         },
                         icon: const Icon(
@@ -67,7 +66,7 @@ class _PaymentWayState extends State<PaymentWay> {
                       ),
               ),
               actions: [
-                if (_selectedImage != null)
+                if (selectedImage != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -87,14 +86,14 @@ class _PaymentWayState extends State<PaymentWay> {
                         width: 140.50,
                         height: 48,
                         child: ElevatedButton(
-                          onPressed: _selectedImage == null
+                          onPressed: selectedImage == null
                               ? null // Disable button if no image is selected
                               : () async {
                                   // Call API to initiate payment
                                   await ApisMethods.initiateEWalletPayment(
                                     contentId: widget
                                         .contentId, // Replace with actual content ID
-                                    paymentImage: _selectedImage!,
+                                    paymentImage: selectedImage!,
                                   );
                                   Future.delayed(const Duration(seconds: 3),
                                       () {
@@ -175,24 +174,24 @@ class _PaymentWayState extends State<PaymentWay> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: 'Payment'),
+      appBar: const CustomAppBar(title: 'Payment'),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 21,
             ),
             Text(
               'Choose Payment method',
               style: GoogleFonts.ibmPlexMono(
-                color: Color(0xFF164863),
+                color: const Color(0xFF164863),
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 21,
             ),
             GestureDetector(
@@ -206,21 +205,21 @@ class _PaymentWayState extends State<PaymentWay> {
               },
               child: ListTile(
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Color(0xFFEAECF0)),
+                  side: const BorderSide(width: 1, color: Color(0xFFEAECF0)),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 leading: Image.asset('assets/visa.png'),
                 title: Text(
                   'Visa or credit card',
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF164863),
+                    color: const Color(0xFF164863),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             GestureDetector(
@@ -229,21 +228,21 @@ class _PaymentWayState extends State<PaymentWay> {
               },
               child: ListTile(
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Color(0xFFEAECF0)),
+                  side: const BorderSide(width: 1, color: Color(0xFFEAECF0)),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 leading: Image.asset('assets/wallet.png'),
                 title: Text(
                   'E-wallet',
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF164863),
+                    color: const Color(0xFF164863),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 21,
             ),
             GestureDetector(
@@ -252,14 +251,14 @@ class _PaymentWayState extends State<PaymentWay> {
               },
               child: ListTile(
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Color(0xFFEAECF0)),
+                  side: const BorderSide(width: 1, color: Color(0xFFEAECF0)),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 leading: Image.asset('assets/cash.png'),
                 title: Text(
                   'Cash',
                   style: GoogleFonts.ibmPlexMono(
-                    color: Color(0xFF164863),
+                    color: const Color(0xFF164863),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),

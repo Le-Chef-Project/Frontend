@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/session.dart';
 
 import '../../Screens/user/Home.dart';
 import '../../Shared/meeting/meeting_screen.dart';
 
-Widget joinMeeting(BuildContext context, String? role) {
+ Future<void> createSession(educationalLevel) async {
+   try{
+   await ApisMethods.createSession(educationalLevel);
+   print('Session Created');
+   }catch(e){
+     print('Error creating session: $e');
+   }
+}
+
+ Future<List<Session>> getSessions() async {
+   try{
+   var session = await ApisMethods.getSessions();
+   print('Session Returnedddd: $session');
+   return session;
+   }catch(e){
+     throw('Error creating session: $e');
+   }
+}
+
+Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
     child: Column(
@@ -39,7 +60,7 @@ Widget joinMeeting(BuildContext context, String? role) {
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        //Todo call the link
+                        createSession(educationalLevel);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
                       },
                       style: ElevatedButton.styleFrom(
@@ -67,6 +88,7 @@ Widget joinMeeting(BuildContext context, String? role) {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        getSessions();
                         Navigator.push(
                             context,
                             MaterialPageRoute(

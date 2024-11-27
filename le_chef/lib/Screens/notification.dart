@@ -13,7 +13,7 @@ class Notifications extends StatefulWidget {
   static const IconData pencil = IconData(0xf37e,
       fontFamily: "CupertinoIcons", fontPackage: 'cupertino_icons');
 
-  Notifications({super.key});
+  const Notifications({super.key});
   @override
   State<Notifications> createState() => _NotificationsState();
 }
@@ -97,12 +97,12 @@ class _NotificationsState extends State<Notifications> {
                 if (role == 'admin') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => THome()),
+                    MaterialPageRoute(builder: (context) => const THome()),
                   );
                 } else {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                    MaterialPageRoute(builder: (context) => const Home()),
                   );
                 }
                 break;
@@ -114,7 +114,7 @@ class _NotificationsState extends State<Notifications> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentRequest()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
                 }
             }
           },
