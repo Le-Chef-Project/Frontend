@@ -70,8 +70,8 @@ class _MeetingPageState extends State<MeetingPage> {
       'audio': true,
       'video': _isCameraOn
           ? {
-        'facingMode': _isFrontCamera ? 'user' : 'environment',
-      }
+              'facingMode': _isFrontCamera ? 'user' : 'environment',
+            }
           : false,
     };
 
@@ -178,8 +178,8 @@ class _MeetingPageState extends State<MeetingPage> {
               children: [
                 CircleAvatar(
                   radius: 45,
-                  backgroundImage: Image.asset(
-                    'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+                  backgroundImage: Image.network(
+                    'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
                   ).image,
                 ),
                 const SizedBox(height: 21),
@@ -200,9 +200,9 @@ class _MeetingPageState extends State<MeetingPage> {
             child: _isMicOn
                 ? const Icon(Icons.mic, color: Color(0xFF164863))
                 : const Icon(
-              Icons.mic_off,
-              color: Color(0xFF164863),
-            ),
+                    Icons.mic_off,
+                    color: Color(0xFF164863),
+                  ),
           ),
         ],
       ),
@@ -225,9 +225,9 @@ class _MeetingPageState extends State<MeetingPage> {
               children: [
                 CircleAvatar(
                   radius: 30, // Smaller radius for thumbnails
-                  backgroundImage: Image.asset(
-                    'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-                  ).image,
+                  backgroundImage: Image.network(
+                          'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg')
+                      .image,
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -269,31 +269,31 @@ class _MeetingPageState extends State<MeetingPage> {
             ),
             child: _isCameraOn && _localRenderer.srcObject != null
                 ? ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Stack(
-                children: [
-                  RTCVideoView(_localRenderer, mirror: _isFrontCamera),
-                  if (_isCameraOn)
-                    Positioned(
-                      bottom: 16,
-                      left: 16,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white.withOpacity(0.7),
-                        radius: 20,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: const Icon(Icons.flip_camera_ios),
-                          color: const Color(0xFF164863),
-                          onPressed: _switchCamera,
-                        ),
-                      ),
+                    borderRadius: BorderRadius.circular(15),
+                    child: Stack(
+                      children: [
+                        RTCVideoView(_localRenderer, mirror: _isFrontCamera),
+                        if (_isCameraOn)
+                          Positioned(
+                            bottom: 16,
+                            left: 16,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white.withOpacity(0.7),
+                              radius: 20,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: const Icon(Icons.flip_camera_ios),
+                                color: const Color(0xFF164863),
+                                onPressed: _switchCamera,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                ],
-              ),
-            )
+                  )
                 : const Center(
-              child: Text('Camera is off'),
-            ),
+                    child: Text('Camera is off'),
+                  ),
           ),
         ),
         // Horizontal list of participants

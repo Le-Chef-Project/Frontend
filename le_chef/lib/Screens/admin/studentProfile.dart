@@ -81,13 +81,12 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       if (widget.isStudent) {
         await ApisMethods.editProfile(
-          userId: widget.student!.ID,
-          username: _usernameController.text,
-          email: _emailController.text,
-          phone: _phoneController.text,
-          educationLevel: int.parse(_educationLevelController.text),
-          imageFile: img
-        );
+            userId: widget.student!.ID,
+            username: _usernameController.text,
+            email: _emailController.text,
+            phone: _phoneController.text,
+            educationLevel: int.parse(_educationLevelController.text),
+            imageFile: img);
 
         setState(() {
           widget.student?.username = _usernameController.text;
@@ -98,12 +97,11 @@ class _ProfilePageState extends State<ProfilePage> {
         });
       } else {
         await ApisMethods.editProfile(
-          userId: widget.admin!.id,
-          username: _usernameController.text,
-          email: _emailController.text,
-          phone: _phoneController.text,
-          imageFile: img
-        );
+            userId: widget.admin!.id,
+            username: _usernameController.text,
+            email: _emailController.text,
+            phone: _phoneController.text,
+            imageFile: img);
 
         setState(() {
           widget.admin?.username = _usernameController.text;
@@ -164,7 +162,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               GestureDetector(
                 onTap: () async {
-                  final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+                  final pickedImage = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
 
                   if (pickedImage != null) {
                     setState(() {
@@ -174,10 +173,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
                 child: CircleAvatar(
                   radius: 40,
-                  backgroundImage:
-                  widget.isStudent && widget.student!.imageUrl != null
+                  backgroundImage: widget.isStudent
                       ? NetworkImage(widget.student!.imageUrl!)
-                      :  widget.admin!.imageUrl != null ? NetworkImage(widget.admin!.imageUrl!) : const AssetImage('assets/default_image_profile.jpg') as ImageProvider,
+                      : NetworkImage(widget.admin!.imageUrl!),
                 ),
               ),
               const SizedBox(height: 8),

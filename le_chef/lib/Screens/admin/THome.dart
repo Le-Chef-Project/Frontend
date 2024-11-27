@@ -42,7 +42,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isObscure = true;
   late AnimationController _animationController;
   late Animation<double> _animation;
-  late Admin admin;
+  Admin? admin;
+  bool _isLoading_admin = true;
 
   bool _isLoading_Std = true;
   List<Student>? _Std;
@@ -98,8 +99,11 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   Future<void> getAdmin() async {
     try {
       admin = await ApisMethods.getAdmin();
-      print('Got Admin Successfully: ${admin.username}');
-    } catch(e) {
+      print('Got Admin Successfully: ${admin!.username}');
+      setState(() {
+        _isLoading_admin = false;
+      });
+    } catch (e) {
       print('Error fetching admin: $e');
     }
   }
@@ -290,35 +294,42 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          leading: GestureDetector(
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage(isStudent: false, admin: admin))),
-              child: Image.asset('assets/Rectangle 4.png')),
-          actions: [
-            GestureDetector(
-              onTap: () {
-                sharedPreferences!.remove('token');
-                Get.to(const Login());
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 23),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'assets/logo.png',
-                    height: 50,
+        appBar: _isLoading_admin
+            ? null
+            : AppBar(
+                backgroundColor: Colors.white,
+                surfaceTintColor: Colors.white,
+                leading: GestureDetector(
+                    onTap: () {
+                      if (admin != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage(
+                                    isStudent: false, admin: admin!)));
+                      }
+                    },
+                    child:
+                        CircleAvatar(child: Image.network(admin!.imageUrl!))),
+                actions: [
+                  GestureDetector(
+                    onTap: () {
+                      sharedPreferences!.remove('token');
+                      Get.to(const Login());
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 23),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          'assets/logo.png',
+                          height: 50,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
         body: RefreshIndicator(
           onRefresh: onRefresh,
           backgroundColor: const Color(0xFF164863),
@@ -329,37 +340,40 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          color: const Color(0x00565656),
-                          child: Text(
-                            'Hany Azmy',
-                            style: GoogleFonts.ibmPlexMono(
-                              color: const Color(0xFF164863),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                              height: 0,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            'French Teacher',
-                            style: GoogleFonts.ibmPlexMono(
-                              color: const Color(0xFF427D9D),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              height: 0,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                      padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
+                      child: _isLoading_admin
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  color: const Color(0x00565656),
+                                  child: Text(
+                                    admin!.username,
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: const Color(0xFF164863),
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w600,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    'French Teacher',
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: const Color(0xFF427D9D),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      height: 0,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )),
                 ),
                 const SizedBox(height: 68),
                 _isLoading_Std
@@ -492,7 +506,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:

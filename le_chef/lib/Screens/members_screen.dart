@@ -24,7 +24,6 @@ class MembersScreen extends StatefulWidget {
 }
 
 class _MembersScreenState extends State<MembersScreen> {
-  final String userImg = 'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp';
   List<dynamic> members = [];
   String? logged_ID = sharedPreferences!.getString('Id');
 
@@ -42,6 +41,7 @@ class _MembersScreenState extends State<MembersScreen> {
   Future<void> fetchMembers() async {
     const token = 'your-auth-token'; // Replace with actual token logic
     final fetchedMembers = await ApisMethods.getGroupMembers(widget.groupId);
+    print(fetchedMembers);
     if (fetchedMembers != null) {
       setState(() {
         members = fetchedMembers
@@ -171,9 +171,10 @@ class _MembersScreenState extends State<MembersScreen> {
                     child: ListTile(
                       leading: const CircleAvatar(
                         radius: 25,
-                        backgroundImage: AssetImage(
-                          'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
-                        ),
+
+                        ///image lazm tt8er hana
+                        backgroundImage: NetworkImage(
+                            'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                       ),
                       title: Text(
                         logged_username!, // Dynamic name if you have data
@@ -202,9 +203,10 @@ class _MembersScreenState extends State<MembersScreen> {
                           child: ListTile(
                             leading: CircleAvatar(
                               radius: 25,
-                              backgroundImage: AssetImage(
-                                userImg,
-                              ),
+
+                              ///image lazm tt8er hana
+                              backgroundImage: NetworkImage(
+                                  'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                             ),
                             title: Text(
                               members[index]['username'],
@@ -291,11 +293,15 @@ class _MembersScreenState extends State<MembersScreen> {
               break;
             case 3:
               if (role == 'admin') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
               }
           }
         },
-        context: context, userRole: role!,
+        context: context,
+        userRole: role!,
       ),
     );
   }

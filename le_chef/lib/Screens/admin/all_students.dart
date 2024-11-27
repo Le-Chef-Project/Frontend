@@ -25,7 +25,6 @@ class AllStudents extends StatefulWidget {
 }
 
 class _AllStudentsState extends State<AllStudents> {
-  final String StdImg = 'assets/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp';
   int currentPage = 1;
   int studentsPerPage = 5;
   bool _isLoading_Std = true;
@@ -72,6 +71,12 @@ class _AllStudentsState extends State<AllStudents> {
     });
   }
 
+  void changePage(int page) {
+    setState(() {
+      currentPage = page;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -80,65 +85,43 @@ class _AllStudentsState extends State<AllStudents> {
         appBar: const CustomAppBar(title: 'All Students'),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              const SizedBox(height: 39),
-              totalStudent(
-                context,
-                'Total Students',
-                '${_Std?.length ?? 0}',
-                ontap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const AddExam())),
-              ),
-              const SizedBox(height: 43),
-              CustomSearchView(
-                clear: () {
-                  clear();
-                },
-                onChanged: (p0) {
-                  search(p0);
-                },
-                controller: searchController,
-                hintText: 'search by student name',
-                hintStyle: GoogleFonts.ibmPlexMono(
-                  color: const Color(0xFF888888),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 39),
+                totalStudent(
+                  context,
+                  'Total Students',
+                  '${_Std?.length ?? 0}',
+                  ontap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const AddExam())),
                 ),
-              ),
-              const SizedBox(height: 59),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Name',
-                      style: GoogleFonts.ibmPlexMono(
-                        color: const Color(0xFF164863),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'Action',
-                      style: GoogleFonts.ibmPlexMono(
-                        color: const Color(0xFF164863),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 43),
+                CustomSearchView(
+                  clear: () {
+                    clear();
+                  },
+                  onChanged: (p0) {
+                    search(p0);
+                  },
+                  controller: searchController,
+                  hintText: 'search by student name',
+                  hintStyle: GoogleFonts.ibmPlexMono(
+                    color: const Color(0xFF888888),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 32),
-              _isLoading_Std
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : searched_Student.isNotEmpty
-                      ? Expanded(
-                          child: ListView.builder(
+                const SizedBox(height: 59),
+                _isLoading_Std
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : searched_Student.isNotEmpty
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: searched_Student.length,
                             itemBuilder: (context, index) {
                               return Padding(
@@ -151,25 +134,16 @@ class _AllStudentsState extends State<AllStudents> {
                                       MaterialPageRoute(
                                           builder: (context) => ProfilePage(
                                                 isStudent: true,
-                                                student: currentStudents[index],
+                                                student:
+                                                    searched_Student[index],
                                               )),
                                     );
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: (currentStudents[index]
-                                                      .imageUrl !=
-                                                  null &&
-                                              currentStudents[index]
-                                                  .imageUrl!
-                                                  .isNotEmpty)
-                                          ? NetworkImage(
-                                              currentStudents[index].imageUrl!)
-                                          : AssetImage(
-                                                  'assets/default_image_profile.png')
-                                              as ImageProvider,
-                                    ),
+                                        radius: 25,
+                                        backgroundImage: NetworkImage(
+                                            searched_Student[index].imageUrl!)),
                                     title: Text(
                                       searched_Student[index].firstname,
                                       style: GoogleFonts.ibmPlexMono(
@@ -220,10 +194,10 @@ class _AllStudentsState extends State<AllStudents> {
                                 ),
                               );
                             },
-                          ),
-                        )
-                      : Expanded(
-                          child: ListView.builder(
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: currentStudents.length,
                             itemBuilder: (context, index) {
                               return Padding(
@@ -242,16 +216,9 @@ class _AllStudentsState extends State<AllStudents> {
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: currentStudents[index]
-                                                  .imageUrl !=
-                                              null
-                                          ? NetworkImage(
-                                              currentStudents[index].imageUrl!)
-                                          : AssetImage(
-                                                  'assets/default_image_profile.jpg')
-                                              as ImageProvider,
-                                    ),
+                                        radius: 25,
+                                        backgroundImage: NetworkImage(
+                                            currentStudents[index].imageUrl!)),
                                     title: Text(
                                       currentStudents[index].firstname,
                                       style: GoogleFonts.ibmPlexMono(
@@ -274,7 +241,7 @@ class _AllStudentsState extends State<AllStudents> {
                                             button1Action: () async {
                                               Navigator.pop(context);
                                               await ApisMethods.DelStudent(
-                                                  searched_Student[index].ID);
+                                                  currentStudents[index].ID);
                                               dialogWithButtons(
                                                   context: context,
                                                   icon: Image.asset(
@@ -303,112 +270,107 @@ class _AllStudentsState extends State<AllStudents> {
                               );
                             },
                           ),
-                        ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        'Showing ${currentStudents.length} of ${_Std?.length ?? 0}'),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.chevron_left),
-                          onPressed: currentPage > 1
-                              ? () => changePage(currentPage - 1)
-                              : null,
-                        ),
-                        for (int i = 1; i <= totalPages; i++)
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: GestureDetector(
-                              onTap: () => changePage(i),
-                              child: Container(
-                                width: boxSize,
-                                height: boxSize,
-                                decoration: ShapeDecoration(
-                                  color: currentPage == i
-                                      ? const Color(0xFF427D9D)
-                                      : const Color(0xFF888888),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '$i',
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 12),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          'Showing ${currentStudents.length} of ${_Std?.length ?? 0}'),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.chevron_left),
+                            onPressed: currentPage > 1
+                                ? () => changePage(currentPage - 1)
+                                : null,
+                          ),
+                          for (int i = 1; i <= totalPages; i++)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: GestureDetector(
+                                onTap: () => changePage(i),
+                                child: Container(
+                                  width: boxSize,
+                                  height: boxSize,
+                                  decoration: ShapeDecoration(
+                                    color: currentPage == i
+                                        ? const Color(0xFF427D9D)
+                                        : const Color(0xFFC2D8E3),
+                                    shape: const CircleBorder(),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      i.toString(),
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: currentPage == i
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_right),
+                            onPressed: currentPage < totalPages
+                                ? () => changePage(currentPage + 1)
+                                : null,
                           ),
-                        IconButton(
-                          icon: const Icon(Icons.chevron_right),
-                          onPressed: currentPage < totalPages
-                              ? () => changePage(currentPage + 1)
-                              : null,
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                if (role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const THome()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: CustomBottomNavBar(
+            onItemTapped: (index) {
+              switch (index) {
+                case 0:
+                  if (role == 'admin') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const THome()),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Home()),
+                    );
+                  }
+                  break;
+                case 1:
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          userRole: role!,
+                          builder: (context) => const Notifications()));
+                  break;
+                case 2:
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const THome()));
+                  break;
+                case 3:
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const Chats()));
+                  break;
+              }
+            },
+            context: context,
+            userRole: role!,
+          ),
         ),
       ),
     );
-  }
-
-  void changePage(int page) {
-    setState(() {
-      currentPage = page;
-    });
   }
 }

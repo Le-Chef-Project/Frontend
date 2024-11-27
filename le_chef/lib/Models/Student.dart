@@ -33,7 +33,8 @@ class Student {
       phone: json['phone'] as String,
       educationLevel: json['educationLevel'] ?? '',
       password: json['password'] ?? '',
-      imageUrl: json['image']?['url'] ?? '',
+      imageUrl: json['image']?['url'] ??
+          'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
       imagePublicId: json['image']?['public_id'] ?? '',
     );
   }

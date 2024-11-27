@@ -110,7 +110,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                   children: [
                     const CircleAvatar(
                       backgroundImage:
-                      AssetImage('assets/default_image_profile.jpg'),
+                      NetworkImage(          'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
