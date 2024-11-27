@@ -15,6 +15,7 @@ import '../user/Home.dart';
 import '../chats/chats.dart';
 import '../notification.dart';
 import 'AddExam.dart';
+import 'THome.dart';
 
 class AllStudents extends StatefulWidget {
   const AllStudents({super.key});
@@ -33,7 +34,6 @@ class _AllStudentsState extends State<AllStudents> {
   List<Student> searched_Student = [];
   final TextEditingController searchController = TextEditingController();
   String? profilePic = sharedPreferences?.getString('img');
-
 
   Future<void> getStd() async {
     _Std = await ApisMethods.AllStudents();
@@ -149,13 +149,26 @@ class _AllStudentsState extends State<AllStudents> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfilePage(isStudent: true, student: currentStudents[index],)),
+                                          builder: (context) => ProfilePage(
+                                                isStudent: true,
+                                                student: currentStudents[index],
+                                              )),
                                     );
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(
                                       radius: 25,
-                                      backgroundImage: currentStudents[index].imageUrl != null ? NetworkImage(currentStudents[index].imageUrl!) : AssetImage('assets/default_image_profile.jpg') as ImageProvider ,
+                                      backgroundImage: (currentStudents[index]
+                                                      .imageUrl !=
+                                                  null &&
+                                              currentStudents[index]
+                                                  .imageUrl!
+                                                  .isNotEmpty)
+                                          ? NetworkImage(
+                                              currentStudents[index].imageUrl!)
+                                          : AssetImage(
+                                                  'assets/default_image_profile.png')
+                                              as ImageProvider,
                                     ),
                                     title: Text(
                                       searched_Student[index].firstname,
@@ -187,7 +200,8 @@ class _AllStudentsState extends State<AllStudents> {
                                                   title:
                                                       'Student is removed successfully !');
                                               Future.delayed(
-                                                  const Duration(seconds: 2), () {
+                                                  const Duration(seconds: 2),
+                                                  () {
                                                 Navigator.pop(context);
                                               });
                                             },
@@ -220,13 +234,23 @@ class _AllStudentsState extends State<AllStudents> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfilePage(isStudent: true, student: currentStudents[index],)),
+                                          builder: (context) => ProfilePage(
+                                                isStudent: true,
+                                                student: currentStudents[index],
+                                              )),
                                     );
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(
                                       radius: 25,
-                                      backgroundImage:  currentStudents[index].imageUrl != null ? NetworkImage(currentStudents[index].imageUrl!) : AssetImage('assets/default_image_profile.jpg') as ImageProvider ,
+                                      backgroundImage: currentStudents[index]
+                                                  .imageUrl !=
+                                              null
+                                          ? NetworkImage(
+                                              currentStudents[index].imageUrl!)
+                                          : AssetImage(
+                                                  'assets/default_image_profile.jpg')
+                                              as ImageProvider,
                                     ),
                                     title: Text(
                                       currentStudents[index].firstname,
@@ -258,7 +282,8 @@ class _AllStudentsState extends State<AllStudents> {
                                                   title:
                                                       'Student is removed successfully !');
                                               Future.delayed(
-                                                  const Duration(seconds: 2), () {
+                                                  const Duration(seconds: 2),
+                                                  () {
                                                 Navigator.pop(context);
                                               });
                                             },
@@ -340,15 +365,23 @@ class _AllStudentsState extends State<AllStudents> {
           onItemTapped: (index) {
             switch (index) {
               case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                  );
+                }
                 break;
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -359,11 +392,15 @@ class _AllStudentsState extends State<AllStudents> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },
-          context: context, userRole: role!,
+          context: context,
+          userRole: role!,
         ),
       ),
     );
