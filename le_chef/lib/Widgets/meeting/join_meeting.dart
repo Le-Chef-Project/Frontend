@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Models/session.dart';
 
 import '../../Screens/user/Home.dart';
@@ -23,6 +24,15 @@ import '../../Shared/meeting/meeting_screen.dart';
    }catch(e){
      throw('Error creating session: $e');
    }
+}
+
+Future<List<Student>> getStudents(int educationalLevel) async {
+  List<Student> allStudents = await ApisMethods.AllStudents();
+
+  List<Student> filteredStudents = allStudents.where((student) {
+    return student.educationLevel == educationalLevel;
+  }).toList();
+  return filteredStudents;
 }
 
 Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
@@ -59,8 +69,10 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async{
+                        List<Student> stds = await getStudents(educationalLevel!);
                         createSession(educationalLevel);
+                        await ApisMethods.sendNotificationsToStudents(stds);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
                       },
                       style: ElevatedButton.styleFrom(

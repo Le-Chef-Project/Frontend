@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:le_chef/Models/Admin.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../Models/session.dart' as session;
 import 'package:flutter/material.dart';
@@ -1542,7 +1543,7 @@ class ApisMethods {
 
   //35-create session
 static Future<void> createSession(
-    int level
+    int level,
 ) async{
     var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.createSession);
 
@@ -1558,6 +1559,49 @@ static Future<void> createSession(
       print('${jsonDecode(response.body)['message']}');
     }
 }
+
+  static Future<void> sendNotificationsToStudents(List<Student> students) async {
+    // Updated URL to use the OneSignal API endpoint
+    var notificationUrl = Uri.parse("https://onesignal.com/api/v1/notifications");
+
+    // Replace this with the correct API key from your OneSignal Dashboard
+    const String oneSignalApiKey = "esxyno7xzut45ek3o3qr5lyfo"; // REST API Key
+    const String oneSignalAppId = "29357873-0cf5-4e66-b038-cdf4ce3906b4"; // Your OneSignal App ID
+
+    for (var student in students) {
+      try {
+        // Resolve the playerId future
+        var playerId = await student.playerId; // Use await to get the resolved value
+
+        var notificationData = {
+          "app_id": oneSignalAppId,
+          "include_player_ids": [playerId], // Ensure playerId is a valid string
+          "headings": {"en": "New Session Created"},
+          "contents": {
+            "en": "A new session has been created. Join now!"
+          },
+        };
+
+        // Send notification request
+        http.Response response = await http.post(
+          notificationUrl,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic $oneSignalApiKey', // Authorization header
+          },
+          body: jsonEncode(notificationData),
+        );
+
+        if (response.statusCode == 200) {
+          print('Notification sent to student ID: ${student.ID}');
+        } else {
+          print('Failed to send notification: ${response.statusCode} - ${response.body}');
+        }
+      } catch (e) {
+        print('Error sending notification to student ID: ${student.ID}, $e');
+      }
+    }
+  }
 
   //36- get sessions
   static Future<List<session.Session>> getSessions() async {

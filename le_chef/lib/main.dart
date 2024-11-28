@@ -6,6 +6,11 @@ import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+
 
 SharedPreferences? sharedPreferences;
 
@@ -13,9 +18,19 @@ String? token;
 String? role;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   sharedPreferences = await SharedPreferences.getInstance();
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');
+
+
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+
+  OneSignal.initialize("29357873-0cf5-4e66-b038-cdf4ce3906b4");
+
+  OneSignal.Notifications.requestPermission(true);
 
   runApp(const MyApp());
 }
