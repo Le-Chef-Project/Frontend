@@ -11,7 +11,7 @@ class Student {
   final String ID;
   String? imageUrl;
   String? imagePublicId;
-  final Future<String?> playerId;
+  final String playerId;
 
   Student({
     required this.username,
@@ -28,7 +28,6 @@ class Student {
   });
 
   factory Student.fromjson(dynamic json) {
-    Future<String?> playerId = json['playerId'] ?? OneSignal.User.getOnesignalId() ?? '';
 
     return Student(
       ID: json['_id'] as String,
@@ -42,7 +41,7 @@ class Student {
       imageUrl: json['image']?['url'] ??
           'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
       imagePublicId: json['image']?['public_id'] ?? '',
-      playerId: playerId,
+      playerId: json['playerId'] ?? 'unknown',
     );
   }
 

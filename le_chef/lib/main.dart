@@ -6,8 +6,6 @@ import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
@@ -17,9 +15,11 @@ String? token;
 String? role;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+
   sharedPreferences = await SharedPreferences.getInstance();
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');

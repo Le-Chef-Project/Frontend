@@ -102,11 +102,13 @@ class Participant {
   final String id;
   final String username;
   final String email;
+  final String? img;
 
   Participant({
     required this.id,
     required this.username,
     required this.email,
+    required this.img,
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) {
@@ -114,6 +116,8 @@ class Participant {
       id: json['_id'] ?? '',
       username: json['username'] ?? '',
       email: json['email'] ?? '',
+      img: json['image']?['url'] ??
+          'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
     );
   }
 }

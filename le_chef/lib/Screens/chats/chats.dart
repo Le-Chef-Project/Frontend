@@ -66,7 +66,7 @@ class _ChatsState extends State<Chats> {
     print('Participants: ${chat.participants.map((p) => p.id).toList()}');
     final participant = chat.participants.firstWhere(
           (p) => p.id != _userId,
-      orElse: () => Participant(id: '', username: 'Unknown', email: ''),
+      orElse: () => Participant(id: '', username: 'Unknown', email: '', img: ''),
     );
     return participant.username;
   }
@@ -76,12 +76,21 @@ class _ChatsState extends State<Chats> {
     print('Participants: ${chat.participants.map((p) => p.id).toList()}');
     final participant = chat.participants.firstWhere(
           (p) => p.id != _userId,
-      orElse: () => Participant(id: '', username: 'Unknown', email: ''),
+      orElse: () => Participant(id: '', username: 'Unknown', email: '', img: ''),
     );
     return participant.id;
   }
 
-  // Initial index for Chats screen
+  String _getParticipantImg(DirectChat chat) {
+    print('User ID: $_userId');
+    print('Participants: ${chat.participants.map((p) => p.id).toList()}');
+    final participant = chat.participants.firstWhere(
+          (p) => p.id != _userId,
+      orElse: () => Participant(id: '', username: 'Unknown', email: '', img: ''),
+    );
+    return participant.img!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -395,11 +404,8 @@ class _ChatsState extends State<Chats> {
                       padding: const EdgeInsets.all(8.0),
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundImage: Image
-                            .asset(
-                          'assets/default_image_profile.jpg',
-                        )
-                            .image,
+                        backgroundImage:  NetworkImage(
+                          _getParticipantImg(chats![index]))
                       ),
                     ),
                     Expanded(

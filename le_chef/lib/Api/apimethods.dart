@@ -36,11 +36,16 @@ class ApisMethods {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.authEndPoint.loginEmail);
     if (emailController.isNotEmpty && passwordController.isNotEmpty) {
+      final playerId = await OneSignal.User.getOnesignalId() ;
+
+      print('Player id: $playerId');
+
       http.Response response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'email': emailController.trim(),
-            'password': passwordController
+            'password': passwordController,
+            'playerId' : playerId ?? ''
           }));
       print('apiiii $emailController + $passwordController ');
       final json = jsonDecode(response.body);
@@ -53,6 +58,7 @@ class ApisMethods {
         SharedPrefes.saveUserId(json['_id']);
         SharedPrefes.SaveRole(json['role']);
         SharedPrefes.saveImg(json['image']['url']);
+        SharedPrefes.savePlayerId(playerId ?? 'unknown');
         if (json['role'] == "admin") {
           Get.off(const THome(),
               transition: Transition.fade,
@@ -1561,33 +1567,30 @@ static Future<void> createSession(
 }
 
   static Future<void> sendNotificationsToStudents(List<Student> students) async {
-    // Updated URL to use the OneSignal API endpoint
-    var notificationUrl = Uri.parse("https://onesignal.com/api/v1/notifications");
+    var notificationUrl = Uri.parse("https://api.onesignal.com/notifications");
 
-    // Replace this with the correct API key from your OneSignal Dashboard
     const String oneSignalApiKey = "esxyno7xzut45ek3o3qr5lyfo"; // REST API Key
     const String oneSignalAppId = "29357873-0cf5-4e66-b038-cdf4ce3906b4"; // Your OneSignal App ID
 
     for (var student in students) {
       try {
-        // Resolve the playerId future
-        var playerId = await student.playerId; // Use await to get the resolved value
+        var playerId = await OneSignal.User.getOnesignalId();
 
+        print('Player id: $playerId for student id: ${student.ID}');
         var notificationData = {
           "app_id": oneSignalAppId,
-          "include_player_ids": [playerId], // Ensure playerId is a valid string
+          // "include_player_ids": [playerId],
           "headings": {"en": "New Session Created"},
           "contents": {
             "en": "A new session has been created. Join now!"
           },
         };
 
-        // Send notification request
         http.Response response = await http.post(
           notificationUrl,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic $oneSignalApiKey', // Authorization header
+            'Authorization': 'Key $oneSignalApiKey',
           },
           body: jsonEncode(notificationData),
         );
