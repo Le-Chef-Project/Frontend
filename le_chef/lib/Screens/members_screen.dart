@@ -25,12 +25,11 @@ class MembersScreen extends StatefulWidget {
 
 class _MembersScreenState extends State<MembersScreen> {
   List<dynamic> members = [];
-  String? logged_ID = sharedPreferences!.getString('Id');
-
+  String? logged_ID = sharedPreferences?.getString('Id');
   bool isLoading = true;
-
-  String? role = sharedPreferences!.getString('role');
-  String? logged_username = sharedPreferences!.getString('userName');
+  String? role = sharedPreferences?.getString('role');
+  String? logged_username = sharedPreferences?.getString('userName');
+  String? logged_img = sharedPreferences?.getString('img');
 
   @override
   void initState() {
@@ -39,14 +38,12 @@ class _MembersScreenState extends State<MembersScreen> {
   }
 
   Future<void> fetchMembers() async {
-    const token = 'your-auth-token'; // Replace with actual token logic
     final fetchedMembers = await ApisMethods.getGroupMembers(widget.groupId);
     print(fetchedMembers);
     if (fetchedMembers != null) {
       setState(() {
         members = fetchedMembers
-            .where((member) =>
-                member['_id'] != logged_ID) // Exclude logged-in user
+            .where((member) => member['_id'] != logged_ID)
             .toList();
         isLoading = false;
       });
@@ -63,7 +60,6 @@ class _MembersScreenState extends State<MembersScreen> {
       studentId: studentId,
     );
 
-    // Successfully removed student
     setState(() {
       members = members.where((member) => member['_id'] != studentId).toList();
     });
@@ -73,6 +69,7 @@ class _MembersScreenState extends State<MembersScreen> {
   Widget build(BuildContext context) {
     final String abbreviatedName =
         widget.groupName[0] + widget.groupName.split(' ')[1];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -169,15 +166,13 @@ class _MembersScreenState extends State<MembersScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: ListTile(
-                      leading: const CircleAvatar(
+                      leading: CircleAvatar(
                         radius: 25,
-
-                        ///image lazm tt8er hana
-                        backgroundImage: NetworkImage(
-                            'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
+                        backgroundImage: NetworkImage(logged_img ??
+                            'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YyIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                       ),
                       title: Text(
-                        logged_username!, // Dynamic name if you have data
+                        logged_username ?? '',
                         style: GoogleFonts.ibmPlexMono(
                           color: const Color(0xFF083344),
                           fontSize: 14,
@@ -203,10 +198,10 @@ class _MembersScreenState extends State<MembersScreen> {
                           child: ListTile(
                             leading: CircleAvatar(
                               radius: 25,
-
-                              ///image lazm tt8er hana
-                              backgroundImage: NetworkImage(
-                                  'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
+                              backgroundImage: members[index]['image'] != null
+                                  ? NetworkImage(members[index]['image']['url'])
+                                  : NetworkImage(
+                                      'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YyIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                             ),
                             title: Text(
                               members[index]['username'],
@@ -240,12 +235,6 @@ class _MembersScreenState extends State<MembersScreen> {
                                                 ),
                                                 title:
                                                     'Student is deleted successfully.');
-                                            /*Future.delayed(
-                                                    const Duration(seconds: 1),
-                                                    () {
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                });*/
                                           },
                                           button2Text: 'Cancel',
                                           button2Action: () =>

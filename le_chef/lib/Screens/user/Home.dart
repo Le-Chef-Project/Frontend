@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats/chats.dart';
@@ -29,8 +30,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final int _selectedIndex = 0; // Initial index for Chats screen
-  static int? level = sharedPreferences!.getInt('educationLevel');
-  static String? userName = sharedPreferences!.getString('userName');
+  static int? level = sharedPreferences?.getInt('educationLevel');
+  static String? userName = sharedPreferences?.getString('userName');
+  static String? rolee = sharedPreferences?.getString('role');
+  String? logged_img = sharedPreferences?.getString('img');
+
   List<Quiz>? _exams;
   bool _isLoading_Exams = true;
   List<Notes>? _notes;
@@ -103,8 +107,15 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
-          leading: Image.network(
-              'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
+          leading: CircleAvatar(
+            radius:
+                30, // Adjust the radius to control the size of the CircleAvatar
+            backgroundImage: NetworkImage(
+              logged_img ??
+                  'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
+            ),
+            backgroundColor: Colors.white, 
+          ),
           actions: [
             GestureDetector(
               onTap: () {
@@ -137,7 +148,7 @@ class _HomeState extends State<Home> {
                       Container(
                         color: const Color(0x00565656),
                         child: Text(
-                          userName != null ? userName! : 'Nulllll',
+                          userName != null ? userName! : 'Guest',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF164863),
                             fontSize: 22,
@@ -148,7 +159,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         child: Text(
-                          'Level $level',
+                          'Level  ${level ?? 'Unknown'}',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF427D9D),
                             fontSize: 16,
@@ -394,7 +405,7 @@ class _HomeState extends State<Home> {
           },
           context: context,
           selectedIndex: _selectedIndex,
-          userRole: role!,
+          userRole: rolee!,
         ),
       ),
     );
