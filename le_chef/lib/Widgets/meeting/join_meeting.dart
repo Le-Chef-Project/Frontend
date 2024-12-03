@@ -7,24 +7,24 @@ import 'package:le_chef/Models/session.dart';
 import '../../Screens/user/Home.dart';
 import '../../Shared/meeting/meeting_screen.dart';
 
- Future<void> createSession(educationalLevel) async {
+ Future<void> createSession(String title) async {
    try{
-   await ApisMethods.createSession(educationalLevel);
+   await ApisMethods.createSession(title);
    print('Session Created');
    }catch(e){
      print('Error creating session: $e');
    }
 }
 
- Future<List<Session>> getSessions() async {
-   try{
-   var session = await ApisMethods.getSessions();
-   print('Session Returnedddd: $session');
-   return session;
-   }catch(e){
-     throw('Error creating session: $e');
-   }
-}
+//  Future<List<Session>> getSessions() async {
+//    try{
+//    var session = await ApisMethods.getSessions();
+//    print('Session Returnedddd: $session');
+//    return session;
+//    }catch(e){
+//      throw('Error creating session: $e');
+//    }
+// }
 
 Future<List<Student>> getStudents(int educationalLevel) async {
   List<Student> allStudents = await ApisMethods.AllStudents();
@@ -71,8 +71,8 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
                     child: ElevatedButton(
                       onPressed: () async{
                         List<Student> stds = await getStudents(educationalLevel!);
-                        createSession(educationalLevel);
-                        await ApisMethods.sendNotificationsToStudents(stds);
+                        createSession('Level $educationalLevel');
+                        // await ApisMethods.sendNotificationsToStudents(stds);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
                       },
                       style: ElevatedButton.styleFrom(
@@ -100,7 +100,7 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        getSessions();
+                        // getSessions();
                         Navigator.push(
                             context,
                             MaterialPageRoute(

@@ -6,7 +6,6 @@ import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
 SharedPreferences? sharedPreferences;
@@ -25,11 +24,11 @@ Future<void> main() async {
   role = sharedPreferences!.getString('role');
 
 
-  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-
-  OneSignal.initialize("29357873-0cf5-4e66-b038-cdf4ce3906b4");
-
-  OneSignal.Notifications.requestPermission(true);
+  // OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  //
+  // OneSignal.initialize("29357873-0cf5-4e66-b038-cdf4ce3906b4");
+  //
+  // OneSignal.Notifications.requestPermission(true);
 
   runApp(const MyApp());
 }

@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.2:3000/";
+  static const String baseUrl = "http://192.168.1.3:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -64,6 +64,5 @@ class Payment {
 }
 
 class Session {
-  final createSession = 'Agora/CreateSession';
-  final getSessions = 'Agora/GetSession';
+  final createSession = '/zoom//create-zoom-meeting';
 }

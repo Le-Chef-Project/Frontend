@@ -30,9 +30,4 @@ class SharedPrefes {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('img', img);
   }
-
-  static Future savePlayerId(String playerId) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('playerId', playerId);
-  }
 }

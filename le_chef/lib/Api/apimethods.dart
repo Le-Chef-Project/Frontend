@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:le_chef/Models/Admin.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../Models/session.dart' as session;
 import 'package:flutter/material.dart';
@@ -36,16 +35,13 @@ class ApisMethods {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.authEndPoint.loginEmail);
     if (emailController.isNotEmpty && passwordController.isNotEmpty) {
-      final playerId = await OneSignal.User.getOnesignalId() ;
 
-      print('Player id: $playerId');
 
       http.Response response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'email': emailController.trim(),
             'password': passwordController,
-            'playerId' : playerId ?? ''
           }));
       print('apiiii $emailController + $passwordController ');
       final json = jsonDecode(response.body);
@@ -58,7 +54,6 @@ class ApisMethods {
         SharedPrefes.saveUserId(json['_id']);
         SharedPrefes.SaveRole(json['role']);
         SharedPrefes.saveImg(json['image']['url']);
-        SharedPrefes.savePlayerId(playerId ?? 'unknown');
         if (json['role'] == "admin") {
           Get.off(const THome(),
               transition: Transition.fade,
@@ -1549,13 +1544,14 @@ class ApisMethods {
 
   //35-create session
 static Future<void> createSession(
-    int level,
+    String title,
 ) async{
     var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.createSession);
 
     http.Response response = await http.post(
       url, headers: {'Content-Type': 'application/json', 'token': token!}, body: jsonEncode({
-      'educationLevel' : level
+
+      'title' : title
     })
     );
 
@@ -1566,71 +1562,71 @@ static Future<void> createSession(
     }
 }
 
-  static Future<void> sendNotificationsToStudents(List<Student> students) async {
-    var notificationUrl = Uri.parse("https://api.onesignal.com/notifications");
-
-    const String oneSignalApiKey = "esxyno7xzut45ek3o3qr5lyfo"; // REST API Key
-    const String oneSignalAppId = "29357873-0cf5-4e66-b038-cdf4ce3906b4"; // Your OneSignal App ID
-
-    for (var student in students) {
-      try {
-        var playerId = await OneSignal.User.getOnesignalId();
-
-        print('Player id: $playerId for student id: ${student.ID}');
-        var notificationData = {
-          "app_id": oneSignalAppId,
-          // "include_player_ids": [playerId],
-          "headings": {"en": "New Session Created"},
-          "contents": {
-            "en": "A new session has been created. Join now!"
-          },
-        };
-
-        http.Response response = await http.post(
-          notificationUrl,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Key $oneSignalApiKey',
-          },
-          body: jsonEncode(notificationData),
-        );
-
-        if (response.statusCode == 200) {
-          print('Notification sent to student ID: ${student.ID}');
-        } else {
-          print('Failed to send notification: ${response.statusCode} - ${response.body}');
-        }
-      } catch (e) {
-        print('Error sending notification to student ID: ${student.ID}, $e');
-      }
-    }
-  }
+  // static Future<void> sendNotificationsToStudents(List<Student> students) async {
+  //   var notificationUrl = Uri.parse("https://api.onesignal.com/notifications");
+  //
+  //   const String oneSignalApiKey = "esxyno7xzut45ek3o3qr5lyfo"; // REST API Key
+  //   const String oneSignalAppId = "29357873-0cf5-4e66-b038-cdf4ce3906b4"; // Your OneSignal App ID
+  //
+  //   for (var student in students) {
+  //     try {
+  //       var playerId = await OneSignal.User.getOnesignalId();
+  //
+  //       print('Player id: $playerId for student id: ${student.ID}');
+  //       var notificationData = {
+  //         "app_id": oneSignalAppId,
+  //         // "include_player_ids": [playerId],
+  //         "headings": {"en": "New Session Created"},
+  //         "contents": {
+  //           "en": "A new session has been created. Join now!"
+  //         },
+  //       };
+  //
+  //       http.Response response = await http.post(
+  //         notificationUrl,
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': 'Key $oneSignalApiKey',
+  //         },
+  //         body: jsonEncode(notificationData),
+  //       );
+  //
+  //       if (response.statusCode == 200) {
+  //         print('Notification sent to student ID: ${student.ID}');
+  //       } else {
+  //         print('Failed to send notification: ${response.statusCode} - ${response.body}');
+  //       }
+  //     } catch (e) {
+  //       print('Error sending notification to student ID: ${student.ID}, $e');
+  //     }
+  //   }
+  // }
 
   //36- get sessions
-  static Future<List<session.Session>> getSessions() async {
-    var url = Uri.parse(
-        ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.getSessions);
-
-    http.Response response = await http.get(url,
-        headers: {'Content-Type': 'application/json', 'token': token!});
-
-    var data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-
-      List temp = [];
-      print('apiiii Sessions $data');
-
-      for (var i in data) {
-        temp.add(i);
-      }
-
-      return session.Session.itemsFromSnapshot(temp);
-    } else {
-      throw Exception(
-          'Failed to fetch messages. HTTP ${response.statusCode}\n ${response.body}');
-    }
-    }
+  // static Future<List<session.Session>> getSessions() async {
+  //   var url = Uri.parse(
+  //       ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.getSessions);
+  //
+  //   http.Response response = await http.get(url,
+  //       headers: {'Content-Type': 'application/json', 'token': token!});
+  //
+  //   var data = jsonDecode(response.body);
+  //
+  //   if (response.statusCode == 200) {
+  //
+  //     List temp = [];
+  //     print('apiiii Sessions $data');
+  //
+  //     for (var i in data) {
+  //       temp.add(i);
+  //     }
+  //
+  //     return session.Session.itemsFromSnapshot(temp);
+  //   } else {
+  //     throw Exception(
+  //         'Failed to fetch messages. HTTP ${response.statusCode}\n ${response.body}');
+  //   }
+  //   }
 
     //37-get admin
   static Future<Admin> getAdmin() async {

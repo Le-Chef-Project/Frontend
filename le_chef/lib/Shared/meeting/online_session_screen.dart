@@ -23,15 +23,15 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
   final String? role = sharedPreferences!.getString('role');
   List<Session> sessions = [];
 
-  Future<List<Session>> getSessions() async {
-    try{
-      sessions = await ApisMethods.getSessions();
-      print('Session Returnedddd: $sessions');
-      return sessions;
-    }catch(e){
-      throw('Error creating session: $e');
-    }
-  }
+  // Future<List<Session>> getSessions() async {
+  //   try{
+  //     sessions = await ApisMethods.getSessions();
+  //     print('Session Returnedddd: $sessions');
+  //     return sessions;
+  //   }catch(e){
+  //     throw('Error creating session: $e');
+  //   }
+  // }
 
   bool level1 = true;
 
