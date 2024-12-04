@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/services/content/media_service.dart';
 import '../../Models/Video.dart';
 import '../../Widgets/SmallCard.dart';
 import 'viewVideo.dart'; // Import the Video model
@@ -19,7 +19,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
 
   // Fetch videos and filter them based on the selected level
   void _fetchAndFilterVideos() async {
-    List<Video> allVideos = await ApisMethods.fetchAllVideos();
+    List<Video> allVideos = await MediaService.fetchAllVideos();
 
     setState(() {
       isloading = false;

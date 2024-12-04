@@ -6,8 +6,8 @@ import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/chats/chatPage.dart';
 import 'package:le_chef/Screens/members_screen.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
-
-import '../../Api/apimethods.dart';
+import 'package:le_chef/services/messaging/direct_message.dart';
+import 'package:le_chef/services/messaging/grp_message_service.dart';
 import '../../Models/group.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Shared/textInputDecoration.dart';
@@ -39,7 +39,7 @@ class _ChatsState extends State<Chats> {
 
 
   Future<void> getStd() async {
-    groups = await ApisMethods.getAllGroups();
+    groups = await GrpMsgService.getAllGroups();
     print('group infooooooooo ${groups!}');
     setState(() {
       _isLoading_grp = false;
@@ -47,7 +47,7 @@ class _ChatsState extends State<Chats> {
   }
 
   Future<void> getChats() async {
-    chats = await ApisMethods.getAllChats();
+    chats = await DirectMsgService.getAllChats();
     print('Chat infooooooooo $chats');
     setState(() {
       _isLoading_chat = false;
@@ -244,7 +244,7 @@ class _ChatsState extends State<Chats> {
                                                 'Please fill in all fields')),
                                       );
                                     } else {
-                                      await ApisMethods.createGrp(
+                                      await GrpMsgService.createGrp(
                                         _TitleController.text.toString(),
                                         _DescriptionController.text
                                             .toString(),
@@ -554,7 +554,7 @@ class _ChatsState extends State<Chats> {
                                           button1Text: 'Delete',
                                           button1Action: () async {
                                             Navigator.pop(context);
-                                            await ApisMethods.DelGroup(
+                                            await GrpMsgService.DelGroup(
                                                 groups![index].id);
                                             dialogWithButtons(
                                                 context: context,

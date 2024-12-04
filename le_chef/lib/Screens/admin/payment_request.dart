@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/payment.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
+import 'package:le_chef/services/payment/payment_service.dart';
 
 import '../../Shared/customBottomNavBar.dart';
 import '../../main.dart';
@@ -32,7 +32,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
 
   Future<void> getRequests() async {
     try {
-      final request = await ApisMethods.getAllRequest();
+      final request = await PaymentService.getAllRequest();
       setState(() {
         requests = request;
       });
@@ -171,7 +171,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                 height: 32,
                                 child: ElevatedButton.icon(
                                   onPressed: () async{
-                                    try{await ApisMethods.acceptRequest(request.id);
+                                    try{await PaymentService.acceptRequest(request.id);
                                     getRequests();
                                     print('Updateeeeed');}catch(e){
                                       print('errooooor: $e');
@@ -202,7 +202,7 @@ class _PaymentRequestState extends State<PaymentRequest> {
                                 height: 32,
                                 child: ElevatedButton.icon(
                                   onPressed: () async{
-                                    try{await ApisMethods.rejectRequest(request.id);
+                                    try{await PaymentService.rejectRequest(request.id);
                                     getRequests();
                                     print('Updateeeeed');}catch(e){
                                       print('errooooor: $e');

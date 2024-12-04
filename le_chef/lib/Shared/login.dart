@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Shared/textInputDecoration.dart';
+import 'package:le_chef/services/auth/login_service.dart';
 
 // Assuming textInputDecoration is defined here
 
@@ -89,7 +89,7 @@ class _LoginState extends State<Login> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    await ApisMethods.login(_userNameController.text.toString(),
+                    await LoginService.login(_userNameController.text.toString(),
                         _passwordController.text.toString());
                   },
                   style: ElevatedButton.styleFrom(

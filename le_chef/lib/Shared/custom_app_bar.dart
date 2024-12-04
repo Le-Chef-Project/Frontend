@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   //     context,
   //     MaterialPageRoute(
   //       builder: (context) => const GroupMembers(
-  //         students: [
+  //         student: [
   //           {
   //             'name': 'Student 1',
   //             'avatarUrl': 'https://example.com/avatar1.png'
@@ -31,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   //             'name': 'Student 3',
   //             'avatarUrl': 'https://example.com/avatar3.png'
   //           },
-  //           // Add more students here
+  //           // Add more student here
   //         ],
   //       ),
   //     ),

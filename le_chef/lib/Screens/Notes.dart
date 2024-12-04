@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
-import '../Api/apimethods.dart';
+import 'package:le_chef/services/content/note_service.dart';
 import '../Models/Notes.dart';
 import '../main.dart';
 
@@ -24,7 +24,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Future<List<Notes>> _fetchAndSortNotes() async {
-    final notes = await ApisMethods.fetchAllNotes();
+    final notes = await NoteService.fetchAllNotes();
 
     // Filter notes based on education level
     final filteredNotes = notes.where((note) {

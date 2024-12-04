@@ -12,11 +12,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:le_chef/Models/direct_chat.dart' as direct_chat;
 import 'package:le_chef/Models/group.dart';
 import 'package:le_chef/Models/group_chat.dart';
+import 'package:le_chef/services/messaging/direct_message.dart';
+import 'package:le_chef/services/messaging/grp_message_service.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../Api/apimethods.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Widgets/chat_page/appbar.dart';
 import '../../Widgets/chat_page/audio_msg.dart';
@@ -97,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
         if (widget.person) {
           print(
               'Image path: ${image.path} and Image file path: ${File(image.path)}');
-          await ApisMethods.sendDirectMsg(
+          await DirectMsgService.sendDirectMsg(
             id: widget.receiverId!,
             participants: [_user.id, widget.receiverId!],
             sender: _user.id,
@@ -106,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
         }else{
-          await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Image', images: [File(image.path)],);
+          await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Image', images: [File(image.path)],);
         }
       } catch (e) {
         print('Error sending image message: $e');
@@ -134,7 +134,7 @@ class _ChatPageState extends State<ChatPage> {
 
       try {
         if (widget.person) {
-          await ApisMethods.sendDirectMsg(
+          await DirectMsgService.sendDirectMsg(
             id: widget.receiverId!,
             participants: [_user.id, widget.receiverId!],
             sender: _user.id,
@@ -143,7 +143,7 @@ class _ChatPageState extends State<ChatPage> {
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
         }else{
-          await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Documents', documents: [File(result.files.single.path!)],);
+          await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Documents', documents: [File(result.files.single.path!)],);
 
         }
       } catch (e) {
@@ -339,7 +339,7 @@ class _ChatPageState extends State<ChatPage> {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-        await ApisMethods.getDirectMessages(widget.chatRoom!);
+        await DirectMsgService.getDirectMessages(widget.chatRoom!);
 
         convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
@@ -359,7 +359,7 @@ class _ChatPageState extends State<ChatPage> {
         }).toList();
       } else {
         print('Group id: ${widget.group!.id}');
-        final GroupChat groupChat = await ApisMethods.getGrpMessages(widget.group!.id);
+        final GroupChat groupChat = await GrpMsgService.getGrpMessages(widget.group!.id);
 
         convertedMessages = groupChat.messages.map((msg) {
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
@@ -483,7 +483,7 @@ class _ChatPageState extends State<ChatPage> {
           if (audioData.isNotEmpty) {
             print("Audio Data Length: ${audioData.length}");
 
-            await ApisMethods.sendDirectMsg(
+            await DirectMsgService.sendDirectMsg(
               id: widget.receiverId!,
               participants: [_user.id, widget.receiverId!],
               sender: _user.id,
@@ -496,7 +496,7 @@ class _ChatPageState extends State<ChatPage> {
             print("Error: Audio data is empty.");
           }
         } else {
-          await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Audio', audio: audioData);
+          await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Audio', audio: audioData);
         }
       } catch (e) {
         print('Error sending audio message: $e');
@@ -574,7 +574,7 @@ class _ChatPageState extends State<ChatPage> {
     try {
       if (widget.person) {
         print('Sender id: ${_user.id} \nReciever Id: ${widget.receiverId!}');
-        await ApisMethods.sendDirectMsg(
+        await DirectMsgService.sendDirectMsg(
           id: widget.receiverId!,
           participants: [_user.id, widget.receiverId!],
           sender: _user.id,
@@ -583,7 +583,7 @@ class _ChatPageState extends State<ChatPage> {
               DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
         );
       } else {
-        await ApisMethods.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: message.text);
+        await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: message.text);
       }
       print('Updated sending message');
     } catch (e) {

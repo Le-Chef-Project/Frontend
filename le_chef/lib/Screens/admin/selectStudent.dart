@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../Api/apimethods.dart';
+import 'package:le_chef/services/messaging/grp_message_service.dart';
+import 'package:le_chef/services/student/student_service.dart';
 import '../../Models/Student.dart';
 
 class StudentSelectionScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class _StudentSelectionScreenState extends State<StudentSelectionScreen> {
   bool _isLoading_Std = true;
 
   Future<void> getStd() async {
-    _Std = await ApisMethods.AllStudents();
+    _Std = await StudentService.AllStudents();
     print('Std infooooooooo ${_Std!}');
     // Filter out existing members based on IDs
 
@@ -55,7 +55,7 @@ class _StudentSelectionScreenState extends State<StudentSelectionScreen> {
             color: const Color(0xFF164863),
             iconSize: 35,
             onPressed: () async {
-              await ApisMethods.addStudentstoGroup(
+              await GrpMsgService.addStudentstoGroup(
                   groupId: widget.groupId,
                   studentIds: selectedStudentIds.toList());
             },
@@ -67,7 +67,7 @@ class _StudentSelectionScreenState extends State<StudentSelectionScreen> {
               child: CircularProgressIndicator(),
             )
           : _Std!.isEmpty
-              ? const Center(child: Text("No students available"))
+              ? const Center(child: Text("No student available"))
               : ListView.builder(
                   itemCount: _Std!.length,
                   itemBuilder: (context, index) {

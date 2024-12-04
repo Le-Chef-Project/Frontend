@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Student.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
+import 'package:le_chef/services/profile/profile_service.dart';
+import 'package:le_chef/services/student/student_service.dart';
 
 import '../../Models/Admin.dart';
 import '../../Shared/textInputDecoration.dart';
@@ -80,7 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     try {
       if (widget.isStudent) {
-        await ApisMethods.editProfile(
+        await ProfileService.editProfile(
             userId: widget.student!.ID,
             username: _usernameController.text,
             email: _emailController.text,
@@ -96,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
               int.parse(_educationLevelController.text);
         });
       } else {
-        await ApisMethods.editProfile(
+        await ProfileService.editProfile(
             userId: widget.admin!.id,
             username: _usernameController.text,
             email: _emailController.text,
@@ -137,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
 
-    ApisMethods.AllStudents(); // Refresh student data
+    StudentService.AllStudents(); // Refresh student data
   }
 
   @override

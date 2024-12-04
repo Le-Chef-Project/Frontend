@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
-
+import 'package:le_chef/services/content/quiz_service.dart';
 import '../../Models/Quiz.dart';
 import '../../Widgets/quiz_time.dart';
 import '../custom_elevated_button.dart';
@@ -136,7 +135,7 @@ class _QuizPageState extends State<QuizPage> {
 
       try {
         print('Waiting to update quiz...');
-        await ApisMethods.updateQuiz(
+        await QuizService.updateQuiz(
           id: widget.quiz.id,
           questions: questions,
           hours: widget.quiz.duration.inHours,
@@ -231,7 +230,7 @@ class _QuizPageState extends State<QuizPage> {
     }
 
     final response =
-    ApisMethods.submitQuiz(widget.quiz, answers, widget.quiz.id);
+    QuizService.submitQuiz(widget.quiz, answers, widget.quiz.id);
     setState(() {
       isSubmitted = true;
     });

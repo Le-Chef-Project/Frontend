@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/main.dart';
+import 'package:le_chef/services/messaging/grp_message_service.dart';
 
 import '../Shared/customBottomNavBar.dart';
 import '../Widgets/dialog_with_two_buttons.dart';
@@ -38,7 +38,7 @@ class _MembersScreenState extends State<MembersScreen> {
   }
 
   Future<void> fetchMembers() async {
-    final fetchedMembers = await ApisMethods.getGroupMembers(widget.groupId);
+    final fetchedMembers = await GrpMsgService.getGroupMembers(widget.groupId);
     print(fetchedMembers);
     if (fetchedMembers != null) {
       setState(() {
@@ -55,7 +55,7 @@ class _MembersScreenState extends State<MembersScreen> {
   }
 
   Future<void> handleRemoveStudent(String studentId) async {
-    await ApisMethods.removeStudentFromGroup(
+    await GrpMsgService.removeStudentFromGroup(
       groupId: widget.groupId,
       studentId: studentId,
     );

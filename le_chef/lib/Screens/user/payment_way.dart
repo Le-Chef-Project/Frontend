@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
-
-import '../../Api/apimethods.dart';
+import 'package:le_chef/services/payment/payment_service.dart';
 import 'payment_creditCard.dart';
 
 class PaymentWay extends StatefulWidget {
@@ -90,7 +89,7 @@ class _PaymentWayState extends State<PaymentWay> {
                               ? null // Disable button if no image is selected
                               : () async {
                                   // Call API to initiate payment
-                                  await ApisMethods.initiateEWalletPayment(
+                                  await PaymentService.initiateEWalletPayment(
                                     contentId: widget
                                         .contentId, // Replace with actual content ID
                                     paymentImage: selectedImage!,
@@ -164,7 +163,7 @@ class _PaymentWayState extends State<PaymentWay> {
   }
 
   void onCash() async {
-    await ApisMethods.initiateCashPayment(contentId: widget.contentId);
+    await PaymentService.initiateCashPayment(contentId: widget.contentId);
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pop(context);
     });

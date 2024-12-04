@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
+import 'package:le_chef/services/content/quiz_service.dart';
 import '../../Models/Quiz.dart';
 import '../../Widgets/quiz_time.dart';
 import 'AddQuestion.dart';
@@ -95,7 +95,7 @@ class _AddExamState extends State<AddExam> {
 
   Future<void> getUnits() async{
     try{
-      final units = await ApisMethods.getExamUnits();
+      final units = await QuizService.getExamUnits();
       setState(() {
         _units = units;
       });
@@ -119,7 +119,7 @@ class _AddExamState extends State<AddExam> {
 
       try {
         print('Waiting...');
-        await ApisMethods.addQuiz(
+        await QuizService.addQuiz(
           title: titleController.text,
           questions: questions,
           hours: int.tryParse(_hourOneController.text.trim() + _hourTwoController.text.trim()) ?? 0,
@@ -137,7 +137,7 @@ class _AddExamState extends State<AddExam> {
             Icons.check_circle_outline,
             color: Color(0xFF2ED573),
             size: 150,
-          ), title: 'Success !', content: 'Exam posted to students.');
+          ), title: 'Success !', content: 'Exam posted to student.');
 
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) =>  Exams(selectedLevel: int.parse(selectedLevel!.replaceFirst('Level ', '')),)),

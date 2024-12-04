@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Admin.dart';
 import 'package:le_chef/Models/Notes.dart';
 import 'package:le_chef/Models/PDF.dart';
@@ -11,6 +10,11 @@ import 'package:le_chef/Screens/admin/payment_request.dart';
 import 'package:le_chef/Screens/admin/studentProfile.dart';
 import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/custom_elevated_button.dart';
+import 'package:le_chef/services/auth/admin_service.dart';
+import 'package:le_chef/services/content/media_service.dart';
+import 'package:le_chef/services/content/note_service.dart';
+import 'package:le_chef/services/content/quiz_service.dart';
+import 'package:le_chef/services/student/student_service.dart';
 
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
@@ -73,7 +77,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   Future<void> getExams() async {
-    _exams = await ApisMethods.getAllQuizzes();
+    _exams = await QuizService.getAllQuizzes();
     print('apiii $_exams + ${_exams?.length}');
     setState(() {
       _isLoading_Exams = false;
@@ -81,7 +85,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   Future<void> getNotes() async {
-    _notes = await ApisMethods.fetchAllNotes();
+    _notes = await NoteService.fetchAllNotes();
     print('apiii $_notes + ${_notes?.length}');
     setState(() {
       _isLoading_notes = false;
@@ -89,7 +93,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   Future<void> getPDFs() async {
-    _pdfs = await ApisMethods().fetchAllPDFs();
+    _pdfs = await MediaService().fetchAllPDFs();
     print('apiii $_pdfs + ${_pdfs?.length}');
     setState(() {
       _isLoading_pdfs = false;
@@ -98,7 +102,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getAdmin() async {
     try {
-      admin = await ApisMethods.getAdmin();
+      admin = await AdminService.getAdmin();
       print('Got Admin Successfully: ${admin!.username}');
       setState(() {
         _isLoading_admin = false;
@@ -115,7 +119,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   Future<void> getStd() async {
-    _Std = await ApisMethods.AllStudents();
+    _Std = await StudentService.AllStudents();
     print('apiii $_Std + ${_Std!.length}');
     setState(() {
       _isLoading_Std = false;
@@ -265,7 +269,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   void _onAddStudentPressed() async {
     Get.back();
     String Mess;
-    Mess = await ApisMethods.AddStudent(
+    Mess = await StudentService.AddStudent(
         _emailController.text.toString(),
         _passwordController.text.toString(),
         _phoneController.text.toString(),

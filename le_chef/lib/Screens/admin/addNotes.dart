@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
+import 'package:le_chef/services/content/media_service.dart';
+import 'package:le_chef/services/content/note_service.dart';
 
 import '../../Shared/custom_elevated_button.dart';
 import '../../theme/custom_button_style.dart';
@@ -131,7 +132,7 @@ class _addNotesState extends State<addNotes> {
                       onPressed: () async {
                         print('from Uiiiiii ${noteContentController.text}${int.tryParse(selectedlevel!)?.toString() ?? ''}');
 
-                        await ApisMethods.addNote(
+                        await NoteService.addNote(
                             noteContentController.text.toString(),
                             selectedlevel == 'Level 1'
                                 ? 1

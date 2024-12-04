@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
+import 'package:le_chef/services/content/media_service.dart';
 import '../../Models/PDF.dart';
 import 'viewPDF.dart';
 
@@ -19,7 +19,7 @@ class _AllPDFsState extends State<AllPDFs> {
   bool isloading = true;
   // Fetch and filter PDFs based on selected level
   void _fetchAndFilterPDFs() async {
-    List<PDF> allPDFs = await ApisMethods().fetchAllPDFs();
+    List<PDF> allPDFs = await MediaService().fetchAllPDFs();
 
     setState(() {
       isloading = false;

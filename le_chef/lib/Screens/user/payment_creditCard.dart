@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:le_chef/Api/apimethods.dart';
+import 'package:le_chef/services/payment/payment_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PaymentCreditCardScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class _PaymentCreditCardScreenState extends State<PaymentCreditCardScreen> {
 
   Future<void> initiatePayment() async {
     try {
-      final response = await ApisMethods.initiateCreditCardPayment(
+      final response = await PaymentService.initiateCreditCardPayment(
         contentId: widget.contentId,
       );
 

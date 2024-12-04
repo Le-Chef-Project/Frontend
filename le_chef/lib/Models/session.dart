@@ -1,20 +1,16 @@
 class Session {
   final String title;
   final String desc;
-  final String date;
-  final String startTime;
-  final String endTime;
   final String hostUrl;
+  final String joinUrl;
   final String educationLevel;
   final String createdAt;
 
   Session(
       {required this.title,
       required this.desc,
-      required this.date,
-      required this.startTime,
-      required this.endTime,
       required this.hostUrl,
+        required this.joinUrl,
       required this.educationLevel,
       required this.createdAt});
 
@@ -22,10 +18,8 @@ class Session {
     return Session(
         title: json['title'],
         desc: json['description'],
-        date: json['date'],
-        startTime: json['startTime'],
-        endTime: json['endTime'],
         hostUrl: json['hostUrl'],
+        joinUrl: json['joinUrl'],
         createdAt: json['createdAt'],
         educationLevel: json['educationLevel']);
   }

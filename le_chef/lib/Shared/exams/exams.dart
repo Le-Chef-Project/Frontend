@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Quiz.dart';
 import 'package:le_chef/Screens/admin/AddExam.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Widgets/total_exams-students_card.dart';
+import 'package:le_chef/services/content/quiz_service.dart';
 
 import '../../Screens/admin/THome.dart';
 import '../../Screens/admin/payment_request.dart';
@@ -68,7 +68,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   Future<void> getExams() async {
     try {
-      final exams = await ApisMethods.getAllQuizzes();
+      final exams = await QuizService.getAllQuizzes();
       setState(() {
         _exams = exams;
         _isLoading = false;
@@ -85,7 +85,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   Future<void> getUnits() async {
     try {
-      final units = await ApisMethods.getExamUnits();
+      final units = await QuizService.getExamUnits();
       setState(() {
         _units = units;
         _isLoading = false;

@@ -53,6 +53,13 @@
 		<string>https</string>
 	</array>
 
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>zoomus</string>
+    <string>zoommtg</string>
+    <string>https</string>
+</array>
+
 	<!-- Privacy Descriptions -->
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to the camera for video calls.</string>

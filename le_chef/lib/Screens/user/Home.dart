@@ -6,7 +6,9 @@ import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/login.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
-import '../../Api/apimethods.dart';
+import 'package:le_chef/services/content/media_service.dart';
+import 'package:le_chef/services/content/note_service.dart';
+import 'package:le_chef/services/content/quiz_service.dart';
 import '../../Models/Notes.dart';
 import '../../Models/PDF.dart';
 import '../../Models/Quiz.dart';
@@ -54,7 +56,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getExams() async {
-    _exams = await ApisMethods.getAllQuizzes();
+    _exams = await QuizService.getAllQuizzes();
     print('apiii $_exams + ${_exams?.length}');
 
     _exams = _exams?.where((exam) => exam.level == level).toList();
@@ -64,7 +66,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getNotes() async {
-    _notes = await ApisMethods.fetchAllNotes();
+    _notes = await NoteService.fetchAllNotes();
     print('apiii $_notes + ${_notes?.length}');
 
     _notes = _notes?.where((note) => note.educationLevel == level).toList();
@@ -74,7 +76,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getPDFs() async {
-    _pdfs = await ApisMethods().fetchAllPDFs();
+    _pdfs = await MediaService().fetchAllPDFs();
     print('apiii $_pdfs + ${_pdfs?.length}');
 
     _pdfs = _pdfs?.where((pdf) => pdf.educationLevel == level).toList();
@@ -84,7 +86,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<List<Video>> _fetchAndSortVideos() async {
-    final Videos = await ApisMethods.fetchAllVideos();
+    final Videos = await MediaService.fetchAllVideos();
 
     // Filter and sort videos by date
     final filteredVideos = Videos.where((video) {

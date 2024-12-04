@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Student.dart';
-import 'package:le_chef/Models/session.dart';
-
+import 'package:le_chef/services/session/session_service.dart';
+import 'package:le_chef/services/student/student_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Screens/user/Home.dart';
-import '../../Shared/meeting/meeting_screen.dart';
 
- Future<void> createSession(String title) async {
-   try{
-   await ApisMethods.createSession(title);
-   print('Session Created');
-   }catch(e){
-     print('Error creating session: $e');
-   }
+Future<void> createSession(int level, BuildContext context) async {
+  try {
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: Card(
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Creating session...')
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    final link = await SessionService.createSession(level);
+
+    Navigator.pop(context);
+
+    final Uri url = Uri.parse(link);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
+  } catch (e) {
+    Navigator.pop(context);
+    print('Error creating session: $e');
+  }
 }
 
 //  Future<List<Session>> getSessions() async {
@@ -27,7 +56,7 @@ import '../../Shared/meeting/meeting_screen.dart';
 // }
 
 Future<List<Student>> getStudents(int educationalLevel) async {
-  List<Student> allStudents = await ApisMethods.AllStudents();
+  List<Student> allStudents = await StudentService.AllStudents();
 
   List<Student> filteredStudents = allStudents.where((student) {
     return student.educationLevel == educationalLevel;
@@ -71,9 +100,9 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
                     child: ElevatedButton(
                       onPressed: () async{
                         List<Student> stds = await getStudents(educationalLevel!);
-                        createSession('Level $educationalLevel');
+                        createSession(educationalLevel, context);
                         // await ApisMethods.sendNotificationsToStudents(stds);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),
@@ -101,10 +130,10 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
                     child: ElevatedButton(
                       onPressed: () {
                         // getSessions();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MeetingPage()));
+                      //   Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => const MeetingPage()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),

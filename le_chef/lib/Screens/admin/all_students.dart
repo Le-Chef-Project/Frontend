@@ -7,8 +7,8 @@ import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/Shared/custom_search_view.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
 import 'package:le_chef/main.dart';
+import 'package:le_chef/services/student/student_service.dart';
 
-import '../../Api/apimethods.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Widgets/total_exams-students_card.dart';
 import '../user/Home.dart';
@@ -35,7 +35,7 @@ class _AllStudentsState extends State<AllStudents> {
   String? profilePic = sharedPreferences?.getString('img');
 
   Future<void> getStd() async {
-    _Std = await ApisMethods.AllStudents();
+    _Std = await StudentService.AllStudents();
     print('Std infooooooooo ${_Std!}');
     setState(() {
       _isLoading_Std = false;
@@ -165,7 +165,7 @@ class _AllStudentsState extends State<AllStudents> {
                                             button1Text: 'Remove',
                                             button1Action: () async {
                                               Navigator.pop(context);
-                                              await ApisMethods.DelStudent(
+                                              await StudentService.DelStudent(
                                                   searched_Student[index].ID);
                                               dialogWithButtons(
                                                   context: context,
@@ -240,7 +240,7 @@ class _AllStudentsState extends State<AllStudents> {
                                             button1Text: 'Remove',
                                             button1Action: () async {
                                               Navigator.pop(context);
-                                              await ApisMethods.DelStudent(
+                                              await StudentService.DelStudent(
                                                   currentStudents[index].ID);
                                               dialogWithButtons(
                                                   context: context,

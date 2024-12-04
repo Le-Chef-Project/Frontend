@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:le_chef/Api/apimethods.dart';
 import 'package:le_chef/Models/Quiz.dart';
 import 'package:le_chef/Screens/user/payment_way.dart';
 import 'package:le_chef/Widgets/dialog_with_two_buttons.dart';
-
+import 'package:le_chef/services/content/quiz_service.dart';
 import '../Shared/exams/ExamForm.dart';
 import '../Shared/exams/ExamInfo.dart';
 import '../main.dart';
@@ -131,7 +130,7 @@ Widget customExamListTile(
                                   button1Text: 'Delete',
                                   button1Action: () async {
                                     Navigator.pop(context);
-                                    await ApisMethods.delQuiz(exam.id);
+                                    await QuizService.delQuiz(exam.id);
                                     dialogWithButtons(
                                         context: context,
                                         icon: Image.asset(

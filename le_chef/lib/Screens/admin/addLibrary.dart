@@ -5,8 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../Api/apimethods.dart';
+import 'package:le_chef/services/content/media_service.dart';
 import '../../Shared/custom_elevated_button.dart';
 import '../../Widgets/SmallCard.dart';
 import '../../theme/custom_button_style.dart';
@@ -54,7 +53,7 @@ class _AddLibraryState extends State<AddLibrary> {
       _showLoadingDialog(); // Show the loading dialog
 
       // Call the API and handle the response
-      await ApisMethods.uploadVideo(
+      await MediaService.uploadVideo(
         videoFile: _videoFile!,
         title: itemNameController.text,
         description: itemDescriptionController.text,
@@ -89,7 +88,7 @@ class _AddLibraryState extends State<AddLibrary> {
       _showLoadingDialog(); // Show the loading dialog
 
       // Call the API and handle the response
-      await ApisMethods.uploadPDF(
+      await MediaService.uploadPDF(
         title: itemNameController.text,
         description: itemDescriptionController.text,
         amountToPay: isPaid ? double.tryParse(amountController.text) : null,

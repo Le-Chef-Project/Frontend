@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:le_chef/Models/Video.dart';
 import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
-import '../../Api/apimethods.dart';
+import 'package:le_chef/services/content/media_service.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Widgets/SmallCard.dart';
 import '../../main.dart';
@@ -31,7 +31,7 @@ class _AllVidState extends State<AllVid> {
   }
 
   Future<List<Video>> _fetchAndSortVideos() async {
-    final Videos = await ApisMethods.fetchAllVideos();
+    final Videos = await MediaService.fetchAllVideos();
 
     // Filter and sort videos by date
     final filteredVideos = Videos.where((video) {

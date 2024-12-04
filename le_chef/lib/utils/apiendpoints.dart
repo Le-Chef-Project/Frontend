@@ -64,5 +64,5 @@ class Payment {
 }
 
 class Session {
-  final createSession = '/zoom//create-zoom-meeting';
+  final createSession = 'zoom/create-zoom-meeting';
 }
