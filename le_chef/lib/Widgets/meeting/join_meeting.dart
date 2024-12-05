@@ -45,16 +45,6 @@ Future<void> createSession(int level, BuildContext context) async {
   }
 }
 
-//  Future<List<Session>> getSessions() async {
-//    try{
-//    var session = await ApisMethods.getSessions();
-//    print('Session Returnedddd: $session');
-//    return session;
-//    }catch(e){
-//      throw('Error creating session: $e');
-//    }
-// }
-
 Future<List<Student>> getStudents(int educationalLevel) async {
   List<Student> allStudents = await StudentService.AllStudents();
 
@@ -64,7 +54,46 @@ Future<List<Student>> getStudents(int educationalLevel) async {
   return filteredStudents;
 }
 
-Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
+Future<void> join(String meetingId, BuildContext context) async{
+  try{
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: Card(
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Joining to session...')
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    final link = await SessionService.joinMeeting(meetingId);
+
+    Navigator.pop(context);
+
+    final Uri url = Uri.parse(link);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'Could not join $url';
+    }
+
+  }catch(e){
+    Navigator.pop(context);
+    print('Error joining session: $e');
+  }
+}
+
+Widget joinMeeting(BuildContext context, String? role, int? educationalLevel, String? meetingId) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
     child: Column(
@@ -129,11 +158,7 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel) {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // getSessions();
-                      //   Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) => const MeetingPage()));
+                        join(meetingId!, context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF427D9D),

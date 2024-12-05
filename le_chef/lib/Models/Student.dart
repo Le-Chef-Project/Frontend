@@ -10,7 +10,6 @@ class Student {
   final String ID;
   String? imageUrl;
   String? imagePublicId;
-  final String playerId;
 
   Student({
     required this.username,
@@ -21,7 +20,6 @@ class Student {
     required this.password,
     required this.educationLevel,
     required this.ID,
-    required this.playerId,
     this.imageUrl,
     this.imagePublicId,
   });
@@ -40,7 +38,6 @@ class Student {
       imageUrl: json['image']?['url'] ??
           'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
       imagePublicId: json['image']?['public_id'] ?? '',
-      playerId: json['playerId'] ?? 'unknown',
     );
   }
 

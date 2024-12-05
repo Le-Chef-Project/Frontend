@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/main.dart';
+import 'package:le_chef/services/session/session_service.dart';
 import '../../../Shared/customBottomNavBar.dart';
 import '../../Models/session.dart';
 import '../../Screens/admin/THome.dart';
@@ -37,6 +38,21 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
   bool level2 = false;
 
   bool level3 = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getSessions();
+  }
+
+  Future<void> getSessions()async {
+    try{
+      sessions = await SessionService.getSessions();
+      print('sessions Apiii: ${sessions.last.zoomMeetingId}');
+    }catch(e){
+      print('Error loading Sessions: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,12 +187,12 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
               ? 1
               : level2
               ? 2
-              : 3,),
+              : 3, null),
         ],
       );
     } else {
       if (sessions.isNotEmpty) {
-        return joinMeeting(context, role, null);
+        return joinMeeting(context, role, null, sessions[0].zoomMeetingId);
       } else {
         return meetingNotStarted(context);
       }

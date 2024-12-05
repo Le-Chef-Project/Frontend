@@ -31,7 +31,8 @@ class LoginService{
         SharedPrefes.saveUserName(json['username']);
         SharedPrefes.saveUserId(json['_id']);
         SharedPrefes.SaveRole(json['role']);
-        SharedPrefes.saveImg(json['image']['url']);
+        SharedPrefes.saveImg(json['image']?['url'] ??
+            'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg');
         if (json['role'] == "admin") {
           Get.off(const THome(),
               transition: Transition.fade,
