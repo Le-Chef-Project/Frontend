@@ -22,6 +22,7 @@ class OnlineSessionScreen extends StatefulWidget {
 class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
   final String? role = sharedPreferences!.getString('role');
   List<Session> sessions = [];
+  bool loading = true;
 
   // Future<List<Session>> getSessions() async {
   //   try{
@@ -41,13 +42,17 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
 
   @override
   void initState() {
-    super.initState();
     getSessions();
+    super.initState();
   }
 
   Future<void> getSessions()async {
     try{
-      sessions = await SessionService.getSessions();
+      var _sessions = await SessionService.getSessions();
+      setState(() {
+        sessions = _sessions;
+        loading = false;
+      });
       print('sessions Apiii: ${sessions.last.zoomMeetingId}');
     }catch(e){
       print('Error loading Sessions: $e');
@@ -191,11 +196,13 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
         ],
       );
     } else {
-      if (sessions.isNotEmpty) {
-        return joinMeeting(context, role, null, sessions[0].zoomMeetingId);
-      } else {
-        return meetingNotStarted(context);
-      }
+      if(loading) {
+        return CircularProgressIndicator();
+      }else if (sessions.isNotEmpty) {
+          return joinMeeting(context, role, null, sessions[0].zoomMeetingId);
+        } else {
+          return meetingNotStarted(context);
+        }
     }
   }
 }
