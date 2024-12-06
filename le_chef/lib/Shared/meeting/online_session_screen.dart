@@ -46,15 +46,15 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
     super.initState();
   }
 
-  Future<void> getSessions()async {
-    try{
+  Future<void> getSessions() async {
+    try {
       var _sessions = await SessionService.getSessions();
       setState(() {
         sessions = _sessions;
         loading = false;
       });
       print('sessions Apiii: ${sessions.last.zoomMeetingId}');
-    }catch(e){
+    } catch (e) {
       print('Error loading Sessions: $e');
     }
   }
@@ -111,11 +111,15 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
               break;
             case 3:
               if (role == 'admin') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
               }
           }
         },
-        context: context, userRole: role!,
+        context: context,
+        userRole: role!,
       ),
     );
   }
@@ -188,21 +192,25 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
           const SizedBox(
             height: 20,
           ),
-          joinMeeting(context, role, level1
-              ? 1
-              : level2
-              ? 2
-              : 3, null),
+          joinMeeting(
+              context,
+              role,
+              level1
+                  ? 1
+                  : level2
+                      ? 2
+                      : 3,
+              null),
         ],
       );
     } else {
-      if(loading) {
+      if (loading) {
         return CircularProgressIndicator();
-      }else if (sessions.isNotEmpty) {
-          return joinMeeting(context, role, null, sessions[0].zoomMeetingId);
-        } else {
-          return meetingNotStarted(context);
-        }
+      } else if (sessions.isNotEmpty) {
+        return joinMeeting(context, role, null, sessions.last.zoomMeetingId);
+      } else {
+        return meetingNotStarted(context);
+      }
     }
   }
 }

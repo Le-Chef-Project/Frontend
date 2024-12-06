@@ -8,7 +8,6 @@ import '../../Screens/user/Home.dart';
 
 Future<void> createSession(int level, BuildContext context) async {
   try {
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -36,7 +35,7 @@ Future<void> createSession(int level, BuildContext context) async {
     Navigator.pop(context);
 
     final Uri url = Uri.parse(link);
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $url';
     }
   } catch (e) {
@@ -54,8 +53,8 @@ Future<List<Student>> getStudents(int educationalLevel) async {
   return filteredStudents;
 }
 
-Future<void> join(String meetingId, BuildContext context) async{
-  try{
+Future<void> join(String meetingId, BuildContext context) async {
+  try {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -83,17 +82,17 @@ Future<void> join(String meetingId, BuildContext context) async{
     Navigator.pop(context);
 
     final Uri url = Uri.parse(link);
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
       throw 'Could not join $url';
     }
-
-  }catch(e){
+  } catch (e) {
     Navigator.pop(context);
     print('Error joining session: $e');
   }
 }
 
-Widget joinMeeting(BuildContext context, String? role, int? educationalLevel, String? meetingId) {
+Widget joinMeeting(BuildContext context, String? role, int? educationalLevel,
+    String? meetingId) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
     child: Column(
@@ -127,8 +126,9 @@ Widget joinMeeting(BuildContext context, String? role, int? educationalLevel, St
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: ElevatedButton(
-                      onPressed: () async{
-                        List<Student> stds = await getStudents(educationalLevel!);
+                      onPressed: () async {
+                        List<Student> stds =
+                            await getStudents(educationalLevel!);
                         createSession(educationalLevel, context);
                         // await ApisMethods.sendNotificationsToStudents(stds);
                         // Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));

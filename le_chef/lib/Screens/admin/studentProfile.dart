@@ -218,13 +218,13 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 16),
               buildDividerWithText("Personal info"),
               const SizedBox(height: 8),
-              _textfield('Username', _usernameController, Icons.person),
+              _textfield('Username', _usernameController, Icons.person, false),
               _buildPasswordField('Password', _passwordController, Icons.lock),
-              _textfield('Email', _emailController, Icons.email),
-              _textfield('Phone number', _phoneController, Icons.phone),
+              _textfield('Email', _emailController, Icons.email, false),
+              _textfield('Phone number', _phoneController, Icons.phone, true),
               if (widget.isStudent)
-                _textfield(
-                    'Academic Stage', _educationLevelController, Icons.school),
+                _textfield('Academic Stage', _educationLevelController,
+                    Icons.school, true),
               const SizedBox(height: 50),
               SizedBox(
                 width: double.infinity,
@@ -253,8 +253,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _textfield(
-      String label, TextEditingController controller, IconData icon) {
+  Widget _textfield(String label, TextEditingController controller,
+      IconData icon, bool enable) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: Column(
@@ -274,6 +274,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 8),
           TextFormField(
+            enabled: widget.isStudent || enable,
             controller: controller,
             decoration: textInputDecoration.copyWith(
               hintText: label,
@@ -281,6 +282,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon,
                 color: const Color(0xFF164863),
               ),
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
             ),
           ),
         ],

@@ -313,8 +313,10 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                     isStudent: false, admin: admin!)));
                       }
                     },
-                    child:
-                        CircleAvatar(child: Image.network(admin!.imageUrl!))),
+                    child: CircleAvatar(
+                      child: Image.network(admin!.imageUrl!),
+                      radius: 25,
+                    )),
                 actions: [
                   GestureDetector(
                     onTap: () {
