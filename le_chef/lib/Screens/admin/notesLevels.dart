@@ -65,7 +65,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
               buttonText: 'Add to Notes',
               context,
               'Total Items in Notes',
-              '150',
+              '10',
               ontap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const addNotes()),
@@ -127,7 +127,8 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -138,11 +139,15 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },
-          context: context, userRole: role!,
+          context: context,
+          userRole: role!,
         ),
       ),
     );

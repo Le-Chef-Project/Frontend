@@ -10,6 +10,9 @@ Widget totalStudent(
   String? buttonText,
   Function? ontap,
   bool isLibrary = false,
+  int? videoslenght,
+  int? pdfslenght,
+  int? examsslenght,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 16),
@@ -76,9 +79,9 @@ Widget totalStudent(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  customExamContainer('50', 'Videos'),
-                  customExamContainer('50', 'Books'),
-                  customExamContainer('60', 'PDFs')
+                  customExamContainer(videoslenght, 'Videos'),
+                  customExamContainer(pdfslenght, 'Books'),
+                  customExamContainer(pdfslenght, 'PDFs')
                 ],
               ),
             ),

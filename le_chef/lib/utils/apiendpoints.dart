@@ -7,6 +7,7 @@ class ApiEndPoints {
   static Chat chat = Chat();
   static Payment payment = Payment();
   static Session session = Session();
+  static Notification notification = Notification();
 }
 
 class AuthEndPoint {
@@ -67,4 +68,10 @@ class Session {
   final createSession = 'zoom/create-zoom-meeting';
   final getSession = 'zoom/get-zoom-meetings';
   final joinSession = 'zoom/join-zoom-meeting';
+}
+
+class Notification{
+  final getAdminNotification = 'Notifications/AdminNotification';
+  final getUserNotification = 'Notifications/UserNotification';
+
 }

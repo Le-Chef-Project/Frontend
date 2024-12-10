@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/chats/chats.dart';
@@ -43,19 +42,26 @@ class _HomeState extends State<Home> {
   bool _isLoading_notes = true;
   List<PDF>? _pdfs;
   bool _isLoading_pdfs = true;
+  int libraryLength = 0;
+  int videosLength = 0;
 
-  Future<List<Video>>? _VideosFuture;
+  Future<List<Video>>? _videosFuture;
 
   @override
   void initState() {
     super.initState();
-    _VideosFuture = _fetchAndSortVideos();
-    getExams();
-    getNotes();
-    getPDFs();
+    _videosFuture = _fetchAndSortVideos();
+    _videosFuture!.then((videos) {
+      setState(() {
+        videosLength = videos.length;
+      });
+    });
+    getpdf();
+    getexams();
+    getnotes();
   }
 
-  Future<void> getExams() async {
+  Future<void> getexams() async {
     _exams = await QuizService.getAllQuizzes();
     print('apiii $_exams + ${_exams?.length}');
 
@@ -65,23 +71,23 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future<void> getNotes() async {
-    _notes = await NoteService.fetchAllNotes();
-    print('apiii $_notes + ${_notes?.length}');
-
-    _notes = _notes?.where((note) => note.educationLevel == level).toList();
-    setState(() {
-      _isLoading_notes = false;
-    });
-  }
-
-  Future<void> getPDFs() async {
+  Future<void> getpdf() async {
     _pdfs = await MediaService().fetchAllPDFs();
     print('apiii $_pdfs + ${_pdfs?.length}');
 
     _pdfs = _pdfs?.where((pdf) => pdf.educationLevel == level).toList();
     setState(() {
       _isLoading_pdfs = false;
+      libraryLength += _pdfs!.length ?? 0;
+    });
+  }
+
+  Future<void> getnotes() async {
+    _notes = await NoteService.fetchAllNotes();
+
+    _notes = _notes?.where((note) => note.educationLevel == level).toList();
+    setState(() {
+      _isLoading_notes = false;
     });
   }
 
@@ -97,6 +103,9 @@ class _HomeState extends State<Home> {
     filteredVideos.sort((a, b) =>
         DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
 
+    setState(() {
+      libraryLength += filteredVideos.length ?? 0;
+    });
     print("Sorted Videos: ${filteredVideos.length}");
     return filteredVideos;
   }
@@ -116,7 +125,7 @@ class _HomeState extends State<Home> {
               logged_img ??
                   'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
             ),
-            backgroundColor: Colors.white, 
+            backgroundColor: Colors.white,
           ),
           actions: [
             GestureDetector(
@@ -220,7 +229,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               FutureBuilder<List<Video>>(
-                  future: _VideosFuture,
+                  future: _videosFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -295,7 +304,7 @@ class _HomeState extends State<Home> {
                       child: _buildCardRec(context,
                           Title: "Library",
                           Number:
-                              _isLoading_pdfs ? '...' : '${_pdfs?.length ?? 0}',
+                              _isLoading_pdfs ? '...' : '${libraryLength ?? 0}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Get.to(
                               () => LibraryTabContainerScreen(

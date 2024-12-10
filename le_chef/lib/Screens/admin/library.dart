@@ -16,7 +16,18 @@ import 'addLibrary.dart';
 
 class LibraryTabContainerScreen extends StatefulWidget {
   final int selectedLevel;
-  const LibraryTabContainerScreen({super.key, required this.selectedLevel});
+  final int? pdfLength;
+  final int? examsLength;
+  final int? videosLength;
+  final int? libraryLength;
+
+  const LibraryTabContainerScreen(
+      {super.key,
+      required this.selectedLevel,
+      this.pdfLength,
+      this.libraryLength,
+      this.examsLength,
+      this.videosLength});
 
   @override
   LibraryTabContainerScreenState createState() =>
@@ -64,7 +75,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                     buttonText: 'Add to Library',
                     context,
                     'Total Items in Library',
-                    '150',
+                    '${widget.libraryLength}',
                     isLibrary: true,
                     ontap: () => Navigator.push(
                       context,
@@ -151,7 +162,8 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -162,11 +174,15 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },
-          context: context, userRole: role!,
+          context: context,
+          userRole: role!,
         ),
       ),
     );

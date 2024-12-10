@@ -18,6 +18,7 @@ import 'package:le_chef/services/student/student_service.dart';
 
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
+import '../../Models/Video.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/login.dart';
 import '../../Shared/meeting/online_session_screen.dart';
@@ -57,7 +58,10 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isLoading_notes = true;
   List<PDF>? _pdfs;
   bool _isLoading_pdfs = true;
+  List<Video>? _videos;
+  bool _isLoading_videos = true;
 
+  int libraryLength = 0;
   @override
   void initState() {
     super.initState();
@@ -70,17 +74,25 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
       curve: Curves.easeInOut,
     );
     getStd();
-    getExams();
+    getLibrary();
     getNotes();
-    getPDFs();
     getAdmin();
+    getexams();
   }
 
-  Future<void> getExams() async {
-    _exams = await QuizService.getAllQuizzes();
-    print('apiii $_exams + ${_exams?.length}');
+  Future<void> getLibrary() async {
+    _pdfs = await MediaService().fetchAllPDFs();
+    print('apiii $_pdfs + ${_pdfs?.length}');
+
     setState(() {
-      _isLoading_Exams = false;
+      _isLoading_pdfs = false;
+      libraryLength = libraryLength + _pdfs!.length ?? 0;
+    });
+
+    _videos = await MediaService.fetchAllVideos();
+    setState(() {
+      _isLoading_videos = false;
+      libraryLength = libraryLength + _videos!.length ?? 0;
     });
   }
 
@@ -92,11 +104,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     });
   }
 
-  Future<void> getPDFs() async {
-    _pdfs = await MediaService().fetchAllPDFs();
-    print('apiii $_pdfs + ${_pdfs?.length}');
+  Future<void> getexams() async {
+    _exams = await QuizService.getAllQuizzes();
+    print('apiii $_exams + ${_exams?.length}');
+
     setState(() {
-      _isLoading_pdfs = false;
+      _isLoading_Exams = false;
     });
   }
 
@@ -413,8 +426,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Library",
-                          Number:
-                              _isLoading_pdfs ? '...' : '${_pdfs?.length ?? 0}',
+                          Number: _isLoading_pdfs ? '...' : '${libraryLength}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Navigator.push(
                             context,
