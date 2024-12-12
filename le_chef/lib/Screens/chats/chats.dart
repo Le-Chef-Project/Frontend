@@ -9,11 +9,13 @@ import 'package:le_chef/Shared/customBottomNavBar.dart';
 import 'package:le_chef/services/messaging/direct_message.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 
+import '../../Models/Admin.dart';
 import '../../Models/group.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../Widgets/dialog_with_two_buttons.dart';
 import '../../main.dart';
+import '../../services/auth/admin_service.dart';
 import '../../theme/custom_text_style.dart';
 import '../../theme/theme_helper.dart';
 import '../notification.dart';
@@ -375,8 +377,8 @@ class _ChatsState extends State<Chats> {
     if (role != 'admin' && (chats == null || chats!.isEmpty)) {
       return Row(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(
@@ -391,7 +393,7 @@ class _ChatsState extends State<Chats> {
                   name: 'Hany Azmy',
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Tab to send a message',
                   // style: Theme.of(context).textTheme.bodyText2,
                 ),
@@ -401,7 +403,7 @@ class _ChatsState extends State<Chats> {
     }
 
     if (role == 'admin' && (chats == null || chats!.isEmpty)) {
-      return const Center(child: Text('no Chats yet'));
+      return Center(child: Text('no Chats yet'));
     }
 
     return SingleChildScrollView(
@@ -691,7 +693,7 @@ class _ChatsState extends State<Chats> {
               child: Text(time,
                   style: CustomTextStyles.bodySmallTeal900
                       .copyWith(color: appTheme.teal900)))
-          : const SizedBox.shrink()
+          : SizedBox.shrink()
     ]);
   }
 }
