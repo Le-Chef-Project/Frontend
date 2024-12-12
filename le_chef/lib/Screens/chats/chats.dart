@@ -9,11 +9,13 @@ import 'package:le_chef/Shared/customBottomNavBar.dart';
 import 'package:le_chef/services/messaging/direct_message.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 
+import '../../Models/Admin.dart';
 import '../../Models/group.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../Widgets/dialog_with_two_buttons.dart';
 import '../../main.dart';
+import '../../services/auth/admin_service.dart';
 import '../../theme/custom_text_style.dart';
 import '../../theme/theme_helper.dart';
 import '../notification.dart';
@@ -373,35 +375,48 @@ class _ChatsState extends State<Chats> {
 
   Widget personalChat(BuildContext context) {
     if (role != 'admin' && (chats == null || chats!.isEmpty)) {
-      return Row(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(
-                    'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg')),
-          ),
-          Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                _buildHeader(
-                  context,
-                  name: 'Hany Azmy',
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Tab to send a message',
-                  // style: Theme.of(context).textTheme.bodyText2,
-                ),
-              ]))
-        ],
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    receiverId: '67085c58db26c90500708af9',
+                    receiverName:
+                    'Hany Azmy',
+                    person: true,
+                  )));
+        },
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                      'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg')),
+            ),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  _buildHeader(
+                    context,
+                    name: 'Hany Azmy',
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tab to send a message',
+                    // style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ]))
+          ],
+        ),
       );
     }
 
     if (role == 'admin' && (chats == null || chats!.isEmpty)) {
-      return const Center(child: Text('no Chats yet'));
+      return Center(child: Text('no Chats yet'));
     }
 
     return SingleChildScrollView(
@@ -691,7 +706,7 @@ class _ChatsState extends State<Chats> {
               child: Text(time,
                   style: CustomTextStyles.bodySmallTeal900
                       .copyWith(color: appTheme.teal900)))
-          : const SizedBox.shrink()
+          : SizedBox.shrink()
     ]);
   }
 }

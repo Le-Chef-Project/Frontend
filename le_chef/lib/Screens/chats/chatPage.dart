@@ -642,7 +642,7 @@ class _ChatPageState extends State<ChatPage> {
       return PersonalChatAppBar(
         username: widget.receiverName ?? 'Chat',
         avatarUrl:
-        'assets/default_image_profile.png',
+        'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
         onBackPressed: () => Navigator.pop(context),
       );
     }
