@@ -62,6 +62,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isLoading_videos = true;
 
   int libraryLength = 0;
+
   @override
   void initState() {
     super.initState();
@@ -431,8 +432,13 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                           onTapCardRec: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const ExamLibraryLevels(title: 'Library')),
+                                builder: (context) => ExamLibraryLevels(
+                                      title: 'Library',
+                                      libraryLength: libraryLength,
+                                      examsLength: _exams?.length ?? 0,
+                                      videosLength: _videos?.length ?? 0,
+                                      pdfLength: _pdfs?.length ?? 0,
+                                    )),
                           ),
                         ),
                       ),
