@@ -48,9 +48,9 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
 
   Future<void> getSessions() async {
     try {
-      var _sessions = await SessionService.getSessions();
+      var sessions = await SessionService.getSessions();
       setState(() {
-        sessions = _sessions;
+        sessions = sessions;
         loading = false;
       });
       print('sessions Apiii: ${sessions.last.zoomMeetingId}');
@@ -205,7 +205,7 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
       );
     } else {
       if (loading) {
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       } else if (sessions.isNotEmpty) {
         return joinMeeting(context, role, null, sessions.last.zoomMeetingId);
       } else {

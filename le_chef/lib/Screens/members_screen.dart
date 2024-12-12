@@ -200,7 +200,7 @@ class _MembersScreenState extends State<MembersScreen> {
                               radius: 25,
                               backgroundImage: members[index]['image'] != null
                                   ? NetworkImage(members[index]['image']['url'])
-                                  : NetworkImage(
+                                  : const NetworkImage(
                                       'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YyIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                             ),
                             title: Text(

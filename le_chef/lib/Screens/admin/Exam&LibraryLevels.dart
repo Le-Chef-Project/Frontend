@@ -14,7 +14,11 @@ import 'THome.dart';
 
 class ExamLibraryLevels extends StatefulWidget {
   final String title;
-  const ExamLibraryLevels({super.key, required this.title});
+  final int? libraryLength;
+  final int? pdfLength;
+  final int? examsLength;
+  final int? videosLength;
+  const ExamLibraryLevels({super.key, required this.title, this.libraryLength, this.pdfLength, this.examsLength, this.videosLength});
 
   @override
   State<ExamLibraryLevels> createState() => _ExamLibraryLevelsState();
@@ -58,6 +62,10 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
                                     builder: (context) =>
                                         LibraryTabContainerScreen(
                                           selectedLevel: index + 1,
+                                          libraryLength: widget.libraryLength,
+                                          examsLength: widget.examsLength,
+                                          pdfLength: widget.pdfLength,
+                                          videosLength: widget.videosLength,
                                         )),
                               );
                       },

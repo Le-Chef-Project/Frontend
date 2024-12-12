@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
-import 'package:le_chef/services/content/media_service.dart';
 import 'package:le_chef/services/content/note_service.dart';
 
 import '../../Shared/custom_elevated_button.dart';

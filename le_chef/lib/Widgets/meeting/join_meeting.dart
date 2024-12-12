@@ -15,8 +15,8 @@ Future<void> createSession(int level, BuildContext context) async {
         return Center(
           child: Card(
             child: Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
+              padding: const EdgeInsets.all(20),
+              child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(),
@@ -62,8 +62,8 @@ Future<void> join(String meetingId, BuildContext context) async {
         return Center(
           child: Card(
             child: Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
+              padding: const EdgeInsets.all(20),
+              child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(),
