@@ -41,6 +41,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
+  final TextEditingController _levelController = TextEditingController();
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -82,8 +83,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   Future<void> getLibrary() async {
-    _pdfs = await MediaService().fetchAllPDFs();
-    print('apiii $_pdfs + ${_pdfs?.length}');
+    _pdfs = await MediaService.fetchAllPDFs();
+    print('pdf length + ${_pdfs?.length}');
 
     setState(() {
       _isLoading_pdfs = false;
@@ -91,6 +92,8 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     });
 
     _videos = await MediaService.fetchAllVideos();
+    print('pdf length + ${_videos?.length}');
+
     setState(() {
       _isLoading_videos = false;
       libraryLength = libraryLength + _videos!.length ?? 0;
@@ -107,7 +110,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getexams() async {
     _exams = await QuizService.getAllQuizzes();
-    print('apiii $_exams + ${_exams?.length}');
+    print('apiii exams $_exams + ${_exams?.length}');
 
     setState(() {
       _isLoading_Exams = false;
@@ -289,7 +292,9 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
         _phoneController.text.toString(),
         _userNameController.text.toString(),
         _firstnameController.text.toString(),
-        _lastnameController.text.toString());
+        _lastnameController.text.toString(),
+        _levelController.text.toString(),
+        );
     if (Mess == 'success') {
       Future.delayed(const Duration(milliseconds: 300), () {
         _showSuccessDialogWithFade();
@@ -305,6 +310,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     _userNameController.clear();
     _firstnameController.clear();
     _lastnameController.clear();
+    _levelController.clear();
   }
 
   @override
@@ -896,6 +902,32 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Enter Your Phone';
+                                          } //TODO
+                                          //check isFound or not
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: 275,
+                                        child: Text(
+                                          'Add Level',
+                                          style: GoogleFonts.ibmPlexMono(
+                                            color: const Color(0xFF164863),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextFormField(
+                                        controller: _levelController,
+                                        decoration: textInputDecoration
+                                            .copyWith(hintText: 'Level'),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter an Level';
                                           } //TODO
                                           //check isFound or not
                                           return null;

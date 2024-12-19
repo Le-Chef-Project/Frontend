@@ -8,14 +8,15 @@ import '../../utils/apiendpoints.dart';
 import '../../Models/Student.dart';
 import '../../main.dart';
 
-class StudentService{
+class StudentService {
   static Future<String> AddStudent(
       emailController,
       passwordController,
       phoneController,
       usernameController,
       firstnameController,
-      lastnameController) async {
+      lastnameController,
+      levelController) async {
     String? Mess;
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.AddStudent);
@@ -24,7 +25,8 @@ class StudentService{
         phoneController.isNotEmpty &&
         usernameController.isNotEmpty &&
         firstnameController.isNotEmpty &&
-        lastnameController.isNotEmpty) {
+        lastnameController.isNotEmpty &&
+        levelController.isNotEmpty) {
       http.Response response = await http.post(url,
           headers: {'Content-Type': 'application/json', 'token': token!},
           body: jsonEncode({
@@ -33,7 +35,8 @@ class StudentService{
             'phone': phoneController,
             'username': usernameController,
             'firstName': firstnameController,
-            'lastName': lastnameController
+            'lastName': lastnameController,
+            'educationLevel': levelController
           }));
       final json = jsonDecode(response.body);
       if (response.statusCode == 201) {

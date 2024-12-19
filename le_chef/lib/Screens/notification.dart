@@ -328,7 +328,7 @@ class NotificationItem extends StatelessWidget {
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const NotesTabContainerScreen(),
+                  builder: (context) =>  NotesTabContainerScreen(),
                 ),
               )
             : Navigator.push(

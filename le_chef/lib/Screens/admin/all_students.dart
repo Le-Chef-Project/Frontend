@@ -298,7 +298,7 @@ class _AllStudentsState extends State<AllStudents> {
                                   decoration: ShapeDecoration(
                                     color: currentPage == i
                                         ? const Color(0xFF427D9D)
-                                        : const Color(0xFFC2D8E3),
+                                        : Colors.grey[100],
                                     shape: const CircleBorder(),
                                   ),
                                   child: Center(

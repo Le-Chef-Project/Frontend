@@ -57,7 +57,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
           .where((quiz) =>
               quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
           .toList();
-      print('Filtered meeting for unit $selectedUnit: ${_filteredExams.length}');
+      print('Filtered Exams for unit $selectedUnit: ${_filteredExams.length}');
 
       for (var exam in _filteredExams) {
         print(
@@ -74,9 +74,9 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
         _isLoading = false;
         _filterExams();
       });
-      print('Total meeting loaded: ${_exams.length}');
+      print('Total Exams loaded: ${_exams.length}');
     } catch (e) {
-      print('Error loading meeting: $e');
+      print('Error loading Exams: $e');
       setState(() {
         _isLoading = false;
       });
@@ -170,7 +170,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
               child: _filteredExams.isEmpty
                   ? Center(
                       child: Text(
-                        'No meeting available for Unit $selectedUnit',
+                        'No Exams available for Unit $selectedUnit',
                         style: GoogleFonts.ibmPlexMono(
                           fontSize: 16,
                           color: Colors.grey[600],
@@ -221,7 +221,8 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -232,11 +233,15 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },
-          context: context, userRole: role!,
+          context: context,
+          userRole: role!,
         ),
       ),
     );

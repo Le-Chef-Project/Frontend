@@ -72,7 +72,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getpdf() async {
-    _pdfs = await MediaService().fetchAllPDFs();
+    _pdfs = await MediaService.fetchAllPDFs();
     print('apiii $_pdfs + ${_pdfs?.length}');
 
     _pdfs = _pdfs?.where((pdf) => pdf.educationLevel == level).toList();
@@ -243,7 +243,7 @@ class _HomeState extends State<Home> {
                     return SizedBox(
                       height: 250,
                       child: ListView.builder(
-                        itemCount: 3,
+                        itemCount: videosLength > 3 ? 3 : videosLength,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           final video = Videos[index];

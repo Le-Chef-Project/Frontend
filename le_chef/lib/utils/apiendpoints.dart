@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.3:3000/";
+  static const String baseUrl = "http://192.168.1.2:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -70,8 +70,7 @@ class Session {
   final joinSession = 'zoom/join-zoom-meeting';
 }
 
-class Notification{
+class Notification {
   final getAdminNotification = 'Notifications/AdminNotification';
   final getUserNotification = 'Notifications/UserNotification';
-
 }

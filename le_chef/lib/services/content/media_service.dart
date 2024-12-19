@@ -156,7 +156,7 @@ class MediaService{
     }
   }
 
-  Future<List<PDF>> fetchAllPDFs() async {
+  static Future<List<PDF>> fetchAllPDFs() async {
     var url =
     Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allPDFs);
     http.Response response = await http.get(

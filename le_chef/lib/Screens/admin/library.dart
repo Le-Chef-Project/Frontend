@@ -47,7 +47,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
   void initState() {
     super.initState();
     tabviewController = TabController(
-      length: role == 'admin' ? 3 : 4,
+      length: role == 'admin' ? 2 : 3,
       vsync: this,
     );
     // Add listener for tab changes
@@ -110,12 +110,10 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                 tabs: role == 'admin'
                     ? [
                         const Tab(child: Text('Videos')),
-                        const Tab(child: Text('Books')),
                         const Tab(child: Text('PDFs')),
                       ]
                     : [
                         const Tab(child: Text('Videos')),
-                        const Tab(child: Text('Books')),
                         const Tab(child: Text('PDFs')),
                         const Tab(
                           child: Text('Exams Results'),
@@ -130,12 +128,10 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                 children: role == 'admin'
                     ? [
                         VideoListScreen(selectedLevel: widget.selectedLevel),
-                        const Text('hello'),
                         AllPDFs(selectedLevel: widget.selectedLevel),
                       ]
                     : [
                         VideoListScreen(selectedLevel: widget.selectedLevel),
-                        const Text('hello'),
                         AllPDFs(selectedLevel: widget.selectedLevel),
                         const ExamsResults(),
                       ],

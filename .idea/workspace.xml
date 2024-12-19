@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="updates">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Api/apiendpoints.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Api/apiendpoints.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/Screens/members_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/Screens/members_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/le_chef/windows/flutter/generated_plugins.cmake" afterDir="false" />
-    </list>
+    <list default="true" id="03543131-59e0-4320-9fa7-6bee3883164f" name="Changes" comment="updates" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

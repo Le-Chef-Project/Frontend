@@ -7,16 +7,19 @@ class PDF {
   final bool paid;
   final int amountToPay;
   final int educationLevel;
+  final String createdAt; // Ensure this is defined
 
-  PDF(
-      {required this.id,
-      required this.description,
-      required this.title,
-      required this.url,
-      required this.paid,
-      required this.educationLevel,
-      required this.isLocked,
-      required this.amountToPay});
+  PDF({
+    required this.id,
+    required this.description,
+    required this.title,
+    required this.url,
+    required this.paid,
+    required this.educationLevel,
+    required this.isLocked,
+    required this.amountToPay,
+    required this.createdAt, // Ensure this is defined
+  });
 
   factory PDF.fromjson(dynamic json) {
     return PDF(
@@ -28,6 +31,7 @@ class PDF {
       isLocked: json['isLocked'] as bool? ?? false,
       paid: json['paid'] as bool? ?? false,
       amountToPay: json['amountToPay'] as int? ?? 0,
+      createdAt: json['createdAt'] as String? ?? '',
     );
   }
 

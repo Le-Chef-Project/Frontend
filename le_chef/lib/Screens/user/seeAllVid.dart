@@ -88,10 +88,16 @@ class _AllVidState extends State<AllVid> {
   }
 
   Future<List<Video>> _applyDateFilter(List<String> selectedRanges) async {
+    // Fetch all videos
     final allVideos = await MediaService.fetchAllVideos();
+
+    // Apply both filters: education level and date range
     final filteredVideos = allVideos.where((video) {
       final videoDateText = _getDateText(video.createdAt);
-      return selectedRanges.contains(videoDateText);
+
+      // Ensure both conditions are satisfied
+      return video.educationLevel == level &&
+          selectedRanges.contains(videoDateText);
     }).toList();
 
     // Sort the filtered videos
@@ -167,7 +173,8 @@ class _AllVidState extends State<AllVid> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 15),
                         child: Text(
                           "Show Results",
                           style: GoogleFonts.ibmPlexMono(
@@ -190,7 +197,8 @@ class _AllVidState extends State<AllVid> {
                         Navigator.pop(context);
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 15),
                         child: Text(
                           "Reset",
                           style: GoogleFonts.ibmPlexMono(
@@ -214,7 +222,7 @@ class _AllVidState extends State<AllVid> {
         setState(() {
           _VideosFuture = _applyDateFilter(selectedRanges);
         });
-      }else{
+      } else {
         setState(() {
           _VideosFuture = _fetchAndSortVideos();
         });
