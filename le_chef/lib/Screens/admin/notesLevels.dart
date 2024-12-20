@@ -27,6 +27,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int currentIndex = 0;
   List<dynamic> members = [];
+  int? _NotesLength = sharedPreferences!.getInt('NotesLength') ?? 0;
 
   String? role = sharedPreferences!.getString('role');
 
@@ -65,7 +66,7 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
               buttonText: 'Add to Notes',
               context,
               'Total Items in Notes',
-              '10',
+              '${_NotesLength}',
               ontap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const addNotes()),

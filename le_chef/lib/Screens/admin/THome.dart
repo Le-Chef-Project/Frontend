@@ -25,6 +25,7 @@ import '../../Shared/meeting/online_session_screen.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../main.dart';
 import '../../theme/custom_button_style.dart';
+import '../../utils/SharedPrefes.dart';
 import '../notification.dart';
 import 'Exam&LibraryLevels.dart';
 
@@ -61,8 +62,10 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   bool _isLoading_pdfs = true;
   List<Video>? _videos;
   bool _isLoading_videos = true;
-
-  int libraryLength = 0;
+  int? _PDFsLength;
+  int? _VideosLength;
+  int? _NotesLength;
+  int? _ExamsLength;
 
   @override
   void initState() {
@@ -80,6 +83,13 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     getNotes();
     getAdmin();
     getexams();
+    // Add null checks when accessing sharedPreferences
+    if (sharedPreferences != null) {
+      _PDFsLength = sharedPreferences!.getInt('PDFsLength') ?? 0;
+      _NotesLength = sharedPreferences!.getInt('NotesLength') ?? 0;
+      _VideosLength = sharedPreferences!.getInt('VideosLength') ?? 0;
+      _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
+    }
   }
 
   Future<void> getLibrary() async {
@@ -88,7 +98,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
     setState(() {
       _isLoading_pdfs = false;
-      libraryLength = libraryLength + _pdfs!.length ?? 0;
+      SharedPrefes.savePDFsLength(_pdfs?.length ?? 0);
     });
 
     _videos = await MediaService.fetchAllVideos();
@@ -96,7 +106,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
     setState(() {
       _isLoading_videos = false;
-      libraryLength = libraryLength + _videos!.length ?? 0;
+      SharedPrefes.saveVideosLength(_videos?.length ?? 0);
     });
   }
 
@@ -105,6 +115,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     print('apiii $_notes + ${_notes?.length}');
     setState(() {
       _isLoading_notes = false;
+      SharedPrefes.saveNotesLength(_notes?.length ?? 0);
     });
   }
 
@@ -114,6 +125,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
     setState(() {
       _isLoading_Exams = false;
+      SharedPrefes.saveExamsLength(_exams?.length ?? 0);
     });
   }
 
@@ -287,14 +299,14 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     Get.back();
     String Mess;
     Mess = await StudentService.AddStudent(
-        _emailController.text.toString(),
-        _passwordController.text.toString(),
-        _phoneController.text.toString(),
-        _userNameController.text.toString(),
-        _firstnameController.text.toString(),
-        _lastnameController.text.toString(),
-        _levelController.text.toString(),
-        );
+      _emailController.text.toString(),
+      _passwordController.text.toString(),
+      _phoneController.text.toString(),
+      _userNameController.text.toString(),
+      _firstnameController.text.toString(),
+      _lastnameController.text.toString(),
+      _levelController.text.toString(),
+    );
     if (Mess == 'success') {
       Future.delayed(const Duration(milliseconds: 300), () {
         _showSuccessDialogWithFade();
@@ -416,9 +428,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Exams",
-                          Number: _isLoading_Exams
-                              ? "..."
-                              : "${_exams?.length ?? 0}",
+                          Number: _isLoading_Exams ? "..." : "${_ExamsLength!}",
                           ImagePath: 'assets/Wonder Learners Graduating.png',
                           onTapCardRec: () => Navigator.push(
                             context,
@@ -433,17 +443,15 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Library",
-                          Number: _isLoading_pdfs ? '...' : '$libraryLength',
+                          Number: _isLoading_pdfs
+                              ? '...'
+                              : '${_PDFsLength! + _VideosLength!}',
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ExamLibraryLevels(
                                       title: 'Library',
-                                      libraryLength: libraryLength,
-                                      examsLength: _exams?.length ?? 0,
-                                      videosLength: _videos?.length ?? 0,
-                                      pdfLength: _pdfs?.length ?? 0,
                                     )),
                           ),
                         ),
@@ -459,9 +467,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                         child: _buildCardRec(
                           context,
                           Title: "Notes",
-                          Number: _isLoading_notes
-                              ? '...'
-                              : '${_notes?.length ?? 0}',
+                          Number: _isLoading_notes ? '...' : '${_NotesLength!}',
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Navigator.push(
                             context,

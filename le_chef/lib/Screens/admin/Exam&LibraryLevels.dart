@@ -14,11 +14,8 @@ import 'THome.dart';
 
 class ExamLibraryLevels extends StatefulWidget {
   final String title;
-  final int? libraryLength;
-  final int? pdfLength;
-  final int? examsLength;
-  final int? videosLength;
-  const ExamLibraryLevels({super.key, required this.title, this.libraryLength, this.pdfLength, this.examsLength, this.videosLength});
+
+  const ExamLibraryLevels({super.key, required this.title});
 
   @override
   State<ExamLibraryLevels> createState() => _ExamLibraryLevelsState();
@@ -62,10 +59,6 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
                                     builder: (context) =>
                                         LibraryTabContainerScreen(
                                           selectedLevel: index + 1,
-                                          libraryLength: widget.libraryLength,
-                                          examsLength: widget.examsLength,
-                                          pdfLength: widget.pdfLength,
-                                          videosLength: widget.videosLength,
                                         )),
                               );
                       },
@@ -111,7 +104,8 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -122,11 +116,15 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },
-          context: context, userRole: role!,
+          context: context,
+          userRole: role!,
         ),
       ),
     );

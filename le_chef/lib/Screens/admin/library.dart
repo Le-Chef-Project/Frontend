@@ -39,6 +39,8 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
   String? role = sharedPreferences!.getString('role');
+  int? _PDFsLength = sharedPreferences!.getInt('PDFsLength') ?? 0;
+  int? _VideosLength = sharedPreferences!.getInt('VideosLength') ?? 0;
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   int currentIndex = 0; // Add this to track current tab index
@@ -75,13 +77,15 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                     buttonText: 'Add to Library',
                     context,
                     'Total Items in Library',
-                    '${widget.libraryLength}',
+                    '${_PDFsLength! + _VideosLength!}',
                     isLibrary: true,
                     ontap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const AddLibrary()),
                     ),
+                    videoslenght: _VideosLength,
+                    pdfslenght: _PDFsLength,
                   )
                 : Center(
                     child: Image.asset(

@@ -31,6 +31,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   List<Quiz> _exams = [];
   List<Quiz> _filteredExams = [];
   List _units = [];
+  int? _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
 
   @override
   void initState() {
@@ -114,7 +115,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             role == 'admin'
-                ? totalStudent(context, 'Total Exams', '${_exams.length}',
+                ? totalStudent(context, 'Total Exams', '${_ExamsLength}',
                     buttonText: 'Add Exam', ontap: () {
                     Navigator.push(
                         context,

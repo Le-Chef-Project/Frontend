@@ -80,7 +80,6 @@ Widget totalStudent(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   customExamContainer(videoslenght, 'Videos'),
-                  customExamContainer(pdfslenght, 'Books'),
                   customExamContainer(pdfslenght, 'PDFs')
                 ],
               ),
