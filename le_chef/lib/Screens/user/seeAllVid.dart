@@ -322,6 +322,7 @@ class _AllVidState extends State<AllVid> {
                           final video = videos[index];
                           return Smallcard(
                             id: video.id,
+                            type: 'Video',
                             Title: video.title,
                             description: video.description,
                             imageurl: 'assets/desk_book_apple.jpeg',

@@ -38,7 +38,13 @@ class ChatPage extends StatefulWidget {
   final String? chatRoom;
   final bool person;
 
-  const ChatPage({Key? key, this.group, this.receiverId, required this.person, this.receiverName, this.chatRoom})
+  const ChatPage(
+      {Key? key,
+      this.group,
+      this.receiverId,
+      required this.person,
+      this.receiverName,
+      this.chatRoom})
       : super(key: key);
 
   @override
@@ -105,8 +111,13 @@ class _ChatPageState extends State<ChatPage> {
             images: [File(image.path)],
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
-        }else{
-          await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Image', images: [File(image.path)],);
+        } else {
+          await GrpMsgService.sendgrpMsg(
+            group: widget.group!.id,
+            sender: _user.id,
+            content: 'Image',
+            images: [File(image.path)],
+          );
         }
       } catch (e) {
         print('Error sending image message: $e');
@@ -142,9 +153,13 @@ class _ChatPageState extends State<ChatPage> {
             documents: [File(result.files.single.path!)],
             createdAt: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
           );
-        }else{
-          await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Documents', documents: [File(result.files.single.path!)],);
-
+        } else {
+          await GrpMsgService.sendgrpMsg(
+            group: widget.group!.id,
+            sender: _user.id,
+            content: 'Documents',
+            documents: [File(result.files.single.path!)],
+          );
         }
       } catch (e) {
         print('Error sending file message: $e');
@@ -339,7 +354,7 @@ class _ChatPageState extends State<ChatPage> {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-        await DirectMsgService.getDirectMessages(widget.chatRoom!);
+            await DirectMsgService.getDirectMessages(widget.chatRoom!);
 
         convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
@@ -347,9 +362,8 @@ class _ChatPageState extends State<ChatPage> {
 
           return types.Message.fromJson({
             'author': {
-              'id': msg.sender != widget.receiverId
-                  ? _user.id
-                  : widget.receiverId
+              'id':
+                  msg.sender != widget.receiverId ? _user.id : widget.receiverId
             },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
@@ -359,15 +373,14 @@ class _ChatPageState extends State<ChatPage> {
         }).toList();
       } else {
         print('Group id: ${widget.group!.id}');
-        final GroupChat groupChat = await GrpMsgService.getGrpMessages(widget.group!.id);
+        final GroupChat groupChat =
+            await GrpMsgService.getGrpMessages(widget.group!.id);
 
         convertedMessages = groupChat.messages.map((msg) {
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
           return types.Message.fromJson({
-            'author': {
-              'id': _user.id
-            },
+            'author': {'id': _user.id},
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
             'type': _getMessageType(msg),
@@ -496,7 +509,11 @@ class _ChatPageState extends State<ChatPage> {
             print("Error: Audio data is empty.");
           }
         } else {
-          await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: 'Audio', audio: audioData);
+          await GrpMsgService.sendgrpMsg(
+              group: widget.group!.id,
+              sender: _user.id,
+              content: 'Audio',
+              audio: audioData);
         }
       } catch (e) {
         print('Error sending audio message: $e');
@@ -583,7 +600,8 @@ class _ChatPageState extends State<ChatPage> {
               DateTime.fromMillisecondsSinceEpoch(textMessage.createdAt!),
         );
       } else {
-        await GrpMsgService.sendgrpMsg(group: widget.group!.id, sender: _user.id, content: message.text);
+        await GrpMsgService.sendgrpMsg(
+            group: widget.group!.id, sender: _user.id, content: message.text);
       }
       print('Updated sending message');
     } catch (e) {
@@ -616,7 +634,8 @@ class _ChatPageState extends State<ChatPage> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Notifications()),
+                  MaterialPageRoute(
+                      builder: (context) => const Notifications()),
                 );
                 break;
               case 2:
@@ -627,11 +646,15 @@ class _ChatPageState extends State<ChatPage> {
                 break;
               case 3:
                 if (role == 'admin') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentRequest()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PaymentRequest()));
                 }
             }
           },
-          context: context, userRole: role!,
+          context: context,
+          userRole: role!,
         ),
       ),
     );
@@ -642,7 +665,7 @@ class _ChatPageState extends State<ChatPage> {
       return PersonalChatAppBar(
         username: widget.receiverName ?? 'Chat',
         avatarUrl:
-        'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
+            'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
         onBackPressed: () => Navigator.pop(context),
       );
     }
@@ -675,7 +698,7 @@ class _ChatPageState extends State<ChatPage> {
         currentUser: _user,
         onPlayAudio: _playAudio,
         onOpenDocument: (url, fileName) => _documentMessageBubble
-            .downloadAndOpenDocument(url, fileName, context),
+            .downloadAndOpenDocument(url, fileName!, context),
       ).build,
     );
   }
@@ -706,7 +729,7 @@ class FileMessageBuilder {
     required this.currentUser,
     required this.onPlayAudio,
     required this.onOpenDocument,
-    required  this.person,
+    required this.person,
   });
 
   Widget build(types.Message message, {required int messageWidth}) {
@@ -726,7 +749,8 @@ class FileMessageBuilder {
       return DocumentMessageBubble(
         message: fileMessage,
         currentUser: currentUser,
-        onOpen: onOpenDocument, theme: person ? ChatThemes.personalChat : ChatThemes.groupChat,
+        onOpen: onOpenDocument,
+        theme: person ? ChatThemes.personalChat : ChatThemes.groupChat,
       );
     }
 

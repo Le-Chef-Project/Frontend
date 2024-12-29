@@ -10,8 +10,8 @@ import '../../Models/Video.dart';
 import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 
-class MediaService{
-  static Future<void> uploadVideo({
+class MediaService {
+  static Future<String> uploadVideo({
     required File videoFile,
     required String title,
     required String description,
@@ -26,13 +26,14 @@ class MediaService{
     final request = http.MultipartRequest('POST', url)
       ..fields['title'] = title
       ..fields['description'] = description
-      ..fields['amountToPay'] =
-      amountToPay.toString() // Send amountToPay as string
       ..fields['paid'] =
-      paid ? 'true' : 'false' // Send paid as string 'true' or 'false'
+          paid ? 'true' : 'false' // Send paid as string 'true' or 'false'
       ..fields['educationLevel'] =
-      educationLevel.toString(); // Send educationLevel as string
+          educationLevel.toString(); // Send educationLevel as string
     request.headers['token'] = token!;
+    if (paid && amountToPay != null) {
+      request.fields['amountToPay'] = amountToPay.toString();
+    }
 
     // Add the video file to the request
     request.files
@@ -43,33 +44,13 @@ class MediaService{
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 201) {
-        final responseData = jsonDecode(response.body);
-
-        final jsonResponse = jsonDecode(responseData);
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return const SimpleDialog(
-                title: Text('Success'),
-                contentPadding: EdgeInsets.all(20),
-                children: [Text('Video uploaded successfully!')],
-              );
-            });
-        print('Video uploaded successfully: $jsonResponse');
+        return 'success';
       } else {
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return SimpleDialog(
-                title: const Text('Error'),
-                contentPadding: const EdgeInsets.all(20),
-                children: [Text('Failed to upload video: ${response.body}')],
-              );
-            });
-        print('Failed to upload video: ${response.body}');
+        return 'failed';
       }
     } catch (error) {
       print('Error uploading video: $error');
+      return 'Error';
     }
   }
 
@@ -86,7 +67,7 @@ class MediaService{
     // Create the multipart request
     var request = http.MultipartRequest('POST', Uri.parse(url))
 
-    // Add the fields to the request
+      // Add the fields to the request
       ..fields['title'] = title
       ..fields['description'] = description
       ..fields['amountToPay'] = amountToPay.toString() // Double as string
@@ -108,8 +89,6 @@ class MediaService{
       if (response.statusCode == 201) {
         // Read the response if needed
         final responseData = jsonDecode(response.body);
-
-        print('PDF Uploaded successful');
         showDialog(
             context: Get.context!,
             builder: (context) {
@@ -135,7 +114,7 @@ class MediaService{
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Student Added Successfully',
+                      'PDF Added Successfully',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.ibmPlexMono(
                         color: const Color(0xFF888888),
@@ -158,7 +137,7 @@ class MediaService{
 
   static Future<List<PDF>> fetchAllPDFs() async {
     var url =
-    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allPDFs);
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allPDFs);
     http.Response response = await http.get(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
@@ -193,5 +172,4 @@ class MediaService{
 
     return Video.itemsFromSnapshot(temp);
   }
-
 }

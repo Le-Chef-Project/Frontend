@@ -23,96 +23,6 @@ class DocumentMessageBubble extends StatelessWidget {
 
   bool get isCurrentUser => message?.author.id == currentUser.id;
 
-  String getFileExtension(String contentType, String url) {
-    switch (contentType.toLowerCase()) {
-      case 'application/pdf':
-        return 'pdf';
-      case 'image/jpeg':
-        return 'jpg';
-      case 'image/png':
-        return 'png';
-      case 'audio/mpeg':
-      case 'audio/mp3':
-        return 'mp3';
-      case 'audio/wav':
-        return 'wav';
-      case 'audio/aac':
-        return 'aac';
-      case 'audio/ogg':
-        return 'ogg';
-      case 'audio/m4a':
-        return 'm4a';
-      default:
-        final uri = Uri.parse(url);
-        final path = uri.path;
-        final lastDot = path.lastIndexOf('.');
-        if (lastDot != -1) {
-          return path.substring(lastDot + 1).toLowerCase();
-        }
-        return 'unknown';
-    }
-  }
-
-  String updateFileName(String originalName, String extension) {
-    String baseName = originalName.contains('.')
-        ? originalName.substring(0, originalName.lastIndexOf('.'))
-        : originalName;
-
-    return '$baseName.$extension';
-  }
-
-  Future<void> openFile(String filePath, String fileType) async {
-    String mimeType;
-    String uti = '';
-
-    switch (fileType.toUpperCase()) {
-      case 'PDF':
-        mimeType = 'application/pdf';
-        uti = 'com.adobe.pdf';
-        break;
-      case 'JPEG':
-        mimeType = 'image/jpeg';
-        uti = 'public.jpeg';
-        break;
-      case 'PNG':
-        mimeType = 'image/png';
-        uti = 'public.png';
-        break;
-      case 'MP3':
-        mimeType = 'audio/mpeg';
-        uti = 'public.mp3';
-        break;
-      case 'WAV':
-        mimeType = 'audio/wav';
-        uti = 'public.wav';
-        break;
-      case 'AAC':
-        mimeType = 'audio/aac';
-        uti = 'public.aac-audio';
-        break;
-      case 'OGG':
-        mimeType = 'audio/ogg';
-        uti = 'org.xiph.ogg';
-        break;
-      case 'M4A':
-        mimeType = 'audio/m4a';
-        uti = 'public.mpeg-4-audio';
-        break;
-      default:
-        mimeType = 'application/octet-stream';
-    }
-
-    final result = await OpenFilex.open(
-      filePath,
-      type: mimeType,
-      uti: uti,
-    );
-
-    if (result.type != ResultType.done) {
-      throw Exception('Failed to open file: ${result.message}');
-    }
-  }
-
   Widget _getFileIcon() {
     final mimeType = message?.mimeType;
     final iconColor = isCurrentUser
@@ -125,16 +35,16 @@ class DocumentMessageBubble extends StatelessWidget {
     return Icon(Icons.insert_drive_file, color: iconColor);
   }
 
-  Future<void> downloadAndOpenDocument(String url, String? fileName, BuildContext context) async {
+// Improved document download and open function
+  Future<void> downloadAndOpenDocument(
+      String url, String fileName, BuildContext context) async {
     try {
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: theme.primaryColor,
-            ),
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         },
       );
@@ -146,6 +56,7 @@ class DocumentMessageBubble extends StatelessWidget {
 
       final Dio dio = Dio();
 
+      // Check content type first
       final headResponse = await dio.head(
         url,
         options: Options(
@@ -155,14 +66,19 @@ class DocumentMessageBubble extends StatelessWidget {
       );
 
       final contentType = headResponse.headers['content-type']?.first ?? '';
-      final String fileExtension = getFileExtension(contentType, url);
+      final String fileExtension = _getFileExtension(contentType, url);
 
-      final String processedFileName = updateFileName(fileName!, fileExtension);
-      final String fileDirectory = '${directory.path}/${fileExtension.toUpperCase()}s';
+      // Update filename with correct extension
+      final String processedFileName = _updateFileName(fileName, fileExtension);
+
+      // Create appropriate directory based on file type
+      final String fileDirectory =
+          '${directory.path}/${fileExtension.toUpperCase()}s';
       await Directory(fileDirectory).create(recursive: true);
 
       final String filePath = '$fileDirectory/$processedFileName';
 
+      // Download the file
       final response = await dio.get(
         url,
         options: Options(
@@ -176,18 +92,29 @@ class DocumentMessageBubble extends StatelessWidget {
       );
 
       if (response.statusCode != 200) {
-        throw Exception('Failed to download file: Status ${response.statusCode}');
+        throw Exception(
+            'Failed to download file: Status ${response.statusCode}');
       }
 
       final List<int> bytes = response.data;
+
+      // Verify file type from actual content
+      final String? detectedType = _detectFileType(bytes);
+      if (detectedType == null) {
+        throw Exception('Unable to determine file type');
+      }
+
+      // Save the file
       final File file = File(filePath);
       await file.writeAsBytes(bytes, flush: true);
 
+      // Close loading indicator
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
 
-      await openFile(filePath, fileExtension);
+      // Open file with appropriate handler
+      await _openFile(filePath, detectedType);
     } catch (e) {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
@@ -195,19 +122,102 @@ class DocumentMessageBubble extends StatelessWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Error handling file:'),
+              Text(
+                e.toString(),
+                style: TextStyle(fontSize: 12),
+              ),
+            ],
           ),
-          backgroundColor: theme.errorColor ?? Colors.red,
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
         ),
       );
     }
   }
 
+  String _getFileExtension(String contentType, String url) {
+    // First try to get extension from content type
+    switch (contentType.toLowerCase()) {
+      case 'application/pdf':
+        return 'pdf';
+      case 'image/jpeg':
+        return 'jpg';
+      case 'image/png':
+        return 'png';
+      default:
+        // If content type is not specific, try to get from URL
+        final uri = Uri.parse(url);
+        final path = uri.path;
+        final lastDot = path.lastIndexOf('.');
+        if (lastDot != -1) {
+          return path.substring(lastDot + 1).toLowerCase();
+        }
+        return 'unknown';
+    }
+  }
+
+  String _updateFileName(String originalName, String extension) {
+    // Remove any existing extension
+    String baseName = originalName.contains('.')
+        ? originalName.substring(0, originalName.lastIndexOf('.'))
+        : originalName;
+
+    return '$baseName.$extension';
+  }
+
+  Future<void> _openFile(String filePath, String fileType) async {
+    try {
+      // Open the file using open_filex
+      final result = await OpenFilex.open(filePath);
+
+      if (result.type != ResultType.done) {
+        throw Exception('Failed to open file: ${result.message}');
+      }
+    } catch (e) {
+      debugPrint('Error opening file: $e');
+    }
+  }
+
+// Helper function to detect file type based on magic numbers
+  String? _detectFileType(List<int> bytes) {
+    if (bytes.length < 8) return null;
+
+    // Check for common file signatures
+    if (_isPDF(bytes)) return 'PDF';
+
+    // ZIP, DOCX, XLSX, etc.
+    if (bytes[0] == 0x50 && bytes[1] == 0x4B) return 'ZIP-based';
+
+    // JPEG
+    if (bytes[0] == 0xFF && bytes[1] == 0xD8) return 'JPEG';
+
+    // PNG
+    if (bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E &&
+        bytes[3] == 0x47) return 'PNG';
+
+    return null;
+  }
+
+  bool _isPDF(List<int> bytes) {
+    if (bytes.length < 4) return false;
+    // Check for PDF magic number '%PDF'
+    return bytes[0] == 0x25 && // %
+        bytes[1] == 0x50 && // P
+        bytes[2] == 0x44 && // D
+        bytes[3] == 0x46; // F
+  }
+
   @override
   Widget build(BuildContext context) {
-    final localTime = DateTime.fromMillisecondsSinceEpoch(message?.createdAt ?? 0).toLocal();
+    final localTime =
+        DateTime.fromMillisecondsSinceEpoch(message?.createdAt ?? 0).toLocal();
     final hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
     final minute = localTime.minute.toString().padLeft(2, '0');
     final timePeriod = localTime.hour >= 12 ? 'PM' : 'AM';
@@ -221,7 +231,7 @@ class DocumentMessageBubble extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          downloadAndOpenDocument(message!.uri, message?.name, context);
+          downloadAndOpenDocument(message!.uri, message!.name, context);
         },
         child: Container(
           constraints: BoxConstraints(
@@ -261,9 +271,9 @@ class DocumentMessageBubble extends StatelessWidget {
                 child: Text(
                   '$hour:$minute $timePeriod',
                   style: (isCurrentUser
-                      ? theme.sentMessageBodyTextStyle
-                      : theme.receivedMessageBodyTextStyle
-                  ).copyWith(fontSize: 12),
+                          ? theme.sentMessageBodyTextStyle
+                          : theme.receivedMessageBodyTextStyle)
+                      .copyWith(fontSize: 12),
                 ),
               ),
             ],

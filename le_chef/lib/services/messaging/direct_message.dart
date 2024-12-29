@@ -6,7 +6,7 @@ import '../../utils/apiendpoints.dart';
 import '../../Models/direct_chat.dart';
 import '../../main.dart';
 
-class DirectMsgService{
+class DirectMsgService {
   static Future<void> sendDirectMsg({
     required String id,
     required List<String> participants,
@@ -122,7 +122,7 @@ class DirectMsgService{
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii Get Chats ${data['directChats']}');
+    print('apiiii Get Chats ${data}');
 
     for (var i in data['directChats']) {
       temp.add(i);

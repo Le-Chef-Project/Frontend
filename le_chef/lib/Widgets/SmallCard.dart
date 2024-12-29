@@ -10,6 +10,7 @@ class Smallcard extends StatelessWidget {
   final String imageurl;
   final bool isLocked;
   final String? id;
+  final String type;
   const Smallcard({
     super.key,
     this.Title,
@@ -17,6 +18,7 @@ class Smallcard extends StatelessWidget {
     required this.imageurl,
     required this.ontap,
     required this.isLocked,
+    required this.type,
     this.id,
   });
 
@@ -37,7 +39,7 @@ class Smallcard extends StatelessWidget {
                     size: 100,
                   ),
                   content: Text(
-                    'This Video is locked.. You should pay Video fees',
+                    'This ${type} is locked.. You should pay ${type} fees',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ibmPlexMono(
                       color: const Color(0xFF083344),

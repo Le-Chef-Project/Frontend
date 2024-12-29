@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getnotes() async {
-    _notes = await NoteService.fetchAllNotes();
+    _notes = await NoteService.fetchNotesForUserLevel();
 
     _notes = _notes?.where((note) => note.educationLevel == level).toList();
     setState(() {
@@ -249,6 +249,7 @@ class _HomeState extends State<Home> {
                           final video = Videos[index];
                           return Smallcard(
                             id: video.id,
+                            type: 'Video',
                             Title: video.title,
                             description: video.description,
                             imageurl: 'assets/desk_book_apple.jpeg',

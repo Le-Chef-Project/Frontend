@@ -21,6 +21,7 @@ class AddLibrary extends StatefulWidget {
 
 class _AddLibraryState extends State<AddLibrary> {
   bool isPaid = false;
+  String? response;
   String? selectedSection;
   String? selectedlevel;
   bool isLoading_video = false; // Track loading status
@@ -52,28 +53,58 @@ class _AddLibraryState extends State<AddLibrary> {
 
       _showLoadingDialog(); // Show the loading dialog
 
-      // Call the API and handle the response
-      await MediaService.uploadVideo(
-        videoFile: _videoFile!,
-        title: itemNameController.text,
-        description: itemDescriptionController.text,
-        amountToPay: isPaid ? double.tryParse(amountController.text) : null,
-        paid: isPaid,
-        educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
-      ).then((_) {
-        // On success, close the loading dialog
-        setState(() {
-          isLoading_video = false; // Stop loading
-          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
-        });
-      }).catchError((error) {
-        // Handle the error if needed
+      String? response;
+      try {
+        // Call the API
+        response = await MediaService.uploadVideo(
+          videoFile: _videoFile!,
+          title: itemNameController.text,
+          description: itemDescriptionController.text,
+          amountToPay: isPaid ? double.tryParse(amountController.text) : null,
+          paid: isPaid,
+          educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
+        );
+      } catch (error) {
         print('Error uploading video: $error');
+      } finally {
+        // Close the loading dialog
+        if (Navigator.canPop(context)) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+
         setState(() {
           isLoading_video = false; // Stop loading
-          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
         });
-      });
+
+        // Show the success or error dialog
+        if (response == 'success') {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const SimpleDialog(
+                title: Text('Success'),
+                contentPadding: EdgeInsets.all(20),
+                children: [Text('Video uploaded successfully!')],
+              );
+            },
+          );
+
+          amountController.clear();
+          itemNameController.clear();
+          itemDescriptionController.clear();
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleDialog(
+                title: const Text('Error'),
+                contentPadding: const EdgeInsets.all(20),
+                children: [Text('Failed to upload video')],
+              );
+            },
+          );
+        }
+      }
     } else {
       print('No video selected');
     }
@@ -333,7 +364,7 @@ class _AddLibraryState extends State<AddLibrary> {
                 child: DropdownButtonFormField<String>(
                   value: selectedSection,
                   hint: const Text('Select Library Section'),
-                  items: ['Video', 'Book', 'PDF']
+                  items: ['Video', 'PDF']
                       .map((section) => DropdownMenuItem(
                             value: section,
                             child: Text(section),
@@ -429,10 +460,12 @@ class _AddLibraryState extends State<AddLibrary> {
               if (hasFile)
                 Center(
                   child: Smallcard(
+                    type: selectedSection.toString(),
                     imageurl: selectedSection == 'Video' && _videoFile != null
                         ? 'assets/desk_book_apple.jpeg'
                         : 'assets/pdf.jpg',
-                    ontap: () => _handleNavigation(context), isLocked: false,
+                    ontap: () => _handleNavigation(context),
+                    isLocked: false,
                   ),
                 )
               else
@@ -441,8 +474,7 @@ class _AddLibraryState extends State<AddLibrary> {
                     onTap: () {
                       if (selectedSection == 'Video') {
                         _pickVideo();
-                      } else if (selectedSection == 'Book' ||
-                          selectedSection == 'PDF') {
+                      } else if (selectedSection == 'PDF') {
                         pickFile();
                       }
                     },
@@ -468,8 +500,7 @@ class _AddLibraryState extends State<AddLibrary> {
                                 onPressed: () {
                                   if (selectedSection == 'Video') {
                                     _pickVideo();
-                                  } else if (selectedSection == 'Book' ||
-                                      selectedSection == 'PDF') {
+                                  } else if (selectedSection == 'PDF') {
                                     pickFile();
                                   }
                                 },
@@ -492,27 +523,31 @@ class _AddLibraryState extends State<AddLibrary> {
           ),
         ),
       ),
-      bottomNavigationBar: (selectedSection == 'Video' && _videoFile == null) ||
-              (selectedSection == 'PDF' && selectedFile == null)
-          ? Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: CustomElevatedButton(
-                onPressed: () {},
-                text: 'Add Item',
-                buttonStyle: CustomButtonStyles.darkgrey,
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: CustomElevatedButton(
-                onPressed: () {
-                  if (selectedSection == 'Video') _uploadVideo();
-                  if (selectedSection == 'PDF') _uploadPDF();
-                },
-                text: 'Add Item',
-                buttonStyle: CustomButtonStyles.fillPrimaryTL5,
-              ),
-            ),
+      bottomNavigationBar:
+          ((selectedSection == 'Video' && _videoFile == null) ||
+                      (selectedSection == 'PDF' && selectedFile == null)) &&
+                  ((isPaid && amountController.toString().isEmpty) ||
+                      itemDescriptionController.toString().isEmpty ||
+                      itemNameController.toString().isEmpty)
+              ? Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: CustomElevatedButton(
+                    onPressed: () {},
+                    text: 'Add Item',
+                    buttonStyle: CustomButtonStyles.darkgrey,
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      if (selectedSection == 'Video') _uploadVideo();
+                      if (selectedSection == 'PDF') _uploadPDF();
+                    },
+                    text: 'Add Item',
+                    buttonStyle: CustomButtonStyles.fillPrimaryTL5,
+                  ),
+                ),
     ));
   }
 }

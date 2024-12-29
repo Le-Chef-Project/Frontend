@@ -10,7 +10,7 @@ class Notes {
       required this.createdAt,
       required this.educationLevel});
 
-  factory Notes.fromjson(dynamic json) {
+  factory Notes.fromjson(Map<String, dynamic> json) {
     return Notes(
         id: json['_id'] as String? ?? '', // Provide an empty string if null
         content:

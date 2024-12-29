@@ -314,6 +314,7 @@ class _AllPDFsState extends State<AllPDFs> {
                           final pdf = pdfs[index];
                           return Smallcard(
                             id: pdf.id,
+                            type: 'PDF',
                             Title: pdf.title,
                             imageurl: 'assets/pdf.jpg',
                             description: pdf.description,

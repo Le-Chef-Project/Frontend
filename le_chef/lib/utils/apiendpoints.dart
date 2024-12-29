@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.2:3000/";
+  static const String baseUrl = "http://192.168.1.3:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -37,6 +37,7 @@ class Content {
   final String allPDFs = 'content/ShowAllPdfs';
   final String allNotes = 'content/ShowAllNotes';
   final String addNote = 'content/Notes';
+  final String StudentNotes = 'content/ShowLevelNotes';
 }
 
 class Chat {

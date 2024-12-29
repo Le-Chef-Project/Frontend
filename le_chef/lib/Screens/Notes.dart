@@ -24,7 +24,9 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Future<List<Notes>> _fetchAndSortNotes() async {
-    final notes = await NoteService.fetchAllNotes();
+    final notes = role == 'admin'
+        ? await NoteService.fetchAllNotes()
+        : await NoteService.fetchNotesForUserLevel();
 
     // Filter notes based on education level
     final filteredNotes = notes.where((note) {
@@ -128,7 +130,8 @@ class NoteCard extends StatelessWidget {
   final String content;
   final String createdAt;
 
-  const NoteCard({super.key, 
+  const NoteCard({
+    super.key,
     required this.content,
     required this.createdAt,
   });

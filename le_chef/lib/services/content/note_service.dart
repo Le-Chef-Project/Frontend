@@ -10,10 +10,10 @@ import 'package:http/http.dart' as http;
 
 import '../../main.dart';
 
-class NoteService{
+class NoteService {
   static Future<List<Notes>> fetchAllNotes() async {
     var url =
-    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allNotes);
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allNotes);
     http.Response response = await http.get(
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
@@ -32,12 +32,12 @@ class NoteService{
 
   static Future<void> addNote(String content, int educationLevel) async {
     var url =
-    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.addNote);
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.addNote);
 
     http.Response response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'token': token!},
         body:
-        jsonEncode({'educationLevel': educationLevel, 'content': content}));
+            jsonEncode({'educationLevel': educationLevel, 'content': content}));
 
     if (response.statusCode == 201) {
       showDialog(
@@ -115,6 +115,26 @@ class NoteService{
               ),
             );
           });
+    }
+  }
+
+  static Future<List<Notes>> fetchNotesForUserLevel() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.StudentNotes);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'Content-Type': 'application/json', 'token': token!},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((note) => Notes.fromjson(note)).toList();
+      } else {
+        throw Exception('Failed to load notes: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
     }
   }
 }
