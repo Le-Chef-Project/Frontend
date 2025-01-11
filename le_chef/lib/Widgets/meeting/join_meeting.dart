@@ -35,7 +35,7 @@ Future<void> createSession(int level, BuildContext context) async {
     Navigator.pop(context);
 
     final Uri url = Uri.parse(link);
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
   } catch (e) {

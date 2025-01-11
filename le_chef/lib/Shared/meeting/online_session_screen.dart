@@ -21,18 +21,8 @@ class OnlineSessionScreen extends StatefulWidget {
 
 class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
   final String? role = sharedPreferences!.getString('role');
-  List<Session> sessions = [];
+  List<Session> sessions_list = [];
   bool loading = true;
-
-  // Future<List<Session>> getSessions() async {
-  //   try{
-  //     sessions = await ApisMethods.getSessions();
-  //     print('Session Returnedddd: $sessions');
-  //     return sessions;
-  //   }catch(e){
-  //     throw('Error creating session: $e');
-  //   }
-  // }
 
   bool level1 = true;
 
@@ -47,15 +37,16 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
   }
 
   Future<void> getSessions() async {
-    try {
-      var sessions = await SessionService.getSessions();
-      setState(() {
-        sessions = sessions;
-        loading = false;
-      });
-      print('sessions Apiii: ${sessions.last.zoomMeetingId}');
-    } catch (e) {
-      print('Error loading Sessions: $e');
+    if (role != 'admin') {
+      try {
+        sessions_list = await SessionService.getSessions();
+        setState(() {
+          loading = false;
+        });
+        print('sessions Apiii: ${sessions_list.last.zoomMeetingId}');
+      } catch (e) {
+        print('Error loading Sessions: $e');
+      }
     }
   }
 
@@ -206,8 +197,9 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
     } else {
       if (loading) {
         return const CircularProgressIndicator();
-      } else if (sessions.isNotEmpty) {
-        return joinMeeting(context, role, null, sessions.last.zoomMeetingId);
+      } else if (sessions_list.isNotEmpty) {
+        return joinMeeting(
+            context, role, null, sessions_list.last.zoomMeetingId);
       } else {
         return meetingNotStarted(context);
       }

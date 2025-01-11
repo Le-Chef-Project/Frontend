@@ -13,10 +13,10 @@ import '../../Models/group.dart';
 import '../../Models/group_chat.dart';
 import '../../main.dart';
 
-class GrpMsgService{
+class GrpMsgService {
   static Future<void> createGrp(String title, String desc) async {
     var url =
-    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.createGrp);
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.createGrp);
 
     http.Response response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'token': token!},
@@ -104,9 +104,9 @@ class GrpMsgService{
   static Future<List<Group>> getAllGroups() async {
     var url = role! == 'admin'
         ? Uri.parse(
-        ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getAdminGroups)
+            ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getAdminGroups)
         : Uri.parse(
-        ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getStudentGroups);
+            ApiEndPoints.baseUrl.trim() + ApiEndPoints.chat.getStudentGroups);
 
     http.Response response = await http.get(url,
         headers: {'Content-Type': 'application/json', 'token': token!});
@@ -307,7 +307,7 @@ class GrpMsgService{
     if (images != null && images.isNotEmpty) {
       for (var i = 0; i < images.length; i++) {
         final imageFile = await http.MultipartFile.fromPath(
-          'image',
+          'images',
           images[i].path,
           filename: basename(images[i].path),
         );
@@ -330,7 +330,7 @@ class GrpMsgService{
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         print('Message sent successfully: ${responseData['message']}');
       } else {
@@ -382,5 +382,4 @@ class GrpMsgService{
       throw Exception('An error occurred while fetching messages: $e');
     }
   }
-
 }

@@ -31,11 +31,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final int _selectedIndex = 0; // Initial index for Chats screen
-  static int? level = sharedPreferences?.getInt('educationLevel');
-  static String? userName = sharedPreferences?.getString('userName');
-  static String? rolee = sharedPreferences?.getString('role');
-  String? logged_img = sharedPreferences?.getString('img');
-
+  int? level;
+  String? userName;
+  String? rolee;
+  String? logged_img;
   List<Quiz>? _exams;
   bool _isLoading_Exams = true;
   List<Notes>? _notes;
@@ -50,6 +49,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    shared();
     _videosFuture = _fetchAndSortVideos();
     _videosFuture!.then((videos) {
       setState(() {
@@ -59,6 +59,15 @@ class _HomeState extends State<Home> {
     getpdf();
     getexams();
     getnotes();
+  }
+
+  Future<void> shared() async {
+    setState(() {
+      level = sharedPreferences?.getInt('educationLevel');
+      userName = sharedPreferences?.getString('userName');
+      rolee = sharedPreferences?.getString('role');
+      logged_img = sharedPreferences?.getString('img');
+    });
   }
 
   Future<void> getexams() async {
@@ -119,8 +128,7 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
           leading: CircleAvatar(
-            radius:
-                30, // Adjust the radius to control the size of the CircleAvatar
+            radius: 30,
             backgroundImage: NetworkImage(
               logged_img ??
                   'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
@@ -130,18 +138,21 @@ class _HomeState extends State<Home> {
           actions: [
             GestureDetector(
               onTap: () {
-                sharedPreferences!.remove('token');
+                if (sharedPreferences != null) {
+                  sharedPreferences!.remove('token');
+                }
                 Get.to(const Login());
               },
               child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 23),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
-                      'assets/logo.png',
-                      height: 50,
-                    ),
-                  )),
+                margin: const EdgeInsets.symmetric(horizontal: 23),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    'assets/logo.png',
+                    height: 50,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -159,7 +170,7 @@ class _HomeState extends State<Home> {
                       Container(
                         color: const Color(0x00565656),
                         child: Text(
-                          userName != null ? userName! : 'Guest',
+                          userName ?? 'Guest',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF164863),
                             fontSize: 22,
@@ -170,7 +181,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         child: Text(
-                          'Level  ${level ?? 'Unknown'}',
+                          'Level ${level ?? 'Unknown'}',
                           style: GoogleFonts.ibmPlexMono(
                             color: const Color(0xFF427D9D),
                             fontSize: 16,
@@ -243,7 +254,8 @@ class _HomeState extends State<Home> {
                     return SizedBox(
                       height: 250,
                       child: ListView.builder(
-                        itemCount: videosLength > 3 ? 3 : videosLength,
+                        itemCount:
+                            (videosLength ?? 0) > 3 ? 3 : (videosLength ?? 0),
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           final video = Videos[index];
@@ -292,10 +304,9 @@ class _HomeState extends State<Home> {
                               ? "..."
                               : "${_exams?.length ?? 0}",
                           ImagePath: 'assets/Wonder Learners Graduating.png',
-                          //Todo go to exam for student
                           onTapCardRec: () => Get.to(
                               () => Exams(
-                                    selectedLevel: level!,
+                                    selectedLevel: level ?? 0,
                                   ),
                               transition: Transition.fade,
                               duration: const Duration(seconds: 1))),
@@ -309,7 +320,7 @@ class _HomeState extends State<Home> {
                           ImagePath: 'assets/Charco Education.png',
                           onTapCardRec: () => Get.to(
                               () => LibraryTabContainerScreen(
-                                    selectedLevel: level!,
+                                    selectedLevel: level ?? 0,
                                   ),
                               transition: Transition.fade,
                               duration: const Duration(seconds: 1))),
@@ -330,7 +341,7 @@ class _HomeState extends State<Home> {
                           ImagePath: 'assets/Wonder Learners Book.png',
                           onTapCardRec: () => Get.to(
                               () => NotesScreen(
-                                    level: level!,
+                                    level: level ?? 0,
                                   ),
                               transition: Transition.fade,
                               duration: const Duration(seconds: 1))),
@@ -407,7 +418,7 @@ class _HomeState extends State<Home> {
 
                 break;
               case 3:
-                if (role == 'admin') {
+                if (rolee == 'admin') {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -417,7 +428,7 @@ class _HomeState extends State<Home> {
           },
           context: context,
           selectedIndex: _selectedIndex,
-          userRole: rolee!,
+          userRole: rolee ?? 'defaultRole',
         ),
       ),
     );

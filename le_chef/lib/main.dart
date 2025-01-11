@@ -13,7 +13,6 @@ String? token;
 String? role;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   sharedPreferences = await SharedPreferences.getInstance();
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');

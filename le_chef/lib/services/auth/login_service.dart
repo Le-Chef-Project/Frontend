@@ -13,8 +13,6 @@ class LoginService{
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.authEndPoint.loginEmail);
     if (emailController.isNotEmpty && passwordController.isNotEmpty) {
-
-
       http.Response response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
