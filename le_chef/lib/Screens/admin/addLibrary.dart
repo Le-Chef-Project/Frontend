@@ -21,11 +21,12 @@ class AddLibrary extends StatefulWidget {
 
 class _AddLibraryState extends State<AddLibrary> {
   bool isPaid = false;
-  String? response;
+  String? responseVideo;
   String? selectedSection;
   String? selectedlevel;
   bool isLoading_video = false; // Track loading status
   bool isLoading_pdf = false; // Track loading status
+  String? responsePDF;
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController itemNameController = TextEditingController();
@@ -52,11 +53,9 @@ class _AddLibraryState extends State<AddLibrary> {
       });
 
       _showLoadingDialog(); // Show the loading dialog
-
-      String? response;
       try {
         // Call the API
-        response = await MediaService.uploadVideo(
+        responseVideo = await MediaService.uploadVideo(
           videoFile: _videoFile!,
           title: itemNameController.text,
           description: itemDescriptionController.text,
@@ -77,7 +76,7 @@ class _AddLibraryState extends State<AddLibrary> {
         });
 
         // Show the success or error dialog
-        if (response == 'success') {
+        if (responseVideo == 'success') {
           showDialog(
             context: context,
             builder: (context) {
@@ -118,28 +117,56 @@ class _AddLibraryState extends State<AddLibrary> {
 
       _showLoadingDialog(); // Show the loading dialog
 
-      // Call the API and handle the response
-      await MediaService.uploadPDF(
-        title: itemNameController.text,
-        description: itemDescriptionController.text,
-        amountToPay: isPaid ? double.tryParse(amountController.text) : null,
-        paid: isPaid,
-        educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
-        PDF: selectedFile!,
-      ).then((_) {
-        // On success, close the loading dialog
-        setState(() {
-          isLoading_pdf = false; // Stop loading
-          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
-        });
-      }).catchError((error) {
-        // Handle the error if needed
+      try {
+        // Call the API
+        responsePDF = await MediaService.uploadPDF(
+          title: itemNameController.text,
+          description: itemDescriptionController.text,
+          amountToPay: isPaid ? double.tryParse(amountController.text) : null,
+          paid: isPaid,
+          educationLevel: int.parse(selectedlevel!.replaceFirst('Level ', '')),
+          PDF: selectedFile!,
+        );
+      } catch (error) {
         print('Error uploading PDF: $error');
+      } finally {
+        // Close the loading dialog
+        if (Navigator.canPop(context)) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+
         setState(() {
           isLoading_pdf = false; // Stop loading
-          Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
         });
-      });
+
+        // Show the success or error dialog
+        if (responsePDF == 'success') {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const SimpleDialog(
+                title: Text('Success'),
+                contentPadding: EdgeInsets.all(20),
+                children: [Text('PDF uploaded successfully!')],
+              );
+            },
+          );
+          amountController.clear();
+          itemNameController.clear();
+          itemDescriptionController.clear();
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleDialog(
+                title: const Text('Error'),
+                contentPadding: const EdgeInsets.all(20),
+                children: [Text('Failed to upload PDF')],
+              );
+            },
+          );
+        }
+      }
     } else {
       print('No PDF selected');
     }

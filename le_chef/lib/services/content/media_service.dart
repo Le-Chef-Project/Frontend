@@ -54,7 +54,7 @@ class MediaService {
     }
   }
 
-  static Future<void> uploadPDF({
+  static Future<String> uploadPDF({
     required String title,
     required String description,
     double? amountToPay,
@@ -70,9 +70,11 @@ class MediaService {
       // Add the fields to the request
       ..fields['title'] = title
       ..fields['description'] = description
-      ..fields['amountToPay'] = amountToPay.toString() // Double as string
       ..fields['paid'] = paid ? 'true' : 'false' // Boolean as 'true' or 'false'
       ..fields['educationLevel'] = educationLevel.toString(); // Int as string
+    if (paid && amountToPay != null) {
+      request.fields['amountToPay'] = amountToPay.toString();
+    }
 
     request.headers['token'] = token!;
 
@@ -86,52 +88,16 @@ class MediaService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       // Check the response status
+      print('apiiii upload PDF' + '${response.body}');
+
       if (response.statusCode == 201) {
-        // Read the response if needed
-        final responseData = jsonDecode(response.body);
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return AlertDialog(
-                backgroundColor: Colors.white,
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/correct sign.png',
-                      width: 117,
-                      height: 117,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Success!',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.ibmPlexMono(
-                        color: const Color(0xFF164863),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'PDF Added Successfully',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.ibmPlexMono(
-                        color: const Color(0xFF888888),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            });
-        print('Response: $responseData');
+        return 'success';
       } else {
-        print('Upload failed with status: ${response.statusCode}');
+        return 'failed';
       }
     } catch (e) {
       print('Error uploading file: $e');
+      return 'Error';
     }
   }
 
