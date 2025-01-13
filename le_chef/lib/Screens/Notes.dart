@@ -182,9 +182,9 @@ class NoteCard extends StatelessWidget {
     );
   }
 
-  // Method to format createdAt into a user-friendly string
   String _formatCreatedAt(String createdAt) {
-    final dateTime = DateTime.parse(createdAt);
+    final dateTime =
+        DateTime.parse(createdAt).toLocal(); // Convert to local time
     final now = DateTime.now();
 
     if (dateTime.year == now.year &&

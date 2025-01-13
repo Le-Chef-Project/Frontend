@@ -10,7 +10,7 @@ import '../../Models/Quiz.dart';
 import '../../Screens/user/examResultbyID.dart';
 import '../../main.dart';
 
-class QuizService{
+class QuizService {
   static Future<void> addQuiz({
     required String title,
     required List<dynamic> questions,
@@ -55,7 +55,7 @@ class QuizService{
     });
 
     final url =
-    Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
+        Uri.parse('${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.addQuiz}');
 
     final response = await http.post(
       url,
@@ -93,7 +93,7 @@ class QuizService{
 
   static Future<List> getExamUnits() async {
     var url =
-    Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getExamUnits);
     http.Response response = await http.get(url,
         headers: {'Content-Type': 'application/json', 'token': token!});
 
@@ -138,10 +138,10 @@ class QuizService{
     final Map<String, dynamic> body = {
       'questions': questions
           .map((q) => {
-        'question': q['question'],
-        'options': q['options'],
-        'answer': q['answer'],
-      })
+                'question': q['question'],
+                'options': q['options'],
+                'answer': q['answer'],
+              })
           .toList(),
       'hours': hours,
       'minutes': minutes,
@@ -161,10 +161,10 @@ class QuizService{
   }
 
   static Future<Map<String, dynamic>> submitQuiz(
-      quizModel.Quiz quiz,
-      answers,
-      String quizID,
-      ) async {
+    quizModel.Quiz quiz,
+    answers,
+    String quizID,
+  ) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.submitQuiz + quizID);
 
@@ -222,5 +222,79 @@ class QuizService{
     }
   }
 
+  static Future<List<String>> getSubmittedQuizIds() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.submittedQuizs);
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
 
+    if (response.statusCode == 200) {
+      print('success exam  ${json.decode(response.body)}');
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> quizIds = data['quizIds'];
+      return quizIds.cast<String>();
+    } else if (response.statusCode == 404) {
+      throw Exception('No submitted quizzes found');
+    } else {
+      throw Exception('Failed to load submitted quiz IDs');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getQuizById(String quizId) async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.Quizbyid + quizId);
+
+    print('Fetching quiz from URL: $url');
+
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    if (response.statusCode == 200) {
+      print('Response body for quiz $quizId: ${response.body}');
+      final Map<String, dynamic> quizData = json.decode(response.body);
+
+      // Extract fields with fallbacks
+      final String title = quizData['title'] ?? 'Untitled Quiz';
+      final int questionsLength =
+          (quizData['questions'] as List<dynamic>?)?.length ?? 0;
+      final int minutes = quizData['duration']?['minutes'] ?? 0;
+      final int hours = quizData['duration']?['hours'] ?? 0;
+      final String duration = '${hours}h ${minutes}m';
+
+      return {
+        'id': quizId,
+        'title': title,
+        'questionsLength': questionsLength,
+        'duration': duration,
+      };
+    } else {
+      print(
+          'Failed to fetch quiz $quizId. Status code: ${response.statusCode}, Body: ${response.body}');
+      throw Exception('Failed to load quiz details');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getQuizzesByIds(
+      List<String> quizIds) async {
+    final List<Map<String, dynamic>> quizzes = [];
+
+    if (quizIds.isEmpty) {
+      print('No quiz IDs provided.');
+      return [];
+    }
+
+    for (final quizId in quizIds) {
+      try {
+        print('Fetching quiz with ID: $quizId');
+        final quizInfo = await getQuizById(quizId);
+        print('Fetched quiz: $quizInfo');
+        quizzes.add(quizInfo);
+      } catch (e) {
+        print('Error fetching quiz $quizId: $e');
+      }
+    }
+
+    print('Final quizzes list: $quizzes');
+    return quizzes;
+  }
 }
