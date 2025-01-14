@@ -137,7 +137,7 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
                     : [
                         VideoListScreen(selectedLevel: widget.selectedLevel),
                         AllPDFs(selectedLevel: widget.selectedLevel),
-                        const ExamsResults(),
+                        QuizPage(),
                       ],
               ),
             ),

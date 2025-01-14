@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import 'package:le_chef/services/content/media_service.dart';
 import '../../Models/PDF.dart';
+import 'THome.dart';
 import 'viewPDF.dart';
 
 class AllPDFs extends StatefulWidget {
@@ -27,7 +28,7 @@ class _AllPDFsState extends State<AllPDFs> {
 
   // Fetch and filter PDFs based on selected level
   Future<List<PDF>> _fetchAndFilterPDFs() async {
-    final _pdfs = await MediaService.fetchAllPDFs();
+    final _pdfs = await MediaService.fetchAllPDFs(tokenTHome!);
 
     final _filteredPDFs = _pdfs.where((pdf) {
       return pdf.educationLevel == widget.selectedLevel;
@@ -82,7 +83,7 @@ class _AllPDFsState extends State<AllPDFs> {
 
   Future<List<PDF>> _applyDateFilter(List<String> selectedRanges) async {
     // Fetch all PDFs
-    final allPDFs = await MediaService.fetchAllPDFs();
+    final allPDFs = await MediaService.fetchAllPDFs(tokenTHome!);
 
     // Apply both filters: education level and date range
     final filteredPDFs = allPDFs.where((pdf) {

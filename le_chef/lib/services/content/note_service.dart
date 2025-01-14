@@ -11,12 +11,12 @@ import 'package:http/http.dart' as http;
 import '../../main.dart';
 
 class NoteService {
-  static Future<List<Notes>> fetchAllNotes() async {
+  static Future<List<Notes>> fetchAllNotes(String tokenTHome) async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allNotes);
     http.Response response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json', 'token': token!},
+      headers: {'Content-Type': 'application/json', 'token': tokenTHome!},
     );
     var data = jsonDecode(response.body);
 

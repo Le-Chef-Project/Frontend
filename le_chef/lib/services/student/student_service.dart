@@ -59,12 +59,12 @@ class StudentService {
     return Mess!;
   }
 
-  static Future<List<Student>> AllStudents() async {
+  static Future<List<Student>> AllStudents(String tokenTHome) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.GetStudents);
     http.Response response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json', 'token': token!},
+      headers: {'Content-Type': 'application/json', 'token': tokenTHome!},
     );
     var data = jsonDecode(response.body);
 

@@ -24,11 +24,14 @@ class UserManage {
 
 class Quiz {
   final String addQuiz = 'Quiz/AddQuiz';
+  final String Quizbyid = 'Quiz/';
   final String getAllQuizzes = 'Quiz/ShowAllQuizzes';
   final String getExamUnits = 'Quiz/Unit';
   final String delQuiz = 'Quiz/DeleteQuiz/';
   final String updateQuiz = 'Quiz/UpdateQuiz/';
   final String submitQuiz = 'UserQuiz/SubmitQuiz/';
+  final String submittedQuizs = 'Quiz/GetSubmittedQuizzesIds';
+  final String submittedQuizbyID = 'Quiz/GetSubmittedQuizzesIds/';
 }
 
 class Content {

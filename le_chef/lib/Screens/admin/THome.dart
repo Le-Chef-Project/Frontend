@@ -15,6 +15,7 @@ import 'package:le_chef/services/content/media_service.dart';
 import 'package:le_chef/services/content/note_service.dart';
 import 'package:le_chef/services/content/quiz_service.dart';
 import 'package:le_chef/services/student/student_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
@@ -28,6 +29,10 @@ import '../../theme/custom_button_style.dart';
 import '../../utils/SharedPrefes.dart';
 import '../notification.dart';
 import 'Exam&LibraryLevels.dart';
+
+ SharedPreferences? sharedPreferencesTHome;
+String? tokenTHome;
+
 
 class THome extends StatefulWidget {
   const THome({super.key});
@@ -67,9 +72,23 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   int? _NotesLength;
   int? _ExamsLength;
 
+
+  @override
   @override
   void initState() {
     super.initState();
+    _initializeSharedPreferences().then((_) {
+      _initializeData();
+      _setupAnimation();
+      _loadSharedPreferences();
+    });
+  }
+
+  Future<void> _initializeSharedPreferences() async {
+    sharedPreferencesTHome = await SharedPreferences.getInstance();
+  }
+
+  void _setupAnimation() {
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -78,66 +97,134 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
       parent: _animationController,
       curve: Curves.easeInOut,
     );
-    getStd();
-    getLibrary();
-    getNotes();
-    getAdmin();
-    getexams();
-    // Add null checks when accessing sharedPreferences
-    if (sharedPreferences != null) {
-      _PDFsLength = sharedPreferences!.getInt('PDFsLength') ?? 0;
-      _NotesLength = sharedPreferences!.getInt('NotesLength') ?? 0;
-      _VideosLength = sharedPreferences!.getInt('VideosLength') ?? 0;
-      _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
+  }
+
+  Future<void> _loadSharedPreferences() async {
+    if (sharedPreferencesTHome != null) {
+      tokenTHome = sharedPreferencesTHome!.getString('token');
+      _PDFsLength = sharedPreferencesTHome!.getInt('PDFsLength') ?? 0;
+      _NotesLength = sharedPreferencesTHome!.getInt('NotesLength') ?? 0;
+      _VideosLength = sharedPreferencesTHome!.getInt('VideosLength') ?? 0;
+      _ExamsLength = sharedPreferencesTHome!.getInt('ExamsLength') ?? 0;
+
+      print('Token Home: $tokenTHome');
+      print('Token pdf: $_PDFsLength');
+      print('Token _NotesLength: $_NotesLength');
+      print('Token _VideosLength: $_VideosLength');
+      print('Token _ExamsLength: $_ExamsLength');
+    } else {
+      print('sharedPreferencesTHome is null');
+    }
+  }
+
+  Future<void> _initializeData() async {
+    try {
+      await Future.wait([
+        getStd(),
+        getLibrary(),
+        getNotes(),
+        getAdmin(),
+        getexams(),
+      ]);
+      print('All data initialized successfully');
+    } catch (e) {
+      print('Error initializing data: $e');
     }
   }
 
   Future<void> getLibrary() async {
-    _pdfs = await MediaService.fetchAllPDFs();
-    print('pdf length + ${_pdfs?.length}');
+    try {
+      _pdfs = await MediaService.fetchAllPDFs(tokenTHome!);
+      print('PDF length: ${_pdfs?.length}');
 
-    setState(() {
-      _isLoading_pdfs = false;
-      SharedPrefes.savePDFsLength(_pdfs?.length ?? 0);
-    });
+      setState(() {
+        _isLoading_pdfs = false;
+        SharedPrefes.savePDFsLength(_pdfs?.length ?? 0);
+      });
 
-    _videos = await MediaService.fetchAllVideos();
-    print('pdf length + ${_videos?.length}');
+      _videos = await MediaService.fetchAllVideos();
+      print('Video length: ${_videos?.length}');
 
-    setState(() {
-      _isLoading_videos = false;
-      SharedPrefes.saveVideosLength(_videos?.length ?? 0);
-    });
+      setState(() {
+        _isLoading_videos = false;
+        SharedPrefes.saveVideosLength(_videos?.length ?? 0);
+      });
+    } catch (e) {
+      print('Error fetching library data: $e');
+      setState(() {
+        _isLoading_pdfs = false;
+        _isLoading_videos = false;
+      });
+    }
   }
 
   Future<void> getNotes() async {
-    _notes = await NoteService.fetchAllNotes();
-    print('apiii $_notes + ${_notes?.length}');
-    setState(() {
-      _isLoading_notes = false;
-      SharedPrefes.saveNotesLength(_notes?.length ?? 0);
-    });
+    try {
+      _notes = await NoteService.fetchAllNotes(tokenTHome!);
+      print('Notes fetched: ${_notes?.length}');
+      setState(() {
+        _isLoading_notes = false;
+        SharedPrefes.saveNotesLength(_notes?.length ?? 0);
+      });
+    } catch (e) {
+      print('Error fetching notes: $e');
+      setState(() {
+        _isLoading_notes = false;
+      });
+    }
   }
 
   Future<void> getexams() async {
-    _exams = await QuizService.getAllQuizzes();
-    print('apiii exams $_exams + ${_exams?.length}');
+    try {
+      _exams = await QuizService.getAllQuizzes(tokenTHome!);
+      print('Exams fetched: ${_exams?.length}');
+      setState(() {
+        _isLoading_Exams = false;
+        SharedPrefes.saveExamsLength(_exams?.length ?? 0);
+      });
+    } catch (e) {
+      print('Error fetching exams: $e');
+      setState(() {
+        _isLoading_Exams = false;
+      });
+    }
+  }
 
-    setState(() {
-      _isLoading_Exams = false;
-      SharedPrefes.saveExamsLength(_exams?.length ?? 0);
-    });
+  Future<void> getStd() async {
+    try {
+      _Std = await StudentService.AllStudents(tokenTHome!);
+      if (_Std != null) {
+        print('Students fetched: ${_Std!.length}');
+      } else {
+        print('Students list is null');
+      }
+      setState(() {
+        _isLoading_Std = false;
+      });
+    } catch (e) {
+      print('Error fetching students: $e');
+      setState(() {
+        _isLoading_Std = false;
+      });
+    }
   }
 
   Future<void> getAdmin() async {
     try {
-      admin = await AdminService.getAdmin();
-      print('Got Admin Successfully: ${admin!.username}');
+      admin = await AdminService.getAdmin(tokenTHome!);
+      if (admin != null) {
+        print('Got Admin Successfully: ${admin!.username}');
+      } else {
+        print('Admin is null');
+      }
       setState(() {
         _isLoading_admin = false;
       });
     } catch (e) {
       print('Error fetching admin: $e');
+      setState(() {
+        _isLoading_admin = false;
+      });
     }
   }
 
@@ -147,17 +234,14 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<void> getStd() async {
-    _Std = await StudentService.AllStudents();
-    print('apiii $_Std + ${_Std!.length}');
-    setState(() {
-      _isLoading_Std = false;
-    });
-  }
-
   Future<void> onRefresh() async {
     setState(() {
       getStd();
+      getLibrary();
+      getNotes();
+      getAdmin();
+      getexams();
+
     });
   }
 
@@ -351,10 +435,10 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                     )),
                 actions: [
                   GestureDetector(
-                    /*onTap: () {
+                    onTap: () {
                       sharedPreferences!.remove('token');
                       Get.to(const Login());
-                    },*/
+                    },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 23),
                       child: ClipRRect(
@@ -368,7 +452,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                   ),
                 ],
               ),
-        body: RefreshIndicator(
+        body: _isLoading_admin || _isLoading_Std || _isLoading_pdfs || _isLoading_notes || _isLoading_Exams
+            ? const Center(
+          child: CircularProgressIndicator(),
+        )
+            :
+        RefreshIndicator(
           onRefresh: onRefresh,
           backgroundColor: const Color(0xFF164863),
           color: Colors.white,
@@ -390,7 +479,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
                                 Container(
                                   color: const Color(0x00565656),
                                   child: Text(
-                                    admin!.username,
+                                    admin?.username ?? 'Loading...',
                                     style: GoogleFonts.ibmPlexMono(
                                       color: const Color(0xFF164863),
                                       fontSize: 22,

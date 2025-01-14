@@ -17,6 +17,8 @@ Future<void> main() async {
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');
 
+  print('Token from main $token!');
+
   runApp(const MyApp());
 }
 

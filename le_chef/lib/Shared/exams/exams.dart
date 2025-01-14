@@ -69,7 +69,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   Future<void> getExams() async {
     try {
-      final exams = await QuizService.getAllQuizzes();
+      final exams = await QuizService.getAllQuizzes(tokenTHome!);
       setState(() {
         _exams = exams;
         _isLoading = false;
