@@ -4,6 +4,7 @@ import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/services/content/note_service.dart';
 import '../Models/Notes.dart';
 import '../main.dart';
+import 'admin/THome.dart';
 
 class NotesScreen extends StatefulWidget {
   final int level;
@@ -25,7 +26,7 @@ class _NotesScreenState extends State<NotesScreen> {
 
   Future<List<Notes>> _fetchAndSortNotes() async {
     final notes = role == 'admin'
-        ? await NoteService.fetchAllNotes()
+        ? await NoteService.fetchAllNotes(tokenTHome!)
         : await NoteService.fetchNotesForUserLevel();
 
     // Filter notes based on education level

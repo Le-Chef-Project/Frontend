@@ -34,7 +34,7 @@ class _AllStudentsState extends State<AllStudents> {
   String? profilePic = sharedPreferences?.getString('img');
 
   Future<void> getStd() async {
-    _Std = await StudentService.AllStudents();
+    _Std = await StudentService.AllStudents(tokenTHome!);
     print('Std infooooooooo ${_Std!}');
     setState(() {
       _isLoading_Std = false;

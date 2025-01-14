@@ -73,11 +73,11 @@ class QuizService {
     }
   }
 
-  static Future<List<quizModel.Quiz>> getAllQuizzes() async {
+  static Future<List<quizModel.Quiz>> getAllQuizzes(String tokenTHome) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
     http.Response response = await http.get(url,
-        headers: {'Content-Type': 'application/json', 'token': token!});
+        headers: {'Content-Type': 'application/json', 'token': tokenTHome!});
 
     var data = jsonDecode(response.body);
 

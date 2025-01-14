@@ -11,6 +11,7 @@ import 'package:le_chef/services/student/student_service.dart';
 import '../../Models/Admin.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../main.dart';
+import 'THome.dart';
 
 class ProfilePage extends StatefulWidget {
   final bool isStudent;
@@ -138,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
 
-    StudentService.AllStudents(); // Refresh student data
+    StudentService.AllStudents(tokenTHome!); // Refresh student data
   }
 
   @override
