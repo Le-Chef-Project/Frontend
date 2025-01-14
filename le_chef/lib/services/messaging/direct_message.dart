@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import '../../utils/apiendpoints.dart';
 import '../../Models/direct_chat.dart';
 import '../../main.dart';
+import '../auth/login_service.dart';
 
 class DirectMsgService {
   static Future<void> sendDirectMsg({

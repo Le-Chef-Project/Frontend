@@ -6,6 +6,7 @@ import 'package:le_chef/services/student/student_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Screens/admin/THome.dart';
 import '../../Screens/user/Home.dart';
+import '../../services/auth/login_service.dart';
 
 Future<void> createSession(int level, BuildContext context) async {
   try {
@@ -46,7 +47,7 @@ Future<void> createSession(int level, BuildContext context) async {
 }
 
 Future<List<Student>> getStudents(int educationalLevel) async {
-  List<Student> allStudents = await StudentService.AllStudents(tokenTHome!);
+  List<Student> allStudents = await StudentService.AllStudents(token!);
 
   List<Student> filteredStudents = allStudents.where((student) {
     return student.educationLevel == educationalLevel;

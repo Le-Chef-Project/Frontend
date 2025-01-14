@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Screens/admin/THome.dart';
 import '../../Screens/user/Home.dart';
 import '../../utils/SharedPrefes.dart';
 import '../../utils/apiendpoints.dart';
+
+SharedPreferences? sharedPreferencesTHome;
+String? token;
 
 class LoginService {
   static Future<void> login(String emailController, String passwordController) async {
@@ -45,6 +49,7 @@ class LoginService {
 
         // Navigate based on role
         if (json['role'] == "admin") {
+          sharedPreferencesTHome = await SharedPreferences.getInstance();
           Get.offAll(
                 () => const THome(),
             transition: Transition.fade,

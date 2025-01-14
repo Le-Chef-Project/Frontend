@@ -8,6 +8,7 @@ import 'package:le_chef/services/content/quiz_service.dart';
 
 import '../../Screens/admin/THome.dart';
 import '../../Screens/admin/payment_request.dart';
+import '../../services/auth/login_service.dart';
 import '../customBottomNavBar.dart';
 import '../../Widgets/customExamWidgets.dart';
 import '../../main.dart';
@@ -69,7 +70,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   Future<void> getExams() async {
     try {
-      final exams = await QuizService.getAllQuizzes(tokenTHome!);
+      final exams = await QuizService.getAllQuizzes(token!);
       setState(() {
         _exams = exams;
         _isLoading = false;

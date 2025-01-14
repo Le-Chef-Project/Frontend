@@ -15,6 +15,7 @@ import '../../Models/Video.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/meeting/online_session_screen.dart';
 import '../../main.dart';
+import '../../services/auth/login_service.dart';
 import '../Notes.dart';
 import '../admin/THome.dart';
 import '../admin/library.dart';
@@ -72,7 +73,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getexams() async {
-    _exams = await QuizService.getAllQuizzes(tokenTHome!);
+    _exams = await QuizService.getAllQuizzes(token!);
     print('apiii $_exams + ${_exams?.length}');
 
     _exams = _exams?.where((exam) => exam.level == level).toList();
@@ -82,7 +83,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getpdf() async {
-    _pdfs = await MediaService.fetchAllPDFs(tokenTHome!);
+    _pdfs = await MediaService.fetchAllPDFs(token!);
     print('apiii $_pdfs + ${_pdfs?.length}');
 
     _pdfs = _pdfs?.where((pdf) => pdf.educationLevel == level).toList();

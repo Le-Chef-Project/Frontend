@@ -9,6 +9,7 @@ import '../../utils/apiendpoints.dart';
 import '../../Models/Quiz.dart';
 import '../../Screens/user/examResultbyID.dart';
 import '../../main.dart';
+import '../auth/login_service.dart';
 
 class QuizService {
   static Future<void> addQuiz({
@@ -73,11 +74,11 @@ class QuizService {
     }
   }
 
-  static Future<List<quizModel.Quiz>> getAllQuizzes(String tokenTHome) async {
+  static Future<List<quizModel.Quiz>> getAllQuizzes(String token) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
     http.Response response = await http.get(url,
-        headers: {'Content-Type': 'application/json', 'token': tokenTHome!});
+        headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 

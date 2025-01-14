@@ -10,6 +10,7 @@ import 'package:le_chef/services/student/student_service.dart';
 
 import '../../Shared/customBottomNavBar.dart';
 import '../../Widgets/total_exams-students_card.dart';
+import '../../services/auth/login_service.dart';
 import '../user/Home.dart';
 import '../chats/chats.dart';
 import '../notification.dart';
@@ -34,7 +35,7 @@ class _AllStudentsState extends State<AllStudents> {
   String? profilePic = sharedPreferences?.getString('img');
 
   Future<void> getStd() async {
-    _Std = await StudentService.AllStudents(tokenTHome!);
+    _Std = await StudentService.AllStudents(token!);
     print('Std infooooooooo ${_Std!}');
     setState(() {
       _isLoading_Std = false;

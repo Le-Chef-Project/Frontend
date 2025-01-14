@@ -4,12 +4,12 @@ import '../../main.dart';
 import '../../Models/Admin.dart' as admin;
 import '../../utils/apiendpoints.dart';
 class AdminService{
-  static Future<admin.Admin> getAdmin(String tokenTHome) async {
+  static Future<admin.Admin> getAdmin(String token) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.getAdmin);
 
     Response response = await get(url,
-        headers: {'Content-Type': 'application/json', 'token': tokenTHome!});
+        headers: {'Content-Type': 'application/json', 'token': token!});
 
     var data = jsonDecode(response.body);
 

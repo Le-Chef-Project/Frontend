@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 import 'package:le_chef/services/student/student_service.dart';
 import '../../Models/Student.dart';
+import '../../services/auth/login_service.dart';
 import 'THome.dart';
 
 class StudentSelectionScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _StudentSelectionScreenState extends State<StudentSelectionScreen> {
   bool _isLoading_Std = true;
 
   Future<void> getStd() async {
-    _Std = await StudentService.AllStudents(tokenTHome!);
+    _Std = await StudentService.AllStudents(token!);
     print('Std infooooooooo ${_Std!}');
     // Filter out existing members based on IDs
 

@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../utils/apiendpoints.dart';
 import '../../Models/Student.dart';
 import '../../main.dart';
+import '../auth/login_service.dart';
 
 class StudentService {
   static Future<String> AddStudent(
@@ -59,12 +60,12 @@ class StudentService {
     return Mess!;
   }
 
-  static Future<List<Student>> AllStudents(String tokenTHome) async {
+  static Future<List<Student>> AllStudents(String token) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.GetStudents);
     http.Response response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json', 'token': tokenTHome!},
+      headers: {'Content-Type': 'application/json', 'token': token!},
     );
     var data = jsonDecode(response.body);
 

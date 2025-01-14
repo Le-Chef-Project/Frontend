@@ -25,13 +25,14 @@ import '../../Shared/login.dart';
 import '../../Shared/meeting/online_session_screen.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../main.dart';
+import '../../services/auth/login_service.dart';
 import '../../theme/custom_button_style.dart';
 import '../../utils/SharedPrefes.dart';
 import '../notification.dart';
 import 'Exam&LibraryLevels.dart';
 
-SharedPreferences? sharedPreferencesTHome;
-String? tokenTHome;
+// SharedPreferences? sharedPreferencesTHome;
+// String? token;
 
 
 class THome extends StatefulWidget {
@@ -77,16 +78,16 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _initializeSharedPreferences().then((_) {
+    // _initializeSharedPreferences().then((_) {
       _loadSharedPreferences();
       _initializeData();
       _setupAnimation();
-    });
+    // });
   }
 
-  Future<void> _initializeSharedPreferences() async {
-    sharedPreferencesTHome = await SharedPreferences.getInstance();
-  }
+  // Future<void> _initializeSharedPreferences() async {
+  //   sharedPreferencesTHome = await SharedPreferences.getInstance();
+  // }
 
   void _setupAnimation() {
     _animationController = AnimationController(
@@ -101,13 +102,13 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> _loadSharedPreferences() async {
     if (sharedPreferencesTHome != null) {
-      tokenTHome = sharedPreferencesTHome!.getString('token');
+      token = sharedPreferencesTHome!.getString('token');
       _PDFsLength = sharedPreferencesTHome!.getInt('PDFsLength') ?? 0;
       _NotesLength = sharedPreferencesTHome!.getInt('NotesLength') ?? 0;
       _VideosLength = sharedPreferencesTHome!.getInt('VideosLength') ?? 0;
       _ExamsLength = sharedPreferencesTHome!.getInt('ExamsLength') ?? 0;
 
-      print('Token Home: $tokenTHome');
+      print('Token Home: $token');
       print('Token pdf: $_PDFsLength');
       print('Token _NotesLength: $_NotesLength');
       print('Token _VideosLength: $_VideosLength');
@@ -134,7 +135,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getLibrary() async {
     try {
-      _pdfs = await MediaService.fetchAllPDFs(tokenTHome!);
+      _pdfs = await MediaService.fetchAllPDFs(token!);
       print('PDF length: ${_pdfs?.length}');
 
       setState(() {
@@ -160,7 +161,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getNotes() async {
     try {
-      _notes = await NoteService.fetchAllNotes(tokenTHome!);
+      _notes = await NoteService.fetchAllNotes(token!);
       print('Notes fetched: ${_notes?.length}');
       setState(() {
         _isLoading_notes = false;
@@ -176,7 +177,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getexams() async {
     try {
-      _exams = await QuizService.getAllQuizzes(tokenTHome!);
+      _exams = await QuizService.getAllQuizzes(token!);
       print('Exams fetched: ${_exams?.length}');
       setState(() {
         _isLoading_Exams = false;
@@ -192,7 +193,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getStd() async {
     try {
-      _Std = await StudentService.AllStudents(tokenTHome!);
+      _Std = await StudentService.AllStudents(token!);
       if (_Std != null) {
         print('Students fetched: ${_Std!.length}');
       } else {
@@ -211,7 +212,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getAdmin() async {
     try {
-      admin = await AdminService.getAdmin(tokenTHome!);
+      admin = await AdminService.getAdmin(token!);
       if (admin != null) {
         print('Got Admin Successfully: ${admin!.username}');
       } else {

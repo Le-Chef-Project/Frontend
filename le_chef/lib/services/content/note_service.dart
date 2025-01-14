@@ -9,14 +9,15 @@ import '../../Models/Notes.dart';
 import 'package:http/http.dart' as http;
 
 import '../../main.dart';
+import '../auth/login_service.dart';
 
 class NoteService {
-  static Future<List<Notes>> fetchAllNotes(String tokenTHome) async {
+  static Future<List<Notes>> fetchAllNotes(String token) async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allNotes);
     http.Response response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json', 'token': tokenTHome!},
+      headers: {'Content-Type': 'application/json', 'token': token!},
     );
     var data = jsonDecode(response.body);
 

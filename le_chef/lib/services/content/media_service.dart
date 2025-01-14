@@ -9,6 +9,7 @@ import '../../Models/PDF.dart';
 import '../../Models/Video.dart';
 import '../../main.dart';
 import '../../utils/apiendpoints.dart';
+import '../auth/login_service.dart';
 
 class MediaService {
   static Future<String> uploadVideo({
@@ -101,12 +102,12 @@ class MediaService {
     }
   }
 
-  static Future<List<PDF>> fetchAllPDFs(String tokenTHome) async {
+  static Future<List<PDF>> fetchAllPDFs(String token) async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allPDFs);
     http.Response response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json', 'token': tokenTHome!},
+      headers: {'Content-Type': 'application/json', 'token': token!},
     );
     var data = jsonDecode(response.body);
 
