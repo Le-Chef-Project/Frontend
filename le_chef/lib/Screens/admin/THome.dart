@@ -30,7 +30,7 @@ import '../../utils/SharedPrefes.dart';
 import '../notification.dart';
 import 'Exam&LibraryLevels.dart';
 
- SharedPreferences? sharedPreferencesTHome;
+SharedPreferences? sharedPreferencesTHome;
 String? tokenTHome;
 
 
@@ -78,9 +78,9 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _initializeSharedPreferences().then((_) {
+      _loadSharedPreferences();
       _initializeData();
       _setupAnimation();
-      _loadSharedPreferences();
     });
   }
 
