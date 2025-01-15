@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../../Models/direct_chat.dart';
-import '../../main.dart';
 import '../auth/login_service.dart';
 
 class DirectMsgService {

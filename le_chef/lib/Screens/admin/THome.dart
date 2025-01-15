@@ -31,7 +31,7 @@ import '../../utils/SharedPrefes.dart';
 import '../notification.dart';
 import 'Exam&LibraryLevels.dart';
 
-// SharedPreferences? sharedPreferencesTHome;
+// SharedPreferences? sharedPreferences;
 // String? token;
 
 
@@ -86,7 +86,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   // Future<void> _initializeSharedPreferences() async {
-  //   sharedPreferencesTHome = await SharedPreferences.getInstance();
+  //   sharedPreferences = await SharedPreferences.getInstance();
   // }
 
   void _setupAnimation() {
@@ -101,12 +101,12 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _loadSharedPreferences() async {
-    if (sharedPreferencesTHome != null) {
-      token = sharedPreferencesTHome!.getString('token');
-      _PDFsLength = sharedPreferencesTHome!.getInt('PDFsLength') ?? 0;
-      _NotesLength = sharedPreferencesTHome!.getInt('NotesLength') ?? 0;
-      _VideosLength = sharedPreferencesTHome!.getInt('VideosLength') ?? 0;
-      _ExamsLength = sharedPreferencesTHome!.getInt('ExamsLength') ?? 0;
+    if (sharedPreferences != null) {
+      token = sharedPreferences!.getString('token');
+      _PDFsLength = sharedPreferences!.getInt('PDFsLength') ?? 0;
+      _NotesLength = sharedPreferences!.getInt('NotesLength') ?? 0;
+      _VideosLength = sharedPreferences!.getInt('VideosLength') ?? 0;
+      _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
 
       print('Token Home: $token');
       print('Token pdf: $_PDFsLength');
@@ -114,7 +114,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
       print('Token _VideosLength: $_VideosLength');
       print('Token _ExamsLength: $_ExamsLength');
     } else {
-      print('sharedPreferencesTHome is null');
+      print('sharedPreferences is null');
     }
   }
 

@@ -1,4 +1,6 @@
 
+import 'package:uuid/uuid.dart';
+
 class GroupChat {
   final String id;
   final String group;
@@ -29,8 +31,8 @@ class GroupChat {
 
 class GroupChatMessage {
   final String id;
-  final String sender;
   final String content;
+  final Map<String, dynamic> sender; // Use a Map to store sender details
   final List<String>? images;
   final List<String>? documents;
   final List<String>? audio;
@@ -38,8 +40,8 @@ class GroupChatMessage {
 
   GroupChatMessage({
     required this.id,
-    required this.sender,
     required this.content,
+    required this.sender,
     this.images,
     this.documents,
     this.audio,
@@ -48,18 +50,15 @@ class GroupChatMessage {
 
   factory GroupChatMessage.fromJson(Map<String, dynamic> json) {
     return GroupChatMessage(
-      id: json['_id'] ?? '',
-      sender: json['sender'] is Map
-          ? json['sender']['_id'] ?? '' // Extract ID if sender is a Map
-          : json['sender'] ?? '',
+      id: json['_id'] ?? const Uuid().v4(),
       content: json['content'] ?? '',
-      images: (json['images'] as List?)?.map((e) => e.toString()).toList(),
-      documents: (json['documents'] as List?)?.map((e) => e.toString()).toList(),
-      audio: (json['audio'] as List?)?.map((e) => e.toString()).toList(),
+      sender: json['sender'] ?? {}, // Parse the sender field
+      images: json['images'] != null ? List<String>.from(json['images']) : null,
+      documents: json['documents'] != null ? List<String>.from(json['documents']) : null,
+      audio: json['audio'] != null ? List<String>.from(json['audio']) : null,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : DateTime.now(),
     );
   }
 }
-

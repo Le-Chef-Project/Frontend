@@ -5,15 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Screens/admin/THome.dart';
 import '../../Screens/user/Home.dart';
+import '../../main.dart';
 import '../../utils/SharedPrefes.dart';
 import '../../utils/apiendpoints.dart';
 
-SharedPreferences? sharedPreferencesTHome;
-String? token;
-
 class LoginService {
   static Future<void> login(String emailController, String passwordController) async {
-    // Input validation
     if (emailController.isEmpty || passwordController.isEmpty) {
       _showErrorDialog('Blank fields are not allowed.');
       return;
@@ -38,18 +35,19 @@ class LoginService {
       print('API Response: $json');
 
       if (response.statusCode == 200) {
-        // Validate API response
         if (json['token'] == null || json['role'] == null) {
           _showErrorDialog('Invalid API response: Missing token or role.');
           return;
         }
 
-        // Save user data to SharedPreferences
+        // Save user data and update global variables
         await _saveUserData(json);
 
-        // Navigate based on role
+        // Update global variables
+        token = json['token'];  // Update the global token
+        role = json['role'];    // Update the global role
+
         if (json['role'] == "admin") {
-          sharedPreferencesTHome = await SharedPreferences.getInstance();
           Get.offAll(
                 () => const THome(),
             transition: Transition.fade,
@@ -65,11 +63,9 @@ class LoginService {
           print('Education Level: ${json['educationLevel']}');
         }
       } else {
-        // Handle API error
         _showErrorDialog(json['message'] ?? 'Login failed. Please try again.');
       }
     } catch (e) {
-      // Handle exceptions
       print('Error during login: $e');
       _showErrorDialog('An error occurred. Please try again.');
     }

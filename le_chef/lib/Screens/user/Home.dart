@@ -51,25 +51,46 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    shared();
+    _loadSharedPreferences();
+    _initializeData();
+
     _videosFuture = _fetchAndSortVideos();
     _videosFuture!.then((videos) {
       setState(() {
         videosLength = videos.length;
       });
     });
-    getpdf();
-    getexams();
-    getnotes();
   }
 
-  Future<void> shared() async {
+  Future<void> _loadSharedPreferences() async {
     setState(() {
+      token = sharedPreferences!.getString('token');
       level = sharedPreferences?.getInt('educationLevel');
       userName = sharedPreferences?.getString('userName');
       rolee = sharedPreferences?.getString('role');
       logged_img = sharedPreferences?.getString('img');
+
+      print('Token Home: $token');
+      print('Token level: $level');
+      print('Token userName: $userName');
+      print('Token rolee: $rolee');
+      print('Token logged_img: $logged_img');
+
     });
+  }
+
+  Future<void> _initializeData() async {
+    try {
+      await Future.wait([
+      getpdf(),
+      getexams(),
+      getnotes(),
+        getexams(),
+      ]);
+      print('All data initialized successfully');
+    } catch (e) {
+      print('Error initializing data: $e');
+    }
   }
 
   Future<void> getexams() async {

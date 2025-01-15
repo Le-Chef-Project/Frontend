@@ -6,12 +6,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
 
+import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import 'package:http/http.dart' as http;
 
 import '../../Models/group.dart';
 import '../../Models/group_chat.dart';
-import '../../main.dart';
 import '../auth/login_service.dart';
 
 class GrpMsgService {

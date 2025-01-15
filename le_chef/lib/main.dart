@@ -7,18 +7,22 @@ import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'services/auth/login_service.dart';
-
 SharedPreferences? sharedPreferences;
-
-// String? token;
+String? token;
 String? role;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize SharedPreferences
   sharedPreferences = await SharedPreferences.getInstance();
+
+  // Get stored token and role
+  token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');
 
-  print('Token from main $token!');
+  print('Token from main: $token');
+  print('Role from main: $role');
 
   runApp(const MyApp());
 }
@@ -28,10 +32,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define the color you want for the status bar
     Color statusBarColor = Colors.white;
 
-    // Apply the status bar color globally
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: statusBarColor,
       statusBarIconBrightness: Brightness.dark,
@@ -46,12 +48,20 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF164863)),
           useMaterial3: true,
         ),
-        home: token == null || token == ""
-            ? const SplashOne()
-            : role == "admin"
-                ? const THome()
-                : const Home(),
+        home: _determineHomeScreen(),
       ),
     );
+  }
+
+  Widget _determineHomeScreen() {
+    // Check if user is logged in and has a role
+    if (token != null && token!.isNotEmpty) {
+      if (role == "admin") {
+        return const THome();
+      } else {
+        return const Home();
+      }
+    }
+    return const SplashOne();
   }
 }

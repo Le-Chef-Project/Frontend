@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 import 'package:le_chef/services/student/student_service.dart';
 import '../../Models/Student.dart';
-import '../../services/auth/login_service.dart';
+import '../../main.dart';
 import 'THome.dart';
 
 class StudentSelectionScreen extends StatefulWidget {

@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:le_chef/Models/Quiz.dart' as quizModel;
+import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../../Models/Quiz.dart';
 import '../../Screens/user/examResultbyID.dart';
-import '../../main.dart';
 import '../auth/login_service.dart';
 
 class QuizService {

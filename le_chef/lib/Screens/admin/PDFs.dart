@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import 'package:le_chef/services/content/media_service.dart';
 import '../../Models/PDF.dart';
-import '../../services/auth/login_service.dart';
+import '../../main.dart';
 import 'THome.dart';
 import 'viewPDF.dart';
 

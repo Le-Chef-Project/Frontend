@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../../Models/Student.dart';
-import '../../main.dart';
 import '../auth/login_service.dart';
 
 class StudentService {

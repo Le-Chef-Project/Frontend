@@ -354,7 +354,7 @@ class _ChatPageState extends State<ChatPage> {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-            await DirectMsgService.getDirectMessages(widget.chatRoom!);
+        await DirectMsgService.getDirectMessages(widget.chatRoom!);
 
         convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
@@ -363,7 +363,7 @@ class _ChatPageState extends State<ChatPage> {
           return types.Message.fromJson({
             'author': {
               'id':
-                  msg.sender != widget.receiverId ? _user.id : widget.receiverId
+              msg.sender != widget.receiverId ? _user.id : widget.receiverId
             },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
@@ -374,13 +374,22 @@ class _ChatPageState extends State<ChatPage> {
       } else {
         print('Group id: ${widget.group!.id}');
         final GroupChat groupChat =
-            await GrpMsgService.getGrpMessages(widget.group!.id);
+        await GrpMsgService.getGrpMessages(widget.group!.id);
 
         convertedMessages = groupChat.messages.map((msg) {
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
 
+          // Extract sender information from the API response
+          final sender = msg.sender;
+
           return types.Message.fromJson({
-            'author': {'id': _user.id},
+            'author': {
+              'id': sender?['_id'] ?? '', // Use the sender's ID from the API
+              'firstName': sender?['firstName'] ?? '',
+              'lastName': sender?['lastName'] ?? '',
+              'username': sender?['username'] ?? '',
+              'imageUrl': sender?['image']?['url'] ?? '',
+            },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
             'type': _getMessageType(msg),
