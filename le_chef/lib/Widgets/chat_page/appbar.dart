@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-PreferredSizeWidget buildAppBar(BuildContext context, String? groupName, int? membersNumber, String? username, String? avatarUrl) {
+PreferredSizeWidget buildAppBar(BuildContext context, String? groupName,
+    int? membersNumber, String? username, String? avatarUrl) {
   if (groupName != null && groupName.contains(' ')) {
     return GroupChatAppBar(
       groupName: groupName,
@@ -11,7 +12,8 @@ PreferredSizeWidget buildAppBar(BuildContext context, String? groupName, int? me
   }
   return PersonalChatAppBar(
     username: username ?? 'Chat',
-    avatarUrl: avatarUrl ?? 'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
+    avatarUrl: avatarUrl ??
+        'https://r2.starryai.com/results/911754633/bccb46bd-67fe-47c7-8e5e-3dd39329d638.webp',
     onBackPressed: () => Navigator.pop(context),
   );
 }
@@ -34,6 +36,7 @@ class GroupChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     final abbreviatedName = names[0][0] + names[1][0];
 
     return AppBar(
+      surfaceTintColor: Colors.white,
       backgroundColor: Colors.white,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -84,7 +87,8 @@ class GroupChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class PersonalChatAppBar extends StatelessWidget implements PreferredSizeWidget {
+class PersonalChatAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String username;
   final String? avatarUrl;
   final VoidCallback onBackPressed;
@@ -99,6 +103,7 @@ class PersonalChatAppBar extends StatelessWidget implements PreferredSizeWidget 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      surfaceTintColor: Colors.white,
       backgroundColor: Colors.white,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -108,13 +113,14 @@ class PersonalChatAppBar extends StatelessWidget implements PreferredSizeWidget 
       title: Row(
         children: [
           CircleAvatar(
-            backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+            backgroundImage:
+                avatarUrl != null ? NetworkImage(avatarUrl!) : null,
             backgroundColor: const Color(0xFF0E7490),
             child: avatarUrl == null
                 ? Text(
-              username[0].toUpperCase(),
-              style: const TextStyle(color: Colors.white),
-            )
+                    username[0].toUpperCase(),
+                    style: const TextStyle(color: Colors.white),
+                  )
                 : null,
           ),
           const SizedBox(width: 8),

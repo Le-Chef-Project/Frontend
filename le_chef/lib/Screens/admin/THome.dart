@@ -15,8 +15,6 @@ import 'package:le_chef/services/content/media_service.dart';
 import 'package:le_chef/services/content/note_service.dart';
 import 'package:le_chef/services/content/quiz_service.dart';
 import 'package:le_chef/services/student/student_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../Models/Quiz.dart';
 import '../../Models/Student.dart';
 import '../../Models/Video.dart';
@@ -25,7 +23,6 @@ import '../../Shared/login.dart';
 import '../../Shared/meeting/online_session_screen.dart';
 import '../../Shared/textInputDecoration.dart';
 import '../../main.dart';
-import '../../services/auth/login_service.dart';
 import '../../theme/custom_button_style.dart';
 import '../../utils/SharedPrefes.dart';
 import '../notification.dart';

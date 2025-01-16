@@ -196,7 +196,7 @@ class _OnlineSessionScreenState extends State<OnlineSessionScreen> {
       );
     } else {
       if (loading) {
-        return const CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       } else if (sessions_list.isNotEmpty) {
         return joinMeeting(
             context, role, null, sessions_list.last.zoomMeetingId);

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:le_chef/Models/Quiz.dart' as quizModel;
+import '../../Models/Result.dart';
 import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../../Models/Quiz.dart';
@@ -175,6 +176,7 @@ class QuizService {
 
     if (response.statusCode == 201) {
       Get.to(ExamResult(
+        truee: true,
         answers: answers,
         quiz_result: jsonDecode(response.body),
         quiz: quiz,
@@ -256,6 +258,8 @@ class QuizService {
 
       // Extract fields with fallbacks
       final String title = quizData['title'] ?? 'Untitled Quiz';
+      final quizModel.Quiz quiz = quizModel.Quiz.fromJson(quizData);
+      ;
       final int questionsLength =
           (quizData['questions'] as List<dynamic>?)?.length ?? 0;
       final int minutes = quizData['duration']?['minutes'] ?? 0;
@@ -263,6 +267,7 @@ class QuizService {
       final String duration = '${hours}h ${minutes}m';
 
       return {
+        'quiz': quiz,
         'id': quizId,
         'title': title,
         'questionsLength': questionsLength,
@@ -297,5 +302,105 @@ class QuizService {
 
     print('Final quizzes list: $quizzes');
     return quizzes;
+  }
+
+  static Future<QuizData> getQuizResult(String quizId) async {
+    try {
+      // Construct the API URL
+      var url = Uri.parse(
+        '${ApiEndPoints.baseUrl.trim()}${ApiEndPoints.quiz.submittedQuizbyID}$quizId',
+      );
+
+      // Make the HTTP GET request
+      final response = await http.get(
+        url,
+        headers: {
+          'token': token!,
+          'Content-Type': 'application/json',
+        },
+      );
+
+      // Check if the response is successful
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(
+            'API Response: ${response.body}'); // Debug: Print the API response
+
+        // Extract the list of quizzes from the response
+        final quizzes = data['quizzes'] as List<dynamic>;
+
+        // Check if quizzes are empty
+        if (quizzes.isEmpty) {
+          throw Exception('No quizzes found');
+        }
+
+        // Get the first quiz (assuming only one quiz is returned)
+        final quiz = quizzes.first;
+
+        // Extract question statuses
+        final questionStatuses = <Map<String, dynamic>>[];
+        for (final question in quiz['questions']) {
+          final questionId = question['questionId'] ?? 'unknown'; // Handle null
+          final status = question['status'] ?? 'unanswered'; // Handle null
+
+          questionStatuses.add({
+            'questionId': questionId,
+            'status': status,
+          });
+        }
+
+        // Convert string fields to int and handle null values
+        final correctAnswers = _parseInt(quiz['correctAnswers']);
+        final wrongAnswers = _parseInt(quiz['wrongAnswers']);
+        final totalQuestions = _parseInt(quiz['totalQuestions']);
+        final unansweredQuestions = _parseInt(quiz['unansweredQuestions']);
+
+        // Combine quiz summary and question statuses into a single map
+        final quizData = {
+          'quizId': quiz['quizId'], // Include quiz ID
+          'title': quiz['title'], // Include quiz title
+          'correctAnswers': correctAnswers,
+          'wrongAnswers': wrongAnswers,
+          'totalQuestions': totalQuestions,
+          'unansweredQuestions': unansweredQuestions,
+          'questionStatuses': questionStatuses,
+        };
+
+        // Extract selected options
+        final selectedOptions = <SelectedOption>[];
+        for (final question in quiz['questions']) {
+          final questionId = question['questionId'] ?? 'unknown'; // Handle null
+          final selectedOption =
+              _parseInt(question['selectedNumber']); // Parse to int
+
+          selectedOptions.add(SelectedOption(
+            questionId: questionId,
+            selectedOption: selectedOption,
+          ));
+        }
+
+        // Return the combined data structure
+        return QuizData(
+          quizData: quizData,
+          selectedOptions: selectedOptions,
+        );
+      } else {
+        // Handle non-200 status codes
+        throw Exception(
+            'Failed to load quizzes: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      print('Error in getQuizResult: $e');
+      throw Exception('Failed to fetch quiz result: $e');
+    }
+  }
+
+// Helper method to parse integers safely
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0; // Handle null values
+    if (value is int) return value; // Already an integer
+    if (value is String) return int.tryParse(value) ?? 0; // Parse string to int
+    return 0; // Default fallback
   }
 }

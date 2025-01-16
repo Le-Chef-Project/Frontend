@@ -25,7 +25,7 @@ class MembersScreen extends StatefulWidget {
 
 class _MembersScreenState extends State<MembersScreen> {
   List<dynamic> members = [];
-  String? logged_ID = sharedPreferences?.getString('Id');
+  String? logged_ID = sharedPreferences?.getString('_id');
   bool isLoading = true;
   String? role = sharedPreferences?.getString('role');
   String? logged_username = sharedPreferences?.getString('userName');
@@ -39,7 +39,7 @@ class _MembersScreenState extends State<MembersScreen> {
 
   Future<void> fetchMembers() async {
     final fetchedMembers = await GrpMsgService.getGroupMembers(widget.groupId);
-    print(fetchedMembers);
+    print('fetchedMembers  $fetchedMembers');
     if (fetchedMembers != null) {
       setState(() {
         members = fetchedMembers

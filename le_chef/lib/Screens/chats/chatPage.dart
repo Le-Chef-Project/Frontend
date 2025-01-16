@@ -354,7 +354,7 @@ class _ChatPageState extends State<ChatPage> {
         setState(() => _isLoading = true);
 
         final direct_chat.DirectChat directChat =
-        await DirectMsgService.getDirectMessages(widget.chatRoom!);
+            await DirectMsgService.getDirectMessages(widget.chatRoom!);
 
         convertedMessages = directChat.messages.map((msg) {
           // Safely handle createdAt
@@ -363,7 +363,7 @@ class _ChatPageState extends State<ChatPage> {
           return types.Message.fromJson({
             'author': {
               'id':
-              msg.sender != widget.receiverId ? _user.id : widget.receiverId
+                  msg.sender != widget.receiverId ? _user.id : widget.receiverId
             },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
@@ -374,7 +374,7 @@ class _ChatPageState extends State<ChatPage> {
       } else {
         print('Group id: ${widget.group!.id}');
         final GroupChat groupChat =
-        await GrpMsgService.getGrpMessages(widget.group!.id);
+            await GrpMsgService.getGrpMessages(widget.group!.id);
 
         convertedMessages = groupChat.messages.map((msg) {
           final int createdAtMillis = _parseCreatedAt(msg.createdAt);
@@ -631,40 +631,6 @@ class _ChatPageState extends State<ChatPage> {
         body: _buildChatBody(context, chatTheme),
         floatingActionButton:
             _showFloatingButton ? _buildFloatingButton() : null,
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Home()),
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          userRole: role!,
-        ),
       ),
     );
   }
@@ -672,6 +638,7 @@ class _ChatPageState extends State<ChatPage> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     if (widget.person) {
       return PersonalChatAppBar(
+        
         username: widget.receiverName ?? 'Chat',
         avatarUrl:
             'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',

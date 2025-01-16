@@ -1,8 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Models/Quiz.dart';
+import 'package:le_chef/Screens/user/Home.dart';
 
+import '../../Models/Result.dart';
+import '../../Models/Result.dart';
+import '../../Models/Result.dart';
 import '../../Widgets/customExamWidgets.dart';
 import '../../services/content/quiz_service.dart';
+import 'examResultbyID.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -11,11 +19,53 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   late Future<List<Map<String, dynamic>>> _quizzesFuture;
+  bool isLoading = true;
+  String errorMessage = '';
+
+  QuizData? quizData;
 
   @override
   void initState() {
     super.initState();
     _quizzesFuture = fetchQuizzes();
+  }
+
+  void _fetchAndNavigate(String quizId, Quiz quiz) async {
+    try {
+      // Fetch quiz data
+      quizData = await QuizService.getQuizResult(quizId);
+
+      // Update the UI to indicate loading is complete
+      setState(() {
+        isLoading = false;
+      });
+      final selectedOptionsMap =
+          quizData!.selectedOptions.map((option) => option.toMap()).toList();
+
+      // Navigate to the result page with the fetched result
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ExamResult(
+            truee: false,
+            quiz: quiz,
+            quiz_result: quizData!.quizData as Map<String, dynamic>,
+            answers: selectedOptionsMap, // Corrected field name
+          ),
+        ),
+      );
+    } catch (e) {
+      // Handle errors (e.g., show a snackbar or dialog)
+      setState(() {
+        errorMessage = e.toString();
+        isLoading = false;
+      });
+      print('Error fetching quiz result: $errorMessage');
+      // Show a SnackBar with the error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching quiz result: $errorMessage')),
+      );
+    }
   }
 
   Future<List<Map<String, dynamic>>> fetchQuizzes() async {
@@ -70,6 +120,7 @@ class _QuizPageState extends State<QuizPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: ExamListTile(
+                        quiz: exam['quiz'],
                         questionsLength: exam['questionsLength'],
                         id: exam['id'],
                         title: exam['title'],
@@ -91,18 +142,31 @@ class _QuizPageState extends State<QuizPage> {
 
   ExamListTile(
       {required String id,
+      required Quiz quiz,
       required BuildContext context,
       required String title,
       required int questionsLength,
       required String duration}) {
     return ListTile(
-      title: Text(
-        title,
-        style: GoogleFonts.ibmPlexMono(
-          color: const Color(0xFF164863),
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.ibmPlexMono(
+              color: const Color(0xFF164863),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          IconButton(
+              onPressed: () {
+                _fetchAndNavigate(id, quiz);
+              },
+              icon: const Icon(
+                Icons.arrow_forward_ios,
+              )),
+        ],
       ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 8.0),

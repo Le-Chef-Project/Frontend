@@ -6,16 +6,15 @@ import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../auth/login_service.dart';
 
-class SessionService{
+class SessionService {
   static Future<String> createSession(int level) async {
     try {
-      var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.createSession);
+      var url = Uri.parse(
+          ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.createSession);
 
-      Response response = await post(
-          url,
+      Response response = await post(url,
           headers: {'Content-Type': 'application/json', 'token': token!},
-          body: jsonEncode({'level': level})
-      );
+          body: jsonEncode({'level': level}));
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         var decodedResponse = jsonDecode(response.body);
@@ -28,45 +27,43 @@ class SessionService{
     }
   }
 
-  static Future<List<session.Session>> getSessions() async{
-
+  static Future<List<session.Session>> getSessions() async {
     try {
       var url = Uri.parse(
           ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.getSession);
 
-      Response response = await get(url, headers: {
-        'Content-Type': 'application/json',
-        'token': token!
-      });
+      Response response = await get(url,
+          headers: {'Content-Type': 'application/json', 'token': token!});
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var decodedResponse = jsonDecode(response.body)['sessions'];
         print('Sessions Retrived successflly');
         return session.Session.itemsFromSnapshot(decodedResponse);
       } else {
-        throw 'Upload failed with status: ${response.statusCode}';
+        print('Upload failed with status: ${response.body}');
+        return [];
       }
-    }catch (e) {
+    } catch (e) {
       throw e.toString();
     }
   }
 
-  static Future<String> joinMeeting(String meetingId) async{
-    try{
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.joinSession);
+  static Future<String> joinMeeting(String meetingId) async {
+    try {
+      var url = Uri.parse(
+          ApiEndPoints.baseUrl.trim() + ApiEndPoints.session.joinSession);
 
-    Response response = await post(url, headers: {
-      'Content-Type': 'application/json',
-      'token': token!
-    }, body: jsonEncode({'meetingId': meetingId}));
+      Response response = await post(url,
+          headers: {'Content-Type': 'application/json', 'token': token!},
+          body: jsonEncode({'meetingId': meetingId}));
 
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      var decodedResponse = jsonDecode(response.body);
-      return decodedResponse['joinUrl'];
-    } else {
-      throw jsonDecode(response.body)['message'] ?? 'Unknown error occurred';
-    }
-  }catch (e) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        return decodedResponse['joinUrl'];
+      } else {
+        throw jsonDecode(response.body)['message'] ?? 'Unknown error occurred';
+      }
+    } catch (e) {
       throw e.toString();
     }
   }
