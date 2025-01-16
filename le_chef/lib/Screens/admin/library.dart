@@ -64,126 +64,124 @@ class LibraryTabContainerScreenState extends State<LibraryTabContainerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: const CustomAppBar(
-          title: 'Library',
-        ),
-        body: Column(
-          children: [
-            role == 'admin'
-                ? totalStudent(
-                    buttonText: 'Add to Library',
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(
+        title: 'Library',
+      ),
+      body: Column(
+        children: [
+          role == 'admin'
+              ? totalStudent(
+                  buttonText: 'Add to Library',
+                  context,
+                  'Total Items in Library',
+                  '${_PDFsLength! + _VideosLength!}',
+                  isLibrary: true,
+                  ontap: () => Navigator.push(
                     context,
-                    'Total Items in Library',
-                    '${_PDFsLength! + _VideosLength!}',
-                    isLibrary: true,
-                    ontap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddLibrary()),
-                    ),
-                    videoslenght: _VideosLength,
-                    pdfslenght: _PDFsLength,
-                  )
-                : Center(
-                    child: Image.asset(
-                      'assets/Wonder Learners Graduating.png',
-                      width: 300,
-                      height: 300,
-                    ),
+                    MaterialPageRoute(
+                        builder: (context) => const AddLibrary()),
                   ),
-            Material(
-              color: Colors.white,
-              child: TabBar(
-                labelColor: const Color(0xFF427D9D),
-                unselectedLabelColor: const Color(0xFF427D9D),
-                controller: tabviewController,
-                indicatorColor: const Color(0xFF427D9D),
-                dividerColor: Colors.transparent,
-                labelStyle: GoogleFonts.ibmPlexMono(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                  videoslenght: _VideosLength,
+                  pdfslenght: _PDFsLength,
+                )
+              : Center(
+                  child: Image.asset(
+                    'assets/Wonder Learners Graduating.png',
+                    width: 300,
+                    height: 300,
+                  ),
                 ),
-                unselectedLabelStyle: GoogleFonts.ibmPlexMono(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
-                indicator: Circletabindicator(radius: 4.0),
-                tabs: role == 'admin'
-                    ? [
-                        const Tab(child: Text('Videos')),
-                        const Tab(child: Text('PDFs')),
-                      ]
-                    : [
-                        const Tab(child: Text('Videos')),
-                        const Tab(child: Text('PDFs')),
-                        const Tab(
-                          child: Text('Exams Results'),
-                        )
-                      ],
+          Material(
+            color: Colors.white,
+            child: TabBar(
+              labelColor: const Color(0xFF427D9D),
+              unselectedLabelColor: const Color(0xFF427D9D),
+              controller: tabviewController,
+              indicatorColor: const Color(0xFF427D9D),
+              dividerColor: Colors.transparent,
+              labelStyle: GoogleFonts.ibmPlexMono(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: TabBarView(
-                controller: tabviewController,
-                children: role == 'admin'
-                    ? [
-                        VideoListScreen(selectedLevel: widget.selectedLevel),
-                        AllPDFs(selectedLevel: widget.selectedLevel),
-                      ]
-                    : [
-                        VideoListScreen(selectedLevel: widget.selectedLevel),
-                        AllPDFs(selectedLevel: widget.selectedLevel),
-                        QuizPage(),
-                      ],
+              unselectedLabelStyle: GoogleFonts.ibmPlexMono(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
               ),
+              indicator: Circletabindicator(radius: 4.0),
+              tabs: role == 'admin'
+                  ? [
+                      const Tab(child: Text('Videos')),
+                      const Tab(child: Text('PDFs')),
+                    ]
+                  : [
+                      const Tab(child: Text('Videos')),
+                      const Tab(child: Text('PDFs')),
+                      const Tab(
+                        child: Text('Exams Results'),
+                      )
+                    ],
             ),
-          ],
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) async {
-            switch (index) {
-              case 0:
-                if (role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const THome()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-                break;
-              case 1:
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: TabBarView(
+              controller: tabviewController,
+              children: role == 'admin'
+                  ? [
+                      VideoListScreen(selectedLevel: widget.selectedLevel),
+                      AllPDFs(selectedLevel: widget.selectedLevel),
+                    ]
+                  : [
+                      VideoListScreen(selectedLevel: widget.selectedLevel),
+                      AllPDFs(selectedLevel: widget.selectedLevel),
+                      QuizPage(),
+                    ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) async {
+          switch (index) {
+            case 0:
+              if (role == 'admin') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
+                  MaterialPageRoute(builder: (context) => const THome()),
                 );
-                break;
-              case 2:
+              } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          userRole: role!,
-        ),
+              }
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
+              }
+          }
+        },
+        context: context,
+        userRole: role!,
       ),
     );
   }

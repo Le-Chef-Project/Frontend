@@ -56,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
           text: widget.student?.educationLevel.toString() ?? '');
     } else {
       _usernameController =
-          TextEditingController(text: widget.admin?.username ?? '');
+          TextEditingController(text: 'Hany Azmy');
       _passwordController =
           TextEditingController(text: widget.admin?.password ?? '');
       _emailController = TextEditingController(text: widget.admin?.email ?? '');
@@ -185,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Text(
                 widget.isStudent
                     ? widget.student?.username ?? 'No username'
-                    : widget.admin?.username ?? 'No username',
+                    : 'Hany Azmy',
                 style: const TextStyle(
                   color: Color(0xFF427D9D),
                   fontSize: 20,

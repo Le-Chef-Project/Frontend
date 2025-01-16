@@ -80,104 +80,102 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: const CustomAppBar(title: "Notifications"),
-        body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _isLoadingNotif
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : _notifications.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No notifications yet',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                      )
-                    : ListView(
-                        children: _groupNotificationsByDate(_notifications)
-                            .entries
-                            .map((entry) {
-                          final dateText = entry.key;
-                          final notifications = entry.value;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(title: "Notifications"),
+      body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _isLoadingNotif
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : _notifications.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No notifications yet',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    )
+                  : ListView(
+                      children: _groupNotificationsByDate(_notifications)
+                          .entries
+                          .map((entry) {
+                        final dateText = entry.key;
+                        final notifications = entry.value;
 
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  dateText,
-                                  style: const TextStyle(
-                                    color: Color(0xFF164863),
-                                    fontSize: 20,
-                                    fontFamily: 'IBM Plex Mono',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.5,
-                                  ),
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                dateText,
+                                style: const TextStyle(
+                                  color: Color(0xFF164863),
+                                  fontSize: 20,
+                                  fontFamily: 'IBM Plex Mono',
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.5,
                                 ),
                               ),
-                              ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: notifications.length,
-                                itemBuilder: (context, index) {
-                                  final notification = notifications[index];
-                                  return NotificationItem(
-                                    type: notification.type,
-                                    level: notification.level,
-                                    icon:
-                                        getNotificationIcon(notification.type),
-                                    iconBackgroundColor: getIconBackgroundColor(
-                                        notification.type),
-                                    iconColor: getIconColor(notification.type),
-                                    title: notification.message,
-                                    time: _formatTime(notification.createdAt),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      )),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 0:
-                if (role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const THome()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-                break;
-              case 2:
+                            ),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: notifications.length,
+                              itemBuilder: (context, index) {
+                                final notification = notifications[index];
+                                return NotificationItem(
+                                  type: notification.type,
+                                  level: notification.level,
+                                  icon:
+                                      getNotificationIcon(notification.type),
+                                  iconBackgroundColor: getIconBackgroundColor(
+                                      notification.type),
+                                  iconColor: getIconColor(notification.type),
+                                  title: notification.message,
+                                  time: _formatTime(notification.createdAt),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    )),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) {
+          switch (index) {
+            case 0:
+              if (role == 'admin') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
+                  MaterialPageRoute(builder: (context) => const THome()),
                 );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          selectedIndex: _selectedIndex,
-          userRole: role!,
-        ),
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Home()),
+                );
+              }
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
+              }
+          }
+        },
+        context: context,
+        selectedIndex: _selectedIndex,
+        userRole: role!,
       ),
     );
   }

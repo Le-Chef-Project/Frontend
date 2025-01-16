@@ -26,106 +26,104 @@ class _ExamLibraryLevelsState extends State<ExamLibraryLevels> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: widget.title),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              ListView.builder(
-                padding: const EdgeInsets.all(20),
-                itemCount: 3,
-                shrinkWrap:
-                    true, // Added to allow ListView to be contained within a Column
-                physics:
-                    const NeverScrollableScrollPhysics(), // Disables ListView's scrolling
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.title == 'Exams'
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Exams(
-                                          selectedLevel: index + 1,
-                                        )),
-                              )
-                            : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        LibraryTabContainerScreen(
-                                          selectedLevel: index + 1,
-                                        )),
-                              );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFBFAFA),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: ListTile(
-                          title: Text(
-                            'Level ${index + 1}',
-                            style: GoogleFonts.ibmPlexMono(
-                              color: const Color(0xFF164863),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: widget.title),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListView.builder(
+              padding: const EdgeInsets.all(20),
+              itemCount: 3,
+              shrinkWrap:
+                  true, // Added to allow ListView to be contained within a Column
+              physics:
+                  const NeverScrollableScrollPhysics(), // Disables ListView's scrolling
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.title == 'Exams'
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Exams(
+                                        selectedLevel: index + 1,
+                                      )),
+                            )
+                          : Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      LibraryTabContainerScreen(
+                                        selectedLevel: index + 1,
+                                      )),
+                            );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFBFAFA),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          'Level ${index + 1}',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF164863),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) async {
-            switch (index) {
-              case 0:
-                if (role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const THome()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-                break;
-              case 1:
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) async {
+          switch (index) {
+            case 0:
+              if (role == 'admin') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
+                  MaterialPageRoute(builder: (context) => const THome()),
                 );
-                break;
-              case 2:
+              } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          userRole: role!,
-        ),
+              }
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
+              }
+          }
+        },
+        context: context,
+        userRole: role!,
       ),
     );
   }

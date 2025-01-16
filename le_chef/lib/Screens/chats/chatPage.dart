@@ -37,6 +37,7 @@ class ChatPage extends StatefulWidget {
   final String? receiverName;
   final String? chatRoom;
   final bool person;
+  final String? imgUrl;
 
   const ChatPage(
       {Key? key,
@@ -44,7 +45,8 @@ class ChatPage extends StatefulWidget {
       this.receiverId,
       required this.person,
       this.receiverName,
-      this.chatRoom})
+      this.chatRoom,
+        required this.imgUrl})
       : super(key: key);
 
   @override
@@ -55,11 +57,11 @@ class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
-  final ValueNotifier<bool> _isRecording = ValueNotifier(false);
-  final String? _userId = sharedPreferences!.getString('Id');
+  // final ValueNotifier<bool> _isRecording = ValueNotifier(false);
+  final String? _userId = sharedPreferences!.getString('_id');
   bool _isLoading = true;
-  FlutterSoundRecorder? _recorder;
-  String? _recordedFilePath;
+  // FlutterSoundRecorder? _recorder;
+  // String? _recordedFilePath;
   bool _showFloatingButton = true;
   late DocumentMessageBubble _documentMessageBubble;
 
@@ -73,6 +75,7 @@ class _ChatPageState extends State<ChatPage> {
       onOpen: (String, str) {},
     );
   }
+
 
   types.User get _user {
     return types.User(id: _userId ?? '');
@@ -170,59 +173,57 @@ class _ChatPageState extends State<ChatPage> {
   void _handleAttachmentPressed() {
     showModalBottomSheet<void>(
       context: context,
-      builder: (BuildContext context) => SafeArea(
-        child: SizedBox(
-          height: 144,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _handleImageSelection();
-                },
-                child: const Align(
-                  alignment: AlignmentDirectional.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.image_outlined),
-                      Text('Photo'),
-                    ],
-                  ),
+      builder: (BuildContext context) => SizedBox(
+        height: 144,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _handleImageSelection();
+              },
+              child: const Align(
+                alignment: AlignmentDirectional.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.image_outlined),
+                    Text('Photo'),
+                  ],
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _handleFileSelection();
-                },
-                child: const Align(
-                  alignment: AlignmentDirectional.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.file_copy),
-                      Text('File'),
-                    ],
-                  ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _handleFileSelection();
+              },
+              child: const Align(
+                alignment: AlignmentDirectional.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.file_copy),
+                    Text('File'),
+                  ],
                 ),
               ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Align(
-                  alignment: AlignmentDirectional.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.close),
-                      Text('Cancel'),
-                    ],
-                  ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Align(
+                alignment: AlignmentDirectional.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.close),
+                    Text('Cancel'),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -367,7 +368,8 @@ class _ChatPageState extends State<ChatPage> {
             },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
-            'type': _getMessageType(msg),
+          'imageUrl': widget.imgUrl,
+          'type': _getMessageType(msg),
             ...(_getMessageContent(msg)),
           });
         }).toList();
@@ -384,7 +386,7 @@ class _ChatPageState extends State<ChatPage> {
 
           return types.Message.fromJson({
             'author': {
-              'id': sender?['_id'] ?? '', // Use the sender's ID from the API
+              'id': sender?['_id'] ?? '',
               'firstName': sender?['firstName'] ?? '',
               'lastName': sender?['lastName'] ?? '',
               'username': sender?['username'] ?? '',
@@ -452,103 +454,103 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  Future<void> _startRecording() async {
-    if (_recorder == null) {
-      _recorder = FlutterSoundRecorder();
-      await _recorder!.openRecorder();
-    }
-
-    if (!_recorder!.isRecording) {
-      try {
-        final tempDir = await getTemporaryDirectory();
-        _recordedFilePath = '${tempDir.path}/audio_recording.aac';
-
-        await _recorder!.startRecorder(
-          toFile: _recordedFilePath,
-          codec: Codec.aacADTS,
-        );
-        setState(() {
-          _isRecording.value = true;
-        });
-      } catch (e) {
-        print('Error starting recording: $e');
-      }
-    }
-  }
-
-  void _stopRecording() async {
-    await _recorder!.stopRecorder();
-    _isRecording.value = false;
-
-    if (_recordedFilePath != null) {
-      final message = types.FileMessage(
-        author: _user,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: const Uuid().v4(),
-        mimeType: 'audio/aac', // Adjust MIME type if needed
-        name: 'Audio',
-        size: File(_recordedFilePath!).lengthSync(),
-        uri: _recordedFilePath!,
-      );
-
-      // Add message to UI
-      _addMessage(message);
-
-      // Send to database
-      try {
-        final audioData = await _createAudioData(_recordedFilePath!);
-
-        if (widget.person) {
-          // Convert audio to base64 string and send
-
-          // Check if audio data is non-empty before sending
-          if (audioData.isNotEmpty) {
-            print("Audio Data Length: ${audioData.length}");
-
-            await DirectMsgService.sendDirectMsg(
-              id: widget.receiverId!,
-              participants: [_user.id, widget.receiverId!],
-              sender: _user.id,
-              content: 'Audio',
-              audio: audioData, // Send the raw audio data here
-              createdAt:
-                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-            );
-          } else {
-            print("Error: Audio data is empty.");
-          }
-        } else {
-          await GrpMsgService.sendgrpMsg(
-              group: widget.group!.id,
-              sender: _user.id,
-              content: 'Audio',
-              audio: audioData);
-        }
-      } catch (e) {
-        print('Error sending audio message: $e');
-      }
-    }
-  }
-
-  Future<String> _createAudioData(String filePath) async {
-    final file = File(filePath);
-    if (await file.exists()) {
-      final bytes = await file.readAsBytes();
-      return base64Encode(bytes); // Convert bytes to Base64 string
-    }
-    return '';
-  }
-
-  void _playAudio(String? uri) async {
-    if (uri != null) {
-      final player = AudioPlayer();
-      try {
-        await player.play(UrlSource(uri));
-      } catch (e) {
-        print("Error playing audio: $e");
-      }
-    }
-  }
+  // Future<void> _startRecording() async {
+  //   if (_recorder == null) {
+  //     _recorder = FlutterSoundRecorder();
+  //     await _recorder!.openRecorder();
+  //   }
+  //
+  //   if (!_recorder!.isRecording) {
+  //     try {
+  //       final tempDir = await getTemporaryDirectory();
+  //       _recordedFilePath = '${tempDir.path}/audio_recording.aac';
+  //
+  //       await _recorder!.startRecorder(
+  //         toFile: _recordedFilePath,
+  //         codec: Codec.aacADTS,
+  //       );
+  //       setState(() {
+  //         _isRecording.value = true;
+  //       });
+  //     } catch (e) {
+  //       print('Error starting recording: $e');
+  //     }
+  //   }
+  // }
+  //
+  // void _stopRecording() async {
+  //   await _recorder!.stopRecorder();
+  //   _isRecording.value = false;
+  //
+  //   if (_recordedFilePath != null) {
+  //     final message = types.FileMessage(
+  //       author: _user,
+  //       createdAt: DateTime.now().millisecondsSinceEpoch,
+  //       id: const Uuid().v4(),
+  //       mimeType: 'audio/aac', // Adjust MIME type if needed
+  //       name: 'Audio',
+  //       size: File(_recordedFilePath!).lengthSync(),
+  //       uri: _recordedFilePath!,
+  //     );
+  //
+  //     // Add message to UI
+  //     _addMessage(message);
+  //
+  //     // Send to database
+  //     try {
+  //       final audioData = await _createAudioData(_recordedFilePath!);
+  //
+  //       if (widget.person) {
+  //         // Convert audio to base64 string and send
+  //
+  //         // Check if audio data is non-empty before sending
+  //         if (audioData.isNotEmpty) {
+  //           print("Audio Data Length: ${audioData.length}");
+  //
+  //           await DirectMsgService.sendDirectMsg(
+  //             id: widget.receiverId!,
+  //             participants: [_user.id, widget.receiverId!],
+  //             sender: _user.id,
+  //             content: 'Audio',
+  //             audio: audioData, // Send the raw audio data here
+  //             createdAt:
+  //                 DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+  //           );
+  //         } else {
+  //           print("Error: Audio data is empty.");
+  //         }
+  //       } else {
+  //         await GrpMsgService.sendgrpMsg(
+  //             group: widget.group!.id,
+  //             sender: _user.id,
+  //             content: 'Audio',
+  //             audio: audioData);
+  //       }
+  //     } catch (e) {
+  //       print('Error sending audio message: $e');
+  //     }
+  //   }
+  // }
+  //
+  // Future<String> _createAudioData(String filePath) async {
+  //   final file = File(filePath);
+  //   if (await file.exists()) {
+  //     final bytes = await file.readAsBytes();
+  //     return base64Encode(bytes); // Convert bytes to Base64 string
+  //   }
+  //   return '';
+  // }
+  //
+  // void _playAudio(String? uri) async {
+  //   if (uri != null) {
+  //     final player = AudioPlayer();
+  //     try {
+  //       await player.play(UrlSource(uri));
+  //     } catch (e) {
+  //       print("Error playing audio: $e");
+  //     }
+  //   }
+  // }
 
   void _handleMessageTap(BuildContext context, types.Message message) async {
     final index = _messages.indexWhere((element) => element.id == message.id);
@@ -625,14 +627,16 @@ class _ChatPageState extends State<ChatPage> {
     final chatTheme =
         widget.person ? ChatThemes.personalChat : ChatThemes.groupChat;
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: _buildAppBar(context),
-        body: _buildChatBody(context, chatTheme),
-        floatingActionButton:
-            _showFloatingButton ? _buildFloatingButton() : null,
-      ),
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: _buildChatBody(context, chatTheme),
+      floatingActionButton:
+          _showFloatingButton ? _buildFloatingButton() : null,
     );
+  }
+
+  void _handleBackPress() {
+    Navigator.pop(context, true); // Pass true to indicate changes were made
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
@@ -640,31 +644,70 @@ class _ChatPageState extends State<ChatPage> {
       return PersonalChatAppBar(
         
         username: widget.receiverName ?? 'Chat',
-        avatarUrl:
+        avatarUrl: widget.imgUrl ??
             'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
-        onBackPressed: () => Navigator.pop(context),
+        onBackPressed: () => _handleBackPress(),
       );
     }
     return GroupChatAppBar(
       groupName: widget.group!.title,
       membersNumber: widget.group!.members.length,
-      onBackPressed: () => Navigator.pop(context),
+      onBackPressed: () => _handleBackPress(),
+      grpId: widget.group!.id,
     );
   }
 
   Widget _buildChatBody(BuildContext context, ChatTheme theme) {
+
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_messages.isEmpty) {
+      return const Center(
+        child: Text('No messages here yet'),
+      );
+    }
+
     return Chat(
       messages: _messages,
       onAttachmentPressed: _handleAttachmentPressed,
       onMessageTap: _handleMessageTap,
       onPreviewDataFetched: _handlePreviewDataFetched,
       onSendPressed: _handleSendPressed,
-      showUserAvatars: widget.person,
+      showUserAvatars: true,
       showUserNames: true,
       user: _user,
       theme: theme,
+      avatarBuilder: (types.User user) {
+
+        String? userImage = widget.person
+            ? widget.imgUrl
+            : user.imageUrl;
+
+      return CircleAvatar(
+        radius: 20,
+        backgroundColor: Colors.grey[200],
+        child: userImage != null
+            ? ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Image.network(
+            userImage,
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(Icons.person, size: 20, color: Colors.grey[400]);
+            },
+          ),
+        )
+            : Icon(Icons.person, size: 20, color: Colors.grey[400]),
+      );
+    },
       customBottomWidget: MessageInput(
-        isRecording: _isRecording,
+        // isRecording: _isRecording,
         textController: _textController,
         onAttachmentPressed: _handleAttachmentPressed,
         onSendPressed: _handleSendPressed,
@@ -672,7 +715,7 @@ class _ChatPageState extends State<ChatPage> {
       fileMessageBuilder: FileMessageBuilder(
         person: widget.person,
         currentUser: _user,
-        onPlayAudio: _playAudio,
+        // onPlayAudio: _playAudio,
         onOpenDocument: (url, fileName) => _documentMessageBubble
             .downloadAndOpenDocument(url, fileName!, context),
       ).build,
@@ -687,8 +730,8 @@ class _ChatPageState extends State<ChatPage> {
           isTyping: isTyping,
           textController: _textController,
           onSendPressed: _handleSendPressed,
-          onStartRecording: _startRecording,
-          onStopRecording: _stopRecording,
+          // onStartRecording: _startRecording,
+          // onStopRecording: _stopRecording,
         );
       },
     );
@@ -697,13 +740,13 @@ class _ChatPageState extends State<ChatPage> {
 
 class FileMessageBuilder {
   final types.User currentUser;
-  final Function(String) onPlayAudio;
+  // final Function(String) onPlayAudio;
   final Function(String, String?) onOpenDocument;
   final bool person;
 
   const FileMessageBuilder({
     required this.currentUser,
-    required this.onPlayAudio,
+    // required this.onPlayAudio,
     required this.onOpenDocument,
     required this.person,
   });
@@ -713,13 +756,13 @@ class FileMessageBuilder {
       final types.FileMessage fileMessage = message;
 
       // Check for audio messages first
-      if (fileMessage.name == 'Audio') {
-        return AudioMessageBubble(
-          message: fileMessage,
-          currentUser: currentUser,
-          onPlay: onPlayAudio,
-        );
-      }
+      // if (fileMessage.name == 'Audio') {
+      //   return AudioMessageBubble(
+      //     message: fileMessage,
+      //     currentUser: currentUser,
+      //     // onPlay: onPlayAudio,
+      //   );
+      // }
 
       // Handle document messages more robustly
       return DocumentMessageBubble(

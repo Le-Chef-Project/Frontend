@@ -223,116 +223,114 @@ class _VideoListScreenState extends State<VideoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: FutureBuilder<List<Video>>(
-            future: _VideosFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text("Error: ${snapshot.error}"));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("No videos available"));
-              }
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: FutureBuilder<List<Video>>(
+          future: _VideosFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text("No videos available"));
+            }
 
-              final groupedVideos = _groupVideosByDate(snapshot.data!);
+            final groupedVideos = _groupVideosByDate(snapshot.data!);
 
-              return ListView(
-                children: groupedVideos.entries.map((entry) {
-                  final dateText = entry.key;
-                  final videos = entry.value;
-                  final isFirst = entry.key == groupedVideos.keys.first;
+            return ListView(
+              children: groupedVideos.entries.map((entry) {
+                final dateText = entry.key;
+                final videos = entry.value;
+                final isFirst = entry.key == groupedVideos.keys.first;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              dateText,
-                              style: const TextStyle(
-                                color: Color(0xFF164863),
-                                fontSize: 20,
-                                fontFamily: 'IBM Plex Mono',
-                                fontWeight: FontWeight.w600,
-                                height: 1.5,
-                              ),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            dateText,
+                            style: const TextStyle(
+                              color: Color(0xFF164863),
+                              fontSize: 20,
+                              fontFamily: 'IBM Plex Mono',
+                              fontWeight: FontWeight.w600,
+                              height: 1.5,
                             ),
                           ),
-                          const Spacer(),
-                          if (isFirst)
-                            TextButton(
-                              onPressed: () {
-                                _showFilterModal(context, _allDateRanges);
-                              },
-                              style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFFFBFAFA),
-                                padding: const EdgeInsets.all(16.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Filter by date range',
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF888888),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                  const Icon(Icons.keyboard_arrow_down_rounded,
-                                      color: Color(0xFF888888))
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 6,
-                      ),
-                      GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 1.0,
                         ),
-                        itemCount: videos.length,
-                        itemBuilder: (context, index) {
-                          final video = videos[index];
-                          return Smallcard(
-                            id: video.id,
-                            type: 'Video',
-                            Title: video.title,
-                            description: video.description,
-                            imageurl: 'assets/desk_book_apple.jpeg',
-                            ontap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    VideoPlayerScreen(url: video.url),
+                        const Spacer(),
+                        if (isFirst)
+                          TextButton(
+                            onPressed: () {
+                              _showFilterModal(context, _allDateRanges);
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: const Color(0xFFFBFAFA),
+                              padding: const EdgeInsets.all(16.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            isLocked: false,
-                          );
-                        },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Filter by date range',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF888888),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.5,
+                                  ),
+                                ),
+                                const Icon(Icons.keyboard_arrow_down_rounded,
+                                    color: Color(0xFF888888))
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.0,
                       ),
-                    ],
-                  );
-                }).toList(),
-              );
-            }),
-      ),
+                      itemCount: videos.length,
+                      itemBuilder: (context, index) {
+                        final video = videos[index];
+                        return Smallcard(
+                          id: video.id,
+                          type: 'Video',
+                          Title: video.title,
+                          description: video.description,
+                          imageurl: 'assets/desk_book_apple.jpeg',
+                          ontap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  VideoPlayerScreen(url: video.url),
+                            ),
+                          ),
+                          isLocked: false,
+                        );
+                      },
+                    ),
+                  ],
+                );
+              }).toList(),
+            );
+          }),
     );
   }
 }

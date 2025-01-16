@@ -78,296 +78,294 @@ class _AllStudentsState extends State<AllStudents> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: const CustomAppBar(title: 'All Students'),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 39),
-                totalStudent(
-                  context,
-                  'Total Students',
-                  '${_Std?.length ?? 0}',
-                  ontap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const AddExam())),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(title: 'All Students'),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 39),
+              totalStudent(
+                context,
+                'Total Students',
+                '${_Std?.length ?? 0}',
+                ontap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const AddExam())),
+              ),
+              const SizedBox(height: 43),
+              CustomSearchView(
+                clear: () {
+                  clear();
+                },
+                onChanged: (p0) {
+                  search(p0);
+                },
+                controller: searchController,
+                hintText: 'search by student name',
+                hintStyle: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF888888),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
-                const SizedBox(height: 43),
-                CustomSearchView(
-                  clear: () {
-                    clear();
-                  },
-                  onChanged: (p0) {
-                    search(p0);
-                  },
-                  controller: searchController,
-                  hintText: 'search by student name',
-                  hintStyle: GoogleFonts.ibmPlexMono(
-                    color: const Color(0xFF888888),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 59),
-                _isLoading_Std
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : searched_Student.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: searched_Student.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ProfilePage(
-                                                isStudent: true,
-                                                student:
-                                                    searched_Student[index],
-                                              )),
-                                    );
-                                  },
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage: NetworkImage(
-                                            searched_Student[index].imageUrl!)),
-                                    title: Text(
-                                      searched_Student[index].firstname,
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: const Color(0xFF083344),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: Image.asset('assets/trash.png'),
-                                      onPressed: () {
-                                        dialogWithButtons(
-                                            context: context,
-                                            icon: Image.asset(
-                                                'assets/trash-1.png'),
-                                            title: 'Remove Student !',
-                                            content:
-                                                'Are you sure that you want to remove student!',
-                                            button1Text: 'Remove',
-                                            button1Action: () async {
-                                              Navigator.pop(context);
-                                              await StudentService.DelStudent(
-                                                  searched_Student[index].ID);
-                                              dialogWithButtons(
-                                                  context: context,
-                                                  icon: Image.asset(
-                                                      'assets/trash-1.png'),
-                                                  title:
-                                                      'Student is removed successfully !');
-                                              Future.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () {
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                            buttonColor: Colors.red,
-                                            button2Text: 'Cancel',
-                                            button2Action: () {
-                                              Navigator.pop(context);
-                                            },
-                                            outlineButtonColor: Colors.red);
-                                        setState(() {
-                                          getStd();
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: currentStudents.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ProfilePage(
-                                                isStudent: true,
-                                                student: currentStudents[index],
-                                              )),
-                                    );
-                                  },
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage: NetworkImage(
-                                            currentStudents[index].imageUrl!)),
-                                    title: Text(
-                                      currentStudents[index].firstname,
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: const Color(0xFF083344),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: Image.asset('assets/trash.png'),
-                                      onPressed: () {
-                                        dialogWithButtons(
-                                            context: context,
-                                            icon: Image.asset(
-                                                'assets/trash-1.png'),
-                                            title: 'Remove Student !',
-                                            content:
-                                                'Are you sure that you want to remove student!',
-                                            button1Text: 'Remove',
-                                            button1Action: () async {
-                                              Navigator.pop(context);
-                                              await StudentService.DelStudent(
-                                                  currentStudents[index].ID);
-                                              dialogWithButtons(
-                                                  context: context,
-                                                  icon: Image.asset(
-                                                      'assets/trash-1.png'),
-                                                  title:
-                                                      'Student is removed successfully !');
-                                              Future.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () {
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                            buttonColor: Colors.red,
-                                            button2Text: 'Cancel',
-                                            button2Action: () {
-                                              Navigator.pop(context);
-                                            },
-                                            outlineButtonColor: Colors.red);
-                                        setState(() {
-                                          getStd();
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          'Showing ${currentStudents.length} of ${_Std?.length ?? 0}'),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.chevron_left),
-                            onPressed: currentPage > 1
-                                ? () => changePage(currentPage - 1)
-                                : null,
-                          ),
-                          for (int i = 1; i <= totalPages; i++)
-                            Padding(
+              ),
+              const SizedBox(height: 59),
+              _isLoading_Std
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : searched_Student.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: searched_Student.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                                  const EdgeInsets.symmetric(vertical: 12.0),
                               child: GestureDetector(
-                                onTap: () => changePage(i),
-                                child: Container(
-                                  width: boxSize,
-                                  height: boxSize,
-                                  decoration: ShapeDecoration(
-                                    color: currentPage == i
-                                        ? const Color(0xFF427D9D)
-                                        : Colors.grey[100],
-                                    shape: const CircleBorder(),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfilePage(
+                                              isStudent: true,
+                                              student:
+                                                  searched_Student[index],
+                                            )),
+                                  );
+                                },
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: NetworkImage(
+                                          searched_Student[index].imageUrl!)),
+                                  title: Text(
+                                    searched_Student[index].firstname,
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: const Color(0xFF083344),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      i.toString(),
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: currentPage == i
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                  trailing: IconButton(
+                                    icon: Image.asset('assets/trash.png'),
+                                    onPressed: () {
+                                      dialogWithButtons(
+                                          context: context,
+                                          icon: Image.asset(
+                                              'assets/trash-1.png'),
+                                          title: 'Remove Student !',
+                                          content:
+                                              'Are you sure that you want to remove student!',
+                                          button1Text: 'Remove',
+                                          button1Action: () async {
+                                            Navigator.pop(context);
+                                            await StudentService.DelStudent(
+                                                searched_Student[index].ID);
+                                            dialogWithButtons(
+                                                context: context,
+                                                icon: Image.asset(
+                                                    'assets/trash-1.png'),
+                                                title:
+                                                    'Student is removed successfully !');
+                                            Future.delayed(
+                                                const Duration(seconds: 2),
+                                                () {
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          buttonColor: Colors.red,
+                                          button2Text: 'Cancel',
+                                          button2Action: () {
+                                            Navigator.pop(context);
+                                          },
+                                          outlineButtonColor: Colors.red);
+                                      setState(() {
+                                        getStd();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: currentStudents.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfilePage(
+                                              isStudent: true,
+                                              student: currentStudents[index],
+                                            )),
+                                  );
+                                },
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: NetworkImage(
+                                          currentStudents[index].imageUrl!)),
+                                  title: Text(
+                                    currentStudents[index].firstname,
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: const Color(0xFF083344),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Image.asset('assets/trash.png'),
+                                    onPressed: () {
+                                      dialogWithButtons(
+                                          context: context,
+                                          icon: Image.asset(
+                                              'assets/trash-1.png'),
+                                          title: 'Remove Student !',
+                                          content:
+                                              'Are you sure that you want to remove student!',
+                                          button1Text: 'Remove',
+                                          button1Action: () async {
+                                            Navigator.pop(context);
+                                            await StudentService.DelStudent(
+                                                currentStudents[index].ID);
+                                            dialogWithButtons(
+                                                context: context,
+                                                icon: Image.asset(
+                                                    'assets/trash-1.png'),
+                                                title:
+                                                    'Student is removed successfully !');
+                                            Future.delayed(
+                                                const Duration(seconds: 2),
+                                                () {
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          buttonColor: Colors.red,
+                                          button2Text: 'Cancel',
+                                          button2Action: () {
+                                            Navigator.pop(context);
+                                          },
+                                          outlineButtonColor: Colors.red);
+                                      setState(() {
+                                        getStd();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                        'Showing ${currentStudents.length} of ${_Std?.length ?? 0}'),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.chevron_left),
+                          onPressed: currentPage > 1
+                              ? () => changePage(currentPage - 1)
+                              : null,
+                        ),
+                        for (int i = 1; i <= totalPages; i++)
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: GestureDetector(
+                              onTap: () => changePage(i),
+                              child: Container(
+                                width: boxSize,
+                                height: boxSize,
+                                decoration: ShapeDecoration(
+                                  color: currentPage == i
+                                      ? const Color(0xFF427D9D)
+                                      : Colors.grey[100],
+                                  shape: const CircleBorder(),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    i.toString(),
+                                    style: GoogleFonts.ibmPlexMono(
+                                      color: currentPage == i
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          IconButton(
-                            icon: const Icon(Icons.chevron_right),
-                            onPressed: currentPage < totalPages
-                                ? () => changePage(currentPage + 1)
-                                : null,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        IconButton(
+                          icon: const Icon(Icons.chevron_right),
+                          onPressed: currentPage < totalPages
+                              ? () => changePage(currentPage + 1)
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: CustomBottomNavBar(
-            onItemTapped: (index) {
-              switch (index) {
-                case 0:
-                  if (role == 'admin') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const THome()),
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Home()),
-                    );
-                  }
-                  break;
-                case 1:
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Notifications()));
-                  break;
-                case 2:
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const THome()));
-                  break;
-                case 3:
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const Chats()));
-                  break;
-              }
-            },
-            context: context,
-            userRole: role!,
-          ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: CustomBottomNavBar(
+          onItemTapped: (index) {
+            switch (index) {
+              case 0:
+                if (role == 'admin') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const THome()),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                  );
+                }
+                break;
+              case 1:
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Notifications()));
+                break;
+              case 2:
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const THome()));
+                break;
+              case 3:
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const Chats()));
+                break;
+            }
+          },
+          context: context,
+          userRole: role!,
         ),
       ),
     );

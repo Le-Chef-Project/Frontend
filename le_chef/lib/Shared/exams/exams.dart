@@ -108,143 +108,141 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     print(' tryyyyyyyyyy quizeeeeeee $_filteredExams');
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: const CustomAppBar(title: 'Exams'),
-        backgroundColor: Colors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            role == 'admin'
-                ? totalStudent(context, 'Total Exams', '${_ExamsLength}',
-                    buttonText: 'Add Exam', ontap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddExam()));
-                  })
-                : Center(
-                    child: Image.asset(
-                      'assets/Wonder Learners Graduating.png',
-                      width: 300,
-                      height: 300,
-                    ),
+    return Scaffold(
+      appBar: const CustomAppBar(title: 'Exams'),
+      backgroundColor: Colors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          role == 'admin'
+              ? totalStudent(context, 'Total Exams', '${_ExamsLength}',
+                  buttonText: 'Add Exam', ontap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddExam()));
+                })
+              : Center(
+                  child: Image.asset(
+                    'assets/Wonder Learners Graduating.png',
+                    width: 300,
+                    height: 300,
                   ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: TabBar(
-                    controller: _tabController,
-                    labelColor: const Color(0xFF427D9D),
-                    unselectedLabelColor: const Color(0xFF427D9D),
-                    indicatorColor: const Color(0xFF427D9D),
-                    dividerColor: Colors.transparent,
-                    labelStyle: GoogleFonts.ibmPlexMono(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      height: 1,
-                    ),
-                    unselectedLabelStyle: GoogleFonts.ibmPlexMono(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      height: 1,
-                    ),
-                    indicator: const CircleTabIndicator(radius: 4.0),
-                    tabs: List.generate(
-                      _units.length,
-                      (index) => Tab(
-                        child: Text(
-                          'Unit ${index + 1}',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
+                ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: const Color(0xFF427D9D),
+                  unselectedLabelColor: const Color(0xFF427D9D),
+                  indicatorColor: const Color(0xFF427D9D),
+                  dividerColor: Colors.transparent,
+                  labelStyle: GoogleFonts.ibmPlexMono(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    height: 1,
+                  ),
+                  unselectedLabelStyle: GoogleFonts.ibmPlexMono(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    height: 1,
+                  ),
+                  indicator: const CircleTabIndicator(radius: 4.0),
+                  tabs: List.generate(
+                    _units.length,
+                    (index) => Tab(
+                      child: Text(
+                        'Unit ${index + 1}',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: _filteredExams.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No Exams available for Unit $selectedUnit',
-                        style: GoogleFonts.ibmPlexMono(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                        ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: _filteredExams.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Exams available for Unit $selectedUnit',
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 16,
+                        color: Colors.grey[600],
                       ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(20),
-                      itemCount: _filteredExams.length,
-                      itemBuilder: (context, index) {
-                        final exam = _filteredExams[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFBFAFA),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: customExamListTile(
-                              index,
-                              context,
-                              exam.isPaid,
-                              exam,
-                            ),
-                          ),
-                        );
-                      },
                     ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) async {
-            switch (index) {
-              case 0:
-                if (role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const THome()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-                break;
-              case 1:
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(20),
+                    itemCount: _filteredExams.length,
+                    itemBuilder: (context, index) {
+                      final exam = _filteredExams[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFBFAFA),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: customExamListTile(
+                            index,
+                            context,
+                            exam.isPaid,
+                            exam,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) async {
+          switch (index) {
+            case 0:
+              if (role == 'admin') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
+                  MaterialPageRoute(builder: (context) => const THome()),
                 );
-                break;
-              case 2:
+              } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
+                  MaterialPageRoute(builder: (context) => const Home()),
                 );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          userRole: role!,
-        ),
+              }
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+            case 3:
+              if (role == 'admin') {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
+              }
+          }
+        },
+        context: context,
+        userRole: role!,
       ),
     );
   }

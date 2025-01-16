@@ -54,102 +54,100 @@ class NotesTabContainerScreenState extends State<NotesTabContainerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: const CustomAppBar(
-          title: 'Notes',
-        ),
-        body: Column(
-          children: [
-            totalStudent(
-              buttonText: 'Add to Notes',
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(
+        title: 'Notes',
+      ),
+      body: Column(
+        children: [
+          totalStudent(
+            buttonText: 'Add to Notes',
+            context,
+            'Total Items in Notes',
+            '${_NotesLength}',
+            ontap: () => Navigator.push(
               context,
-              'Total Items in Notes',
-              '${_NotesLength}',
-              ontap: () => Navigator.push(
+              MaterialPageRoute(builder: (context) => const addNotes()),
+            ),
+          ),
+          Material(
+            color: Colors.white,
+            child: TabBar(
+              labelColor: const Color(0xFF427D9D),
+              unselectedLabelColor: const Color(0xFF427D9D),
+              controller: tabviewController,
+              indicatorColor: const Color(0xFF427D9D),
+              dividerColor: Colors.transparent,
+              labelStyle: GoogleFonts.ibmPlexMono(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+              unselectedLabelStyle: GoogleFonts.ibmPlexMono(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+              ),
+              indicator: const Circletabindicator(radius: 4.0),
+              tabs: const [
+                Tab(child: Text('Level 1')),
+                Tab(child: Text('Level 2')),
+                Tab(child: Text('Level 3')),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: tabviewController,
+              children: const [
+                NotesScreen(level: 1),
+                NotesScreen(level: 2),
+                NotesScreen(level: 3)
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) async {
+          switch (index) {
+            case 0:
+              if (role == 'admin') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const THome()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Home()),
+                );
+              }
+              break;
+            case 1:
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const addNotes()),
-              ),
-            ),
-            Material(
-              color: Colors.white,
-              child: TabBar(
-                labelColor: const Color(0xFF427D9D),
-                unselectedLabelColor: const Color(0xFF427D9D),
-                controller: tabviewController,
-                indicatorColor: const Color(0xFF427D9D),
-                dividerColor: Colors.transparent,
-                labelStyle: GoogleFonts.ibmPlexMono(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-                unselectedLabelStyle: GoogleFonts.ibmPlexMono(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
-                indicator: const Circletabindicator(radius: 4.0),
-                tabs: const [
-                  Tab(child: Text('Level 1')),
-                  Tab(child: Text('Level 2')),
-                  Tab(child: Text('Level 3')),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: tabviewController,
-                children: const [
-                  NotesScreen(level: 1),
-                  NotesScreen(level: 2),
-                  NotesScreen(level: 3)
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) async {
-            switch (index) {
-              case 0:
-                if (role == 'admin') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const THome()),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-                break;
-              case 1:
+                MaterialPageRoute(
+                    builder: (context) => const Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+            case 3:
+              if (role == 'admin') {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          userRole: role!,
-        ),
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
+              }
+          }
+        },
+        context: context,
+        userRole: role!,
       ),
     );
   }

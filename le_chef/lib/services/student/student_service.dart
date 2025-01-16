@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../Models/Admin.dart';
 import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../../Models/Student.dart';
@@ -105,4 +106,30 @@ class StudentService {
       print('${jsonDecode(response.body)['message']}');
     }
   }
+
+  static Future<Admin> getAdminDetails(String token) async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.userManage.getAdminForStd);
+
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+
+      print('apiiii Admin ${data['admins'][0]}');
+
+      print('_id is null: ${data['admins'][0]['_id'] == null}');
+      print('username is null: ${data['admins'][0]['username'] == null}');
+      print('firstName is null: ${data['admins'][0]['firstName'] == null}');
+      print('lastName is null: ${data['admins'][0]['lastName'] == null}');
+
+      return Admin.fromJson(data['admins'][0]);
+    } else {
+      throw Exception(
+          'Failed to fetch messages. HTTP ${response.statusCode}\n ${response.body}');
+    }
+  }
+
 }

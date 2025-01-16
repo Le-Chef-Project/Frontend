@@ -47,184 +47,182 @@ class _AddQuestionState extends State<AddQuestion> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(0xFFFBFAFA),
-        appBar: const CustomAppBar(title: 'Add Question'),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Container(
-              width: 360,
-              height: 850,
-              decoration: ShapeDecoration(
-                color: const Color(0xFFFBFAFA),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
+    return Scaffold(
+      backgroundColor: const Color(0xFFFBFAFA),
+      appBar: const CustomAppBar(title: 'Add Question'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Container(
+            width: 360,
+            height: 850,
+            decoration: ShapeDecoration(
+              color: const Color(0xFFFBFAFA),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Write The Question',
+                  style: TextStyle(
+                    color: Color(0xFF164863),
+                    fontSize: 14,
+                    fontFamily: 'IBM Plex Mono',
+                    fontWeight: FontWeight.w500,
+                    height: 0,
+                  ),
                 ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Write The Question',
-                    style: TextStyle(
-                      color: Color(0xFF164863),
-                      fontSize: 14,
-                      fontFamily: 'IBM Plex Mono',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
+                const SizedBox(height: 10),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                  child: TextField(
+                    controller: _questionController,
+                    decoration: const InputDecoration(
+                      hintText: 'Write here...',
+                      border: InputBorder.none, // No border
+                      focusedBorder:
+                          InputBorder.none, // No border when focused
+                      enabledBorder:
+                          InputBorder.none, // No border when enabled
                     ),
-                    child: TextField(
-                      controller: _questionController,
-                      decoration: const InputDecoration(
-                        hintText: 'Write here...',
-                        border: InputBorder.none, // No border
-                        focusedBorder:
-                            InputBorder.none, // No border when focused
-                        enabledBorder:
-                            InputBorder.none, // No border when enabled
-                      ),
-                      maxLines: 3,
-                    ),
+                    maxLines: 3,
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Choices',
-                    style: TextStyle(
-                      color: Color(0xFF164863),
-                      fontSize: 16,
-                      fontFamily: 'IBM Plex Mono',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Choices',
+                  style: TextStyle(
+                    color: Color(0xFF164863),
+                    fontSize: 16,
+                    fontFamily: 'IBM Plex Mono',
+                    fontWeight: FontWeight.w500,
+                    height: 0,
                   ),
-                  const SizedBox(height: 10),
-                  Column(
-                    children: _choiceControllers.asMap().entries.map((entry) {
-                      int index = entry.key;
-                      TextEditingController controller = entry.value;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 8),
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: TextField(
-                            controller: controller,
-                            decoration: InputDecoration(
-                              hintText: 'Choice ${index + 1}',
-                              border: InputBorder.none, // No border
-                              focusedBorder:
-                                  InputBorder.none, // No border when focused
-                              enabledBorder: InputBorder.none,
-                              // No border when enabled
-                            ),
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  children: _choiceControllers.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    TextEditingController controller = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 8),
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 30),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: _addChoice,
-                      style: CustomButtonStyles.fillPrimaryTL5,
-                      child: const Text('Add Choice +',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                  const SizedBox(height: 70),
-                  const Text(
-                    'Select Correct answer..',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8.0, // spacing between circles
-                    runSpacing: 8.0, // spacing between rows
-                    children: List.generate(_choiceControllers.length, (index) {
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedAnswerIndex = index;
-                          });
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: _selectedAnswerIndex == index
-                              ? Colors.green
-                              : Colors.grey[300],
-                          child: Text(
-                            String.fromCharCode(65 + index),
-                            style: TextStyle(
-                              color: _selectedAnswerIndex == index
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
+                        child: TextField(
+                          controller: controller,
+                          decoration: InputDecoration(
+                            hintText: 'Choice ${index + 1}',
+                            border: InputBorder.none, // No border
+                            focusedBorder:
+                                InputBorder.none, // No border when focused
+                            enabledBorder: InputBorder.none,
+                            // No border when enabled
                           ),
                         ),
-                      );
-                    }),
-                  )
-                ],
-              ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 30),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _addChoice,
+                    style: CustomButtonStyles.fillPrimaryTL5,
+                    child: const Text('Add Choice +',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(height: 70),
+                const Text(
+                  'Select Correct answer..',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8.0, // spacing between circles
+                  runSpacing: 8.0, // spacing between rows
+                  children: List.generate(_choiceControllers.length, (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAnswerIndex = index;
+                        });
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: _selectedAnswerIndex == index
+                            ? Colors.green
+                            : Colors.grey[300],
+                        child: Text(
+                          String.fromCharCode(65 + index),
+                          style: TextStyle(
+                            color: _selectedAnswerIndex == index
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                )
+              ],
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: CustomElevatedButton(
-            onPressed: () {
-              if (_questionController.text.isNotEmpty &&
-                  _choiceControllers.toList().isNotEmpty &&
-                  _selectedAnswerIndex.toString().isNotEmpty) {
-                List<String> choices = _choiceControllers
-                    .map((controller) => controller.text)
-                    .toList();
-                QuizQuestion newQuestion = QuizQuestion(
-                  questionText: _questionController.text,
-                  options: choices,
-                  answer: choices[_selectedAnswerIndex],
-                );
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: CustomElevatedButton(
+          onPressed: () {
+            if (_questionController.text.isNotEmpty &&
+                _choiceControllers.toList().isNotEmpty &&
+                _selectedAnswerIndex.toString().isNotEmpty) {
+              List<String> choices = _choiceControllers
+                  .map((controller) => controller.text)
+                  .toList();
+              QuizQuestion newQuestion = QuizQuestion(
+                questionText: _questionController.text,
+                options: choices,
+                answer: choices[_selectedAnswerIndex],
+              );
 
-                widget.quizList.add(newQuestion);
+              widget.quizList.add(newQuestion);
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddExam(
-                      quizList: widget.quizList,
-                      isPaid: widget.isPaid,  // Add these parameters to AddQuestion constructor
-                      examName: widget.examName,
-                      fees: widget.fees,
-                      selectedLevel: widget.selectedLevel,
-                      selectedUnit: widget.selectedUnit,
-                      hours: widget.hours,
-                      minutes: widget.minutes,
-                    ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddExam(
+                    quizList: widget.quizList,
+                    isPaid: widget.isPaid,  // Add these parameters to AddQuestion constructor
+                    examName: widget.examName,
+                    fees: widget.fees,
+                    selectedLevel: widget.selectedLevel,
+                    selectedUnit: widget.selectedUnit,
+                    hours: widget.hours,
+                    minutes: widget.minutes,
                   ),
-                );
-              }
-            },
-            text: 'Submit',
-            buttonStyle: CustomButtonStyles.fillPrimaryTL5,
-          ),
+                ),
+              );
+            }
+          },
+          text: 'Submit',
+          buttonStyle: CustomButtonStyles.fillPrimaryTL5,
         ),
       ),
     );

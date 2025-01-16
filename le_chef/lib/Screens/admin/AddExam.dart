@@ -215,257 +215,308 @@ class _AddExamState extends State<AddExam> {
   Widget build(BuildContext context) {
     final List<QuizQuestion> quizList = widget.quizList ?? [];
 
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Text('Select Exam Time'),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(24, 38, 24, 48),
-                child: Text(
-                  'Press (+) If you want to add question.',
-                  style: TextStyle(
-                    color: Color(0xFF888888),
-                    fontSize: 12,
-                    fontFamily: 'IBM Plex Mono',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
+        title: const Text('Select Exam Time'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 38, 24, 48),
+              child: Text(
+                'Press (+) If you want to add question.',
+                style: TextStyle(
+                  color: Color(0xFF888888),
+                  fontSize: 12,
+                  fontFamily: 'IBM Plex Mono',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
                 ),
               ),
+            ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                'Paid',
-                                style: GoogleFonts.ibmPlexMono(
-                                  color: const Color(0xFF164863),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(width: 50),
-                              Switch(
-                                value: light,
-                                activeColor: const Color(0xFF00B84A),
-                                thumbColor:
-                                    const WidgetStatePropertyAll(Colors.white),
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    light = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 25),
-                        Expanded(
-                          child: Text(
-                            'Exam name',
-                            style: GoogleFonts.ibmPlexMono(
-                              color: const Color(0xFF164863),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFFBFAFA),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: TextFormField(
-                              controller: quizFees,
-                              enabled: light,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Text(
+                              'Paid',
                               style: GoogleFonts.ibmPlexMono(
-                                color: light ? const Color(0xFF164863) : Colors.grey,
+                                color: const Color(0xFF164863),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(width: 50),
+                            Switch(
+                              value: light,
+                              activeColor: const Color(0xFF00B84A),
+                              thumbColor:
+                                  const WidgetStatePropertyAll(Colors.white),
+                              onChanged: (bool value) {
+                                setState(() {
+                                  light = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 25),
+                      Expanded(
+                        child: Text(
+                          'Exam name',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF164863),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFFFBFAFA),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: TextFormField(
+                            controller: quizFees,
+                            enabled: light,
+                            style: GoogleFonts.ibmPlexMono(
+                              color: light ? const Color(0xFF164863) : Colors.grey,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'amount to pay',
+                              hintStyle: GoogleFonts.ibmPlexMono(
+                                color:
+                                    light ? const Color(0xFF164863) : Colors.grey,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),
-                              decoration: InputDecoration(
-                                hintText: 'amount to pay',
-                                hintStyle: GoogleFonts.ibmPlexMono(
-                                  color:
-                                      light ? const Color(0xFF164863) : Colors.grey,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 25, horizontal: 25),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xFFFBFAFA),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 25, horizontal: 25),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFFBFAFA),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFFBFAFA),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Container(
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFFFBFAFA),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            child: TextFormField(
-                              controller: titleController,
-                              enabled: true,
-                              style: GoogleFonts.ibmPlexMono(
+                          ),
+                          child: TextFormField(
+                            controller: titleController,
+                            enabled: true,
+                            style: GoogleFonts.ibmPlexMono(
+                              color: const Color(0xFF164863),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'write exam name',
+                              hintMaxLines: 2,
+                              hintStyle: GoogleFonts.ibmPlexMono(
                                 color: const Color(0xFF164863),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),
-                              decoration: InputDecoration(
-                                hintText: 'write exam name',
-                                hintMaxLines: 2,
-                                hintStyle: GoogleFonts.ibmPlexMono(
-                                  color: const Color(0xFF164863),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 25),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xFFFBFAFA),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 25),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFFBFAFA),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 23.0, horizontal: 24),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                            child: Text(
-                          'Choose Level',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: const Color(0xFF164863),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )),
-                        Expanded(
-                            child: Text(
-                          'Choose Unit',
-                          style: GoogleFonts.ibmPlexMono(
-                            color: const Color(0xFF164863),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ))
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                            child: DropdownMenu(
-                          hintText: 'Select Level',
-                          textStyle: const TextStyle(
-                            color: Color(0xFF667084),
-                            fontSize: 12,
-                            fontFamily: 'IBM Plex Mono',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          menuStyle: MenuStyle(
-                            backgroundColor:
-                                const WidgetStatePropertyAll(Colors.white),
-                            shape: WidgetStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                          onSelected: (String? value) {
-                            setState(() {
-                              selectedLevel = value;
-                            });
-                          },
-                          inputDecorationTheme: InputDecorationTheme(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 23.0, horizontal: 24),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                          child: Text(
+                        'Choose Level',
+                        style: GoogleFonts.ibmPlexMono(
+                          color: const Color(0xFF164863),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                      Expanded(
+                          child: Text(
+                        'Choose Unit',
+                        style: GoogleFonts.ibmPlexMono(
+                          color: const Color(0xFF164863),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                          child: DropdownMenu(
+                        hintText: 'Select Level',
+                        textStyle: const TextStyle(
+                          color: Color(0xFF667084),
+                          fontSize: 12,
+                          fontFamily: 'IBM Plex Mono',
+                          fontWeight: FontWeight.w400,
+                        ),
+                        menuStyle: MenuStyle(
+                          backgroundColor:
+                              const WidgetStatePropertyAll(Colors.white),
+                          shape: WidgetStateProperty.all(
+                            RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            enabledBorder: OutlineInputBorder(
+                          ),
+                        ),
+                        onSelected: (String? value) {
+                          setState(() {
+                            selectedLevel = value;
+                          });
+                        },
+                        inputDecorationTheme: InputDecorationTheme(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFF164863)),
+                          ),
+                        ),
+                        dropdownMenuEntries: levels
+                            .map<DropdownMenuEntry<String>>((String value) {
+                          return DropdownMenuEntry<String>(
+                              value: value,
+                              label: value,
+                              style: MenuItemButton.styleFrom(
+                                  textStyle: GoogleFonts.ibmPlexMono(
+                                color: const Color(0xFF0F1728),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              )));
+                        }).toList(),
+                      )),
+                      Expanded(
+                          child: DropdownMenu(
+                        hintText: 'Select unit',
+                        textStyle: const TextStyle(
+                          color: Color(0xFF667084),
+                          fontSize: 12,
+                          fontFamily: 'IBM Plex Mono',
+                          fontWeight: FontWeight.w400,
+                        ),
+                        menuStyle: MenuStyle(
+                          backgroundColor:
+                              const WidgetStatePropertyAll(Colors.white),
+                          shape: WidgetStateProperty.all(
+                            RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Color(0xFF164863)),
                             ),
                           ),
-                          dropdownMenuEntries: levels
-                              .map<DropdownMenuEntry<String>>((String value) {
+                        ),
+                        onSelected: (String? value) {
+                          setState(() {
+                            selectedUnit = value;
+                          });
+                        },
+                        inputDecorationTheme: InputDecorationTheme(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFF164863)),
+                          ),
+                        ),
+                        dropdownMenuEntries: [
+                          ..._units
+                              .map<DropdownMenuEntry<String>>((dynamic value) {
                             return DropdownMenuEntry<String>(
                                 value: value,
                                 label: value,
@@ -476,381 +527,328 @@ class _AddExamState extends State<AddExam> {
                                   fontWeight: FontWeight.w400,
                                 )));
                           }).toList(),
-                        )),
-                        Expanded(
-                            child: DropdownMenu(
-                          hintText: 'Select unit',
-                          textStyle: const TextStyle(
-                            color: Color(0xFF667084),
-                            fontSize: 12,
-                            fontFamily: 'IBM Plex Mono',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          menuStyle: MenuStyle(
-                            backgroundColor:
-                                const WidgetStatePropertyAll(Colors.white),
-                            shape: WidgetStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                          DropdownMenuEntry<String>(
+                            value: 'add_new',
+                            label: 'Add Unit',
+                            enabled: false,
+                            style: MenuItemButton.styleFrom(
+                                backgroundColor: const Color(0xFFDDF2FD),
+                                padding: const EdgeInsets.all(8),
+                                textStyle: GoogleFonts.ibmPlexMono(
+                                  color: Colors.transparent,
+                                  fontSize: 0,
+                                )),
+                            leadingIcon: SizedBox(
+                              width: 100,
+                              height: 40,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: addController,
+                                      decoration: InputDecoration(
+                                        hintText: 'Add Unit',
+                                        hintStyle: GoogleFonts.ibmPlexMono(
+                                          color: const Color(0xFF164863),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF0F1728),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      onFieldSubmitted: (value) {
+                                        if (value.isNotEmpty) {
+                                          setState(() {
+                                            _units.add(value);
+                                            addController.clear();
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          onSelected: (String? value) {
-                            setState(() {
-                              selectedUnit = value;
-                            });
-                          },
-                          inputDecorationTheme: InputDecorationTheme(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Color(0xFF164863)),
-                            ),
-                          ),
-                          dropdownMenuEntries: [
-                            ..._units
-                                .map<DropdownMenuEntry<String>>((dynamic value) {
-                              return DropdownMenuEntry<String>(
-                                  value: value,
-                                  label: value,
-                                  style: MenuItemButton.styleFrom(
-                                      textStyle: GoogleFonts.ibmPlexMono(
-                                    color: const Color(0xFF0F1728),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  )));
-                            }).toList(),
-                            DropdownMenuEntry<String>(
-                              value: 'add_new',
+                          DropdownMenuEntry<String>(
+                              value: 'add_button',
                               label: 'Add Unit',
-                              enabled: false,
                               style: MenuItemButton.styleFrom(
-                                  backgroundColor: const Color(0xFFDDF2FD),
                                   padding: const EdgeInsets.all(8),
                                   textStyle: GoogleFonts.ibmPlexMono(
                                     color: Colors.transparent,
                                     fontSize: 0,
                                   )),
-                              leadingIcon: SizedBox(
-                                width: 100,
-                                height: 40,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        controller: addController,
-                                        decoration: InputDecoration(
-                                          hintText: 'Add Unit',
-                                          hintStyle: GoogleFonts.ibmPlexMono(
-                                            color: const Color(0xFF164863),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          border: InputBorder.none,
-                                        ),
-                                        style: GoogleFonts.ibmPlexMono(
-                                          color: const Color(0xFF0F1728),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        onFieldSubmitted: (value) {
-                                          if (value.isNotEmpty) {
-                                            setState(() {
-                                              _units.add(value);
-                                              addController.clear();
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            DropdownMenuEntry<String>(
-                                value: 'add_button',
-                                label: 'Add Unit',
-                                style: MenuItemButton.styleFrom(
-                                    padding: const EdgeInsets.all(8),
-                                    textStyle: GoogleFonts.ibmPlexMono(
-                                      color: Colors.transparent,
-                                      fontSize: 0,
-                                    )),
-                                leadingIcon: Padding(
-                                  padding: const EdgeInsets.only(left: 38.0),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      String value = addController.text;
+                              leadingIcon: Padding(
+                                padding: const EdgeInsets.only(left: 38.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    String value = addController.text;
 
-                                      if (value.isNotEmpty) {
-                                        setState(() {
-                                          _units.add(value);
-                                          addController.clear();
-                                        });
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF427D9D),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 14.5, horizontal: 16),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'Add Unit',
-                                      style: TextStyle(color: Colors.white),
+                                    if (value.isNotEmpty) {
+                                      setState(() {
+                                        _units.add(value);
+                                        addController.clear();
+                                      });
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF427D9D),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 14.5, horizontal: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                ))
+                                  child: const Text(
+                                    'Add Unit',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ))
+                        ],
+                      ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                width: double.infinity,
+                height: 180,
+                padding: const EdgeInsets.all(16),
+                decoration: ShapeDecoration(
+                  color: const Color(0xFFFBFAFA),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Select Exam Time',
+                        style: TextStyle(
+                          color: Color(0xFF164863),
+                          fontSize: 14,
+                          fontFamily: 'Heebo',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 14.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              'Hours',
+                              style: GoogleFonts.heebo(
+                                color: const Color(0xFF888888),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Minutes',
+                              style: GoogleFonts.heebo(
+                                color: const Color(0xFF888888),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            )
                           ],
-                        ))
-                      ],
-                    )
-                  ],
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Hours Input Field
+                          ScrollableTimeInput(
+                            controller: _hourOneController,
+                            validator: _validateTime,
+                            maxValue: 9, // For first minute digit
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          ScrollableTimeInput(
+                            controller: _hourTwoController,
+                            validator: _validateTime,
+                            maxValue: 9, // For first minute digit
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              '-',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFFCFD4DC),
+                                fontSize: 60,
+                                fontWeight: FontWeight.w500,
+                                height: 0.02,
+                              ),
+                            ),
+                          ),
+                          // Minutes Input Field
+                          ScrollableTimeInput(
+                            controller: _minuteOneController,
+                            validator: _validateTime,
+                            maxValue: 6, // For first minute digit
+                          ),
+
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          ScrollableTimeInput(
+                            controller: _minuteTwoController,
+                            validator: _validateTime,
+                            maxValue: 9, // For first minute digit
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 180,
-                  padding: const EdgeInsets.all(16),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFBFAFA),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Select Exam Time',
-                          style: TextStyle(
-                            color: Color(0xFF164863),
-                            fontSize: 14,
-                            fontFamily: 'Heebo',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 14.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'Hours',
-                                style: GoogleFonts.heebo(
-                                  color: const Color(0xFF888888),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
+            ),
+            //question
+            quizList.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    // Add this line
+                    physics: const NeverScrollableScrollPhysics(),
+                    // Prevents it from scrolling independently
+                    itemCount: quizList.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                          color: Colors.grey[100],
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              // The main heading
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                // Aligns delete icon to the right
+
+                                children: [
+                                  Text(
+                                    '${index + 1}. ${quizList[index].questionText}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF164863),
+                                      fontSize: 14,
+                                      fontFamily: 'IBM Plex Mono',
+                                      fontWeight: FontWeight.w500,
+                                      height: 0,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () {
+                                      setState(() {
+                                        widget.quizList!.removeAt(
+                                            index); // Remove the question at the given index
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              // The nested ListView with constrained height
+                              SizedBox(
+                                height:
+                                    200, // Set a fixed height for the inner ListView
+                                child: ListView.builder(
+                                  shrinkWrap: true, // Add this line as well
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: quizList[index].options.length,
+                                  itemBuilder: (context, innerIndex) {
+                                    return _buildListItem(
+                                        '${innerIndex + 1}. ${quizList[index].options[innerIndex]}.');
+                                  },
                                 ),
                               ),
-                              Text(
-                                'Minutes',
-                                style: GoogleFonts.heebo(
-                                  color: const Color(0xFF888888),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              )
                             ],
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Hours Input Field
-                            ScrollableTimeInput(
-                              controller: _hourOneController,
-                              validator: _validateTime,
-                              maxValue: 9, // For first minute digit
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            ScrollableTimeInput(
-                              controller: _hourTwoController,
-                              validator: _validateTime,
-                              maxValue: 9, // For first minute digit
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                '-',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  color: const Color(0xFFCFD4DC),
-                                  fontSize: 60,
-                                  fontWeight: FontWeight.w500,
-                                  height: 0.02,
-                                ),
-                              ),
-                            ),
-                            // Minutes Input Field
-                            ScrollableTimeInput(
-                              controller: _minuteOneController,
-                              validator: _validateTime,
-                              maxValue: 6, // For first minute digit
-                            ),
-
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            ScrollableTimeInput(
-                              controller: _minuteTwoController,
-                              validator: _validateTime,
-                              maxValue: 9, // For first minute digit
-                            ),
-                          ],
-                        ),
-                      ],
+                      );
+                    },
+                  )
+                : const Center(
+                    child: Text(
+                      'No questions added yet.',
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
-                ),
-              ),
-              //question
-              quizList.isNotEmpty
-                  ? ListView.builder(
-                      shrinkWrap: true,
-                      // Add this line
-                      physics: const NeverScrollableScrollPhysics(),
-                      // Prevents it from scrolling independently
-                      itemCount: quizList.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Container(
-                            color: Colors.grey[100],
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                // The main heading
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  // Aligns delete icon to the right
-
-                                  children: [
-                                    Text(
-                                      '${index + 1}. ${quizList[index].questionText}',
-                                      style: const TextStyle(
-                                        color: Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontFamily: 'IBM Plex Mono',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete,
-                                          color: Colors.red),
-                                      onPressed: () {
-                                        setState(() {
-                                          widget.quizList!.removeAt(
-                                              index); // Remove the question at the given index
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // The nested ListView with constrained height
-                                SizedBox(
-                                  height:
-                                      200, // Set a fixed height for the inner ListView
-                                  child: ListView.builder(
-                                    shrinkWrap: true, // Add this line as well
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: quizList[index].options.length,
-                                    itemBuilder: (context, innerIndex) {
-                                      return _buildListItem(
-                                          '${innerIndex + 1}. ${quizList[index].options[innerIndex]}.');
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Text(
-                        'No questions added yet.',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-            ],
-          ),
+          ],
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: CustomElevatedButton(
-            height: 55,
-            onPressed: ()
-            => dialogWithButtons(context: context, icon: const Icon(Icons.error_outline_rounded,
-              color: Color(0xFF164863),
-              size: 150,),
-              title: 'Are you sure you finish putting Exam ?', 
-              button1Text: 'Finish Exam', 
-              button1Action: _submitQuiz, 
-              button2Text: 'Cancel',
-              button2Action: () => Navigator.pop(context)),
-            // Submit the form and add the quiz
-            text: 'Submit',
-            buttonStyle: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF427D9D),
-              padding:
-                  const EdgeInsets.symmetric(vertical: 14.5, horizontal: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: CustomElevatedButton(
+          height: 55,
+          onPressed: ()
+          => dialogWithButtons(context: context, icon: const Icon(Icons.error_outline_rounded,
+            color: Color(0xFF164863),
+            size: 150,),
+            title: 'Are you sure you finish putting Exam ?',
+            button1Text: 'Finish Exam',
+            button1Action: _submitQuiz,
+            button2Text: 'Cancel',
+            button2Action: () => Navigator.pop(context)),
+          // Submit the form and add the quiz
+          text: 'Submit',
+          buttonStyle: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF427D9D),
+            padding:
+                const EdgeInsets.symmetric(vertical: 14.5, horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddQuestion(
-                  quizList: quizList,
-                  isPaid: light,
-                  examName: titleController.text,
-                  fees: quizFees.text,
-                  selectedLevel: selectedLevel,
-                  selectedUnit: selectedUnit,
-                  hours: "${_hourOneController.text}${_hourTwoController.text}",
-                  minutes: "${_minuteOneController.text}${_minuteTwoController.text}",
-                ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddQuestion(
+                quizList: quizList,
+                isPaid: light,
+                examName: titleController.text,
+                fees: quizFees.text,
+                selectedLevel: selectedLevel,
+                selectedUnit: selectedUnit,
+                hours: "${_hourOneController.text}${_hourTwoController.text}",
+                minutes: "${_minuteOneController.text}${_minuteTwoController.text}",
               ),
-            );
-          },
-          backgroundColor: const Color(0xFFDDF2FD),
-          shape: const CircleBorder(),
-          child: const Icon(
-            Icons.add,
-            color: Color(0xFF164863),
-            size: 44,
-          ),
+            ),
+          );
+        },
+        backgroundColor: const Color(0xFFDDF2FD),
+        shape: const CircleBorder(),
+        child: const Icon(
+          Icons.add,
+          color: Color(0xFF164863),
+          size: 44,
         ),
       ),
     );

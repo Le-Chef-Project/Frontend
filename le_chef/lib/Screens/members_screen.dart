@@ -4,8 +4,10 @@ import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/main.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 
+import '../Models/Admin.dart';
 import '../Shared/customBottomNavBar.dart';
 import '../Widgets/dialog_with_two_buttons.dart';
+import '../services/student/student_service.dart';
 import 'admin/payment_request.dart';
 import 'admin/selectStudent.dart';
 import 'user/Home.dart';
@@ -30,11 +32,14 @@ class _MembersScreenState extends State<MembersScreen> {
   String? role = sharedPreferences?.getString('role');
   String? logged_username = sharedPreferences?.getString('userName');
   String? logged_img = sharedPreferences?.getString('img');
+  Admin? admin;
+  bool isLoadingAdmin= true;
 
   @override
   void initState() {
     super.initState();
     fetchMembers();
+    getAdmin();
   }
 
   Future<void> fetchMembers() async {
@@ -64,6 +69,26 @@ class _MembersScreenState extends State<MembersScreen> {
       members = members.where((member) => member['_id'] != studentId).toList();
     });
   }
+
+  Future<void> getAdmin() async {
+    try {
+      admin = await StudentService.getAdminDetails(token!);
+      if (admin != null) {
+        print('Got Admin Successfully: ${admin!.username}');
+      } else {
+        print('Admin is null');
+      }
+      setState(() {
+        isLoadingAdmin = false;
+      });
+    } catch (e) {
+      print('Error fetching admin: $e');
+      setState(() {
+        isLoadingAdmin = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +197,7 @@ class _MembersScreenState extends State<MembersScreen> {
                             'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YyIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'),
                       ),
                       title: Text(
-                        logged_username ?? '',
+                        logged_username == admin?.username ? 'Hany Azmy' :  logged_username ?? '',
                         style: GoogleFonts.ibmPlexMono(
                           color: const Color(0xFF083344),
                           fontSize: 14,

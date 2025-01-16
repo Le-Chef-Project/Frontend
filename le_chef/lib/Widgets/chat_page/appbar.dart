@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../Screens/members_screen.dart';
+
 PreferredSizeWidget buildAppBar(BuildContext context, String? groupName,
-    int? membersNumber, String? username, String? avatarUrl) {
+    int? membersNumber, String? username, String? avatarUrl, String grpId) {
   if (groupName != null && groupName.contains(' ')) {
     return GroupChatAppBar(
       groupName: groupName,
       membersNumber: membersNumber,
       onBackPressed: () => Navigator.pop(context),
+      grpId: grpId,
     );
   }
   return PersonalChatAppBar(
@@ -22,12 +25,13 @@ class GroupChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String groupName;
   final int? membersNumber;
   final VoidCallback onBackPressed;
+  final String grpId;
 
   const GroupChatAppBar({
     Key? key,
     required this.groupName,
     this.membersNumber,
-    required this.onBackPressed,
+    required this.onBackPressed, required this.grpId,
   }) : super(key: key);
 
   @override
@@ -35,26 +39,39 @@ class GroupChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     final names = groupName.split(' ');
     final abbreviatedName = names[0][0] + names[1][0];
 
-    return AppBar(
-      surfaceTintColor: Colors.white,
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: onBackPressed,
-        color: Colors.black,
-      ),
-      title: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: const Color(0xFF0E7490),
-            child: Text(
-              abbreviatedName,
-              style: const TextStyle(color: Colors.white),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MembersScreen(
+              groupName: groupName,
+              groupId: grpId,
             ),
           ),
-          const SizedBox(width: 8),
-          _buildGroupInfo(),
-        ],
+        );
+      },
+      child: AppBar(
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: onBackPressed,
+          color: Colors.black,
+        ),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: const Color(0xFF0E7490),
+              child: Text(
+                abbreviatedName,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(width: 8),
+            _buildGroupInfo(),
+          ],
+        ),
       ),
     );
   }

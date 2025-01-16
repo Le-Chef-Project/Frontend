@@ -409,249 +409,247 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: _isLoading_admin
-            ? null
-            : AppBar(
-                backgroundColor: Colors.white,
-                surfaceTintColor: Colors.white,
-                leading: GestureDetector(
-                    onTap: () {
-                      if (admin != null) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                    isStudent: false, admin: admin!)));
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 25,
-                      child: Image.network(admin!.imageUrl!),
-                    )),
-                actions: [
-                  GestureDetector(
-                    onTap: () {
-                      sharedPreferences!.remove('token');
-                      Get.to(const Login());
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 23),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          'assets/logo.png',
-                          height: 50,
-                        ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: _isLoading_admin
+          ? null
+          : AppBar(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              leading: GestureDetector(
+                  onTap: () {
+                    if (admin != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                  isStudent: false, admin: admin!)));
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 25,
+                    child: Image.network(admin!.imageUrl!),
+                  )),
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    sharedPreferences!.remove('token');
+                    Get.to(const Login());
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 23),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.asset(
+                        'assets/logo.png',
+                        height: 50,
                       ),
                     ),
-                  ),
-                ],
-              ),
-        body: _isLoading_admin || _isLoading_Std || _isLoading_pdfs || _isLoading_notes || _isLoading_Exams
-            ? const Center(
-          child: CircularProgressIndicator(),
-        )
-            :
-        RefreshIndicator(
-          onRefresh: onRefresh,
-          backgroundColor: const Color(0xFF164863),
-          color: Colors.white,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
-                      child: _isLoading_admin
-                          ? const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  color: const Color(0x00565656),
-                                  child: Text(
-                                    admin?.username ?? 'Loading...',
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF164863),
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w600,
-                                      height: 0,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    'French Teacher',
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF427D9D),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      height: 0,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )),
-                ),
-                const SizedBox(height: 68),
-                _isLoading_Std
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : total_student(context),
-                const SizedBox(height: 68),
-                SizedBox(
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildCardRec(
-                          context,
-                          Title: "Exams",
-                          Number: _isLoading_Exams ? "..." : "${_ExamsLength!}",
-                          ImagePath: 'assets/Wonder Learners Graduating.png',
-                          onTapCardRec: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ExamLibraryLevels(title: 'Exams')),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildCardRec(
-                          context,
-                          Title: "Library",
-                          Number: _isLoading_pdfs
-                              ? '...'
-                              : '${_PDFsLength! + _VideosLength!}',
-                          ImagePath: 'assets/Charco Education.png',
-                          onTapCardRec: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ExamLibraryLevels(
-                                      title: 'Library',
-                                    )),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildCardRec(
-                          context,
-                          Title: "Notes",
-                          Number: _isLoading_notes ? '...' : '${_NotesLength!}',
-                          ImagePath: 'assets/Wonder Learners Book.png',
-                          onTapCardRec: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotesTabContainerScreen()),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: ShapeDecoration(
-                            gradient: LinearGradient(
-                              begin: const Alignment(0.00, -1.00),
-                              end: const Alignment(0, 1),
-                              colors: [
-                                const Color(0x33DDF2FD),
-                                const Color(0x89C8C8C8),
-                                Colors.white.withOpacity(0)
-                              ],
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OnlineSessionScreen()));
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16),
-                                  child: Text(
-                                    'Online Sessions',
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF164863),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      height: 0,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Image.asset(
-                                  'assets/Shopaholics Sitting On The Floor.png',
-                                  height: 228,
-                                  width: double.infinity,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ],
             ),
+      body: _isLoading_admin || _isLoading_Std || _isLoading_pdfs || _isLoading_notes || _isLoading_Exams
+          ? const Center(
+        child: CircularProgressIndicator(),
+      )
+          :
+      RefreshIndicator(
+        onRefresh: onRefresh,
+        backgroundColor: const Color(0xFF164863),
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
+                    child: _isLoading_admin
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                color: const Color(0x00565656),
+                                child: Text(
+                                  'Hany Azmy',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF164863),
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                    height: 0,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Text(
+                                  'French Teacher',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF427D9D),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    height: 0,
+                                  ),
+                                ),
+                              )
+                            ],
+                          )),
+              ),
+              const SizedBox(height: 68),
+              _isLoading_Std
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : total_student(context),
+              const SizedBox(height: 68),
+              SizedBox(
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildCardRec(
+                        context,
+                        Title: "Exams",
+                        Number: _isLoading_Exams ? "..." : "${_ExamsLength!}",
+                        ImagePath: 'assets/Wonder Learners Graduating.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ExamLibraryLevels(title: 'Exams')),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildCardRec(
+                        context,
+                        Title: "Library",
+                        Number: _isLoading_pdfs
+                            ? '...'
+                            : '${_PDFsLength! + _VideosLength!}',
+                        ImagePath: 'assets/Charco Education.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ExamLibraryLevels(
+                                    title: 'Library',
+                                  )),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildCardRec(
+                        context,
+                        Title: "Notes",
+                        Number: _isLoading_notes ? '...' : '${_NotesLength!}',
+                        ImagePath: 'assets/Wonder Learners Book.png',
+                        onTapCardRec: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const NotesTabContainerScreen()),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: const Alignment(0.00, -1.00),
+                            end: const Alignment(0, 1),
+                            colors: [
+                              const Color(0x33DDF2FD),
+                              const Color(0x89C8C8C8),
+                              Colors.white.withOpacity(0)
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const OnlineSessionScreen()));
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16),
+                                child: Text(
+                                  'Online Sessions',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF164863),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    height: 0,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Image.asset(
+                                'assets/Shopaholics Sitting On The Floor.png',
+                                height: 228,
+                                width: double.infinity,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        bottomNavigationBar: CustomBottomNavBar(
-          onItemTapped: (index) {
-            switch (index) {
-              case 1:
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        onItemTapped: (index) {
+          switch (index) {
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const Notifications()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Chats()),
+              );
+              break;
+            case 3:
+              if (role == 'admin') {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Notifications()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Chats()),
-                );
-                break;
-              case 3:
-                if (role == 'admin') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentRequest()));
-                }
-            }
-          },
-          context: context,
-          selectedIndex: _selectedIndex,
-          userRole: role!,
-        ),
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentRequest()));
+              }
+          }
+        },
+        context: context,
+        selectedIndex: _selectedIndex,
+        userRole: role!,
       ),
     );
   }

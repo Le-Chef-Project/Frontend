@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://192.168.1.8:3000/";
+  static const String baseUrl = "http://www.lechefpro.com/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();
@@ -20,6 +20,7 @@ class UserManage {
   final String DelStudent = "userManage/DeleteStudent/";
   final String editProfile = 'userManage/editProfile/';
   final String getAdmin = 'userManage/AdminProfile';
+  final String getAdminForStd = 'userManage/GetAdminDetails';
 }
 
 class Quiz {

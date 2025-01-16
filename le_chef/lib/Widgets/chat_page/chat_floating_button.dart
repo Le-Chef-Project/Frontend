@@ -4,15 +4,15 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 class ChatFloatingButton extends StatefulWidget {
   final TextEditingController textController;
   final Function(types.PartialText) onSendPressed;
-  final VoidCallback onStartRecording;
-  final VoidCallback onStopRecording;
+  // final VoidCallback onStartRecording;
+  // final VoidCallback onStopRecording;
 
   const ChatFloatingButton({
     Key? key,
     required this.textController,
     required this.onSendPressed,
-    required this.onStartRecording,
-    required this.onStopRecording,
+    // required this.onStartRecording,
+    // required this.onStopRecording,
     required bool isTyping,
   }) : super(key: key);
 
@@ -46,8 +46,7 @@ class _ChatFloatingButtonState extends State<ChatFloatingButton> {
 
   @override
   Widget build(BuildContext context) {
-    return _isTyping
-        ? FloatingActionButton(
+    return  FloatingActionButton(
       backgroundColor: const Color(0xFF0E7490),
       onPressed: () {
         final text = widget.textController.text.trim();
@@ -56,17 +55,17 @@ class _ChatFloatingButtonState extends State<ChatFloatingButton> {
         }
       },
       child: const Icon(Icons.send, color: Colors.white),
-    )
-        : GestureDetector(
-      onLongPress: widget.onStartRecording,
-      onLongPressUp: widget.onStopRecording,
-      child: FloatingActionButton(
-        backgroundColor: const Color(0xFF0E7490),
-        onPressed: () {
-          // Handle other functionalities
-        },
-        child: const Icon(Icons.mic, color: Colors.white),
-      ),
     );
+    //     : GestureDetector(
+    //   onLongPress: widget.onStartRecording,
+    //   onLongPressUp: widget.onStopRecording,
+    //   child: FloatingActionButton(
+    //     backgroundColor: const Color(0xFF0E7490),
+    //     onPressed: () {
+    //       // Handle other functionalities
+    //     },
+    //     child: const Icon(Icons.mic, color: Colors.white),
+    //   ),
+    // );
   }
 }

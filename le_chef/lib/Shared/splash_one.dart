@@ -80,61 +80,59 @@ class _SplashOneState extends State<SplashOne> with TickerProviderStateMixin {
       curve: Curves.easeInOut,
     ));
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            // Background image
-            Positioned.fill(
-              child: Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/splash_Photo.png'),
-                    fit: BoxFit.fill,
-                  ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/splash_Photo.png'),
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
-            // Expanding avatar background
-            AnimatedBuilder(
-              animation: _avatarAnimation,
-              builder: (context, child) {
-                final validRadius = maxRadius.isNaN || maxRadius <= 0 ? 1.0 : maxRadius;
-                return Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(validRadius * (1 - _avatarAnimation.value)),
-                    child: Container(
-                      width: validRadius * _avatarAnimation.value * 2,
-                      height: validRadius * _avatarAnimation.value * 2,
-                      color: _avatarBackgroundColor,
+          ),
+          // Expanding avatar background
+          AnimatedBuilder(
+            animation: _avatarAnimation,
+            builder: (context, child) {
+              final validRadius = maxRadius.isNaN || maxRadius <= 0 ? 1.0 : maxRadius;
+              return Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(validRadius * (1 - _avatarAnimation.value)),
+                  child: Container(
+                    width: validRadius * _avatarAnimation.value * 2,
+                    height: validRadius * _avatarAnimation.value * 2,
+                    color: _avatarBackgroundColor,
+                  ),
+                ),
+              );
+            },
+          ),
+          // Animated logo
+          AnimatedBuilder(
+            animation: _logoAnimation,
+            builder: (context, child) {
+              return Positioned(
+                left: size.width / 2 - 40 + _logoAnimation.value.dx * (size.width / 2 - 40) - 30,
+                top: size.height / 2 - 40 + _logoAnimation.value.dy * (size.height / 2 - 40) - 60,
+                child: Hero(
+                  tag: 'logoAnimation',
+                  child: SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: Center(
+                      child: Image.asset('assets/logo.png'),
                     ),
                   ),
-                );
-              },
-            ),
-            // Animated logo
-            AnimatedBuilder(
-              animation: _logoAnimation,
-              builder: (context, child) {
-                return Positioned(
-                  left: size.width / 2 - 40 + _logoAnimation.value.dx * (size.width / 2 - 40) - 30,
-                  top: size.height / 2 - 40 + _logoAnimation.value.dy * (size.height / 2 - 40) - 60,
-                  child: Hero(
-                    tag: 'logoAnimation',
-                    child: SizedBox(
-                      width: 150,
-                      height: 150,
-                      child: Center(
-                        child: Image.asset('assets/logo.png'),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
