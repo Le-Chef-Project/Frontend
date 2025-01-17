@@ -17,6 +17,7 @@ import 'package:le_chef/services/messaging/grp_message_service.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import '../../Models/Admin.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Widgets/chat_page/appbar.dart';
 import '../../Widgets/chat_page/audio_msg.dart';
@@ -24,6 +25,8 @@ import '../../Widgets/chat_page/chat_floating_button.dart';
 import '../../Widgets/chat_page/doc_msg.dart';
 import '../../Widgets/chat_page/msg_input.dart';
 import '../../main.dart';
+import '../../services/auth/admin_service.dart';
+import '../../services/student/student_service.dart';
 import '../../theme/chat_theme.dart';
 import '../admin/payment_request.dart';
 import '../notification.dart';
@@ -64,10 +67,14 @@ class _ChatPageState extends State<ChatPage> {
   // String? _recordedFilePath;
   bool _showFloatingButton = true;
   late DocumentMessageBubble _documentMessageBubble;
+  Admin? admin;
+  bool isLoadingAdmin= true;
+
 
   @override
   void initState() {
     super.initState();
+    getAdmin();
     _fetchMessages();
     _documentMessageBubble = DocumentMessageBubble(
       theme: widget.person ? ChatThemes.personalChat : ChatThemes.groupChat,
@@ -79,6 +86,30 @@ class _ChatPageState extends State<ChatPage> {
 
   types.User get _user {
     return types.User(id: _userId ?? '');
+  }
+
+  Future<void> getAdmin() async {
+    try {
+      if(role == 'admin'){
+        admin = await AdminService.getAdmin(token!);
+      }
+      else{
+        admin = await StudentService.getAdminDetails(token!);
+      }
+      if (admin != null) {
+        print('Got Admin Successfully: ${admin!.username}');
+      } else {
+        print('Admin is null');
+      }
+      setState(() {
+        isLoadingAdmin = false;
+      });
+    } catch (e) {
+      print('Error fetching admin: $e');
+      setState(() {
+        isLoadingAdmin = false;
+      });
+    }
   }
 
   void _addMessage(types.Message message) {
@@ -387,8 +418,8 @@ class _ChatPageState extends State<ChatPage> {
           return types.Message.fromJson({
             'author': {
               'id': sender?['_id'] ?? '',
-              'firstName': sender?['firstName'] ?? '',
-              'lastName': sender?['lastName'] ?? '',
+              'firstName': admin?.firstName == sender?['firstName'] ? 'Hany' : sender?['firstName'] ?? '',
+              'lastName': admin?.lastName == sender?['lastName'] ? 'Azmy' : sender?['lastName'] ?? '',
               'username': sender?['username'] ?? '',
               'imageUrl': sender?['image']?['url'] ?? '',
             },

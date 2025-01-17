@@ -94,126 +94,135 @@ Future<void> join(String meetingId, BuildContext context) async {
   }
 }
 
-Widget joinMeeting(BuildContext context, String? role, int? educationalLevel,
-    String? meetingId) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset('assets/Humaaans 3 Characters.png'),
-        const SizedBox(
-          height: 81,
-        ),
-        Text(
-          'Tap to ${role == 'admin' ? 'Create' : 'Join'} meeting',
-          style: GoogleFonts.ibmPlexMono(
-            color: const Color(0xFF3D3D3D),
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+class JoinMeeting extends StatelessWidget {
+  final String? role;
+  final int? educationalLevel;
+  final String? meetingId;
+
+  const JoinMeeting({super.key, required this.role, required this.educationalLevel, required this.meetingId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/Humaaans 3 Characters.png'),
+          const SizedBox(
+            height: 81,
           ),
-        ),
-        const SizedBox(height: 26),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/video_svgrepo.com.png'),
-            const SizedBox(width: 35),
-            const Icon(Icons.mic, color: Color(0xFF164863), size: 40),
-          ],
-        ),
-        const SizedBox(height: 42),
-        role == 'admin'
-            ? Row(children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        List<Student> stds =
-                            await getStudents(educationalLevel!);
-                        createSession(educationalLevel, context);
-                        // await ApisMethods.sendNotificationsToStudents(stds);
-                        // Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF427D9D),
-                        padding: const EdgeInsets.symmetric(vertical: 14.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Create Meeting',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.ibmPlexMono(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+          Text(
+            'Tap to ${role == 'admin' ? 'Create' : 'Join'} meeting',
+            style: GoogleFonts.ibmPlexMono(
+              color: const Color(0xFF3D3D3D),
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 26),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/video_svgrepo.com.png'),
+              const SizedBox(width: 35),
+              const Icon(Icons.mic, color: Color(0xFF164863), size: 40),
+            ],
+          ),
+          const SizedBox(height: 42),
+          role == 'admin'
+              ? Row(children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    List<Student> stds =
+                    await getStudents(educationalLevel!);
+                    createSession(educationalLevel!, context);
+                    // await ApisMethods.sendNotificationsToStudents(stds);
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => const MeetingPage()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF427D9D),
+                    padding: const EdgeInsets.symmetric(vertical: 14.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                )
-              ])
-            : Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        join(meetingId!, context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF427D9D),
-                        padding: const EdgeInsets.symmetric(vertical: 14.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Join Meeting',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.ibmPlexMono(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                  child: Text(
+                    'Create Meeting',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Home()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14.5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(
-                              color: Color(0xFF427D9D),
-                              width: 2,
-                            )),
-                      ),
-                      child: Text(
-                        'Home Page',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.ibmPlexMono(
-                          color: const Color(0xFF427D9D),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-      ],
-    ),
-  );
+            )
+          ])
+              : Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    join(meetingId!, context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF427D9D),
+                    padding: const EdgeInsets.symmetric(vertical: 14.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Join Meeting',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Home()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(
+                          color: Color(0xFF427D9D),
+                          width: 2,
+                        )),
+                  ),
+                  child: Text(
+                    'Home Page',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF427D9D),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
+

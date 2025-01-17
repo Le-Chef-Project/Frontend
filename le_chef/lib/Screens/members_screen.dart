@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/main.dart';
+import 'package:le_chef/services/auth/admin_service.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 
 import '../Models/Admin.dart';
@@ -72,7 +73,12 @@ class _MembersScreenState extends State<MembersScreen> {
 
   Future<void> getAdmin() async {
     try {
-      admin = await StudentService.getAdminDetails(token!);
+      if(role == 'admin'){
+        admin = await AdminService.getAdmin(token!);
+      }
+      else{
+        admin = await StudentService.getAdminDetails(token!);
+      }
       if (admin != null) {
         print('Got Admin Successfully: ${admin!.username}');
       } else {
@@ -95,6 +101,7 @@ class _MembersScreenState extends State<MembersScreen> {
     final String abbreviatedName =
         widget.groupName[0] + widget.groupName.split(' ')[1];
 
+    print('UserName:' + logged_username! == admin?.username ? 'Hany Azmy' :  logged_username ?? '',);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

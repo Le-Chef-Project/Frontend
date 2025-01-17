@@ -5,21 +5,26 @@ import 'package:get/get.dart';
 import 'package:le_chef/Screens/user/Home.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
+import 'package:no_screenshot/no_screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences? sharedPreferences;
 String? token;
 String? role;
+final _noScreenshot = NoScreenshot.instance;
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize SharedPreferences
   sharedPreferences = await SharedPreferences.getInstance();
 
-  // Get stored token and role
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');
+
+  bool result = await _noScreenshot.screenshotOn();
+  debugPrint('Screenshot Off: $result');
+
 
   print('Token from main: $token');
   print('Role from main: $role');
@@ -29,6 +34,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   @override
   Widget build(BuildContext context) {
