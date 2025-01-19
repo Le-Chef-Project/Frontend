@@ -134,7 +134,7 @@ class _NotificationsState extends State<Notifications> {
                                       notification.type),
                                   iconColor: getIconColor(notification.type),
                                   title: notification.message,
-                                  time: _formatTime(notification.createdAt),
+                                  time: _formatCreatedAt(notification.createdAt),
                                 );
                               },
                             ),
@@ -181,15 +181,21 @@ class _NotificationsState extends State<Notifications> {
   }
 
   /// Helper function to format time
-  String _formatTime(String timestamp) {
-    try {
-      // Parse the timestamp into DateTime
-      DateTime dateTime = DateTime.parse(timestamp);
+  String _formatCreatedAt(String createdAt) {
+    final dateTime =
+    DateTime.parse(createdAt).toLocal(); // Convert to local time
+    final now = DateTime.now();
 
-      // Format the time using intl
-      return DateFormat('h:mm a').format(dateTime); // Example: 10:05 PM
-    } catch (e) {
-      return 'Invalid time';
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      return DateFormat.jm().format(dateTime);
+    } else if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day - 1) {
+      return " ${DateFormat.jm().format(dateTime)}";
+    } else {
+      return DateFormat.jm().format(dateTime);
     }
   }
 

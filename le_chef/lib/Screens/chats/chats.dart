@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:le_chef/Models/direct_chat.dart';
 import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Screens/admin/payment_request.dart';
@@ -121,6 +122,25 @@ class _ChatsState extends State<Chats> {
     );
     return participant.img!;
   }
+
+  String _formatCreatedAt(String createdAt) {
+    final dateTime =
+    DateTime.parse(createdAt).toLocal(); // Convert to local time
+    final now = DateTime.now();
+
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      return DateFormat.jm().format(dateTime);
+    } else if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day - 1) {
+      return " ${DateFormat.jm().format(dateTime)}";
+    } else {
+      return DateFormat.jm().format(dateTime);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -482,8 +502,7 @@ class _ChatsState extends State<Chats> {
                             children: [
                           _buildHeader(context,
                               name: _getParticipantName(chats![index]),
-                              time:
-                                  "${hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}${localTime.hour >= 12 ? 'PM' : 'AM'}"),
+                              time: _formatCreatedAt(chats![index].messages.last.createdAt)),
                           const SizedBox(height: 8),
                           Text(
                             chats![index].messages.last.content ?? 'No Message',
@@ -510,15 +529,6 @@ class _ChatsState extends State<Chats> {
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemCount: groups!.length,
             itemBuilder: (context, index) {
-              String isoTime = groups![index].createdAt;
-
-              // Parse the ISO 8601 string
-              DateTime dateTime = DateTime.parse(isoTime);
-
-              // Convert to local time if needed
-              DateTime localTime = dateTime.toLocal();
-
-              int hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
 
               return GestureDetector(
                 onLongPress: () async {
@@ -698,8 +708,7 @@ class _ChatsState extends State<Chats> {
                                 _buildHeader(
                                   context,
                                   name: groups![index].title,
-                                  time:
-                                      "${hour.toString().padLeft(2, '0')}:${localTime.minute.toString().padLeft(2, '0')}${localTime.hour >= 12 ? 'PM' : 'AM'}",
+                                  time: _formatCreatedAt(groups![index].lastMessage.createdAt)
                                 ),
                                 const SizedBox(height: 8),
                                 Text(

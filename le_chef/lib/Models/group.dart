@@ -42,7 +42,7 @@ class LastMessage {
   final List<String> images;
   final List<String> documents;
   final List<String> audio;
-  final DateTime? createdAt;
+  final String createdAt;
 
   LastMessage({
     this.senderId,
@@ -50,7 +50,7 @@ class LastMessage {
     this.images = const [],
     this.documents = const [],
     this.audio = const [],
-    this.createdAt,
+    this.createdAt = '',
   });
 
   factory LastMessage.fromJson(Map<String, dynamic> json) {
@@ -60,7 +60,7 @@ class LastMessage {
       images: (json['images'] as List?)?.map((e) => e as String).toList() ?? [],
       documents: (json['documents'] as List?)?.map((e) => e as String).toList() ?? [],
       audio: (json['audio'] as List?)?.map((e) => e as String).toList() ?? [],
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      createdAt: json['createdAt'] ?? '',
     );
   }
 }

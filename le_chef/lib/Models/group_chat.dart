@@ -36,7 +36,7 @@ class GroupChatMessage {
   final List<String>? images;
   final List<String>? documents;
   final List<String>? audio;
-  final DateTime createdAt;
+  final String createdAt;
 
   GroupChatMessage({
     required this.id,
@@ -56,9 +56,7 @@ class GroupChatMessage {
       images: json['images'] != null ? List<String>.from(json['images']) : null,
       documents: json['documents'] != null ? List<String>.from(json['documents']) : null,
       audio: json['audio'] != null ? List<String>.from(json['audio']) : null,
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
+      createdAt: json['createdAt'] ?? '',
     );
   }
 }

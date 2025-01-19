@@ -216,11 +216,11 @@ class DocumentMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localTime =
-        DateTime.fromMillisecondsSinceEpoch(message?.createdAt ?? 0).toLocal();
-    final hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
-    final minute = localTime.minute.toString().padLeft(2, '0');
-    final timePeriod = localTime.hour >= 12 ? 'PM' : 'AM';
+    // final localTime =
+    //     DateTime.fromMillisecondsSinceEpoch(message?.createdAt ?? 0).toLocal();
+    // final hour = localTime.hour % 12 == 0 ? 12 : localTime.hour % 12;
+    // final minute = localTime.minute.toString().padLeft(2, '0');
+    // final timePeriod = localTime.hour >= 12 ? 'PM' : 'AM';
 
     return Container(
       margin: EdgeInsets.only(
@@ -266,16 +266,16 @@ class DocumentMessageBubble extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Align(
-                alignment: AlignmentDirectional.bottomEnd,
-                child: Text(
-                  '$hour:$minute $timePeriod',
-                  style: (isCurrentUser
-                          ? theme.sentMessageBodyTextStyle
-                          : theme.receivedMessageBodyTextStyle)
-                      .copyWith(fontSize: 12),
-                ),
-              ),
+              // Align(
+              //   alignment: AlignmentDirectional.bottomEnd,
+              //   child: Text(
+              //     '$hour:$minute $timePeriod',
+              //     style: (isCurrentUser
+              //             ? theme.sentMessageBodyTextStyle
+              //             : theme.receivedMessageBodyTextStyle)
+              //         .copyWith(fontSize: 12),
+              //   ),
+              // ),
             ],
           ),
         ),
