@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = "http://www.lechefpro.com/";
+  static const String baseUrl = "http://192.168.1.8:3000/";
   static AuthEndPoint authEndPoint = AuthEndPoint();
   static UserManage userManage = UserManage();
   static Quiz quiz = Quiz();

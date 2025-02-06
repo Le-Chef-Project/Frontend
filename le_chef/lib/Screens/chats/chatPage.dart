@@ -49,7 +49,7 @@ class ChatPage extends StatefulWidget {
       required this.person,
       this.receiverName,
       this.chatRoom,
-        required this.imgUrl})
+      required this.imgUrl})
       : super(key: key);
 
   @override
@@ -68,8 +68,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _showFloatingButton = true;
   late DocumentMessageBubble _documentMessageBubble;
   Admin? admin;
-  bool isLoadingAdmin= true;
-
+  bool isLoadingAdmin = true;
 
   @override
   void initState() {
@@ -83,17 +82,15 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-
   types.User get _user {
     return types.User(id: _userId ?? '');
   }
 
   Future<void> getAdmin() async {
     try {
-      if(role == 'admin'){
+      if (role == 'admin') {
         admin = await AdminService.getAdmin(token!);
-      }
-      else{
+      } else {
         admin = await StudentService.getAdminDetails(token!);
       }
       if (admin != null) {
@@ -198,6 +195,7 @@ class _ChatPageState extends State<ChatPage> {
       } catch (e) {
         print('Error sending file message: $e');
       }
+      _textController.clear();
     }
   }
 
@@ -399,8 +397,8 @@ class _ChatPageState extends State<ChatPage> {
             },
             'createdAt': createdAtMillis,
             'id': msg.id ?? const Uuid().v4(),
-          'imageUrl': widget.imgUrl,
-          'type': _getMessageType(msg),
+            'imageUrl': widget.imgUrl,
+            'type': _getMessageType(msg),
             ...(_getMessageContent(msg)),
           });
         }).toList();
@@ -418,8 +416,12 @@ class _ChatPageState extends State<ChatPage> {
           return types.Message.fromJson({
             'author': {
               'id': sender?['_id'] ?? '',
-              'firstName': admin?.firstName == sender?['firstName'] ? 'Hany' : sender?['firstName'] ?? '',
-              'lastName': admin?.lastName == sender?['lastName'] ? 'Azmy' : sender?['lastName'] ?? '',
+              'firstName': admin?.firstName == sender?['firstName']
+                  ? 'Hany'
+                  : sender?['firstName'] ?? '',
+              'lastName': admin?.lastName == sender?['lastName']
+                  ? 'Azmy'
+                  : sender?['lastName'] ?? '',
               'username': sender?['username'] ?? '',
               'imageUrl': sender?['image']?['url'] ?? '',
             },
@@ -661,8 +663,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildChatBody(context, chatTheme),
-      floatingActionButton:
-          _showFloatingButton ? _buildFloatingButton() : null,
+      floatingActionButton: _showFloatingButton ? _buildFloatingButton() : null,
     );
   }
 
@@ -673,7 +674,6 @@ class _ChatPageState extends State<ChatPage> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     if (widget.person) {
       return PersonalChatAppBar(
-        
         username: widget.receiverName ?? 'Chat',
         avatarUrl: widget.imgUrl ??
             'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
@@ -689,7 +689,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildChatBody(BuildContext context, ChatTheme theme) {
-
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -713,30 +712,28 @@ class _ChatPageState extends State<ChatPage> {
       user: _user,
       theme: theme,
       avatarBuilder: (types.User user) {
+        String? userImage = widget.person ? widget.imgUrl : user.imageUrl;
 
-        String? userImage = widget.person
-            ? widget.imgUrl
-            : user.imageUrl;
-
-      return CircleAvatar(
-        radius: 20,
-        backgroundColor: Colors.grey[200],
-        child: userImage != null
-            ? ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.network(
-            userImage,
-            width: 40,
-            height: 40,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Icon(Icons.person, size: 20, color: Colors.grey[400]);
-            },
-          ),
-        )
-            : Icon(Icons.person, size: 20, color: Colors.grey[400]),
-      );
-    },
+        return CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.grey[200],
+          child: userImage != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    userImage,
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(Icons.person,
+                          size: 20, color: Colors.grey[400]);
+                    },
+                  ),
+                )
+              : Icon(Icons.person, size: 20, color: Colors.grey[400]),
+        );
+      },
       customBottomWidget: MessageInput(
         // isRecording: _isRecording,
         textController: _textController,

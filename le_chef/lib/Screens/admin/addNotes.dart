@@ -47,8 +47,8 @@ class _addNotesState extends State<addNotes> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -89,8 +89,8 @@ class _addNotesState extends State<addNotes> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(6.0, 11, 6, 0),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: ShapeDecoration(
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -115,7 +115,8 @@ class _addNotesState extends State<addNotes> {
           ),
         ),
         bottomNavigationBar: (selectedlevel == null ||
-                (noteContentController == ''))
+                (noteContentController == '' ||
+                    noteContentController.text.isEmpty))
             ? Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: CustomElevatedButton(
@@ -128,7 +129,8 @@ class _addNotesState extends State<addNotes> {
                 padding: const EdgeInsets.all(24.0),
                 child: CustomElevatedButton(
                   onPressed: () async {
-                    print('from Uiiiiii ${noteContentController.text}${int.tryParse(selectedlevel!)?.toString() ?? ''}');
+                    print(
+                        'from Uiiiiii ${noteContentController.text}${int.tryParse(selectedlevel!)?.toString() ?? ''}');
 
                     await NoteService.addNote(
                         noteContentController.text.toString(),

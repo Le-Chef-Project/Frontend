@@ -84,9 +84,9 @@ class QuizService {
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii Get Exams $data');
+    print('apiiii Get Exams ${data['quizzes']}');
 
-    for (var i in data) {
+    for (var i in data['quizzes']) {
       temp.add(i);
     }
 

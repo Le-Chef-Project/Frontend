@@ -150,7 +150,7 @@ class Smallcard extends StatelessWidget {
                     Text(
                       description!,
                       style: GoogleFonts.ibmPlexMono(
-                        color: Colors.black,
+                        color: const Color.fromRGBO(66, 125, 157, 1),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         height: 1.2,

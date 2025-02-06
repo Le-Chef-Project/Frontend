@@ -49,6 +49,11 @@ class _ChatsState extends State<Chats> {
     groups = await GrpMsgService.getAllGroups();
     print('group infooooooooo ${groups!}');
     setState(() {
+      // Sort groups by lastMessage.createdAt (newest to oldest)
+      if (groups != null && groups!.isNotEmpty) {
+        groups!.sort((a, b) =>
+            b.lastMessage.createdAt.compareTo(a.lastMessage.createdAt));
+      }
       _isLoading_grp = false;
     });
   }
@@ -57,6 +62,12 @@ class _ChatsState extends State<Chats> {
     chats = await DirectMsgService.getAllChats();
     print('Chat infooooooooo $chats');
     setState(() {
+      // Sort chats by the last message's createdAt (newest to oldest)
+      if (chats != null && chats!.isNotEmpty) {
+        chats!.sort((a, b) =>
+            b.messages.last.createdAt.compareTo(a.messages.last.createdAt));
+      }
+
       _isLoading_chat = false;
     });
   }
@@ -123,24 +134,40 @@ class _ChatsState extends State<Chats> {
     return participant.img!;
   }
 
-  String _formatCreatedAt(String createdAt) {
-    final dateTime =
-    DateTime.parse(createdAt).toLocal(); // Convert to local time
-    final now = DateTime.now();
+  String _formatCreatedAt(String? createdAt) {
+    // Handle null or empty createdAt
+    if (createdAt == null || createdAt.isEmpty) {
+      return ' ';
+    }
 
-    if (dateTime.year == now.year &&
-        dateTime.month == now.month &&
-        dateTime.day == now.day) {
-      return DateFormat.jm().format(dateTime);
-    } else if (dateTime.year == now.year &&
-        dateTime.month == now.month &&
-        dateTime.day == now.day - 1) {
-      return " ${DateFormat.jm().format(dateTime)}";
-    } else {
-      return DateFormat.jm().format(dateTime);
+    try {
+      // Parse the createdAt string to DateTime
+      final dateTime =
+          DateTime.parse(createdAt).toLocal(); // Convert to local time
+      final now = DateTime.now();
+
+      // Check if the date is today
+      if (dateTime.year == now.year &&
+          dateTime.month == now.month &&
+          dateTime.day == now.day) {
+        return 'Today ${DateFormat.jm().format(dateTime)}'; // Today + time
+      }
+      // Check if the date is yesterday
+      else if (dateTime.year == now.year &&
+          dateTime.month == now.month &&
+          dateTime.day == now.day - 1) {
+        return 'Yesterday ${DateFormat.jm().format(dateTime)}'; // Yesterday + time
+      }
+      // For older dates, return the full date and time
+      else {
+        return DateFormat.yMd().add_jm().format(dateTime); // Full date + time
+      }
+    } catch (e) {
+      // Handle parsing errors
+      print('Error parsing date: $e');
+      return 'Invalid date';
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -502,7 +529,8 @@ class _ChatsState extends State<Chats> {
                             children: [
                           _buildHeader(context,
                               name: _getParticipantName(chats![index]),
-                              time: _formatCreatedAt(chats![index].messages.last.createdAt)),
+                              time: _formatCreatedAt(
+                                  chats![index].messages.last.createdAt)),
                           const SizedBox(height: 8),
                           Text(
                             chats![index].messages.last.content ?? 'No Message',
@@ -529,7 +557,6 @@ class _ChatsState extends State<Chats> {
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemCount: groups!.length,
             itemBuilder: (context, index) {
-
               return GestureDetector(
                 onLongPress: () async {
                   if (role == 'admin') {
@@ -705,11 +732,10 @@ class _ChatsState extends State<Chats> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildHeader(
-                                  context,
-                                  name: groups![index].title,
-                                  time: _formatCreatedAt(groups![index].lastMessage.createdAt)
-                                ),
+                                _buildHeader(context,
+                                    name: groups![index].title,
+                                    time: _formatCreatedAt(
+                                        groups![index].lastMessage.createdAt)),
                                 const SizedBox(height: 8),
                                 Text(
                                   groups?[index].lastMessage.content ??

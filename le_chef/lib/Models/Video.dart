@@ -21,7 +21,7 @@ class Video {
     required this.createdAt, // Ensure this is defined
   });
 
-  factory Video.fromjson(dynamic json) {
+  factory Video.fromjson(Map<String, dynamic> json) {
     return Video(
       id: json['_id'] as String? ?? '',
       title: json['title'] as String? ?? '',

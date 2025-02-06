@@ -131,9 +131,9 @@ class MediaService {
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii Videos $data');
+    print('apiiii Videos ${data['videos']} ');
 
-    for (var i in data) {
+    for (var i in data['videos']) {
       temp.add(i);
     }
 
