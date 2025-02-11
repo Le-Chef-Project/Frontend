@@ -230,7 +230,7 @@ class _QuizPageState extends State<QuizPage> {
     }
 
     final response =
-    QuizService.submitQuiz(widget.quiz, answers, widget.quiz.id);
+        QuizService.submitQuiz(widget.quiz, answers, widget.quiz.id);
     setState(() {
       isSubmitted = true;
     });
@@ -394,6 +394,11 @@ class _QuizPageState extends State<QuizPage> {
                                 height: 48,
                                 child: OutlinedButton(
                                   onPressed: () {
+                                    final response = QuizService.submitQuiz(
+                                        widget.quiz, answers, widget.quiz.id);
+                                    setState(() {
+                                      isSubmitted = true;
+                                    });
                                     Navigator.pop(
                                         context); // First, pop the dialog
                                     Navigator.pop(context);
@@ -563,7 +568,8 @@ class _QuizPageState extends State<QuizPage> {
                                                         'Select new time')),
                                                 titleTextStyle:
                                                     GoogleFonts.ibmPlexMono(
-                                                  color: const Color(0xFF164863),
+                                                  color:
+                                                      const Color(0xFF164863),
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -571,15 +577,15 @@ class _QuizPageState extends State<QuizPage> {
                                                   width: double.infinity,
                                                   height: 180,
                                                   padding:
-                                                      const EdgeInsets.all(
-                                                          16),
+                                                      const EdgeInsets.all(16),
                                                   decoration: ShapeDecoration(
-                                                    color: const Color(0xFFFBFAFA),
+                                                    color:
+                                                        const Color(0xFFFBFAFA),
                                                     shape:
                                                         RoundedRectangleBorder(
                                                       borderRadius:
-                                                          BorderRadius
-                                                              .circular(12),
+                                                          BorderRadius.circular(
+                                                              12),
                                                     ),
                                                   ),
                                                   child: Form(
@@ -611,8 +617,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                         .heebo(
                                                                   color: const Color(
                                                                       0xFF888888),
-                                                                  fontSize:
-                                                                      12,
+                                                                  fontSize: 12,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400,
@@ -625,8 +630,7 @@ class _QuizPageState extends State<QuizPage> {
                                                                         .heebo(
                                                                   color: const Color(
                                                                       0xFF888888),
-                                                                  fontSize:
-                                                                      12,
+                                                                  fontSize: 12,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400,
@@ -679,8 +683,9 @@ class _QuizPageState extends State<QuizPage> {
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
-                                                                  style: GoogleFonts
-                                                                      .inter(
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .inter(
                                                                     color: const Color(
                                                                         0xFFCFD4DC),
                                                                     fontSize:
@@ -745,32 +750,30 @@ class _QuizPageState extends State<QuizPage> {
                                                                 shape:
                                                                     RoundedRectangleBorder(
                                                                   borderRadius:
-                                                                      BorderRadius.circular(
-                                                                          12),
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              12),
                                                                 ),
-                                                                minimumSize: const Size(
-                                                                    double
-                                                                        .minPositive,
-                                                                    48)),
+                                                                minimumSize:
+                                                                    const Size(
+                                                                        double
+                                                                            .minPositive,
+                                                                        48)),
                                                         child: const Text(
                                                           'Save Changes',
-                                                          textAlign: TextAlign
-                                                              .center,
-                                                          style:
-                                                              TextStyle(
-                                                            color:
-                                                                Colors.white,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.white,
                                                             fontSize: 16,
                                                             fontFamily:
                                                                 'IBM Plex Mono',
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w600,
+                                                                FontWeight.w600,
                                                           ),
                                                         ),
                                                       ),
-                                                      const SizedBox(
-                                                          width: 12),
+                                                      const SizedBox(width: 12),
                                                       // Add spacing between buttons
                                                       OutlinedButton(
                                                         onPressed: () {
@@ -806,8 +809,8 @@ class _QuizPageState extends State<QuizPage> {
                                                         ),
                                                         child: const Text(
                                                           'Cancel',
-                                                          textAlign: TextAlign
-                                                              .center,
+                                                          textAlign:
+                                                              TextAlign.center,
                                                           style: TextStyle(
                                                             color: Color(
                                                                 0xFF427D9D),
@@ -815,8 +818,7 @@ class _QuizPageState extends State<QuizPage> {
                                                             fontFamily:
                                                                 'IBM Plex Mono',
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w600,
+                                                                FontWeight.w600,
                                                           ),
                                                         ),
                                                       ),
@@ -954,10 +956,9 @@ class _QuizPageState extends State<QuizPage> {
                             : null,
                     icon: Icon(
                       Icons.arrow_forward_ios,
-                      color:
-                          selectedQuestion < widget.quiz.questions.length - 1
-                              ? const Color(0xFF888888)
-                              : const Color(0xFFCCCCCC), // Disabled color
+                      color: selectedQuestion < widget.quiz.questions.length - 1
+                          ? const Color(0xFF888888)
+                          : const Color(0xFFCCCCCC), // Disabled color
                     ),
                   ),
                 ),
@@ -1069,15 +1070,14 @@ class _QuizPageState extends State<QuizPage> {
                                           data: ThemeData(
                                             textSelectionTheme:
                                                 const TextSelectionThemeData(
-                                              selectionColor:
-                                                  Color(0xFF164863),
+                                              selectionColor: Color(0xFF164863),
                                               selectionHandleColor:
                                                   Color(0xFF164863),
                                             ),
                                           ),
                                           child: TextField(
-                                            controller: _answerControllers[
-                                                answerIndex],
+                                            controller:
+                                                _answerControllers[answerIndex],
                                             cursorColor:
                                                 const Color(0xFF164863),
                                             maxLines: null,
@@ -1140,8 +1140,7 @@ class _QuizPageState extends State<QuizPage> {
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF427D9D),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(12))),
+                                      borderRadius: BorderRadius.circular(12))),
                               child: Text(
                                 'Submit',
                                 style: GoogleFonts.ibmPlexMono(

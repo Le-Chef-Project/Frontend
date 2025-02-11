@@ -661,6 +661,7 @@ class _ChatPageState extends State<ChatPage> {
         widget.person ? ChatThemes.personalChat : ChatThemes.groupChat;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(context),
       body: _buildChatBody(context, chatTheme),
       floatingActionButton: _showFloatingButton ? _buildFloatingButton() : null,

@@ -31,13 +31,25 @@ class GroupChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     required this.groupName,
     this.membersNumber,
-    required this.onBackPressed, required this.grpId,
+    required this.onBackPressed,
+    required this.grpId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final names = groupName.split(' ');
-    final abbreviatedName = names[0][0] + names[1][0];
+    final names = groupName.trim().split(' ');
+
+    String abbreviatedName;
+    if (names.length > 1) {
+      // If there are two or more words, take the first letter of the first and second words
+      abbreviatedName = names[0][0] + names[1][0];
+    } else if (names.isNotEmpty) {
+      // If there's only one word, take the first letter of that word
+      abbreviatedName = names[0][0];
+    } else {
+      // If groupName is empty, use a default character
+      abbreviatedName = '?';
+    }
 
     return GestureDetector(
       onTap: () {

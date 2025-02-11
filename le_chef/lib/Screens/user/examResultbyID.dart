@@ -205,10 +205,9 @@ class _ExamResultState extends State<ExamResult> {
                             : null,
                     icon: Icon(
                       Icons.arrow_forward_ios,
-                      color:
-                          selectedQuestion < widget.quiz.questions.length - 1
-                              ? const Color(0xFF888888)
-                              : const Color(0xFFCCCCCC), // Disabled color
+                      color: selectedQuestion < widget.quiz.questions.length - 1
+                          ? const Color(0xFF888888)
+                          : const Color(0xFFCCCCCC), // Disabled color
                     ),
                   ),
                 ),
@@ -271,32 +270,36 @@ class _ExamResultState extends State<ExamResult> {
                                   // Determine the background color based on the user's selection
                                   Color backgroundColor;
 
-                                  // Get the selected option and correct answer index for the current question
+// Get the selected option and correct answer index for the current question
                                   String? questionId = widget
                                       .quiz.questions[selectedQuestion].id;
                                   int selectedOption =
                                       selectedAnswers[questionId] ?? -1;
-                                  int correctAnswerIndex = widget.quiz
-                                      .questions[selectedQuestion].options
-                                      .indexOf(widget
-                                          .quiz
-                                          .questions[selectedQuestion]
-                                          .answer);
+                                  int correctAnswerIndex = widget
+                                      .quiz.questions[selectedQuestion].options
+                                      .indexOf(widget.quiz
+                                          .questions[selectedQuestion].answer);
 
-                                  // If the user selected this answer
-                                  if (selectedOption == answerIndex) {
+// If the question is unanswered, highlight only the correct answer in yellow
+                                  if (unanswerQuestions.contains(questionId)) {
+                                    backgroundColor =
+                                        (answerIndex == correctAnswerIndex)
+                                            ? Colors.orange
+                                            : Colors.white;
+                                  }
+// If the user selected this answer
+                                  else if (selectedOption == answerIndex) {
                                     // If it’s wrong, show red
                                     backgroundColor =
                                         (answerIndex != correctAnswerIndex)
                                             ? Colors.red
                                             : Colors.green;
                                   }
-                                  // For the correct answer, it should always be green
-                                  else if (answerIndex ==
-                                      correctAnswerIndex) {
+// For the correct answer, it should always be green
+                                  else if (answerIndex == correctAnswerIndex) {
                                     backgroundColor = Colors.green;
                                   }
-                                  // Default color for options the user did not select
+// Default color for options the user did not select
                                   else {
                                     backgroundColor = Colors.white;
                                   }

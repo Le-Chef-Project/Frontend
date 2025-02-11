@@ -75,16 +75,15 @@ class _HomeState extends State<Home> {
       print('Token userName: $userName');
       print('Token rolee: $rolee');
       print('Token logged_img: $logged_img');
-
     });
   }
 
   Future<void> _initializeData() async {
     try {
       await Future.wait([
-      getpdf(),
-      getexams(),
-      getnotes(),
+        getpdf(),
+        getexams(),
+        getnotes(),
         getexams(),
       ]);
       print('All data initialized successfully');
@@ -149,13 +148,16 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        leading: CircleAvatar(
-          radius: 30,
-          backgroundImage: NetworkImage(
-            logged_img ??
-                'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(
+              logged_img ??
+                  'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
+            ),
+            backgroundColor: Colors.white,
           ),
-          backgroundColor: Colors.white,
         ),
         actions: [
           GestureDetector(
@@ -179,249 +181,252 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
-                child: Column(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10.0, 8, 0, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        color: const Color(0x00565656),
+                        child: Text(
+                          userName ?? 'Guest',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF164863),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Text(
+                          'Level ${level ?? 'Unknown'}',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF427D9D),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: 400,
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      color: const Color(0x00565656),
+                    Expanded(
+                      child: SizedBox(
+                        child: Text(
+                          'Newest Videos',
+                          style: GoogleFonts.ibmPlexMono(
+                            color: const Color(0xFF164863),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 106),
+                    TextButton(
+                      onPressed: () {
+                        Get.to(() => const AllVid(),
+                            transition: Transition.fade,
+                            duration: const Duration(seconds: 1));
+                      },
                       child: Text(
-                        userName ?? 'Guest',
+                        'See all',
                         style: GoogleFonts.ibmPlexMono(
-                          color: const Color(0xFF164863),
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF427D9D),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           height: 0,
                         ),
                       ),
                     ),
-                    Container(
-                      child: Text(
-                        'Level ${level ?? 'Unknown'}',
-                        style: GoogleFonts.ibmPlexMono(
-                          color: const Color(0xFF427D9D),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: 400,
-              height: 48,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      child: Text(
-                        'Newest Videos',
-                        style: GoogleFonts.ibmPlexMono(
-                          color: const Color(0xFF164863),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 106),
-                  TextButton(
-                    onPressed: () {
-                      Get.to(() => const AllVid(),
-                          transition: Transition.fade,
-                          duration: const Duration(seconds: 1));
-                    },
-                    child: Text(
-                      'See all',
-                      style: GoogleFonts.ibmPlexMono(
-                        color: const Color(0xFF427D9D),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            FutureBuilder<List<Video>>(
-                future: _videosFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text("Error: ${snapshot.error}"));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("No videos available"));
-                  }
-                  final Videos = snapshot.data!;
+              FutureBuilder<List<Video>>(
+                  future: _videosFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text("No videos available"));
+                    }
+                    final Videos = snapshot.data!;
 
-                  return SizedBox(
-                    height: 250,
-                    child: ListView.builder(
-                      itemCount:
-                          (videosLength ?? 0) > 3 ? 3 : (videosLength ?? 0),
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        final video = Videos[index];
-                        return Smallcard(
-                          id: video.id,
-                          type: 'Video',
-                          Title: video.title,
-                          description: video.description,
-                          imageurl: 'assets/desk_book_apple.jpeg',
-                          ontap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  VideoPlayerScreen(url: video.url),
+                    return SizedBox(
+                      height: 250,
+                      child: ListView.builder(
+                        itemCount:
+                            (videosLength ?? 0) > 3 ? 3 : (videosLength ?? 0),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          final video = Videos[index];
+                          return Smallcard(
+                            id: video.id,
+                            type: 'Video',
+                            Title: video.title,
+                            description: video.description,
+                            imageurl: 'assets/desk_book_apple.jpeg',
+                            ontap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    VideoPlayerScreen(url: video.url),
+                              ),
                             ),
-                          ),
-                          isLocked: video.isLocked,
-                        );
-                      },
+                            isLocked: video.isLocked,
+                          );
+                        },
+                      ),
+                    );
+                  }),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
+                child: SizedBox(
+                  width: 380,
+                  child: Text(
+                    'More',
+                    style: GoogleFonts.ibmPlexMono(
+                      color: const Color(0xFF164863),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      height: 0,
                     ),
-                  );
-                }),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 15.0),
-              child: SizedBox(
-                width: 380,
-                child: Text(
-                  'More',
-                  style: GoogleFonts.ibmPlexMono(
-                    color: const Color(0xFF164863),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    height: 0,
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildCardRec(context,
-                        Title: "Exams",
-                        Number: _isLoading_Exams
-                            ? "..."
-                            : "${_exams?.length ?? 0}",
-                        ImagePath: 'assets/Wonder Learners Graduating.png',
-                        onTapCardRec: () => Get.to(
-                            () => Exams(
-                                  selectedLevel: level ?? 0,
-                                ),
-                            transition: Transition.fade,
-                            duration: const Duration(seconds: 1))),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildCardRec(context,
-                        Title: "Library",
-                        Number:
-                            _isLoading_pdfs ? '...' : '${libraryLength ?? 0}',
-                        ImagePath: 'assets/Charco Education.png',
-                        onTapCardRec: () => Get.to(
-                            () => LibraryTabContainerScreen(
-                                  selectedLevel: level ?? 0,
-                                ),
-                            transition: Transition.fade,
-                            duration: const Duration(seconds: 1))),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildCardRec(context,
-                        Title: "Notes",
-                        Number: _isLoading_notes
-                            ? '...'
-                            : '${_notes?.length ?? 0}',
-                        ImagePath: 'assets/Wonder Learners Book.png',
-                        onTapCardRec: () => Get.to(
-                            () => NotesScreen(
-                                  level: level ?? 0,
-                                ),
-                            transition: Transition.fade,
-                            duration: const Duration(seconds: 1))),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: ShapeDecoration(
-                        gradient: LinearGradient(
-                          begin: const Alignment(0.00, -1.00),
-                          end: const Alignment(0, 1),
-                          colors: [
-                            const Color(0x33DDF2FD),
-                            const Color(0x89C8C8C8),
-                            Colors.white.withOpacity(0)
-                          ],
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.to(() => const OnlineSessionScreen(),
+              SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildCardRec(context,
+                          Title: "Exams",
+                          Number: _isLoading_Exams
+                              ? "..."
+                              : "${_exams?.length ?? 0}",
+                          ImagePath: 'assets/Wonder Learners Graduating.png',
+                          onTapCardRec: () => Get.to(
+                              () => Exams(
+                                    selectedLevel: level ?? 0,
+                                  ),
                               transition: Transition.fade,
-                              duration: const Duration(seconds: 1));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16),
-                              child: Text(
-                                'Online Seesions',
-                                style: GoogleFonts.ibmPlexMono(
-                                  color: const Color(0xFF164863),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  height: 0,
+                              duration: const Duration(seconds: 1))),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildCardRec(context,
+                          Title: "Library",
+                          Number:
+                              _isLoading_pdfs ? '...' : '${libraryLength ?? 0}',
+                          ImagePath: 'assets/Charco Education.png',
+                          onTapCardRec: () => Get.to(
+                              () => LibraryTabContainerScreen(
+                                    selectedLevel: level ?? 0,
+                                  ),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1))),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildCardRec(context,
+                          Title: "Notes",
+                          Number: _isLoading_notes
+                              ? '...'
+                              : '${_notes?.length ?? 0}',
+                          ImagePath: 'assets/Wonder Learners Book.png',
+                          onTapCardRec: () => Get.to(
+                              () => NotesScreen(
+                                    level: level ?? 0,
+                                  ),
+                              transition: Transition.fade,
+                              duration: const Duration(seconds: 1))),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: const Alignment(0.00, -1.00),
+                            end: const Alignment(0, 1),
+                            colors: [
+                              const Color(0x33DDF2FD),
+                              const Color(0x89C8C8C8),
+                              Colors.white.withOpacity(0)
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => const OnlineSessionScreen(),
+                                transition: Transition.fade,
+                                duration: const Duration(seconds: 1));
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16),
+                                child: Text(
+                                  'Online Seesions',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: const Color(0xFF164863),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Image.asset(
-                              'assets/Shopaholics Sitting On The Floor.png',
-                              height: 228,
-                              width: double.maxFinite,
-                            )
-                          ],
+                              const SizedBox(height: 8),
+                              Image.asset(
+                                'assets/Shopaholics Sitting On The Floor.png',
+                                height: 228,
+                                width: double.maxFinite,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(
