@@ -125,11 +125,13 @@ class _QuizPageState extends State<QuizPage> {
         print('hours: ${widget.quiz.duration.inHours}');
         print('mint: ${widget.quiz.duration.inMinutes}');
       }
+
+      // Prepare the questions with their correct answers
       List<Map<String, dynamic>> questions = widget.quiz.questions.map((quiz) {
         return {
           'question': quiz.questionText,
           'options': quiz.options,
-          'answer': quiz.answer,
+          'answer': quiz.answer, // Include the correct answer
         };
       }).toList();
 
@@ -1056,13 +1058,19 @@ class _QuizPageState extends State<QuizPage> {
                               .map((entry) {
                             int answerIndex = entry.key;
                             String answerText = entry.value;
+
+                            bool isCorrectAnswer =
+                                answerText == widget.quiz.questions[selectedQuestion].answer;
+
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
+                                  color:  isCorrectAnswer
+                                      ? Colors.green
+                                      : Colors.white,
                                 ),
                                 child: ListTile(
                                   title: role == 'admin'

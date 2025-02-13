@@ -1,13 +1,10 @@
 // chat_screen.dart
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:le_chef/Models/direct_chat.dart' as direct_chat;
 import 'package:le_chef/Models/group.dart';
@@ -15,12 +12,10 @@ import 'package:le_chef/Models/group_chat.dart';
 import 'package:le_chef/services/messaging/direct_message.dart';
 import 'package:le_chef/services/messaging/grp_message_service.dart';
 import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../Models/Admin.dart';
-import '../../Shared/customBottomNavBar.dart';
 import '../../Widgets/chat_page/appbar.dart';
-import '../../Widgets/chat_page/audio_msg.dart';
 import '../../Widgets/chat_page/chat_floating_button.dart';
 import '../../Widgets/chat_page/doc_msg.dart';
 import '../../Widgets/chat_page/msg_input.dart';
@@ -28,10 +23,6 @@ import '../../main.dart';
 import '../../services/auth/admin_service.dart';
 import '../../services/student/student_service.dart';
 import '../../theme/chat_theme.dart';
-import '../admin/payment_request.dart';
-import '../notification.dart';
-import '../user/Home.dart';
-import 'chats.dart';
 import 'image_viewer.dart';
 
 class ChatPage extends StatefulWidget {
@@ -60,9 +51,11 @@ class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
+
   // final ValueNotifier<bool> _isRecording = ValueNotifier(false);
   final String? _userId = sharedPreferences!.getString('_id');
   bool _isLoading = true;
+
   // FlutterSoundRecorder? _recorder;
   // String? _recordedFilePath;
   bool _showFloatingButton = true;
@@ -586,35 +579,60 @@ class _ChatPageState extends State<ChatPage> {
   // }
 
   void _handleMessageTap(BuildContext context, types.Message message) async {
+    print('Message tapped: ${message.runtimeType}'); // Debug message
     final index = _messages.indexWhere((element) => element.id == message.id);
     if (index != -1) {
       final wrappedMessage = _messages[index];
 
-      // Handle file messages
-      if (wrappedMessage is types.FileMessage) {
+      // Handle image messages
+      if (wrappedMessage is types.ImageMessage) {
+        final imageMessage = wrappedMessage;
+        print(
+            'Image message detected. URI: ${imageMessage.uri}'); // Debug message
+
+        // Show image in custom viewer
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => ImageViewerDialog(
+                imageUrl: imageMessage.uri,
+                person: widget.person,
+                group: widget.group,
+                receiverId: widget.receiverId,
+                receiverName: widget.receiverName,
+                chatRoom: widget.chatRoom,
+            imgUrl: widget.imgUrl,),
+          ),
+        );
+
+        return;
+      }
+      // Handle file messages (if needed)
+      else if (wrappedMessage is types.FileMessage) {
         final fileMessage = wrappedMessage;
+        print(
+            'File message detected. MimeType: ${fileMessage.mimeType}'); // Debug message
 
-        // Handle images
+        // Handle documents
         if (fileMessage.mimeType?.startsWith('image/') == true) {
-          setState(() {
-            _showFloatingButton = false;
-          });
-
           // Show image in custom viewer
           await Navigator.of(context).push(
             MaterialPageRoute(
               fullscreenDialog: true,
-              builder: (context) =>
-                  ImageViewerDialog(imageUrl: fileMessage.uri),
+              builder: (context) => ImageViewerDialog(
+                imageUrl: fileMessage.uri,
+                person: widget.person,
+                group: widget.group,
+                receiverId: widget.receiverId,
+                receiverName: widget.receiverName,
+                chatRoom: widget.chatRoom,
+                imgUrl: widget.imgUrl,),
             ),
           );
-
-          setState(() {
-            _showFloatingButton = true;
-          });
         }
-        // Handle documents
+        // Handle other file types
         else {
+          print('Document message detected'); // Debug message
           await _documentMessageBubble.downloadAndOpenDocument(
               fileMessage.uri, fileMessage.name, context);
         }
@@ -696,58 +714,73 @@ class _ChatPageState extends State<ChatPage> {
       );
     }
 
-    if (_messages.isEmpty) {
-      return const Center(
-        child: Text('No messages here yet'),
-      );
-    }
-
-    return Chat(
-      messages: _messages,
-      onAttachmentPressed: _handleAttachmentPressed,
-      onMessageTap: _handleMessageTap,
-      onPreviewDataFetched: _handlePreviewDataFetched,
-      onSendPressed: _handleSendPressed,
-      showUserAvatars: true,
-      showUserNames: true,
-      user: _user,
-      theme: theme,
-      avatarBuilder: (types.User user) {
-        String? userImage = widget.person ? widget.imgUrl : user.imageUrl;
-
-        return CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.grey[200],
-          child: userImage != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    userImage,
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.person,
-                          size: 20, color: Colors.grey[400]);
-                    },
-                  ),
+    return Column(
+      children: [
+        Expanded(
+          child: _messages.isEmpty
+              ? const Center(
+                  child: Text('No messages here yet'),
                 )
-              : Icon(Icons.person, size: 20, color: Colors.grey[400]),
-        );
-      },
-      customBottomWidget: MessageInput(
-        // isRecording: _isRecording,
-        textController: _textController,
-        onAttachmentPressed: _handleAttachmentPressed,
-        onSendPressed: _handleSendPressed,
-      ),
-      fileMessageBuilder: FileMessageBuilder(
-        person: widget.person,
-        currentUser: _user,
-        // onPlayAudio: _playAudio,
-        onOpenDocument: (url, fileName) => _documentMessageBubble
-            .downloadAndOpenDocument(url, fileName!, context),
-      ).build,
+              : Chat(
+                  key: ValueKey(_messages.length),
+                  messages: _messages,
+                  onAttachmentPressed: _handleAttachmentPressed,
+                  onMessageTap: _handleMessageTap,
+                  onPreviewDataFetched: _handlePreviewDataFetched,
+                  onSendPressed: _handleSendPressed,
+                  showUserAvatars: true,
+                  showUserNames: true,
+                  user: _user,
+                  theme: theme,
+                  avatarBuilder: (types.User user) {
+                    String? userImage =
+                        widget.person ? widget.imgUrl : user.imageUrl;
+
+                    return CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey[200],
+                      child: userImage != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                userImage,
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(Icons.person,
+                                      size: 20, color: Colors.grey[400]);
+                                },
+                              ),
+                            )
+                          : Icon(Icons.person,
+                              size: 20, color: Colors.grey[400]),
+                    );
+                  },
+                  customBottomWidget: _messages.isNotEmpty
+                      ? MessageInput(
+                          textController: _textController,
+                          onAttachmentPressed: _handleAttachmentPressed,
+                          onSendPressed: _handleSendPressed,
+                        )
+                      : null,
+                  // Hide the customBottomWidget when there are no messages
+                  fileMessageBuilder: FileMessageBuilder(
+                    person: widget.person,
+                    currentUser: _user,
+                    onOpenDocument: (url, fileName) => _documentMessageBubble
+                        .downloadAndOpenDocument(url, fileName!, context),
+                  ).build,
+                ),
+        ),
+        // Show the MessageInput only when there are no messages
+        if (_messages.isEmpty)
+          MessageInput(
+            textController: _textController,
+            onAttachmentPressed: _handleAttachmentPressed,
+            onSendPressed: _handleSendPressed,
+          ),
+      ],
     );
   }
 
@@ -769,6 +802,7 @@ class _ChatPageState extends State<ChatPage> {
 
 class FileMessageBuilder {
   final types.User currentUser;
+
   // final Function(String) onPlayAudio;
   final Function(String, String?) onOpenDocument;
   final bool person;

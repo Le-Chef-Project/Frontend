@@ -161,12 +161,12 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
-              if (sharedPreferences != null) {
-                sharedPreferences!.remove('token');
-              }
-              Get.to(const Login());
-            },
+            // onTap: () {
+            //   if (sharedPreferences != null) {
+            //     sharedPreferences!.remove('token');
+            //   }
+            //   Get.to(const Login());
+            // },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 23),
               child: ClipRRect(

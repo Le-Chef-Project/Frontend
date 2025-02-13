@@ -22,7 +22,7 @@ Future<void> main() async {
   token = sharedPreferences!.getString('token');
   role = sharedPreferences!.getString('role');
 
-  bool result = await _noScreenshot.screenshotOn();
+  bool result = await _noScreenshot.screenshotOff();
   debugPrint('Screenshot Off: $result');
 
 
