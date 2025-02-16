@@ -40,4 +40,16 @@ class Video {
       return Video.fromjson(data);
     }).toList();
   }
+
+  // Convert Video object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      "_id": id,
+      "title": title,
+      "description": description,
+      "educationLevel": educationLevel,
+      "url": url,
+      "createdAt": createdAt,
+    };
+  }
 }

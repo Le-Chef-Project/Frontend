@@ -130,6 +130,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getLibrary() async {
     try {
+      // Fetch PDFs
       _pdfs = await MediaService.fetchAllPDFs(token!);
       print('PDF length: ${_pdfs?.length}');
 
@@ -138,12 +139,16 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
         SharedPrefes.savePDFsLength(_pdfs?.length ?? 0);
       });
 
-      _videos = await MediaService.fetchAllVideos();
+      // Fetch videos using the new API function
+      _videos = await MediaService.fetchAllVideosAdmin();
+
+      // Extract videos from API response
+
       print('Video length: ${_videos?.length}');
 
       setState(() {
         _isLoading_videos = false;
-        SharedPrefes.saveVideosLength(_videos?.length ?? 0);
+        SharedPrefes.saveVideosLength(_videos!.length);
       });
     } catch (e) {
       print('Error fetching library data: $e');
@@ -172,7 +177,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
 
   Future<void> getexams() async {
     try {
-      _exams = await QuizService.getAllQuizzes(token!);
+      _exams = await QuizService.getAllQuizzesAdmin(token!);
       print('Exams fetched: ${_exams?.length}');
       setState(() {
         _isLoading_Exams = false;
@@ -432,10 +437,10 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
               ),
               actions: [
                 GestureDetector(
-                  // onTap: () {
-                  //   sharedPreferences!.remove('token');
-                  //   Get.to(const Login());
-                  // },
+                  onTap: () {
+                    sharedPreferences!.remove('token');
+                    Get.to(const Login());
+                  },
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 23),
                     child: ClipRRect(

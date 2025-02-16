@@ -75,7 +75,7 @@ class QuizService {
     }
   }
 
-  static Future<List<quizModel.Quiz>> getAllQuizzes(String token) async {
+  static Future<QuizResponse?> getAllQuizzesUser(String token) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
     http.Response response = await http.get(url,
@@ -84,13 +84,34 @@ class QuizService {
     var data = jsonDecode(response.body);
 
     List temp = [];
-    print('apiiii Get Exams ${data['quizzes']}');
-
-    for (var i in data['quizzes']) {
-      temp.add(i);
+    if (response.statusCode == 200) {
+      return QuizResponse.fromJson(json.decode(response.body));
+    } else {
+      print('Error: ${json.decode(response.body)['error']}');
+      return null;
     }
+  }
 
-    return quizModel.Quiz.itemsFromSnapshot(temp);
+  static Future<List<quizModel.Quiz>> getAllQuizzesAdmin(String token) async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.quiz.getAllQuizzes);
+    http.Response response = await http.get(url,
+        headers: {'Content-Type': 'application/json', 'token': token!});
+
+    var data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      List temp = [];
+      print('apiiii quizzes ${data['quizzes']}');
+
+      for (var i in data['quizzes']) {
+        temp.add(i);
+      }
+
+      return quizModel.Quiz.itemsFromSnapshot(temp);
+    } else {
+      throw Exception("Failed to load Quiz: ${response.body}");
+    }
   }
 
   static Future<List> getExamUnits() async {
@@ -291,7 +312,7 @@ class QuizService {
 
     for (final quizId in quizIds) {
       try {
-        print('Fetching quiz with ID: $quizId');
+        print('Fetched quiz with ID: $quizId');
         final quizInfo = await getQuizById(quizId);
         print('Fetched quiz: $quizInfo');
         quizzes.add(quizInfo);

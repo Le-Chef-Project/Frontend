@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Quiz {
   final String id;
   final String title;
@@ -22,9 +24,9 @@ class Quiz {
   });
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
-    final durationData = json['duration'] as Map<String, dynamic>?;
-    final hours = (durationData?['hours'] ?? 0).toInt();
-    final minutes = (durationData?['minutes'] ?? 0).toInt();
+    final durationData = json['duration'] as Map<String, dynamic>? ?? {};
+    final hours = (durationData['hours'] ?? 0).toInt();
+    final minutes = (durationData['minutes'] ?? 0).toInt();
 
     return Quiz(
       id: json['_id'] ?? '',
@@ -100,3 +102,41 @@ class QuizQuestion {
   }
 }
 
+class QuizResponse {
+  final List<Quiz> quizzes;
+  final List<String> quizPaidContentIds;
+
+  QuizResponse({
+    required this.quizzes,
+    required this.quizPaidContentIds,
+  });
+
+  factory QuizResponse.fromJson(Map<String, dynamic> json) {
+    return QuizResponse(
+      quizzes: (json['quizzes'] as List? ?? [])
+          .map((quiz) => Quiz.fromJson(quiz))
+          .toList(),
+      quizPaidContentIds: List<String>.from(json['quizPaidContentIds'] ?? []),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'quizzes': quizzes.map((quiz) => {
+        '_id': quiz.id,
+        'title': quiz.title,
+        'questions': quiz.questions.map((q) => q.toJson()).toList(),
+        'duration': {
+          'hours': quiz.duration.inHours,
+          'minutes': quiz.duration.inMinutes % 60,
+        },
+        'educationLevel': quiz.level,
+        'Unit': quiz.unit,
+        'paid': quiz.isPaid,
+        'createdAt': quiz.createdAt.toIso8601String(),
+        'amountToPay': quiz.amountToPay,
+      }).toList(),
+      'quizPaidContentIds': quizPaidContentIds,
+    };
+  }
+}

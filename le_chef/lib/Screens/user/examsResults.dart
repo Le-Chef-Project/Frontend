@@ -77,7 +77,7 @@ class _QuizPageState extends State<QuizPage> {
       // Fetch quiz details for each ID
       List<Map<String, dynamic>> quizzes =
           await QuizService.getQuizzesByIds(quizIds);
-      print('Fetched Quiz Details: $quizzes');
+      print('Fetching Quiz Details: $quizzes');
       return quizzes;
     } catch (e) {
       print('Error fetching quizzes: $e');

@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:le_chef/services/content/media_service.dart';
 import '../../Models/Video.dart';
+import '../../Models/video_response.dart';
 import '../../Widgets/SmallCard.dart';
+import '../../main.dart';
 import 'viewVideo.dart'; // Import the Video model
 
 class VideoListScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class VideoListScreen extends StatefulWidget {
 class _VideoListScreenState extends State<VideoListScreen> {
   Future<List<Video>>? _VideosFuture;
   List<String> _allDateRanges = [];
+  VideoResponse? _videoResponse; // Store the API response
 
   @override
   void initState() {
@@ -25,21 +28,37 @@ class _VideoListScreenState extends State<VideoListScreen> {
   }
 
   Future<List<Video>> _fetchAndSortVideos() async {
-    final Videos = await MediaService.fetchAllVideos();
+    try {
+      List<Video> videos = []; // Declare videos outside of if-else
 
-    final filteredVideos = Videos.where((video) {
-      return video.educationLevel == widget.selectedLevel;
-    }).toList();
+      // Fetch videos based on role
+      if (role != null && role == "admin") {
+        videos = await MediaService.fetchAllVideosAdmin();
+      } else {
+        _videoResponse = await MediaService.fetchAllVideosUser();
+        videos = _videoResponse!.videos;
+      }
 
-    filteredVideos.sort((a, b) =>
-        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+      // Filter videos based on selected education level
+      final filteredVideos = videos.where((video) {
+        return video.educationLevel == widget.selectedLevel;
+      }).toList();
 
-    _allDateRanges = filteredVideos
-        .map((video) => _getDateText(video.createdAt))
-        .toSet()
-        .toList();
+      // Sort filtered videos by date (newest first)
+      filteredVideos.sort((a, b) =>
+          DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
 
-    return filteredVideos;
+      // Extract unique date ranges for filtering
+      _allDateRanges = filteredVideos
+          .map((video) => _getDateText(video.createdAt))
+          .toSet()
+          .toList();
+
+      return filteredVideos;
+    } catch (error) {
+      print("Error : $error");
+      return [];
+    }
   }
 
   Map<String, List<Video>> _groupVideosByDate(List<Video> videos) {
@@ -79,23 +98,35 @@ class _VideoListScreenState extends State<VideoListScreen> {
   }
 
   Future<List<Video>> _applyDateFilter(List<String> selectedRanges) async {
-    // Fetch all videos
-    final allVideos = await MediaService.fetchAllVideos();
+    try {
+      List<Video> videos = [];
 
-    // Apply both filters: education level and date range
-    final filteredVideos = allVideos.where((video) {
-      final videoDateText = _getDateText(video.createdAt);
+      // Fetch videos based on role
+      if (role == "admin") {
+        videos = await MediaService.fetchAllVideosAdmin();
+      } else {
+        _videoResponse = await MediaService.fetchAllVideosUser();
+        videos = _videoResponse! // Store the API response
+            .videos;
+      }
 
-      // Ensure both conditions are satisfied
-      return video.educationLevel == widget.selectedLevel &&
-          selectedRanges.contains(videoDateText);
-    }).toList();
+      // Apply filters: selected education level and date range
+      final filteredVideos = videos.where((video) {
+        final videoDateText = _getDateText(video.createdAt);
 
-    // Sort the filtered videos
-    filteredVideos.sort((a, b) =>
-        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+        return video.educationLevel == widget.selectedLevel &&
+            selectedRanges.contains(videoDateText);
+      }).toList();
 
-    return filteredVideos;
+      // Sort filtered videos by date (newest first)
+      filteredVideos.sort((a, b) =>
+          DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+
+      return filteredVideos;
+    } catch (error) {
+      print("Error applying date filter: $error");
+      return [];
+    }
   }
 
   void _showFilterModal(BuildContext context, List<String> allDates) {
@@ -250,8 +281,7 @@ class _VideoListScreenState extends State<VideoListScreen> {
                     Row(
                       children: [
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
                             dateText,
                             style: const TextStyle(
@@ -322,7 +352,11 @@ class _VideoListScreenState extends State<VideoListScreen> {
                                   VideoPlayerScreen(url: video.url),
                             ),
                           ),
-                          isLocked: false,
+                          isLocked: role == "admin"
+                              ? false
+                              : !(_videoResponse!.videoPaidContentIds
+                                      .contains(video.id) ||
+                                  !video.isLocked),
                         );
                       },
                     ),

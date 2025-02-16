@@ -13,7 +13,6 @@ String? token;
 String? role;
 final _noScreenshot = NoScreenshot.instance;
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -25,7 +24,6 @@ Future<void> main() async {
   bool result = await _noScreenshot.screenshotOff();
   debugPrint('Screenshot Off: $result');
 
-
   print('Token from main: $token');
   print('Role from main: $role');
 
@@ -34,7 +32,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {

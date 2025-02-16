@@ -12,6 +12,7 @@ import '../../Models/Notes.dart';
 import '../../Models/PDF.dart';
 import '../../Models/Quiz.dart';
 import '../../Models/Video.dart';
+import '../../Models/video_response.dart';
 import '../../Shared/customBottomNavBar.dart';
 import '../../Shared/meeting/online_session_screen.dart';
 import '../../main.dart';
@@ -45,6 +46,8 @@ class _HomeState extends State<Home> {
   bool _isLoading_pdfs = true;
   int libraryLength = 0;
   int videosLength = 0;
+  VideoResponse? _videoResponse; // Store the API response
+  QuizResponse? _quizResponse; // Store the API response
 
   Future<List<Video>>? _videosFuture;
 
@@ -93,7 +96,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getexams() async {
-    _exams = await QuizService.getAllQuizzes(token!);
+    _quizResponse = await QuizService.getAllQuizzesUser(token!);
+    _exams = _quizResponse!.quizzes;
     print('apiii $_exams + ${_exams?.length}');
 
     _exams = _exams?.where((exam) => exam.level == level).toList();
@@ -123,22 +127,31 @@ class _HomeState extends State<Home> {
   }
 
   Future<List<Video>> _fetchAndSortVideos() async {
-    final Videos = await MediaService.fetchAllVideos();
+    try {
+      _videoResponse = await MediaService.fetchAllVideosUser();
 
-    // Filter and sort videos by date
-    final filteredVideos = Videos.where((video) {
-      return video.educationLevel == level;
-    }).toList();
+      // Extract videos and paid video content IDs from API response
+      final List<Video> videos = _videoResponse!.videos;
 
-    // Sort videos by date
-    filteredVideos.sort((a, b) =>
-        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+      // Filter videos based on user education level
+      final filteredVideos = videos.where((video) {
+        return video.educationLevel == level;
+      }).toList();
 
-    setState(() {
-      libraryLength += filteredVideos.length ?? 0;
-    });
-    print("Sorted Videos: ${filteredVideos.length}");
-    return filteredVideos;
+      // Sort videos by date (newest first)
+      filteredVideos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      setState(() {
+        videosLength = filteredVideos.length;
+        libraryLength += filteredVideos.length;
+      });
+
+      print("Sorted Videos: ${filteredVideos.length}");
+      return filteredVideos;
+    } catch (error) {
+      print("Error fetching videos: $error");
+      return [];
+    }
   }
 
   @override
@@ -161,12 +174,12 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           GestureDetector(
-            // onTap: () {
-            //   if (sharedPreferences != null) {
-            //     sharedPreferences!.remove('token');
-            //   }
-            //   Get.to(const Login());
-            // },
+            onTap: () {
+              if (sharedPreferences != null) {
+                sharedPreferences!.remove('token');
+              }
+              Get.to(const Login());
+            },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 23),
               child: ClipRRect(
@@ -298,7 +311,9 @@ class _HomeState extends State<Home> {
                                     VideoPlayerScreen(url: video.url),
                               ),
                             ),
-                            isLocked: video.isLocked,
+                            isLocked: !(_videoResponse!.videoPaidContentIds
+                                    .contains(video.id) ||
+                                !video.isLocked),
                           );
                         },
                       ),

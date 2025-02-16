@@ -7,6 +7,7 @@ import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/customBottomNavBar.dart';
 import 'package:le_chef/services/content/media_service.dart';
 
+import '../../Models/video_response.dart';
 import '../../Shared/custom_app_bar.dart';
 import '../../Widgets/SmallCard.dart';
 import '../../main.dart';
@@ -26,6 +27,7 @@ class _AllVidState extends State<AllVid> {
   static int? level = sharedPreferences!.getInt('educationLevel');
   Future<List<Video>>? _VideosFuture;
   List<String> _allDateRanges = [];
+  VideoResponse? _videoResponse; // Store the API response
 
   @override
   void initState() {
@@ -34,21 +36,26 @@ class _AllVidState extends State<AllVid> {
   }
 
   Future<List<Video>> _fetchAndSortVideos() async {
-    final Videos = await MediaService.fetchAllVideos();
+    try {
+      _videoResponse = await MediaService.fetchAllVideosUser();
 
-    final filteredVideos = Videos.where((video) {
-      return video.educationLevel == level;
-    }).toList();
+      // Extract videos and paid video content IDs from API response
+      final List<Video> videos = _videoResponse!.videos;
 
-    filteredVideos.sort((a, b) =>
-        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+      // Filter videos based on user education level
+      final filteredVideos = videos.where((video) {
+        return video.educationLevel == level;
+      }).toList();
 
-    _allDateRanges = filteredVideos
-        .map((video) => _getDateText(video.createdAt))
-        .toSet()
-        .toList();
+      // Sort videos by date (newest first)
+      filteredVideos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    return filteredVideos;
+      print("Sorted Videos: ${filteredVideos.length}");
+      return filteredVideos;
+    } catch (error) {
+      print("Error fetching videos: $error");
+      return [];
+    }
   }
 
   Map<String, List<Video>> _groupVideosByDate(List<Video> videos) {
@@ -88,23 +95,29 @@ class _AllVidState extends State<AllVid> {
   }
 
   Future<List<Video>> _applyDateFilter(List<String> selectedRanges) async {
-    // Fetch all videos
-    final allVideos = await MediaService.fetchAllVideos();
+    try {
+      // Fetch videos using the new API function
+      final videoResponse = await MediaService.fetchAllVideosUser();
 
-    // Apply both filters: education level and date range
-    final filteredVideos = allVideos.where((video) {
-      final videoDateText = _getDateText(video.createdAt);
+      // Extract videos from API response
+      final List<Video> videos = videoResponse.videos;
 
-      // Ensure both conditions are satisfied
-      return video.educationLevel == level &&
-          selectedRanges.contains(videoDateText);
-    }).toList();
+      // Apply filters: education level and date range
+      final filteredVideos = videos.where((video) {
+        final videoDateText = _getDateText(video.createdAt);
 
-    // Sort the filtered videos
-    filteredVideos.sort((a, b) =>
-        DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+        return video.educationLevel == level &&
+            selectedRanges.contains(videoDateText);
+      }).toList();
 
-    return filteredVideos;
+      // Sort filtered videos by date (newest first)
+      filteredVideos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      return filteredVideos;
+    } catch (error) {
+      print("Error applying date filter: $error");
+      return [];
+    }
   }
 
   void _showFilterModal(BuildContext context, List<String> allDates) {
@@ -260,8 +273,7 @@ class _AllVidState extends State<AllVid> {
                     Row(
                       children: [
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
                             dateText,
                             style: const TextStyle(
@@ -332,7 +344,9 @@ class _AllVidState extends State<AllVid> {
                                   VideoPlayerScreen(url: video.url),
                             ),
                           ),
-                          isLocked: video.isLocked,
+                          isLocked: !(_videoResponse!.videoPaidContentIds
+                                  .contains(video.id) ||
+                              !video.isLocked),
                         );
                       },
                     ),

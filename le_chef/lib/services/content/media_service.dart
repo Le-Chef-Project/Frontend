@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import '../../Models/PDF.dart';
 import '../../Models/Video.dart';
+import '../../Models/video_response.dart';
 import '../../main.dart';
 import '../../utils/apiendpoints.dart';
 import '../auth/login_service.dart';
@@ -121,7 +122,7 @@ class MediaService {
     return PDF.itemsFromSnapshot(temp);
   }
 
-  static Future<List<Video>> fetchAllVideos() async {
+  static Future<VideoResponse> fetchAllVideosUser() async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
     http.Response response = await http.get(
@@ -130,13 +131,34 @@ class MediaService {
     );
     var data = jsonDecode(response.body);
 
-    List temp = [];
-    print('apiiii Videos ${data['videos']} ');
-
-    for (var i in data['videos']) {
-      temp.add(i);
+    if (response.statusCode == 200) {
+      print('admin videoooos ${json.decode(response.body)}');
+      return VideoResponse.fromJson(json.decode(response.body));
+    } else {
+      throw Exception("Failed to load videos: ${response.body}");
     }
+  }
 
-    return Video.itemsFromSnapshot(temp);
+  static Future<List<Video>> fetchAllVideosAdmin() async {
+    var url = Uri.parse(
+        ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
+    http.Response response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+    var data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      List temp = [];
+      print('apiiii video ${data['videos']}');
+
+      for (var i in data['videos']) {
+        temp.add(i);
+      }
+
+      return Video.itemsFromSnapshot(temp);
+    } else {
+      throw Exception("Failed to load videos: ${response.body}");
+    }
   }
 }

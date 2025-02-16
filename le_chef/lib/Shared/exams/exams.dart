@@ -32,6 +32,8 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   List<Quiz> _exams = [];
   List<Quiz> _filteredExams = [];
   List _units = [];
+  QuizResponse? _quizResponse; // Store the API response
+
   int? _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
 
   @override
@@ -70,12 +72,24 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
 
   Future<void> getExams() async {
     try {
-      final exams = await QuizService.getAllQuizzes(token!);
+      List<Quiz> _exam = [];
+      if (role == "admin") {
+        _exam = await QuizService.getAllQuizzesAdmin(token!);
+      } else {
+        _quizResponse = await QuizService.getAllQuizzesUser(token!);
+      }
+
       setState(() {
-        _exams = exams;
+        if (role == "admin") {
+          _exams = _exam;
+        } else {
+          _exams = _quizResponse!.quizzes;
+        }
+        _exams = _quizResponse!.quizzes;
         _isLoading = false;
         _filterExams();
       });
+
       print('Total Exams loaded: ${_exams.length}');
     } catch (e) {
       print('Error loading Exams: $e');
@@ -117,10 +131,8 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
           role == 'admin'
               ? totalStudent(context, 'Total Exams', '${_ExamsLength}',
                   buttonText: 'Add Exam', ontap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddExam()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const AddExam()));
                 })
               : Center(
                   child: Image.asset(
@@ -193,7 +205,11 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                           child: customExamListTile(
                             index,
                             context,
-                            exam.isPaid,
+                            role == "admin"
+                                ? false
+                                : !(_quizResponse!.quizPaidContentIds
+                                        .contains(exam.id) ||
+                                    !exam.isPaid),
                             exam,
                           ),
                         ),
@@ -222,8 +238,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const Notifications()),
+                MaterialPageRoute(builder: (context) => const Notifications()),
               );
               break;
             case 2:
