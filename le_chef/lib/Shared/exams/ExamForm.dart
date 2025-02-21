@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:le_chef/services/content/quiz_service.dart';
 import '../../Models/Quiz.dart';
+import '../../Screens/admin/THome.dart';
+import '../../Screens/user/Home.dart';
 import '../../Widgets/quiz_time.dart';
 import '../custom_elevated_button.dart';
 import '../../main.dart';
@@ -115,94 +118,64 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _submitEdit() async {
-    if (role == 'admin') {
-      _updateQuizTime();
-      print('Current questions state:');
-      for (var question in widget.quiz.questions) {
-        print('Question: ${question.questionText}');
-        print('Options: ${question.options}');
-        print('Answer: ${question.answer}');
-        print('hours: ${widget.quiz.duration.inHours}');
-        print('mint: ${widget.quiz.duration.inMinutes}');
-      }
+    if (role != 'admin') return;
 
-      // Prepare the questions with their correct answers
-      List<Map<String, dynamic>> questions = widget.quiz.questions.map((quiz) {
-        return {
-          'question': quiz.questionText,
-          'options': quiz.options,
-          'answer': quiz.answer, // Include the correct answer
-        };
-      }).toList();
+    _updateQuizTime();
+    print('Current questions state:');
+    for (var question in widget.quiz.questions) {
+      print('Question: ${question.questionText}');
+      print('Options: ${question.options}');
+      print('Answer: ${question.answer}');
+      print('hours: ${widget.quiz.duration.inHours}');
+      print('mint: ${widget.quiz.duration.inMinutes}');
+    }
 
-      try {
-        print('Waiting to update quiz...');
-        await QuizService.updateQuiz(
-          id: widget.quiz.id,
-          questions: questions,
-          hours: widget.quiz.duration.inHours,
-          minutes: widget.quiz.duration.inMinutes,
-        );
+    // Prepare the questions with their correct answers
+    List<Map<String, dynamic>> questions = widget.quiz.questions.map((quiz) {
+      return {
+        'question': quiz.questionText,
+        'options': quiz.options,
+        'answer': quiz.answer,
+      };
+    }).toList();
 
-        print('Updated quiz successfully');
+    try {
+      print('Waiting to update quiz...');
+      await QuizService.updateQuiz(
+        id: widget.quiz.id,
+        questions: questions,
+        hours: widget.quiz.duration.inHours,
+        minutes: widget.quiz.duration.inMinutes,
+      );
 
-        if (mounted) {
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: Colors.white,
-                icon: const Icon(
-                  Icons.check_circle_outline,
-                  color: Color(0xFF2ED573),
-                  size: 150,
-                ),
-                title: Text(
-                  'Success!',
-                  style: GoogleFonts.ibmPlexMono(
-                    color: const Color(0xFF164863),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                content: Text(
-                  'Exam Updated Successfully',
-                  style: GoogleFonts.ibmPlexMono(
-                    color: const Color(0xFF888888),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              );
-            },
+      print('Updated quiz successfully');
+
+      // Navigate to appropriate home screen
+      Get.offAll(
+            () => role == 'admin' ? const THome() : const Home(),
+      );
+
+    } catch (e) {
+      print('Error during update: ${e.toString()}');
+
+      // Check if widget is still mounted before showing error dialog
+      if (!mounted) return;
+
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Failed to update quiz: ${e.toString()}'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
           );
-
-          Future.delayed(const Duration(seconds: 1), () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          });
-        }
-      } catch (e) {
-        print('Error during update: ${e.toString()}');
-        // Show error dialog if widget is still mounted
-        if (!mounted) return;
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: Text('Failed to update quiz: ${e.toString()}'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
+        },
+      );
     }
   }
 
@@ -293,6 +266,119 @@ class _QuizPageState extends State<QuizPage> {
     return null;
   }
 
+  Future<bool> _onWillPop() async {
+    if (role == 'admin') {
+      return true; // Allow admin to go back freely
+    }
+
+    // Show the warning dialog
+    final shouldPop = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.zero,
+          title: Image.asset(
+            'assets/error-16_svgrepo.com.jpg',
+            width: 117,
+            height: 117,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Warning!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF164863),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'If you leave the quiz you will not \nbe able to take it again!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ibmPlexMono(
+                  color: const Color(0xFF888888),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, false); // Don't allow back
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF427D9D),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Complete quiz',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 120,
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      final response = QuizService.submitQuiz(
+                          widget.quiz, answers, widget.quiz.id);
+                      setState(() {
+                        isSubmitted = true;
+                      });
+                      Navigator.pop(context, true); // Allow back after submit
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Color(0xFF427D9D)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Leave',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF427D9D),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+
+    return shouldPop ?? false;
+  }
+  
   @override
   void dispose() {
     _timer?.cancel();
@@ -311,534 +397,215 @@ class _QuizPageState extends State<QuizPage> {
 
     int minutes = (_start ~/ 60);
     int seconds = (_start % 60);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Exam Form'),
+    return PopScope(
+      canPop: false, // Disable default back behavior
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          return;
+        }
+
+        final bool shouldPop = await _onWillPop();
+        if (shouldPop && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () {
-            role == 'admin'
-                ? Navigator.pop(context)
-                : showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        contentPadding: EdgeInsets.zero,
-                        title: Image.asset(
-                          'assets/error-16_svgrepo.com.jpg',
-                          width: 117,
-                          height: 117,
-                        ),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Warning!',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ibmPlexMono(
-                                color: const Color(0xFF164863),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                height: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              'If you leave the quiz you will not \nbe able to take it again!',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ibmPlexMono(
-                                color: const Color(0xFF888888),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                height: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
-                        ),
-                        actions: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        appBar: AppBar(
+          title: const Text('Exam Form'),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded),
+            onPressed: () {
+              role == 'admin'
+                  ? Navigator.pop(context)
+                  : showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.white,
+                          contentPadding: EdgeInsets.zero,
+                          title: Image.asset(
+                            'assets/error-16_svgrepo.com.jpg',
+                            width: 117,
+                            height: 117,
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(
-                                width:
-                                    120, // Set a fixed width instead of using Expanded
-                                height: 48,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF427D9D),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Complete quiz',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                              Text(
+                                'Warning!',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF164863),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              SizedBox(
-                                width:
-                                    120, // Set a fixed width instead of using Expanded
-                                height: 48,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    final response = QuizService.submitQuiz(
-                                        widget.quiz, answers, widget.quiz.id);
-                                    setState(() {
-                                      isSubmitted = true;
-                                    });
-                                    Navigator.pop(
-                                        context); // First, pop the dialog
-                                    Navigator.pop(context);
-                                    Navigator.pop(
-                                        context); // Then, pop the page
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(
-                                        color: Color(0xFF427D9D)),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Leave',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.ibmPlexMono(
-                                      color: const Color(0xFF427D9D),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'If you leave the quiz you will not \nbe able to take it again!',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ibmPlexMono(
+                                  color: const Color(0xFF888888),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
                                 ),
                               ),
+                              const SizedBox(height: 20),
                             ],
-                          )
-                        ],
-                      );
-                    },
-                  );
-          },
-        ),
-      ),
-      body: Column(
-        children: [
-          // Timer
-          Container(
-            width: 317,
-            height: 138,
-            padding: const EdgeInsets.all(16),
-            decoration: ShapeDecoration(
-              color: const Color(0xFFFBFAFA),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 106,
-                  height: 106,
-                  padding: const EdgeInsets.only(
-                    top: 5,
-                    left: 5,
-                    right: 4.44,
-                    bottom: 4,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 96.56,
-                        height: 97,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              height: 150,
-                              child: CircularProgressIndicator(
-                                value: _progress,
-                                strokeWidth: 4,
-                                color: const Color.fromRGBO(66, 125, 157, 1),
-                              ),
-                            ),
-                            Container(
-                              width: 85,
-                              height: 85,
-                              decoration: const ShapeDecoration(
-                                gradient: RadialGradient(
-                                  center: Alignment(0, 1),
-                                  radius: 0,
-                                  colors: [
-                                    Color(0xFF427D9D),
-                                    Color(0xFF6A96A3)
-                                  ],
-                                ),
-                                shape: OvalBorder(),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$minutes:${seconds.toString().padLeft(2, '0')}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'IBM Plex Mono',
-                                    fontWeight: FontWeight.w600,
-                                    height: 0,
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      120, // Set a fixed width instead of using Expanded
+                                  height: 48,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF427D9D),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Complete quiz',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
+                                const SizedBox(width: 12),
+                                SizedBox(
+                                  width:
+                                      120, // Set a fixed width instead of using Expanded
+                                  height: 48,
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      final response = QuizService.submitQuiz(
+                                          widget.quiz, answers, widget.quiz.id);
+                                      setState(() {
+                                        isSubmitted = true;
+                                      });
+                                      Navigator.pop(
+                                          context); // First, pop the dialog
+                                      Navigator.pop(context);
+                                      Navigator.pop(
+                                          context); // Then, pop the page
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Color(0xFF427D9D)),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Leave',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        color: const Color(0xFF427D9D),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
-                        ),
-                      ),
-                    ],
-                  ),
+                        );
+                      },
+                    );
+            },
+          ),
+        ),
+        body: Column(
+          children: [
+            // Timer
+            Container(
+              width: 317,
+              height: 138,
+              padding: const EdgeInsets.all(16),
+              decoration: ShapeDecoration(
+                color: const Color(0xFFFBFAFA),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: SizedBox(
-                    height: 102,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 106,
+                    height: 106,
+                    padding: const EdgeInsets.only(
+                      top: 5,
+                      left: 5,
+                      right: 4.44,
+                      bottom: 4,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const VerticalDivider(
-                          color: Color(0xFF888888),
-                          thickness: 1,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        SizedBox(
+                          width: 96.56,
+                          height: 97,
+                          child: Stack(
+                            alignment: Alignment.center,
                             children: [
                               SizedBox(
-                                width: double.infinity,
-                                child: Text(
-                                  role == 'admin'
-                                      ? 'Edit Time'
-                                      : 'Submit answers',
-                                  style: const TextStyle(
-                                    color: Color(0xFF888888),
-                                    fontSize: 14,
-                                    fontFamily: 'IBM Plex Mono',
-                                    fontWeight: FontWeight.w500,
-                                    height: 0,
-                                  ),
+                                width: 150,
+                                height: 150,
+                                child: CircularProgressIndicator(
+                                  value: _progress,
+                                  strokeWidth: 4,
+                                  color: const Color.fromRGBO(66, 125, 157, 1),
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                              CustomElevatedButton(
-                                width: 139,
-                                height: 50,
-                                text: role == 'admin' ? 'Edit' : "Submit",
-                                onPressed: role != 'admin'
-                                    ? _submitAnswers
-                                    : () {
-                                        showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                backgroundColor: Colors.white,
-                                                title: const Center(
-                                                    child: Text(
-                                                        'Select new time')),
-                                                titleTextStyle:
-                                                    GoogleFonts.ibmPlexMono(
-                                                  color:
-                                                      const Color(0xFF164863),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                                content: Container(
-                                                  width: double.infinity,
-                                                  height: 180,
-                                                  padding:
-                                                      const EdgeInsets.all(16),
-                                                  decoration: ShapeDecoration(
-                                                    color:
-                                                        const Color(0xFFFBFAFA),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                    ),
-                                                  ),
-                                                  child: Form(
-                                                    key: _formKey,
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  top: 14.0),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceAround,
-                                                            children: [
-                                                              Text(
-                                                                'Hours',
-                                                                style:
-                                                                    GoogleFonts
-                                                                        .heebo(
-                                                                  color: const Color(
-                                                                      0xFF888888),
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                'Minutes',
-                                                                style:
-                                                                    GoogleFonts
-                                                                        .heebo(
-                                                                  color: const Color(
-                                                                      0xFF888888),
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 15),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            // Hours Input Field
-                                                            Expanded(
-                                                              child:
-                                                                  ScrollableTimeInput(
-                                                                controller:
-                                                                    _hourOneController,
-                                                                validator:
-                                                                    _validateTime,
-                                                                maxValue:
-                                                                    9, // For first minute digit
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 12,
-                                                            ),
-                                                            Expanded(
-                                                              child:
-                                                                  ScrollableTimeInput(
-                                                                controller:
-                                                                    _hourTwoController,
-                                                                validator:
-                                                                    _validateTime,
-                                                                maxValue:
-                                                                    9, // For first minute digit
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        8.0),
-                                                                child: Text(
-                                                                  '-',
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style:
-                                                                      GoogleFonts
-                                                                          .inter(
-                                                                    color: const Color(
-                                                                        0xFFCFD4DC),
-                                                                    fontSize:
-                                                                        60,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        0.02,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            // Minutes Input Field
-                                                            Expanded(
-                                                              child:
-                                                                  ScrollableTimeInput(
-                                                                controller:
-                                                                    _minuteOneController,
-                                                                validator:
-                                                                    _validateTime,
-                                                                maxValue:
-                                                                    5, // For first minute digit
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 12,
-                                                            ),
-                                                            Expanded(
-                                                              child:
-                                                                  ScrollableTimeInput(
-                                                                controller:
-                                                                    _minuteTwoController,
-                                                                validator:
-                                                                    _validateTime,
-                                                                maxValue:
-                                                                    9, // For first minute digit
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                actions: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                                backgroundColor:
-                                                                    const Color(
-                                                                        0xFF427D9D),
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              12),
-                                                                ),
-                                                                minimumSize:
-                                                                    const Size(
-                                                                        double
-                                                                            .minPositive,
-                                                                        48)),
-                                                        child: const Text(
-                                                          'Save Changes',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontFamily:
-                                                                'IBM Plex Mono',
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 12),
-                                                      // Add spacing between buttons
-                                                      OutlinedButton(
-                                                        onPressed: () {
-                                                          _minuteOneController
-                                                              .clear();
-                                                          _minuteTwoController
-                                                              .clear();
-                                                          _hourOneController
-                                                              .clear();
-                                                          _hourTwoController
-                                                              .clear();
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        style: OutlinedButton
-                                                            .styleFrom(
-                                                          side: const BorderSide(
-                                                              color: Color(
-                                                                  0xFF427D9D)),
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            side: const BorderSide(
-                                                                width: 1,
-                                                                color: Color(
-                                                                    0xFF427D9D)),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                          ),
-                                                        ),
-                                                        child: const Text(
-                                                          'Cancel',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFF427D9D),
-                                                            fontSize: 16,
-                                                            fontFamily:
-                                                                'IBM Plex Mono',
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              );
-                                            });
-                                      },
-                                buttonStyle: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF427D9D),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    minimumSize:
-                                        const Size(double.minPositive, 60)),
-                                // buttonStyle:
-                                //     CustomButtonStyles.fillPrimaryTL5,
+                              Container(
+                                width: 85,
+                                height: 85,
+                                decoration: const ShapeDecoration(
+                                  gradient: RadialGradient(
+                                    center: Alignment(0, 1),
+                                    radius: 0,
+                                    colors: [
+                                      Color(0xFF427D9D),
+                                      Color(0xFF6A96A3)
+                                    ],
+                                  ),
+                                  shape: OvalBorder(),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '$minutes:${seconds.toString().padLeft(2, '0')}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: 'IBM Plex Mono',
+                                      fontWeight: FontWeight.w600,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -846,326 +613,659 @@ class _QuizPageState extends State<QuizPage> {
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(
-            height: 20,
-          ),
-          // Question boxes
-          Container(
-            width: 360,
-            height: 160,
-            padding: const EdgeInsets.all(10.0),
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              // Disable scrolling
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 10,
-                childAspectRatio: 1,
-                crossAxisSpacing: 4,
-                mainAxisSpacing: 4,
-              ),
-              itemCount: widget.quiz.questions.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedQuestion = index;
-                    });
-                  },
-                  child: Container(
-                    width: boxSize,
-                    height: boxSize,
-                    decoration: ShapeDecoration(
-                      color: selectedQuestion == index
-                          ? const Color(0xFF427D9D)
-                          : const Color(0xFFF1F2F6),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7)),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                            color: selectedQuestion == index
-                                ? Colors.white
-                                : const Color(0xFF888888),
-                            fontSize: 12),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: SizedBox(
+                      height: 102,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const VerticalDivider(
+                            color: Color(0xFF888888),
+                            thickness: 1,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    role == 'admin'
+                                        ? 'Edit Time'
+                                        : 'Submit answers',
+                                    style: const TextStyle(
+                                      color: Color(0xFF888888),
+                                      fontSize: 14,
+                                      fontFamily: 'IBM Plex Mono',
+                                      fontWeight: FontWeight.w500,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                CustomElevatedButton(
+                                  width: 139,
+                                  height: 50,
+                                  text: role == 'admin' ? 'Edit' : "Submit",
+                                  onPressed: role != 'admin'
+                                      ? _submitAnswers
+                                      : () {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  backgroundColor: Colors.white,
+                                                  title: const Center(
+                                                      child: Text(
+                                                          'Select new time')),
+                                                  titleTextStyle:
+                                                      GoogleFonts.ibmPlexMono(
+                                                    color:
+                                                        const Color(0xFF164863),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  content: Container(
+                                                    width: double.infinity,
+                                                    height: 180,
+                                                    padding:
+                                                        const EdgeInsets.all(16),
+                                                    decoration: ShapeDecoration(
+                                                      color:
+                                                          const Color(0xFFFBFAFA),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                12),
+                                                      ),
+                                                    ),
+                                                    child: Form(
+                                                      key: _formKey,
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 14.0),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceAround,
+                                                              children: [
+                                                                Text(
+                                                                  'Hours',
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .heebo(
+                                                                    color: const Color(
+                                                                        0xFF888888),
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  'Minutes',
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .heebo(
+                                                                    color: const Color(
+                                                                        0xFF888888),
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 15),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              // Hours Input Field
+                                                              Expanded(
+                                                                child:
+                                                                    ScrollableTimeInput(
+                                                                  controller:
+                                                                      _hourOneController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      9, // For first minute digit
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 12,
+                                                              ),
+                                                              Expanded(
+                                                                child:
+                                                                    ScrollableTimeInput(
+                                                                  controller:
+                                                                      _hourTwoController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      9, // For first minute digit
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          8.0),
+                                                                  child: Text(
+                                                                    '-',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style:
+                                                                        GoogleFonts
+                                                                            .inter(
+                                                                      color: const Color(
+                                                                          0xFFCFD4DC),
+                                                                      fontSize:
+                                                                          60,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      height:
+                                                                          0.02,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              // Minutes Input Field
+                                                              Expanded(
+                                                                child:
+                                                                    ScrollableTimeInput(
+                                                                  controller:
+                                                                      _minuteOneController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      5, // For first minute digit
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 12,
+                                                              ),
+                                                              Expanded(
+                                                                child:
+                                                                    ScrollableTimeInput(
+                                                                  controller:
+                                                                      _minuteTwoController,
+                                                                  validator:
+                                                                      _validateTime,
+                                                                  maxValue:
+                                                                      9, // For first minute digit
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  backgroundColor:
+                                                                      const Color(
+                                                                          0xFF427D9D),
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                12),
+                                                                  ),
+                                                                  minimumSize:
+                                                                      const Size(
+                                                                          double
+                                                                              .minPositive,
+                                                                          48)),
+                                                          child: const Text(
+                                                            'Save Changes',
+                                                            textAlign:
+                                                                TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                              fontFamily:
+                                                                  'IBM Plex Mono',
+                                                              fontWeight:
+                                                                  FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 12),
+                                                        // Add spacing between buttons
+                                                        OutlinedButton(
+                                                          onPressed: () {
+                                                            _minuteOneController
+                                                                .clear();
+                                                            _minuteTwoController
+                                                                .clear();
+                                                            _hourOneController
+                                                                .clear();
+                                                            _hourTwoController
+                                                                .clear();
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          style: OutlinedButton
+                                                              .styleFrom(
+                                                            side: const BorderSide(
+                                                                color: Color(
+                                                                    0xFF427D9D)),
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              side: const BorderSide(
+                                                                  width: 1,
+                                                                  color: Color(
+                                                                      0xFF427D9D)),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                            ),
+                                                          ),
+                                                          child: const Text(
+                                                            'Cancel',
+                                                            textAlign:
+                                                                TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFF427D9D),
+                                                              fontSize: 16,
+                                                              fontFamily:
+                                                                  'IBM Plex Mono',
+                                                              fontWeight:
+                                                                  FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                  buttonStyle: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF427D9D),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
+                                      minimumSize:
+                                          const Size(double.minPositive, 60)),
+                                  // buttonStyle:
+                                  //     CustomButtonStyles.fillPrimaryTL5,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Back button
-                Container(
-                  width: 48.28,
-                  height: 46,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFF1F2F6),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4)),
-                  ),
-                  child: IconButton(
-                    onPressed: selectedQuestion > 0
-                        ? () {
-                            setState(() {
-                              selectedQuestion--;
-                              navigateToQuestion(selectedQuestion);
-                            });
-                          }
-                        : null,
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: selectedQuestion > 0
-                          ? const Color(0xFF888888)
-                          : const Color(0xFFCCCCCC), // Disabled color
-                    ),
-                  ),
-                ),
-                // Forward button
-                Container(
-                  width: 48.28,
-                  height: 46,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFF1F2F6),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4)),
-                  ),
-                  child: IconButton(
-                    onPressed:
-                        selectedQuestion < widget.quiz.questions.length - 1
-                            ? () {
-                                setState(() {
-                                  selectedQuestion++;
-                                  navigateToQuestion(selectedQuestion);
-                                });
-                              }
-                            : null,
-                    icon: Icon(
-                      Icons.arrow_forward_ios,
-                      color: selectedQuestion < widget.quiz.questions.length - 1
-                          ? const Color(0xFF888888)
-                          : const Color(0xFFCCCCCC), // Disabled color
-                    ),
-                  ),
-                ),
-              ],
+      
+            const SizedBox(
+              height: 20,
             ),
-          ),
-
-          const SizedBox(
-            height: 10,
-          ),
-          // Question display
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
+            // Question boxes
+            Container(
+              width: 360,
+              height: 160,
+              padding: const EdgeInsets.all(10.0),
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                // Disable scrolling
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 10,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                ),
+                itemCount: widget.quiz.questions.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedQuestion = index;
+                      });
+                    },
                     child: Container(
-                      width: 500,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                      width: boxSize,
+                      height: boxSize,
                       decoration: ShapeDecoration(
-                        color: const Color.fromRGBO(216, 233, 238, 1),
+                        color: selectedQuestion == index
+                            ? const Color(0xFF427D9D)
+                            : const Color(0xFFF1F2F6),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(7)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${index + 1}',
+                          style: TextStyle(
+                              color: selectedQuestion == index
+                                  ? Colors.white
+                                  : const Color(0xFF888888),
+                              fontSize: 12),
                         ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                            children: [
-                              role == 'admin'
-                                  ? Theme(
-                                      data: ThemeData(
-                                        textSelectionTheme:
-                                            const TextSelectionThemeData(
-                                          selectionColor: Color(0xFF164863),
-                                          selectionHandleColor:
-                                              Color(0xFF164863),
-                                        ),
-                                      ),
-                                      child: TextField(
-                                        controller: _questionController,
-                                        maxLines: null,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                        ),
-                                        cursorColor: const Color(0xFF164863),
-                                        style: GoogleFonts.ibmPlexMono(
-                                          color: const Color(0xFF164863),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        onSubmitted: (val) {
-                                          setState(() {
-                                            widget
-                                                .quiz
-                                                .questions[selectedQuestion]
-                                                .questionText = val;
-                                          });
-                                        },
-                                      ),
-                                    )
-                                  : Text(
-                                      widget.quiz.questions[selectedQuestion]
-                                          .questionText,
-                                      style: GoogleFonts.ibmPlexMono(
-                                        color: const Color(0xFF164863),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                              role == 'admin'
-                                  ? Positioned(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.1,
-                                      bottom: -35,
-                                      right: 2,
-                                      child: Image.asset(
-                                        'assets/solar_pen-outline.png',
-                                        color: Colors.black,
-                                      ),
-                                    )
-                                  : const SizedBox.shrink()
-                            ],
+                    ),
+                  );
+                },
+              ),
+            ),
+      
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Back button
+                  Container(
+                    width: 48.28,
+                    height: 46,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFF1F2F6),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                    ),
+                    child: IconButton(
+                      onPressed: selectedQuestion > 0
+                          ? () {
+                              setState(() {
+                                selectedQuestion--;
+                                navigateToQuestion(selectedQuestion);
+                              });
+                            }
+                          : null,
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: selectedQuestion > 0
+                            ? const Color(0xFF888888)
+                            : const Color(0xFFCCCCCC), // Disabled color
+                      ),
+                    ),
+                  ),
+                  // Forward button
+                  Container(
+                    width: 48.28,
+                    height: 46,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFF1F2F6),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                    ),
+                    child: IconButton(
+                      onPressed:
+                          selectedQuestion < widget.quiz.questions.length - 1
+                              ? () {
+                                  setState(() {
+                                    selectedQuestion++;
+                                    navigateToQuestion(selectedQuestion);
+                                  });
+                                }
+                              : null,
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        color: selectedQuestion < widget.quiz.questions.length - 1
+                            ? const Color(0xFF888888)
+                            : const Color(0xFFCCCCCC), // Disabled color
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      
+            const SizedBox(
+              height: 10,
+            ),
+            // Question display
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Container(
+                        width: 500,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: ShapeDecoration(
+                          color: const Color.fromRGBO(216, 233, 238, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          const SizedBox(height: 12.0),
-                          ...widget.quiz.questions[selectedQuestion].options
-                              .asMap()
-                              .entries
-                              .map((entry) {
-                            int answerIndex = entry.key;
-                            String answerText = entry.value;
-
-                            bool isCorrectAnswer =
-                                answerText == widget.quiz.questions[selectedQuestion].answer;
-
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color:  isCorrectAnswer
-                                      ? Colors.green
-                                      : Colors.white,
-                                ),
-                                child: ListTile(
-                                  title: role == 'admin'
-                                      ? Theme(
-                                          data: ThemeData(
-                                            textSelectionTheme:
-                                                const TextSelectionThemeData(
-                                              selectionColor: Color(0xFF164863),
-                                              selectionHandleColor:
-                                                  Color(0xFF164863),
-                                            ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                role == 'admin'
+                                    ? Theme(
+                                        data: ThemeData(
+                                          textSelectionTheme:
+                                              const TextSelectionThemeData(
+                                            selectionColor: Color(0xFF164863),
+                                            selectionHandleColor:
+                                                Color(0xFF164863),
                                           ),
-                                          child: TextField(
-                                            controller:
-                                                _answerControllers[answerIndex],
-                                            cursorColor:
-                                                const Color(0xFF164863),
-                                            maxLines: null,
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                            ),
-                                            style: GoogleFonts.ibmPlexMono(
-                                              color: const Color(0xFF164863),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            onSubmitted: (val) {
-                                              widget
-                                                  .quiz
-                                                  .questions[selectedQuestion]
-                                                  .options[answerIndex] = val;
-                                            },
+                                        ),
+                                        child: TextField(
+                                          controller: _questionController,
+                                          maxLines: null,
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
                                           ),
-                                        )
-                                      : Text(
-                                          answerText,
+                                          cursorColor: const Color(0xFF164863),
                                           style: GoogleFonts.ibmPlexMono(
                                             color: const Color(0xFF164863),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                           ),
+                                          onSubmitted: (val) {
+                                            setState(() {
+                                              widget
+                                                  .quiz
+                                                  .questions[selectedQuestion]
+                                                  .questionText = val;
+                                            });
+                                          },
                                         ),
-                                  leading: Radio<int?>(
-                                    value: answerIndex,
-                                    groupValue:
-                                        _selectedAnswers[selectedQuestion],
-                                    onChanged: (int? value) {
-                                      setState(() {
-                                        _selectedAnswers[selectedQuestion] =
-                                            value;
-                                      });
-                                    },
+                                      )
+                                    : Text(
+                                        widget.quiz.questions[selectedQuestion]
+                                            .questionText,
+                                        style: GoogleFonts.ibmPlexMono(
+                                          color: const Color(0xFF164863),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                role == 'admin'
+                                    ? Positioned(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.1,
+                                        bottom: -35,
+                                        right: 2,
+                                        child: Image.asset(
+                                          'assets/solar_pen-outline.png',
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    : const SizedBox.shrink()
+                              ],
+                            ),
+                            const SizedBox(height: 12.0),
+                            ...widget.quiz.questions[selectedQuestion].options
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              int answerIndex = entry.key;
+                              String answerText = entry.value;
+      
+                              bool isCorrectAnswer =
+                                  answerText == widget.quiz.questions[selectedQuestion].answer;
+      
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color:  isCorrectAnswer && role == 'admin'
+                                        ? Colors.green
+                                        : Colors.white,
+                                  ),
+                                  child: ListTile(
+                                    title: role == 'admin'
+                                        ? Theme(
+                                            data: ThemeData(
+                                              textSelectionTheme:
+                                                  const TextSelectionThemeData(
+                                                selectionColor: Color(0xFF164863),
+                                                selectionHandleColor:
+                                                    Color(0xFF164863),
+                                              ),
+                                            ),
+                                            child: TextField(
+                                              controller:
+                                                  _answerControllers[answerIndex],
+                                              cursorColor:
+                                                  const Color(0xFF164863),
+                                              maxLines: null,
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                              ),
+                                              style: GoogleFonts.ibmPlexMono(
+                                                color: const Color(0xFF164863),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              onSubmitted: (val) {
+                                                widget
+                                                    .quiz
+                                                    .questions[selectedQuestion]
+                                                    .options[answerIndex] = val;
+                                              },
+                                            ),
+                                          )
+                                        : Text(
+                                            answerText,
+                                            style: GoogleFonts.ibmPlexMono(
+                                              color: const Color(0xFF164863),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                    leading: Radio<int?>(
+                                      value: answerIndex,
+                                      groupValue:
+                                          _selectedAnswers[selectedQuestion],
+                                      onChanged: (int? value) {
+                                        setState(() {
+                                          _selectedAnswers[selectedQuestion] =
+                                              value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
+                      ),
+                    ),
+                    role == 'admin'
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 18.0, vertical: 5),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _submitEdit();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF427D9D),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12))),
+                                child: Text(
+                                  'Submit',
+                                  style: GoogleFonts.ibmPlexMono(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
-                            );
-                          }).toList(),
-                        ],
-                      ),
-                    ),
-                  ),
-                  role == 'admin'
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18.0, vertical: 5),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _submitEdit();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF427D9D),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12))),
-                              child: Text(
-                                'Submit',
-                                style: GoogleFonts.ibmPlexMono(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
                             ),
-                          ),
-                        )
-                      : const SizedBox.shrink()
-                ],
+                          )
+                        : const SizedBox.shrink()
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

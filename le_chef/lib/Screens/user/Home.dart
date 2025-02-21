@@ -21,6 +21,7 @@ import '../Notes.dart';
 import '../admin/THome.dart';
 import '../admin/library.dart';
 import '../admin/payment_request.dart';
+import '../admin/studentProfile.dart';
 import '../admin/viewVideo.dart';
 import '../notification.dart';
 import 'seeAllVid.dart';
@@ -64,6 +65,7 @@ class _HomeState extends State<Home> {
       });
     });
   }
+
 
   Future<void> _loadSharedPreferences() async {
     setState(() {
@@ -163,13 +165,22 @@ class _HomeState extends State<Home> {
         surfaceTintColor: Colors.white,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(
-              logged_img ??
-                  'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
+          child: GestureDetector(
+            onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfilePage(
+                            isStudent: true, )));
+            },
+            child: CircleAvatar(
+              radius: 30,
+              backgroundImage: NetworkImage(
+                logged_img ??
+                    'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
+              ),
+              backgroundColor: Colors.white,
             ),
-            backgroundColor: Colors.white,
           ),
         ),
         actions: [

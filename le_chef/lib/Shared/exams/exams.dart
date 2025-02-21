@@ -28,21 +28,45 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   late TabController _tabController;
   int selectedUnit = 1;
   String? role = sharedPreferences!.getString('role');
+  bool _isLoadingExams = true;
+  bool _isLoadingFilteredExams = true;
   bool _isLoading = true;
   List<Quiz> _exams = [];
   List<Quiz> _filteredExams = [];
   List _units = [];
   QuizResponse? _quizResponse; // Store the API response
 
-  int? _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
+  final int _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _units.length, vsync: this);
-    _tabController.addListener(_handleTabChange);
-    getUnits();
-    getExams();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    try {
+      // First load units
+      await getUnits();
+      // Then load exams
+      await getExams();
+      // Initialize tab controller after data is loaded
+      _tabController = TabController(length: _units.length, vsync: this);
+      _tabController.addListener(_handleTabChange);
+      // Initial filtering
+      _filterExams();
+
+      setState(() {
+        _isLoading = false;
+        _isLoadingExams = false;
+      });
+    } catch (e) {
+      print('Error initializing data: $e');
+      setState(() {
+        _isLoading = false;
+        _isLoadingExams = false;
+      });
+    }
   }
 
   void _handleTabChange() {
@@ -55,47 +79,30 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   }
 
   void _filterExams() {
+    if (_exams.isEmpty) return;
+
     setState(() {
-      print('Calling filter func');
       _filteredExams = _exams
           .where((quiz) =>
-              quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
+      quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
           .toList();
       print('Filtered Exams for unit $selectedUnit: ${_filteredExams.length}');
-
-      for (var exam in _filteredExams) {
-        print(
-            'Exam: ${exam.title}, Unit: ${exam.unit}, Questions: ${exam.questions.length}, duration: ${exam.duration.toString()}');
-      }
     });
   }
 
   Future<void> getExams() async {
     try {
-      List<Quiz> _exam = [];
       if (role == "admin") {
-        _exam = await QuizService.getAllQuizzesAdmin(token!);
+        _exams = await QuizService.getAllQuizzesAdmin(token!);
       } else {
         _quizResponse = await QuizService.getAllQuizzesUser(token!);
-      }
-
-      setState(() {
-        if (role == "admin") {
-          _exams = _exam;
-        } else {
-          _exams = _quizResponse!.quizzes;
-        }
         _exams = _quizResponse!.quizzes;
-        _isLoading = false;
-        _filterExams();
-      });
+      }
 
       print('Total Exams loaded: ${_exams.length}');
     } catch (e) {
       print('Error loading Exams: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      rethrow;
     }
   }
 
@@ -104,17 +111,11 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
       final units = await QuizService.getExamUnits();
       setState(() {
         _units = units;
-        _isLoading = false;
-        _tabController = TabController(length: _units.length, vsync: this);
-        _tabController.addListener(_handleTabChange);
-        _filterExams();
       });
       print('Total units loaded: ${_units.length}');
     } catch (e) {
       print('Error loading units: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      rethrow;
     }
   }
 
@@ -125,7 +126,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Exams'),
       backgroundColor: Colors.white,
-      body: Column(
+      body: _isLoading || _isLoadingExams ? Center(child: CircularProgressIndicator()) : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           role == 'admin'
@@ -168,7 +169,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
                     _units.length,
                     (index) => Tab(
                       child: Text(
-                        'Unit ${index + 1}',
+                        _units[index],
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
