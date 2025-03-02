@@ -31,6 +31,21 @@ class SharedPrefes {
     prefs.setString('img', img);
   }
 
+  static Future savePassword(String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('password', password);
+  }
+
+  static Future savePhone(String phone) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('phone', phone);
+  }
+
+  static Future saveEmail(String email) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('email', email);
+  }
+
   static Future saveNotesLength(int NotesLength) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('NotesLength', NotesLength);

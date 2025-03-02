@@ -85,6 +85,10 @@ class LoginService {
         json['image']?['url'] ??
             'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg',
       );
+      await SharedPrefes.savePassword(json['password']);
+      await SharedPrefes.saveEmail(json['email']);
+      await SharedPrefes.savePhone(json['phone']);
+      await SharedPrefes.Savelevel(json['educationLevel']);
     } catch (e) {
       print('Error saving user data: $e');
       _showErrorDialog('Failed to save user data. Please try again.');

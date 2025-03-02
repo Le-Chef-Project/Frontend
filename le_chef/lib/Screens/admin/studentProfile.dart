@@ -29,6 +29,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool _isObscure = true;
   File? img;
+  String? role = sharedPreferences?.getString('role');
+  bool _isEditable = false;
 
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
@@ -42,6 +44,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    // Check if user is admin to determine if fields are editable
+    _isEditable = role == 'admin';
 
     if (widget.isStudent) {
       _usernameController =
@@ -77,6 +81,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> editProfile() async {
+    // Only proceed if user is admin
+    if (!_isEditable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You do not have permission to edit profiles'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -164,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               GestureDetector(
-                onTap: () async {
+                onTap: _isEditable ? () async {
                   final pickedImage = await ImagePicker()
                       .pickImage(source: ImageSource.gallery);
 
@@ -173,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       img = File(pickedImage.path);
                     });
                   }
-                },
+                } : null,
                 child: CircleAvatar(
                   radius: 40,
                   backgroundImage: widget.isStudent
@@ -220,32 +235,35 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 16),
               buildDividerWithText("Personal info"),
               const SizedBox(height: 8),
-              _textfield('Username', _usernameController, Icons.person, false),
-              _buildPasswordField('Password', _passwordController, Icons.lock),
-              _textfield('Email', _emailController, Icons.email, false),
-              _textfield('Phone number', _phoneController, Icons.phone, true),
+              _textfield('Username', _usernameController, Icons.person, _isEditable),
+              _buildPasswordField('Password', _passwordController, Icons.lock, _isEditable),
+              _textfield('Email', _emailController, Icons.email, _isEditable),
+              _textfield('Phone number', _phoneController, Icons.phone, _isEditable),
               if (widget.isStudent)
                 _textfield('Academic Stage', _educationLevelController,
-                    Icons.school, true),
+                    Icons.school, _isEditable),
               const SizedBox(height: 50),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF427D9D),
-                      minimumSize: const Size(140.50, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+              Visibility(
+                visible: _isEditable,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF427D9D),
+                        minimumSize: const Size(140.50, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    onPressed: _isLoading ? null : editProfile,
-                    child: _isLoading
-                        ? Text('Saving...',
-                            style: GoogleFonts.ibmPlexMono(color: Colors.white))
-                        : Text(
-                            'Save Changes',
-                            style: GoogleFonts.ibmPlexMono(color: Colors.white),
-                          )),
+                      onPressed: _isLoading ? null : editProfile,
+                      child: _isLoading
+                          ? Text('Saving...',
+                          style: GoogleFonts.ibmPlexMono(color: Colors.white))
+                          : Text(
+                        'Save Changes',
+                        style: GoogleFonts.ibmPlexMono(color: Colors.white),
+                      )),
+                ),
               ),
               const SizedBox(height: 20),
             ],
@@ -256,7 +274,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _textfield(String label, TextEditingController controller,
-      IconData icon, bool enable) {
+      IconData icon, bool enabled) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: Column(
@@ -276,7 +294,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 8),
           TextFormField(
-            enabled: widget.isStudent || enable,
+            enabled: enabled,
             controller: controller,
             decoration: textInputDecoration.copyWith(
               hintText: label,
@@ -296,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildPasswordField(
-      String label, TextEditingController controller, IconData icon) {
+      String label, TextEditingController controller, IconData icon, bool enabled) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: Column(
@@ -317,15 +335,15 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 8),
           TextFormField(
             controller: controller,
-            obscureText: _isObscure,
-            enabled: widget.student?.ID == _userId,
+            obscureText: _isEditable && _isObscure,
+            enabled: enabled,
             decoration: textInputDecoration.copyWith(
               hintText: label,
               prefixIcon: Icon(
                 icon,
                 color: const Color(0xFF164863),
               ),
-              suffixIcon: IconButton(
+              suffixIcon: _isEditable ? IconButton(
                 icon: Icon(
                   _isObscure ? Icons.visibility_off : Icons.visibility,
                 ),
@@ -334,7 +352,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     _isObscure = !_isObscure;
                   });
                 },
-              ),
+              ) : null,
               border: InputBorder.none,
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,

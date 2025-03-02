@@ -8,9 +8,11 @@ import 'package:le_chef/Widgets/SmallCard.dart';
 import 'package:le_chef/services/content/media_service.dart';
 import 'package:le_chef/services/content/note_service.dart';
 import 'package:le_chef/services/content/quiz_service.dart';
+import 'package:le_chef/services/profile/profile_service.dart';
 import '../../Models/Notes.dart';
 import '../../Models/PDF.dart';
 import '../../Models/Quiz.dart';
+import '../../Models/Student.dart';
 import '../../Models/Video.dart';
 import '../../Models/video_response.dart';
 import '../../Shared/customBottomNavBar.dart';
@@ -37,7 +39,10 @@ class _HomeState extends State<Home> {
   final int _selectedIndex = 0; // Initial index for Chats screen
   int? level;
   String? userName;
+  String? password;
+  String? email;
   String? rolee;
+  String? phone;
   String? logged_img;
   List<Quiz>? _exams;
   bool _isLoading_Exams = true;
@@ -51,6 +56,8 @@ class _HomeState extends State<Home> {
   QuizResponse? _quizResponse; // Store the API response
 
   Future<List<Video>>? _videosFuture;
+  Student? currentStudent;
+
 
   @override
   void initState() {
@@ -66,7 +73,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-
   Future<void> _loadSharedPreferences() async {
     setState(() {
       token = sharedPreferences!.getString('token');
@@ -74,12 +80,19 @@ class _HomeState extends State<Home> {
       userName = sharedPreferences?.getString('userName');
       rolee = sharedPreferences?.getString('role');
       logged_img = sharedPreferences?.getString('img');
+      password = sharedPreferences?.getString('password');
+      email = sharedPreferences?.getString('email');
+      phone = sharedPreferences?.getString('phone');
 
+      currentStudent = Student(username: userName!, Lastname: '', firstname: '', email: email!, phone: phone!, password: password!, educationLevel: level!, imageUrl: logged_img, ID: '');
       print('Token Home: $token');
       print('Token level: $level');
       print('Token userName: $userName');
       print('Token rolee: $rolee');
       print('Token logged_img: $logged_img');
+      print('Token password: $password');
+      print('Token email: $email');
+      print('Token phone: $phone');
     });
   }
 
@@ -171,7 +184,9 @@ class _HomeState extends State<Home> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProfilePage(
-                            isStudent: true, )));
+                            isStudent: true,
+                          student: currentStudent,
+                        )));
             },
             child: CircleAvatar(
               radius: 30,
