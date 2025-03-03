@@ -7,11 +7,77 @@ import 'package:le_chef/Screens/admin/THome.dart';
 import 'package:le_chef/Shared/splash_one.dart';
 import 'package:no_screenshot/no_screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async';
 
 SharedPreferences? sharedPreferences;
 String? token;
 String? role;
 final _noScreenshot = NoScreenshot.instance;
+
+class ConnectivityController extends GetxController {
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _subscription;
+  final RxBool isConnected = true.obs;
+  bool isDialogOpen = false;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initConnectivity();
+    _subscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  @override
+  void onClose() {
+    _subscription.cancel();
+    super.onClose();
+  }
+
+  Future<void> _initConnectivity() async {
+    ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+      _updateConnectionStatus(result);
+    } catch (e) {
+      debugPrint('Could not get connectivity status: $e');
+    }
+  }
+
+  void _updateConnectionStatus(ConnectivityResult result) {
+    bool wasConnected = isConnected.value;
+    isConnected.value = (result != ConnectivityResult.none);
+
+    if (wasConnected && !isConnected.value) {
+      _showConnectionLostDialog();
+    }
+    else if (!wasConnected && isConnected.value && isDialogOpen) {
+      Get.back();
+      isDialogOpen = false;
+    }
+  }
+
+  void _showConnectionLostDialog() {
+    if (!isDialogOpen) {
+      isDialogOpen = true;
+      Get.dialog(
+        WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: const Text('Connection Lost'),
+            content: const Text('Your internet connection appears to be offline. Please check your connection.'),
+            // No buttons as requested
+          ),
+        ),
+        barrierDismissible: false,
+      );
+    }
+  }
+
+  Future<void> checkConnection() async {
+    await _initConnectivity();
+  }
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +92,9 @@ Future<void> main() async {
 
   print('Token from main: $token');
   print('Role from main: $role');
+
+  // Initialize the connectivity controller
+  Get.put(ConnectivityController(), permanent: true);
 
   runApp(const MyApp());
 }
