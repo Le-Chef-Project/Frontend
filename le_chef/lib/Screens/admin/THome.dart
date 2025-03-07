@@ -131,7 +131,7 @@ class _THomeState extends State<THome> with SingleTickerProviderStateMixin {
   Future<void> getLibrary() async {
     try {
       // Fetch PDFs
-      _pdfs = await MediaService.fetchAllPDFs(token!);
+      _pdfs = await MediaService.fetchAllPDFsAdmin();
       print('PDF length: ${_pdfs?.length}');
 
       setState(() {

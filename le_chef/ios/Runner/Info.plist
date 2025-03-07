@@ -66,4 +66,19 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to the microphone for video calls.</string>
 </dict>
+    <!-- Required for internet connectivity checks -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+    <!-- Required for checking network state -->
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+
+    <!-- Required for Location-based network services -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location to determine network conditions.</string>
+
 </plist>

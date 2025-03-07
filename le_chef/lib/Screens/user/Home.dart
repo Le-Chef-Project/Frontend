@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:le_chef/Models/PDF_response.dart';
 import 'package:le_chef/Screens/chats/chats.dart';
 import 'package:le_chef/Shared/exams/exams.dart';
 import 'package:le_chef/Shared/login.dart';
@@ -50,9 +51,12 @@ class _HomeState extends State<Home> {
   bool _isLoading_notes = true;
   List<PDF>? _pdfs;
   bool _isLoading_pdfs = true;
+  List<String>? quizIds;
+  bool _isLoading_submittrdquiz = true;
   int libraryLength = 0;
   int videosLength = 0;
   VideoResponse? _videoResponse; // Store the API response
+  PDFResponse? _pdfResponse; // Store the API response
   QuizResponse? _quizResponse; // Store the API response
 
   Future<List<Video>>? _videosFuture;
@@ -72,6 +76,7 @@ class _HomeState extends State<Home> {
       });
     });
   }
+
 
   Future<void> _loadSharedPreferences() async {
     setState(() {
@@ -103,10 +108,25 @@ class _HomeState extends State<Home> {
         getexams(),
         getnotes(),
         getexams(),
+        fetchsubmittedQuizzes(),
       ]);
       print('All data initialized successfully');
     } catch (e) {
       print('Error initializing data: $e');
+    }
+  }
+
+  Future<void> fetchsubmittedQuizzes() async {
+    try {
+      // Fetch submitted quiz IDs
+      quizIds = await QuizService.getSubmittedQuizIds();
+      print('Fetched Quiz IDs: $quizIds');
+      setState(() {
+        _isLoading_submittrdquiz = false;
+        libraryLength += quizIds?.length ?? 0;
+      });
+    } catch (e) {
+      print('Error fetching quizzes: $e');
     }
   }
 
@@ -122,10 +142,12 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getpdf() async {
-    _pdfs = await MediaService.fetchAllPDFs(token!);
-    print('apiii $_pdfs + ${_pdfs?.length}');
+    _pdfResponse = await MediaService.fetchAllPDFsUser();
+    // Extract videos and paid video content IDs from API response
+    List<PDF> _pdfs = _pdfResponse!.pdfs;
+    print('apiii $_pdfs + ${_pdfs.length}');
 
-    _pdfs = _pdfs?.where((pdf) => pdf.educationLevel == level).toList();
+    _pdfs = _pdfs.where((pdf) => pdf.educationLevel == level).toList();
     setState(() {
       _isLoading_pdfs = false;
       libraryLength += _pdfs!.length ?? 0;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:le_chef/Models/PDF_response.dart';
 import 'package:le_chef/Widgets/SmallCard.dart';
 import 'package:le_chef/services/content/media_service.dart';
 import '../../Models/PDF.dart';
@@ -20,6 +21,7 @@ class AllPDFs extends StatefulWidget {
 class _AllPDFsState extends State<AllPDFs> {
   Future<List<PDF>>? pdfs;
   List<String> _allDateRanges = [];
+  PDFResponse? _PdfResponse; // Store the API response
 
   @override
   void initState() {
@@ -29,9 +31,17 @@ class _AllPDFsState extends State<AllPDFs> {
 
   // Fetch and filter PDFs based on selected level
   Future<List<PDF>> _fetchAndFilterPDFs() async {
-    final _pdfs = await MediaService.fetchAllPDFs(token!);
+    List<PDF> pdfs = []; // Declare videos outside of if-else
 
-    final _filteredPDFs = _pdfs.where((pdf) {
+    // Fetch videos based on role
+    if (role != null && role == "admin") {
+      pdfs = await MediaService.fetchAllPDFsAdmin();
+    } else {
+      _PdfResponse = await MediaService.fetchAllPDFsUser();
+      pdfs = _PdfResponse!.pdfs;
+    }
+
+    final _filteredPDFs = pdfs.where((pdf) {
       return pdf.educationLevel == widget.selectedLevel;
     }).toList();
 
@@ -83,11 +93,18 @@ class _AllPDFsState extends State<AllPDFs> {
   }
 
   Future<List<PDF>> _applyDateFilter(List<String> selectedRanges) async {
-    // Fetch all PDFs
-    final allPDFs = await MediaService.fetchAllPDFs(token!);
+    List<PDF> pdfs = []; // Declare videos outside of if-else
+
+    // Fetch videos based on role
+    if (role != null && role == "admin") {
+      pdfs = await MediaService.fetchAllPDFsAdmin();
+    } else {
+      _PdfResponse = await MediaService.fetchAllPDFsUser();
+      pdfs = _PdfResponse!.pdfs;
+    }
 
     // Apply both filters: education level and date range
-    final filteredPDFs = allPDFs.where((pdf) {
+    final filteredPDFs = pdfs.where((pdf) {
       final pdfDateText = _getDateText(pdf.createdAt);
 
       // Ensure both conditions are satisfied
@@ -254,8 +271,7 @@ class _AllPDFsState extends State<AllPDFs> {
                     Row(
                       children: [
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
                             dateText,
                             style: const TextStyle(
@@ -315,7 +331,7 @@ class _AllPDFsState extends State<AllPDFs> {
                         final pdf = pdfs[index];
                         return Smallcard(
                           id: pdf.id,
-                          type: 'PDF',
+                          type: 'Pdf',
                           Title: pdf.title,
                           imageurl: 'assets/pdf.jpg',
                           description: pdf.description,
@@ -327,7 +343,10 @@ class _AllPDFsState extends State<AllPDFs> {
                               ),
                             ),
                           ),
-                          isLocked: false,
+                          isLocked: role == "admin"
+                              ? false
+                              : !(_PdfResponse!.paidPdfIds.contains(pdf.id) ||
+                                  !pdf.isLocked),
                         );
                       },
                     ),

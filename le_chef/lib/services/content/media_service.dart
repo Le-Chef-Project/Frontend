@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import '../../Models/PDF.dart';
+import '../../Models/PDF_response.dart';
 import '../../Models/Video.dart';
 import '../../Models/video_response.dart';
 import '../../main.dart';
@@ -95,6 +96,7 @@ class MediaService {
       if (response.statusCode == 201) {
         return 'success';
       } else {
+        print('apiiii upload PDF' + '${response.body}');
         return 'failed';
       }
     } catch (e) {
@@ -103,7 +105,7 @@ class MediaService {
     }
   }
 
-  static Future<List<PDF>> fetchAllPDFs(String token) async {
+  static Future<List<PDF>> fetchAllPDFsAdmin() async {
     var url =
         Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allPDFs);
     http.Response response = await http.get(
@@ -122,6 +124,23 @@ class MediaService {
     return PDF.itemsFromSnapshot(temp);
   }
 
+  static Future<PDFResponse> fetchAllPDFsUser() async {
+    var url =
+        Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.allPDFs);
+    http.Response response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json', 'token': token!},
+    );
+
+    if (response.statusCode == 200) {
+      print('User PDFssss ${json.decode(response.body)}');
+      return PDFResponse.fromJson(json.decode(response.body));
+    } else {
+      throw Exception("Failed to load videos: ${response.body}");
+    }
+  }
+
+
   static Future<VideoResponse> fetchAllVideosUser() async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.content.uploadVideo);
@@ -129,10 +148,9 @@ class MediaService {
       url,
       headers: {'Content-Type': 'application/json', 'token': token!},
     );
-    var data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      print('admin videoooos ${json.decode(response.body)}');
+      print('User videoooos ${json.decode(response.body)}');
       return VideoResponse.fromJson(json.decode(response.body));
     } else {
       throw Exception("Failed to load videos: ${response.body}");
