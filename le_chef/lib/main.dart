@@ -17,7 +17,7 @@ final _noScreenshot = NoScreenshot.instance;
 
 class ConnectivityController extends GetxController {
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _subscription;
+  late StreamSubscription<List<ConnectivityResult>> _subscription;
   final RxBool isConnected = true.obs;
   bool isDialogOpen = false;
 
@@ -35,7 +35,7 @@ class ConnectivityController extends GetxController {
   }
 
   Future<void> _initConnectivity() async {
-    ConnectivityResult result;
+    List<ConnectivityResult> result;
     try {
       result = await _connectivity.checkConnectivity();
       _updateConnectionStatus(result);
@@ -44,9 +44,9 @@ class ConnectivityController extends GetxController {
     }
   }
 
-  void _updateConnectionStatus(ConnectivityResult result) {
+  void _updateConnectionStatus(List<ConnectivityResult> results) {
     bool wasConnected = isConnected.value;
-    isConnected.value = (result != ConnectivityResult.none);
+    isConnected.value = results.any((result) => result != ConnectivityResult.none);
 
     if (wasConnected && !isConnected.value) {
       _showConnectionLostDialog();
