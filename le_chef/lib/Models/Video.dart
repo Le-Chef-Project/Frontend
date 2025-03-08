@@ -7,10 +7,12 @@ class Video {
   final bool paid;
   final int educationLevel;
   final int amountToPay;
-  final String createdAt; // Ensure this is defined
+  final String createdAt;
+  final String thumbnail; // Ensure this is defined
 
   Video({
     required this.id,
+    required this.thumbnail,
     required this.description,
     required this.title,
     required this.url,
@@ -23,6 +25,8 @@ class Video {
 
   factory Video.fromjson(Map<String, dynamic> json) {
     return Video(
+      thumbnail: json['thumbnail'] ??
+          'https://media.gettyimages.com/id/1754241080/video/book-stack-education-with-learning-and-laptop-in-library-or-classroom-to-study-for-knowledge.jpg?s=640x640&k=20&c=Qtrfax72OFeXoglGlGr1rSmZUCdCkpgtCilcOM7Vq9U=',
       id: json['_id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
@@ -50,6 +54,7 @@ class Video {
       "educationLevel": educationLevel,
       "url": url,
       "createdAt": createdAt,
+      'thumbnail': thumbnail,
     };
   }
 }

@@ -65,4 +65,7 @@ flutter {
 }
 
 dependencies {
+    // Add any additional dependencies here if needed.
+    // Example:
+    // implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

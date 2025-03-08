@@ -18,6 +18,7 @@ class MediaService {
     required File videoFile,
     required String title,
     required String description,
+    required File thumbnailFile,
     double? amountToPay,
     required bool paid,
     required int educationLevel,
@@ -37,6 +38,13 @@ class MediaService {
     if (paid && amountToPay != null) {
       request.fields['amountToPay'] = amountToPay.toString();
     }
+    // Add thumbnail file
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'thumbnail',
+        thumbnailFile.path,
+      ),
+    );
 
     // Add the video file to the request
     request.files
@@ -117,7 +125,7 @@ class MediaService {
     List temp = [];
     print('apiiii PDFs $data');
 
-    for (var i in data) {
+    for (var i in data['pdfs']) {
       temp.add(i);
     }
 
@@ -139,7 +147,6 @@ class MediaService {
       throw Exception("Failed to load videos: ${response.body}");
     }
   }
-
 
   static Future<VideoResponse> fetchAllVideosUser() async {
     var url = Uri.parse(

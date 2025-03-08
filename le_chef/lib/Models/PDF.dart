@@ -21,7 +21,7 @@ class PDF {
     required this.createdAt, // Ensure this is defined
   });
 
-  factory PDF.fromjson(dynamic json) {
+  factory PDF.fromjson(Map<String, dynamic> json) {
     return PDF(
       id: json['_id'] as String? ?? '',
       title: json['title'] as String? ?? '',

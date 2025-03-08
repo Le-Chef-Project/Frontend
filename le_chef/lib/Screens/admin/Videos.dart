@@ -340,11 +340,12 @@ class _VideoListScreenState extends State<VideoListScreen> {
                       itemBuilder: (context, index) {
                         final video = videos[index];
                         return Smallcard(
+                          amountToPay:video.amountToPay ,
                           id: video.id,
                           type: 'Video',
                           Title: video.title,
                           description: video.description,
-                          imageurl: 'assets/desk_book_apple.jpeg',
+                          imageurl: video.thumbnail,
                           ontap: () => Navigator.push(
                             context,
                             MaterialPageRoute(

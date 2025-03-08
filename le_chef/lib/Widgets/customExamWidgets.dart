@@ -29,9 +29,13 @@ Widget customExamContainer(string, type) {
 }
 
 Widget customExamListTile(
-    int index, BuildContext context, bool isLocked, Quiz exam) {
+    int index, BuildContext context, bool isLocked, Quiz exam,
+    [List<String> quizIds = const []]) {
   print('Exam from custom tile $exam');
   print('Exam from custom tile ${exam.title}');
+
+  // Check if quizIds is not empty or null and if exam.id is in quizIds
+  bool isSubmitted = quizIds.isNotEmpty && quizIds.contains(exam.id);
 
   return ListTile(
     title: Text(
@@ -175,33 +179,49 @@ Widget customExamListTile(
             icon: const Icon(
               Icons.more_horiz,
             ))
-        : Column(
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
+        : isSubmitted
+            ? Text(
+                'Submitted',
+                style: GoogleFonts.ibmPlexMono(
+                  color: Colors.green,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            : Column(
                 children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isLocked)
+                        const Icon(Icons.lock_outline,
+                            color: Color(0xFF164863)),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_forward_ios,
+                          color: Color(0xFF164863)),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   if (isLocked)
-                    const Icon(Icons.lock_outline, color: Color(0xFF164863)),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.arrow_forward_ios, color: Color(0xFF164863)),
+                    Text(
+                      '${exam.amountToPay.toString()} EGP',
+                      style: GoogleFonts.ibmPlexMono(
+                        color: const Color(0xFF427D9D),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              if (isLocked)
-                Text(
-                  '${exam.amountToPay.toString()} EGP',
-                  style: GoogleFonts.ibmPlexMono(
-                    color: const Color(0xFF427D9D),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                )
-            ],
-          ),
     onTap: () {
       if (role != 'admin') {
+        // Prevent navigation if the quiz is submitted
+        if (isSubmitted) {
+          return;
+        }
+
         if (isLocked) {
           showDialog(
             barrierDismissible: false,
@@ -310,4 +330,3 @@ Widget customExamListTile(
     },
   );
 }
-  

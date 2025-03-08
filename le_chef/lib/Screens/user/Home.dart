@@ -62,7 +62,6 @@ class _HomeState extends State<Home> {
   Future<List<Video>>? _videosFuture;
   Student? currentStudent;
 
-
   @override
   void initState() {
     super.initState();
@@ -77,7 +76,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-
   Future<void> _loadSharedPreferences() async {
     setState(() {
       token = sharedPreferences!.getString('token');
@@ -89,7 +87,16 @@ class _HomeState extends State<Home> {
       email = sharedPreferences?.getString('email');
       phone = sharedPreferences?.getString('phone');
 
-      currentStudent = Student(username: userName!, Lastname: '', firstname: '', email: email!, phone: phone!, password: password!, educationLevel: level!, imageUrl: logged_img, ID: '');
+      currentStudent = Student(
+          username: userName!,
+          Lastname: '',
+          firstname: '',
+          email: email!,
+          phone: phone!,
+          password: password!,
+          educationLevel: level!,
+          imageUrl: logged_img,
+          ID: '');
       print('Token Home: $token');
       print('Token level: $level');
       print('Token userName: $userName');
@@ -202,13 +209,13 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfilePage(
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProfilePage(
                             isStudent: true,
-                          student: currentStudent,
-                        )));
+                            student: currentStudent,
+                          )));
             },
             child: CircleAvatar(
               radius: 30,
@@ -221,21 +228,13 @@ class _HomeState extends State<Home> {
           ),
         ),
         actions: [
-          GestureDetector(
-            onTap: () {
-              if (sharedPreferences != null) {
-                sharedPreferences!.remove('token');
-              }
-              Get.to(const Login());
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 23),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: 50,
-                ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 23),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.asset(
+                'assets/logo.png',
+                height: 50,
               ),
             ),
           ),
@@ -348,10 +347,11 @@ class _HomeState extends State<Home> {
                           final video = Videos[index];
                           return Smallcard(
                             id: video.id,
+                            amountToPay: video.amountToPay,
                             type: 'Video',
                             Title: video.title,
                             description: video.description,
-                            imageurl: 'assets/desk_book_apple.jpeg',
+                            imageurl: video.thumbnail,
                             ontap: () => Navigator.push(
                               context,
                               MaterialPageRoute(

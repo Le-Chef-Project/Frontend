@@ -330,10 +330,12 @@ class _AllPDFsState extends State<AllPDFs> {
                       itemBuilder: (context, index) {
                         final pdf = pdfs[index];
                         return Smallcard(
+                          amountToPay: pdf.amountToPay,
                           id: pdf.id,
                           type: 'Pdf',
                           Title: pdf.title,
-                          imageurl: 'assets/pdf.jpg',
+                          imageurl:
+                              'https://static.vecteezy.com/system/resources/previews/022/086/609/non_2x/file-type-icons-format-and-extension-of-documents-pdf-icon-free-vector.jpg',
                           description: pdf.description,
                           ontap: () => Navigator.push(
                             context,

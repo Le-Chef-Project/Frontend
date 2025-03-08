@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,10 +12,14 @@ class Smallcard extends StatelessWidget {
   final String imageurl;
   final bool isLocked;
   final String? id;
+  final bool? file;
   final String type;
+  final int amountToPay;
   const Smallcard({
     super.key,
     this.Title,
+    this.file,
+    required this.amountToPay,
     this.description,
     required this.imageurl,
     required this.ontap,
@@ -126,10 +132,15 @@ class Smallcard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
-              child: Image.asset(
-                imageurl,
-                fit: BoxFit.cover,
-              ),
+              child: file == true
+                  ? Image.file(
+                      File(imageurl),
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      imageurl,
+                      fit: BoxFit.cover,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -164,6 +175,19 @@ class Smallcard extends StatelessWidget {
                   bottom: 75,
                   right: 10,
                   child: Icon(Icons.lock_outline, color: Color(0xFF164863))),
+            if (amountToPay! > 0)
+              Positioned(
+                bottom: 50,
+                right: 0,
+                child: Text(
+                  '${amountToPay}EGP',
+                  style: GoogleFonts.ibmPlexMono(
+                    color: const Color.fromRGBO(66, 125, 157, 1),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

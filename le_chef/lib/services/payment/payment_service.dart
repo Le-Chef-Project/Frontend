@@ -9,31 +9,11 @@ import '../../utils/apiendpoints.dart';
 import '../../Models/payment.dart' as payment_model;
 import '../auth/login_service.dart';
 
-class PaymentService{
-  static Future<Map<String, dynamic>> initiateCreditCardPayment({required String contentId,}) async {
-    var url = Uri.parse(
-        ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.credieCard);
-
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'token': token!,
-      },
-      body: jsonEncode({
-        'contentId': contentId,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception(
-          'Failed to initiate payment: ${response.statusCode}, ${response.body}');
-    }
-  }
-
-  static Future<void> initiateEWalletPayment({required String contentId, required File paymentImage,}) async {
+class PaymentService {
+  static Future<void> initiateEWalletPayment({
+    required String contentId,
+    required File paymentImage,
+  }) async {
     var url = Uri.parse(ApiEndPoints.baseUrl.trim() +
         ApiEndPoints.payment.E_Wallet +
         contentId);
@@ -49,9 +29,9 @@ class PaymentService{
     // Send the request
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
+    final responseData = json.decode(response.body);
 
     if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
       showDialog(
           context: Get.context!,
           builder: (context) {
@@ -115,7 +95,7 @@ class PaymentService{
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      response.body,
+                      ' ${responseData['message']}',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.ibmPlexMono(
                         color: const Color(0xFF888888),
@@ -129,7 +109,9 @@ class PaymentService{
     }
   }
 
-  static Future<void> initiateCashPayment({required String contentId,}) async {
+  static Future<void> initiateCashPayment({
+    required String contentId,
+  }) async {
     var url = Uri.parse(
         ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.Cash + contentId);
     final response = await http.post(
@@ -239,14 +221,18 @@ class PaymentService{
     return payment_model.Payment.itemsFromSnapshot(temp);
   }
 
-  static Future<void> acceptRequest(String paymentId) async{
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.requests + paymentId + ApiEndPoints.payment.accept);
+  static Future<void> acceptRequest(String paymentId) async {
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() +
+        ApiEndPoints.payment.requests +
+        paymentId +
+        ApiEndPoints.payment.accept);
 
     http.Response response = await http.post(
-      url, headers: {
-      'Content-Type': 'application/json',
-      'token': token!,
-    },
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
       body: jsonEncode({
         'status': 'success',
       }),
@@ -260,14 +246,18 @@ class PaymentService{
     }
   }
 
-  static Future<void> rejectRequest(String paymentId) async{
-    var url = Uri.parse(ApiEndPoints.baseUrl.trim() + ApiEndPoints.payment.requests + paymentId + ApiEndPoints.payment.reject);
+  static Future<void> rejectRequest(String paymentId) async {
+    var url = Uri.parse(ApiEndPoints.baseUrl.trim() +
+        ApiEndPoints.payment.requests +
+        paymentId +
+        ApiEndPoints.payment.reject);
 
     http.Response response = await http.post(
-      url, headers: {
-      'Content-Type': 'application/json',
-      'token': token!,
-    },
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token!,
+      },
       body: jsonEncode({
         'status': 'failed',
       }),
@@ -280,5 +270,4 @@ class PaymentService{
           'Failed to Update payment status: ${response.statusCode}, ${response.body}');
     }
   }
-
 }

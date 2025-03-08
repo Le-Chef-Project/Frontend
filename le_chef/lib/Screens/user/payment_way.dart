@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:le_chef/Shared/custom_app_bar.dart';
 import 'package:le_chef/services/payment/payment_service.dart';
-import 'payment_creditCard.dart';
 
 class PaymentWay extends StatefulWidget {
   final String contentId;
@@ -192,34 +191,6 @@ class _PaymentWayState extends State<PaymentWay> {
             ),
             const SizedBox(
               height: 21,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PaymentCreditCardScreen(
-                              contentId: widget.contentId,
-                            )));
-              },
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 1, color: Color(0xFFEAECF0)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                leading: Image.asset('assets/visa.png'),
-                title: Text(
-                  'Visa or credit card',
-                  style: GoogleFonts.ibmPlexMono(
-                    color: const Color(0xFF164863),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 12,
             ),
             GestureDetector(
               onTap: () {

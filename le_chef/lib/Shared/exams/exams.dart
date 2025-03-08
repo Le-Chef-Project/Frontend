@@ -34,6 +34,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
   List<Quiz> _exams = [];
   List<Quiz> _filteredExams = [];
   List _units = [];
+  List<String>? quizIds;
   QuizResponse? _quizResponse; // Store the API response
 
   final int _ExamsLength = sharedPreferences!.getInt('ExamsLength') ?? 0;
@@ -44,8 +45,18 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
     _initializeData();
   }
 
+  Future<void> fetchSubmittedQuizzes() async {
+    // Fetch submitted quiz IDs
+    List<String> Ids = await QuizService.getSubmittedQuizIds();
+    print('Fetched Quiz IDs: $Ids');
+    setState(() {
+      quizIds = Ids;
+    });
+  }
+
   Future<void> _initializeData() async {
     try {
+      await fetchSubmittedQuizzes();
       // First load units
       await getUnits();
       // Then load exams
@@ -84,7 +95,7 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
     setState(() {
       _filteredExams = _exams
           .where((quiz) =>
-      quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
+              quiz.unit == selectedUnit && quiz.level == widget.selectedLevel)
           .toList();
       print('Filtered Exams for unit $selectedUnit: ${_filteredExams.length}');
     });
@@ -126,100 +137,106 @@ class _ExamsState extends State<Exams> with TickerProviderStateMixin {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Exams'),
       backgroundColor: Colors.white,
-      body: _isLoading || _isLoadingExams ? Center(child: CircularProgressIndicator()) : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          role == 'admin'
-              ? totalStudent(context, 'Total Exams', '${_ExamsLength}',
-                  buttonText: 'Add Exam', ontap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const AddExam()));
-                })
-              : Center(
-                  child: Image.asset(
-                    'assets/Wonder Learners Graduating.png',
-                    width: 300,
-                    height: 300,
-                  ),
-                ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: TabBar(
-                  controller: _tabController,
-                  labelColor: const Color(0xFF427D9D),
-                  unselectedLabelColor: const Color(0xFF427D9D),
-                  indicatorColor: const Color(0xFF427D9D),
-                  dividerColor: Colors.transparent,
-                  labelStyle: GoogleFonts.ibmPlexMono(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    height: 1,
-                  ),
-                  unselectedLabelStyle: GoogleFonts.ibmPlexMono(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    height: 1,
-                  ),
-                  indicator: const CircleTabIndicator(radius: 4.0),
-                  tabs: List.generate(
-                    _units.length,
-                    (index) => Tab(
-                      child: Text(
-                        _units[index],
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: _filteredExams.isEmpty
-                ? Center(
-                    child: Text(
-                      'No Exams available for Unit $selectedUnit',
-                      style: GoogleFonts.ibmPlexMono(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(20),
-                    itemCount: _filteredExams.length,
-                    itemBuilder: (context, index) {
-                      final exam = _filteredExams[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFBFAFA),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: customExamListTile(
-                            index,
+      body: _isLoading || _isLoadingExams
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                role == 'admin'
+                    ? totalStudent(context, 'Total Exams', '${_ExamsLength}',
+                        buttonText: 'Add Exam', ontap: () {
+                        Navigator.push(
                             context,
-                            role == "admin"
-                                ? false
-                                : !(_quizResponse!.quizPaidContentIds
-                                        .contains(exam.id) ||
-                                    !exam.isPaid),
-                            exam,
+                            MaterialPageRoute(
+                                builder: (context) => const AddExam()));
+                      })
+                    : Center(
+                        child: Image.asset(
+                          'assets/Wonder Learners Graduating.png',
+                          width: 300,
+                          height: 300,
+                        ),
+                      ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: const Color(0xFF427D9D),
+                        unselectedLabelColor: const Color(0xFF427D9D),
+                        indicatorColor: const Color(0xFF427D9D),
+                        dividerColor: Colors.transparent,
+                        labelStyle: GoogleFonts.ibmPlexMono(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          height: 1,
+                        ),
+                        unselectedLabelStyle: GoogleFonts.ibmPlexMono(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          height: 1,
+                        ),
+                        indicator: const CircleTabIndicator(radius: 4.0),
+                        tabs: List.generate(
+                          _units.length,
+                          (index) => Tab(
+                            child: Text(
+                              _units[index],
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
-          ),
-        ],
-      ),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: _filteredExams.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No Exams available for Unit $selectedUnit',
+                            style: GoogleFonts.ibmPlexMono(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(20),
+                          itemCount: _filteredExams.length,
+                          itemBuilder: (context, index) {
+                            final exam = _filteredExams[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFBFAFA),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: customExamListTile(
+                                  index,
+                                  context,
+                                  role == "admin"
+                                      ? false
+                                      : !(_quizResponse!.quizPaidContentIds
+                                              .contains(exam.id) ||
+                                          !exam.isPaid),
+                                  exam,
+                                  quizIds!,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
       bottomNavigationBar: CustomBottomNavBar(
         onItemTapped: (index) async {
           switch (index) {

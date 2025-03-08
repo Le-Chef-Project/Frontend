@@ -9,7 +9,8 @@ import '../../utils/SharedPrefes.dart';
 import '../../utils/apiendpoints.dart';
 
 class LoginService {
-  static Future<void> login(String emailController, String passwordController) async {
+  static Future<void> login(
+      String emailController, String passwordController) async {
     if (emailController.isEmpty || passwordController.isEmpty) {
       _showErrorDialog('Blank fields are not allowed.');
       return;
@@ -43,19 +44,19 @@ class LoginService {
         await _saveUserData(json);
 
         // Update global variables
-        token = json['token'];  // Update the global token
-        role = json['role'];    // Update the global role
+        token = json['token']; // Update the global token
+        role = json['role']; // Update the global role
 
         if (json['role'] == "admin") {
           Get.offAll(
-                () => const THome(),
+            () => const THome(),
             transition: Transition.fade,
             duration: const Duration(seconds: 1),
           );
         } else {
           await SharedPrefes.Savelevel(json['educationLevel'] ?? '');
           Get.offAll(
-                () => const Home(),
+            () => const Home(),
             transition: Transition.fade,
             duration: const Duration(seconds: 1),
           );
@@ -91,7 +92,6 @@ class LoginService {
       await SharedPrefes.Savelevel(json['educationLevel']);
     } catch (e) {
       print('Error saving user data: $e');
-      _showErrorDialog('Failed to save user data. Please try again.');
     }
   }
 
